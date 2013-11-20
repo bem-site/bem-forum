@@ -1,0 +1,37 @@
+this._mode === '' && !this.data: {
+
+    return this.doAsync(function() {
+        var promise = Vow.promise();
+
+        github.issues.repoIssues({ user: 'bem', repo: 'bem-talk' }, function(err, res) {
+            if (err) return promise.reject(err);
+            return promise.fulfill(res);
+        });
+
+        return promise
+            .then(function(res) {
+                return apply('', this.data = res);
+            })
+            .fail(function(err) {
+                console.log(err);
+            });
+    });
+
+}
+
+this.data, default: {
+    return applyCtx({
+        block: 'page',
+        title: 'bem-forum',
+        favicon: '//favicon.ico',
+        head: [
+            {
+                elem: 'meta',
+                attrs: { name: 'description', content: 'TODO' }
+            }
+        ],
+        content: {
+            block: 'issues'
+        }
+    })
+}

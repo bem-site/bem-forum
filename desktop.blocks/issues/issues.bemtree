@@ -1,0 +1,15 @@
+block issues, content: this.data.map(function(issue) {
+    return {
+        block: 'issue',
+        content: [
+            {
+                elem: 'title',
+                content: issue.title
+            },
+            {
+                elem: 'body',
+                content: issue.body
+            }
+        ]
+    }
+})

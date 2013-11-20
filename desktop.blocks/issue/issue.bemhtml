@@ -1,0 +1,3 @@
+block issue {
+    elem title, tag: 'h2'
+}
