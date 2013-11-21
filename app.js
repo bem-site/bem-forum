@@ -4,7 +4,8 @@ var FS = require('fs'),
     express = require('express'),
     app = express(),
     Vow = require('vow'),
-    GithubApi = require('github');
+    GithubApi = require('github'),
+    marked = require('marked');
 
 var github = new GithubApi({
     version: '3.0.0',
@@ -12,13 +13,16 @@ var github = new GithubApi({
     timeout: 5000
 });
 
+marked.setOptions({ gfm: true });
+
 var bemtreeTemplate = FS.readFileSync('./desktop.bundles/index/index.bemtree.js', 'utf-8'),
     BEMHTML = require('./desktop.bundles/index/_index.bemhtml.js').BEMHTML;
 
 var context = VM.createContext({
     console: console,
     Vow: Vow,
-    github: github
+    github: github,
+    marked: marked
 });
 
 VM.runInContext(bemtreeTemplate, context);
@@ -33,6 +37,7 @@ server.listen(port, function() {
 
 app.get('/', function(req, res) {
     BEMTREE.apply({ block: 'page' }).then(function(bemjson) {
+        // res.send(JSON.stringify(bemjson, null, '\t'));
         res.send(BEMHTML.apply(bemjson));
     });
 });

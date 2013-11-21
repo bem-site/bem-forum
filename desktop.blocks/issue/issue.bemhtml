@@ -1,3 +1,4 @@
 block issue {
     elem title, tag: 'h2'
+    elem comment-author, tag: 'h3'
 }

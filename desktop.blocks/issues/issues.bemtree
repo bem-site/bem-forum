@@ -1,15 +1,40 @@
-block issues, content: this.data.map(function(issue) {
-    return {
-        block: 'issue',
-        content: [
-            {
-                elem: 'title',
-                content: issue.title
-            },
-            {
-                elem: 'body',
-                content: issue.body
-            }
-        ]
-    }
-})
+block issues, content: {
+
+    var data = this.data;
+
+    return data.issues.map(function(issue) {
+        return {
+            block: 'issue',
+            content: [
+                {
+                    elem: 'title',
+                    content: issue.title
+                },
+                {
+                    elem: 'body',
+                    content: marked(issue.body)
+                },
+                {
+                    elem: 'comments',
+                    content: data.comments.filter(function(comment) {
+                        return comment.issue_url == issue.url;
+                    }).map(function(comment) {
+                        return {
+                            elem: 'comment',
+                            content: [
+                                {
+                                    elem: 'comment-author',
+                                    content: comment.user.login
+                                },
+                                {
+                                    elem: 'comment-body',
+                                    content: marked(comment.body)
+                                }
+                            ]
+                        }
+                    })
+                }
+            ]
+        };
+    });
+}

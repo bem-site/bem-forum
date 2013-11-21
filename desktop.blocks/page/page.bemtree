@@ -1,16 +1,24 @@
 this._mode === '' && !this.data: {
 
     return this.doAsync(function() {
-        var promise = Vow.promise();
+        var issuesPromise = Vow.promise(),
+            commentsPromise = Vow.promise();
 
-        github.issues.repoIssues({ user: 'bem', repo: 'bem-talk' }, function(err, res) {
-            if (err) return promise.reject(err);
-            return promise.fulfill(res);
+        github.issues.repoIssues({ user: 'bem', repo: 'bem-talk' }, function(err, issues) {
+            if (err) return issuesPromise.reject(err);
+
+            return issuesPromise.fulfill(issues);
         });
 
-        return promise
-            .then(function(res) {
-                return apply('', this.data = res);
+        github.issues.repoComments({ user: 'bem', repo: 'bem-talk', number: 1 }, function(err, comments) {
+            if (err) return commentsPromise.reject(err);
+
+            return commentsPromise.fulfill(comments);
+        });
+
+        return Vow.all({ issues: issuesPromise, comments: commentsPromise })
+            .then(function(data) {
+                return apply('', this.data = data);
             })
             .fail(function(err) {
                 console.log(err);
