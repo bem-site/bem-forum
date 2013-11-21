@@ -1,5 +1,7 @@
 block issue {
     js: true
 
+    mix: { block: 'island' }
+
     elem title, tag: 'h2'
 }
