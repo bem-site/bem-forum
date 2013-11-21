@@ -7,6 +7,8 @@ var FS = require('fs'),
     GithubApi = require('github'),
     marked = require('marked');
 
+app.use(express.static(__dirname + '/desktop.bundles/index'));
+
 var github = new GithubApi({
     version: '3.0.0',
     // debug: true,

@@ -3,6 +3,10 @@ block issues, content: {
     var data = this.data;
 
     return data.issues.map(function(issue) {
+        var comments = data.comments.filter(function(comment) {
+            return comment.issue_url == issue.url;
+        });
+
         return {
             block: 'issue',
             content: [
@@ -14,17 +18,34 @@ block issues, content: {
                     elem: 'body',
                     content: marked(issue.body)
                 },
+                comments.length ? {
+                    block : 'button',
+                    mods : { togglable : 'check' },
+                    mix: { block: 'issue', elem: 'comments-switcher' },
+                    text : 'Комментарии'
+                } : '',
                 {
-                    elem: 'comments',
-                    content: data.comments.filter(function(comment) {
-                        return comment.issue_url == issue.url;
-                    }).map(function(comment) {
+                    block: 'comments',
+                    content: comments.map(function(comment) {
                         return {
-                            elem: 'comment',
+                            block: 'comment',
                             content: [
                                 {
-                                    elem: 'comment-author',
-                                    content: comment.user.login
+                                    block: 'link',
+                                    mix: { block: 'user' },
+                                    url: comment.user.url,
+                                    content: [
+                                        {
+                                            block: 'user',
+                                            elem: 'avatar',
+                                            url: comment.user.avatar_url
+                                        },
+                                        {
+                                            block: 'user',
+                                            elem: 'name',
+                                            content: comment.user.login
+                                        }
+                                    ]
                                 },
                                 {
                                     elem: 'comment-body',

@@ -36,10 +36,26 @@ this.data, default: {
             {
                 elem: 'meta',
                 attrs: { name: 'description', content: 'TODO' }
+            },
+            {
+                elem: 'css',
+                url : '_index.css',
+                ie  : false
+            },
+            {
+                elem: 'css',
+                url : '_index.ie.css',
+                ie  : 'lte IE 9'
             }
         ],
-        content: {
-            block: 'issues'
-        }
+        content: [
+            {
+                block: 'issues'
+            },
+            {
+                elem: 'js',
+                url: '_index.js'
+            }
+        ]
     })
 }
