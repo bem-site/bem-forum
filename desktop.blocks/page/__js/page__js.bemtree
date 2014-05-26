@@ -1,0 +1,9 @@
+block('page').elem('js')(
+
+    def()(function () {
+        this.ctx.url = '_' + this.data.bundleName + '.js';
+
+        return this.ctx;
+    })
+
+)

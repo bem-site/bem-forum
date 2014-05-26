@@ -1,0 +1,29 @@
+block('page').match(this.data && this.data.title && this.data.text)(
+
+    def().match(!this.ctx.title && !this.ctx.head)(function () {
+        var ctx = this.ctx;
+
+        ctx.title = this.data.title;
+        ctx.head = apply('head');
+
+        return applyCtx(ctx);
+    }),
+
+    mode('head')(function () {
+        return applyCtx([
+            { elem: 'css' },
+            { elem: 'js' }
+        ]);
+    }),
+
+    content()(function () {
+        return [
+            {
+                block: 'title',
+                content: this.data.title
+            },
+            this.data.text
+        ];
+    })
+
+)

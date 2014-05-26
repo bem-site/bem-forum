@@ -1,0 +1,6 @@
+- block: i-bem
+  required: true
+
+- elems:
+    - css
+    - js

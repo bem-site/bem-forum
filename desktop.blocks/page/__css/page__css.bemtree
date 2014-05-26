@@ -1,0 +1,8 @@
+block('page').elem('css')(
+
+    def()(function () {
+        this.ctx.url = '_' + this.data.bundleName + '.css';
+        return this.ctx;
+    })
+
+)
