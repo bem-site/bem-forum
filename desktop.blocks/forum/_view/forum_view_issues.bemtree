@@ -1,4 +1,4 @@
-block('forum').mod('view', 'issues').content()(function() {
+block('forum').mod('view', 'issues').def()(function() {
     var issues = [
         {
             title: 'issue1',

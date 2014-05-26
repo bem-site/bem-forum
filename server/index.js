@@ -21,7 +21,7 @@ app
     .use(cookieParser()) //also is necessary for forum
     .use(forum(/^\//)) //forum middleware
     .use(function(req, res) {
-        return template.run({}, req.query.__mode)
+        return template.run({ block: 'page' }, req.query.__mode)
             .then(function(html) {
                 res.end(html);
             })
@@ -30,4 +30,4 @@ app
             });
     });
 
-app.listen(3000, function() { console.log('server started on port 3000')});
+app.listen(3000, function() { console.log('server started on port 3000'); });

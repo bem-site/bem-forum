@@ -10,7 +10,7 @@ exports.build = function(targets) {
     return vow.all(
         targets.map(function (target) {
             return enbBuilder(target).then(function() {
-                dropRequireCache(require, target)
+                dropRequireCache(require, target);
                 return target;
             });
         })

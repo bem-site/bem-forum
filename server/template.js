@@ -25,7 +25,7 @@ exports.run = function(ctx, mode) {
             return vfs.read(p).then(function(content) {
                 vm.runInNewContext(content, context);
                 return context;
-            })
+            });
         })
         .then(function(template) {
             return template.BEMTREE.apply(ctx)
