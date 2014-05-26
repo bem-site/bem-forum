@@ -11,8 +11,8 @@ var url = require('url'),
 
     urlPattern = /^\/forum\/?/,
     blockHash = {
-        getIssues: { block: 'issues' },
-        getIssue: { block: 'issue', mods: { view: 'list' }}
+        getIssues: { block: 'forum', view: 'issues' },
+        getIssue:  { block: 'forum', view: 'issue' }
     },
     oauth = (function() {
         var _config = config.get('github:oauth'),
