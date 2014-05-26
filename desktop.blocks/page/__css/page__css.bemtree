@@ -1,8 +1,5 @@
-block('page').elem('css')(
+block('page').elem('css').def()(function () {
+    this.ctx.url = 'desktop.bundles/index/index.min.css';
 
-    def()(function () {
-        this.ctx.url = '_' + this.data.bundleName + '.css';
-        return this.ctx;
-    })
-
-)
+    return this.ctx;
+});

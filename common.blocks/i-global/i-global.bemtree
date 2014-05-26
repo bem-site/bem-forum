@@ -1,7 +1,7 @@
 this._mode === '' && !this.data: {
     return apply(
         this._mode = '',
-        this.data = this.ctx,
+        this.data = true,
         this.ctx = {
             block: 'page',
             title: 'Bem Forum'
