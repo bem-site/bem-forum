@@ -10,6 +10,10 @@ var url = require('url'),
     template = require('./template'),
 
     urlPattern = /^\/forum\/?/,
+    blockHash = {
+        getIssues: { block: 'issues' },
+        getIssue: { block: 'issue', mods: { view: 'list' }}
+    },
     oauth = (function() {
         var _config = config.get('github:oauth'),
             createOauth = function(id, secret) {
@@ -94,7 +98,7 @@ module.exports = function(pattern) {
                     return;
                 }
 
-                return template.run({ content: data }, query.__mode)
+                return template.run(_.extend(blockHash[method] || {}, { data: data }), query.__mode)
                     .then(function(html) {
                         res.end(html);
                     })
