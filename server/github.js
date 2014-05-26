@@ -3,24 +3,47 @@ var _ = require('lodash'),
     Api = require('github'),
     config = require('./config');
 
-var apiHash = {},
-    apiCall = function(token, name, options) {
-        var def = vow.defer(),
-            opts = _.extend({}, config.get('github:forum'), options),
-            api = module.exports.getUserAPI(token);
+var apiHash = {};
 
-        console.log('apiCall ', token, name, opts);
+/**
+ * Calls github api method
+ * @param token - {String} auth token
+ * @param name - {String} name of api method
+ * @param options - {Object} params hash which can contain
+ * different set of key depending on command
+ * @returns {*}
+ */
+var apiCall = function(token, name, options) {
+    var def = vow.defer(),
+        opts = _.extend({}, config.get('github:forum'), options),
+        api = module.exports.getUserAPI(token);
 
-        if(!api) {
-            return vow.reject('no api was found');
-        }
+    console.log('apiCall ', token, name, opts);
 
-        api.issues[name].call(null, opts, function(err, res) {
-            (err || !res) ? def.reject(err) : def.resolve(res);
-        });
+    if(!api) {
+        return vow.reject('no api was found');
+    }
 
-        return def.promise();
-    };
+    api.issues[name].call(null, opts, function(err, res) {
+        (err || !res) ? def.reject(err) : def.resolve(res);
+    });
+
+    return def.promise();
+};
+
+/**
+ * Returns name of function
+ * @param fn - {Function}
+ * @returns {*}
+ * @private
+ */
+var getFnName = function(fn) {
+    var _this = module.exports;
+
+    return Object.keys(module.exports).filter(function(key) {
+        return _this[key] == fn;
+    })[0];
+};
 
 module.exports = {
 
@@ -120,7 +143,7 @@ module.exports = {
      * @returns {*}
      */
     getComments: function(token, options) {
-        return apiCall(token, this._getFnName(arguments.callee), options);
+        return apiCall(token, getFnName(arguments.callee), options);
     },
 
     /**
@@ -131,7 +154,7 @@ module.exports = {
      * @returns {*}
      */
     getComment: function(token, options) {
-        return apiCall(token, this._getFnName(arguments.callee), options);
+        return apiCall(token, getFnName(arguments.callee), options);
     },
 
     /**
@@ -143,7 +166,7 @@ module.exports = {
      * @returns {*}
      */
     createComment: function(token, options) {
-        return apiCall(token, this._getFnName(arguments.callee), options);
+        return apiCall(token, getFnName(arguments.callee), options);
     },
 
     /**
@@ -155,7 +178,7 @@ module.exports = {
      * @returns {*}
      */
     editComment: function(token, options) {
-        return apiCall(token, this._getFnName(arguments.callee), options);
+        return apiCall(token, getFnName(arguments.callee), options);
     },
 
     /**
@@ -166,7 +189,7 @@ module.exports = {
      * @returns {*}
      */
     deleteComment: function(token, options) {
-        return apiCall(token, this._getFnName(arguments.callee), options);
+        return apiCall(token, getFnName(arguments.callee), options);
     },
 
     /**
@@ -176,7 +199,7 @@ module.exports = {
      * @returns {*}
      */
     getLabels: function(token, options) {
-        return apiCall(token, this._getFnName(arguments.callee), options);
+        return apiCall(token, getFnName(arguments.callee), options);
     },
 
     /**
@@ -187,7 +210,7 @@ module.exports = {
      * @returns {*}
      */
     getLabel: function(token, options) {
-        return apiCall(token, this._getFnName(arguments.callee), options);
+        return apiCall(token, getFnName(arguments.callee), options);
     },
 
     /**
@@ -199,7 +222,7 @@ module.exports = {
      * @returns {*}
      */
     createLabel: function(token, options) {
-        return apiCall(token, this._getFnName(arguments.callee), options);
+        return apiCall(token, getFnName(arguments.callee), options);
     },
 
     /**
@@ -211,7 +234,7 @@ module.exports = {
      * @returns {*}
      */
     updateLabel: function(token, options) {
-        return apiCall(token, this._getFnName(arguments.callee), options);
+        return apiCall(token, getFnName(arguments.callee), options);
     },
 
     /**
@@ -222,20 +245,6 @@ module.exports = {
      * @returns {*}
      */
     deleteLabel: function (token, options) {
-        return apiCall(token, this._getFnName(arguments.callee), options);
-    },
-
-    /**
-     * Returns name of function
-     * @param fn - {Function}
-     * @returns {*}
-     * @private
-     */
-    _getFnName: function(fn) {
-        var _this = this;
-
-        return Object.keys(this).filter(function(key) {
-            return _this[key] == fn;
-        })[0];
+        return apiCall(token, getFnName(arguments.callee), options);
     }
 };
