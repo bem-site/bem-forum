@@ -1,5 +1,0 @@
-exports.blocks = [
-    {
-        "name": "page"
-    }
-];
