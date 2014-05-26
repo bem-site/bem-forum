@@ -1,0 +1,12 @@
+{
+    "NODE_ENV": "development",
+    "github": {
+        "oauth": {
+            "localhost": {
+                "clientId": "58a9e4384278acbe9f81",
+                "secret": "dbe1f6b86f3e97c73f0f6322a217292d8c984d00",
+                "redirectUrl": "http://localhost:3000"
+            }
+        }
+    }
+}

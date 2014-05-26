@@ -6,13 +6,13 @@ ifneq ($(YENV),production)
 	YENV=development
 endif
 
-.PHONY: server
-server: npm_deps bower_deps build
-	$(ENB) server
-
 .PHONY: build
-build: npm_deps bower_deps
+build: npm_deps bower_deps config
 	$(ENB) make --no-cache
+
+.PHONY: config
+config:
+	cd configs && ln -snf $(YENV) current
 
 .PHONY: clean
 clean: npm_deps

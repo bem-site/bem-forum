@@ -1,33 +1,33 @@
 var express = require('express'),
-    morganMW  = require('morgan'),
-    staticMW = require('serve-static'),
-    enbMW = require('enb/lib/server/server-middleware'),
+    morgan  = require('morgan'),
+    st = require('serve-static'),
+    cookieParser = require('cookie-parser'),
+    forum = require('./forum'),
+    config = require('./config'),
     template = require('./template');
 
 var app = express();
 
-app.use(enbMW.createMiddleware({
-    cdir: process.cwd(),
-    noLog: false
-}));
+if('development' === config.get('NODE_ENV')) {
+    app.use(require('enb/lib/server/server-middleware').createMiddleware({
+        cdir: process.cwd(),
+        noLog: false
+    }));
+}
 
-app.use(staticMW(process.cwd()))
-app.use(morganMW('default'));
+app
+    .use(st(process.cwd()))
+    .use(morgan('default'))
+    .use(cookieParser()) //also is necessary for forum
+    .use(forum(/^\//)) //forum middleware
+    .use(function(req, res) {
+        return template.run({}, req.query.__mode)
+            .then(function(html) {
+                res.end(html);
+            })
+            .fail(function(err) {
+                res.end(err);
+            });
+    });
 
-
-app.get('/', function(req, res, next){
-    next();
-});
-
-app.use(function(req, res, next) {
-    return template.run({}, req.query.__mode)
-        .then(function(html) {
-            res.end(html);
-        })
-        .fail(function(err) {
-            next(err);
-        });
-});
-
-
-app.listen(3000);
+app.listen(3000, function() { console.log('server started on port 3000')});

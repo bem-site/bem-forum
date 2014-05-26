@@ -1,0 +1,17 @@
+{
+    "github": {
+        "common": {
+            "version": "3.0.0",
+            "protocol": "https",
+            "timeout": "5000",
+            "debug": "true"
+        },
+        "public": {
+            "host": "api.github.com"
+        },
+        "forum": {
+            "user": "bem",
+            "repo": "bem-talk"
+        }
+    }
+}
