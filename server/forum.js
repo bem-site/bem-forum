@@ -7,6 +7,7 @@ var url = require('url'),
 
     github = require('./github'),
     config = require('./config'),
+    template = require('./template'),
 
     urlPattern = /^\/forum\/?/,
     oauth = (function() {
@@ -81,14 +82,27 @@ module.exports = function(pattern) {
         var method = path.replace(urlPattern, '');
 
         if(!github[method]) {
-            res.writeHead(500);
-            res.end('invalid api method');
+            next();
             return;
         }
 
         return github[method]
             .call(github, req.cookies['forum_token'], query || {})
-            .then(function(data) { res.json(data); })
+            .then(function(data) {
+                if('json' === query.__mode) {
+                    res.json(data);
+                    return;
+                }
+
+                return template.run({ content: data }, query.__mode)
+                    .then(function(html) {
+                        res.end(html);
+                    })
+                    .fail(function(err) {
+                        res.end(err);
+                    });
+
+            })
             .fail(function(err) { res.end(err); });
     };
 };
