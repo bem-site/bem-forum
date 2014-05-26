@@ -1,3 +1,5 @@
+- block: forum
+
 - block: i-bem
   required: true
 
