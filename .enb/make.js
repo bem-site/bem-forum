@@ -6,7 +6,11 @@ module.exports = function(config) {
             [ require('enb/techs/files') ],
             [ require('enb/techs/deps') ],
             [ require('enb-bemxjst/techs/bemtree-old') ],
-            [ require('enb-diverse-js/techs/browser-js'), { target: '?.js' } ],
+            [ require('enb-diverse-js/techs/browser-js'), { target: '?.pre.js' } ],
+            [ require('enb-modules/techs/prepend-modules'), {
+                 target: '?.js',
+                 source: '?.pre.js'
+             } ],
             [ require('enb-roole/techs/css-roole'), { target: '?.noprefix.css' } ],
             [ require('enb-bemxjst/techs/bemhtml-old') ]
         ]);

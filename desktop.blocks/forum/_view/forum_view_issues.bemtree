@@ -1,0 +1,74 @@
+block('forum').mod('view', 'issues').content()(function() {
+    var issues = [
+        {
+            title: 'issue1',
+            updated_at: '2014-05-26T12:44:20Z',
+            comments: '1',
+            user: {
+                login: 'verybigman',
+                avatar_url: 'https://avatars.githubusercontent.com/u/982072?',
+                html_url: 'https://github.com/verybigman'
+            },
+            labels: [{ name: 'bem-tools 2.0', color: 'bfe5bf' }],
+            body: 'Предлагается написать блок для реализации сетки. Блок должен учитывать сетку  из проектов Яндекса в новом дизайне, использующих bem-components. Я предлагаю взять для начала сетку реализованную мной [тут](https://github.com/verybigman/bem-protein/tree/master/common.blocks/grid). Это фактически порезанный порт сетки из Foundation. А затем следующей версией внедрить поддержку flexbox, чтобы можно было поддерживать старые браузеры. @tadatuta предлагал писать сразу, используя flexbox, а старые ie поддерживать отедльным css. Все заинтересованные лица приглашаются к обсуждению.'
+        }
+    ];
+
+    console.log('BEMTREE!!!!!!!!!!!!!!!!!!!!!!!');
+
+    return {
+        block: 'issues',
+        content: issues.map(function(issue) {
+            return {
+                block: 'issue',
+                mods: { view: 'list' },
+                mix: { block: 'issues', elem: 'item' },
+                content: [
+                    {
+                        elem: 'title',
+                        content: issue.title
+                    },
+                    {
+                        elem: 'date',
+                        content: issue.updated_at
+                    },
+                    {
+                        elem: 'comments',
+                        content: issue.comments
+                    },
+                    {
+                        elem: 'labels',
+                        content: issue.labels.length ? issue.labels.map(function(label) {
+                            return {
+                                elem: 'label',
+                                content: [
+                                    {
+                                        elem: 'label-name',
+                                        content: label.name
+                                    },
+                                    {
+                                        elem: 'label-color',
+                                        content: label.color
+                                    }
+                                ]
+                            }
+                        }) : undefined
+                    },
+                    {
+                        elem: 'user',
+                        content: [
+                            {
+                                elem: 'user-login',
+                                content: issue.user.login
+                            }
+                        ]
+                    },
+                    {
+                        elem: 'body',
+                        content: issue.body
+                    }
+                ]
+            }
+        })
+    }
+});

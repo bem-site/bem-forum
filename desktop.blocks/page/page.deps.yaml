@@ -1,4 +1,6 @@
 - block: forum
+  mods:
+    view: [issues, issue]
 
 - block: i-bem
   required: true
