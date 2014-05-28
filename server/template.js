@@ -5,6 +5,7 @@ var path = require('path'),
     vfs = require('vow-fs'),
     _ = require('lodash'),
     stringify = require('json-stringify-safe'),
+    util = require('./util'),
 
     builder = require('./builder');
 
@@ -19,7 +20,8 @@ exports.run = function(ctx, mode) {
             var p = path.join(process.cwd(), targets.bemtree),
                 context = vm.createContext({
                     console: console,
-                    Vow: vow
+                    Vow: vow,
+                    util: util
                 });
 
             return vfs.read(p).then(function(content) {
