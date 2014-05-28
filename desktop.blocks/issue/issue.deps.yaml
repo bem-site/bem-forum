@@ -1,0 +1,7 @@
+- block: flex
+- block: link
+- block: image
+- block: button
+  mods: { theme: normal }
+
+- elem: user-avatar

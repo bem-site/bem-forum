@@ -1,0 +1,12 @@
+block('issues')(
+    content().match(this.ctx.issues)(function() {
+        var issues = this.ctx.issues;
+
+        return issues.map(function(issue) {
+            return {
+                block: 'issue',
+                issue: issue
+            }
+        });
+    })
+);

@@ -1,0 +1,132 @@
+block('issue')(
+    content().match(this.ctx.issue)(function() {
+        var issue = this.ctx.issue;
+
+        return [
+            {
+                elem: 'line',
+                mix: { block: 'flex' },
+                content: apply('topline', { issue: issue })
+            },
+            {
+                elem: 'line',
+                mix: { block: 'flex' },
+                content: apply('main', { issue: issue })
+            }
+        ]
+    }),
+
+    mode('topline')(function() {
+        var issue = this.issue,
+            user = issue.user;
+
+        return [
+            {
+                elem: 'username',
+                content: [
+                    {
+                        block: 'link',
+                        url: user.login,
+                        title: user.login,
+                        content: user.login
+                    },' написал'
+                ]
+            },
+            {
+                elem: 'date-update',
+                content: issue.updated_at
+            }
+        ];
+    }),
+
+    mode('main')(function() {
+        var issue = this.issue,
+            user = issue.user;
+
+        return [
+            {
+                elem: 'col-left',
+                content: {
+                    block: 'image',
+                    mix: { block: this.block, elem: 'user-avatar' },
+                    url: user.avatar_url,
+                    width: 80,
+                    height: 80,
+                    alt: user.login
+                }
+            },
+            {
+                elem: 'col-right',
+                content: [
+                    {
+                        elem: 'line',
+                        mix: { block: 'flex' },
+                        content: [
+                            {
+                                elem: 'number',
+                                content: '#' + issue.number
+                            },
+                            {
+                                block: 'link',
+                                mix: { block: this.block, elem: 'title' },
+                                url: issue.number,
+                                title: issue.title,
+                                content: issue.title
+                            },
+                            apply('labels', { labels: issue.labels })
+                        ]
+                    },
+                    apply('body', { body: issue.body }),
+                    {
+                        elem: 'line',
+                        mix: { block: 'flex' },
+                        content: apply('bottomline', { comments: issue.comments })
+                    }
+                ]
+            }
+        ];
+    }),
+
+    mode('body')(function() {
+        var body = util.mdToHtml(this.body);
+
+        return {
+            elem: 'body',
+            content: body
+        }
+    }),
+
+    mode('bottomline')(function() {
+        var comments = this.comments;
+
+        return [
+            {
+                block : 'button',
+                text : comments === 0 ? 'Ответить' : 'Ответов: ' + comments,
+                mods : { theme : 'normal', size : 's', togglable : 'check' }
+            },
+            {
+                block: 'button',
+                text: 'Подписаться',
+                mods : { theme : 'normal', size : 's', type : 'link' },
+                url: '#'
+            }
+        ]
+    }),
+
+    mode('labels')(function() {
+        var labels = this.labels;
+
+        if(!labels.length) return '';
+
+        return labels.map(function(label) {
+            return {
+                block: 'link',
+                url: label.name,
+                mix: { block: this.block, elem: 'label' },
+                color: label.color,
+                content: label.name
+            }
+        });
+    })
+);

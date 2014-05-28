@@ -7,7 +7,7 @@ block('page')(
     }),
 
     content()([
-        { block: 'forum', js: true },
+        { block: 'forum' },
         { elem: 'js' }
     ])
 );
