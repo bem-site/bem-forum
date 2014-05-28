@@ -65,7 +65,7 @@ function getDesktops(config) {
         { path: 'libs/bem-components/design/common.blocks', check: false },
         { path: 'libs/bem-components/desktop.blocks', check: false },
         { path: 'libs/bem-components/design/desktop.blocks', check: false },
-        'common.blocks',
+        { path: 'libs/bem-grid/common.blocks', check: false },
         'desktop.blocks'
     ].map(function(level) {
         return config.resolvePath(level);

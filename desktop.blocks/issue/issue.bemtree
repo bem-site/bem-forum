@@ -88,11 +88,24 @@ block('issue')(
     }),
 
     mode('body')(function() {
-        var body = util.mdToHtml(this.body);
+        var text = util.mdToHtml(this.body);
 
         return {
             elem: 'body',
-            content: body
+            content: text.length > 300 ? [
+                {
+                    elem: 'body-text',
+                    content: text
+                },
+                {
+                    block: 'link',
+                    mix: { block: this.block, elem: 'body-switcher' },
+                    mods: { show: 'body-text' },
+                    url: '#',
+                    title: 'Показать полный текст',
+                    content: 'Читать дальше'
+                }
+            ] : text
         }
     }),
 

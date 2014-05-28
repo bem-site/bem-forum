@@ -1,0 +1,6 @@
+.issue__number
+{
+    font-size: 20px;
+
+    margin-right: 5px;
+}

@@ -1,0 +1,4 @@
+.issue__line
+{
+    margin-bottom: 10px;
+}

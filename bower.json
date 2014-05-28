@@ -10,6 +10,10 @@
   ],
   "dependencies": {
     "bem-core": "v2.2.2",
-    "bem-components": "v2"
+    "bem-components": "v2",
+    "bem-grid": "0.0.3"
+  },
+  "resolutions": {
+    "bem-core": "v2.2.2"
   }
 }
