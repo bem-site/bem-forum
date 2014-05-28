@@ -1,4 +1,6 @@
 .page
 {
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+
     background-color: #F6F5F3;
 }

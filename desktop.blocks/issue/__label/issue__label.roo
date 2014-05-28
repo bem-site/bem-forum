@@ -1,0 +1,19 @@
+.issue__label
+{
+    font-size: 12px;
+
+    display: inline-block;
+
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding: 3px 5px;
+
+    text-decoration: none;
+
+    color: #747474;
+
+    &:hover
+    {
+        color: #000;
+    }
+}

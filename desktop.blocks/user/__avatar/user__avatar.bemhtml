@@ -1,0 +1,8 @@
+block('user').elem('avatar').def()(function() {
+    return applyCtx({
+        block: 'image',
+        url: this.ctx.url,
+        alt: this.ctx.alt,
+        mix: [{ block: 'user', elem: 'avatar' }]
+    });
+});

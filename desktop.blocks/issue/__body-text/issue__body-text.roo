@@ -1,6 +1,0 @@
-.issue__body-text
-{
-    overflow: hidden;
-
-    max-height: 100px;
-}

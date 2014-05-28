@@ -1,0 +1,9 @@
+block('user').elem('name').def()(function() {
+    return applyCtx({
+        block: 'link',
+        url: this.ctx.url,
+        title: this.ctx.title,
+        content: this.ctx.content,
+        mix: { block: this.block, elem: this.elem }
+    });
+});

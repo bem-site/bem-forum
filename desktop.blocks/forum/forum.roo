@@ -1,4 +1,4 @@
 .forum
 {
-    max-width: 1200px;
+    width: 1000px;
 }

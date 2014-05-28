@@ -1,0 +1,12 @@
+.issue__col
+{
+    &_left
+    {
+        width: 60px;
+    }
+
+    &_right
+    {
+        padding-left: 20px;
+    }
+}

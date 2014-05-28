@@ -5,4 +5,21 @@
 
     background: #fff;
     box-shadow: 0 0 0 1px rgba(0,0,0,.06);
+
+    .text
+    {
+        font-size: 14px;
+    }
+
+    .date
+    {
+        text-align: right;
+    }
+
+    .user__avatar
+    {
+        max-width: 100%;
+
+        border-radius: 50%;
+    }
 }

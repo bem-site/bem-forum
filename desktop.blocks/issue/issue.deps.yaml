@@ -1,9 +1,9 @@
-- block: line
 - block: flex
 - block: link
-- block: image
-- block: clearfix
 - block: button
   mods: { theme: normal }
+- block: date
+- block: user
+- block: text
 
-- elems: [user-avatar, body-text, line, username, col-right, number, title]
+- elems: ['label', 'avatar', 'body-text', 'line', 'col', 'number', 'title', 'username']

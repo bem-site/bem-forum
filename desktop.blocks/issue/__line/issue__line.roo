@@ -1,4 +1,26 @@
 .issue__line
 {
     margin-bottom: 10px;
+
+    &_top
+    {
+        font-size: 12px;
+
+        padding-bottom: 10px;
+
+        border-bottom: 1px solid #F6F5F3;
+    }
+
+    &_subtop
+    {
+        margin-bottom: 0;
+
+        align-items: center;
+    }
+
+    &_body,
+    &_bottom
+    {
+        padding-left: 80px;
+    }
 }
