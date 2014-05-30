@@ -10,7 +10,7 @@ var url = require('url'),
     template = require('./template'),
     routes = require('./routes'),
 
-    urlPattern = '/forum',
+    baseUrl = '/forum',
     blockHash = {
         getIssues: { block: 'forum', mods: { view: 'issues' }},
         getIssue:  { block: 'forum', mods: { view: 'issue' }}
@@ -36,28 +36,25 @@ var url = require('url'),
         }, {});
     })();
 
-
-
 module.exports = function(pattern) {
-    urlPattern = pattern || urlPattern;
-    routes.init(urlPattern);
+    baseUrl = pattern || baseUrl;
+    routes.init(baseUrl);
 
     return function(req, res, next) {
-        var _url = url.parse(req.url),
-            _oauth = oauth[req.host] || oauth,
+        var _oauth = oauth[req.host] || oauth,
             _config = config.get('github:oauth')[req.host] || config.get('github:oauth'),
 
-            path = _url.pathname || '',
-            query = querystring.parse(_url.query),
             redirectUrl = _config.redirectUrl,
-            route = routes.getRoute(path);
-
-        console.log('path: %s urlPattern: %s', path, urlPattern);
+            route = routes.getRoute(req.url),
+            query;
 
         if(!route) {
             next();
             return;
         }
+
+        query = route[1]; //params hash
+        route = route[0]; //route object
 
         //check for cookie and non-callback
         //send request for user authorization
@@ -90,7 +87,7 @@ module.exports = function(pattern) {
 
         github.addUserAPI(req.cookies['forum_token']);
 
-        var action = route._data ? route._data.action : null;
+        var action = route.getData() ? route.getData().action : null;
 
         if(!action || !github[action]) {
             next();

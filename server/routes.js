@@ -1,119 +1,41 @@
 var Susanin = require('susanin'),
     susanin;
 
-exports.init = function(pattern) {
+/**
+ * Initialize all inner urls for forum module
+ * @param baseUrl - {String} base url
+ */
+exports.init = function(baseUrl) {
     susanin = new Susanin();
 
-    var _pattern = /\/$/.test(pattern) ? pattern : pattern + '/';
+    var url = /\/$/.test(baseUrl) ? baseUrl : baseUrl + '/';
 
     [
-        {
-            pattern: pattern + '(/)'
-        },
-        {
-            pattern : _pattern + 'issues',
-            data : {
-                method : 'GET',
-                action : 'getIssues'
-            }
-        },
-        {
-            pattern: _pattern + 'issues/<issue>',
-            data: {
-                method: 'GET',
-                action: 'getIssue'
-            }
-        },
-        {
-            pattern: _pattern + 'issues',
-            data: {
-                method: 'PUT',
-                action: 'createIssue'
-            }
-        },
-        {
-            pattern: _pattern + 'issues/<issue>',
-            data: {
-                method: 'POST',
-                action: 'updateIssue'
-            }
-        },
-        {
-            pattern: _pattern + 'issues/<issue>/comments',
-            data: {
-                method: 'GET',
-                action: 'getComments'
-            }
-        },
-        {
-            pattern: _pattern + 'issues/<issue>/comments/<comment>',
-            data: {
-                method: 'GET',
-                action: 'getComment'
-            }
-        },
-        {
-            pattern: _pattern + 'issues/<issue>/comments',
-            data: {
-                method: 'PUT',
-                action: 'createComment'
-            }
-        },
-        {
-            pattern: _pattern + 'issues/<issue>/comments/<comment>',
-            data: {
-                method: 'POST',
-                action: 'updateComment'
-            }
-        },
-        {
-            pattern: _pattern + 'issues/<issue>/comments/<comment>',
-            data: {
-                method: 'DELETE',
-                action: 'deleteComment'
-            }
-        },
-        {
-            pattern: _pattern + 'labels',
-            data: {
-                method: 'GET',
-                action: 'getLabels'
-            }
-        },
-        {
-            pattern: _pattern + 'labels/<label>',
-            data: {
-                method: 'GET',
-                action: 'getLabel'
-            }
-        },
-        {
-            pattern: _pattern + 'labels',
-            data: {
-                method: 'PUT',
-                action: 'createLabel'
-            }
-        },
-        {
-            pattern: _pattern + 'labels/<label>',
-            data: {
-                method: 'POST',
-                action: 'updateLabel'
-            }
-        },
-        {
-            pattern: _pattern + 'labels/<label>',
-            data: {
-                method: 'DELETE',
-                action: 'deleteLabel'
-            }
-        }
+        { name: 'index', pattern: baseUrl + '(/)' },
+        { name: 'getIssues',     data: { method: 'GET' },    pattern: url + 'issues' },
+        { name: 'getIssue',      data: { method: 'GET' },    pattern: url + 'issues/<issue>' },
+        { name: 'createIssue',   data: { method: 'PUT' },    pattern: url + 'issues' },
+        { name: 'updateIssue',   data: { method: 'POST' },   pattern: url + 'issues/<issue>' },
+        { name: 'getComments',   data: { method: 'GET' },    pattern: url + 'issues/<issue>/comments' },
+        { name: 'getComment',    data: { method: 'GET' },    pattern: url + 'issues/<issue>/comments/<comment>' },
+        { name: 'createComment', data: { method: 'PUT' },    pattern: url + 'issues/<issue>/comments' },
+        { name: 'updateComment', data: { method: 'POST' },   pattern: url + 'issues/<issue>/comments/<comment>' },
+        { name: 'deleteComment', data: { method: 'DELETE' }, pattern: url + 'issues/<issue>/comments/<comment>' },
+        { name: 'getLabels',     data: { method: 'GET' },    pattern: url + 'labels' },
+        { name: 'getLabel',      data: { method: 'GET' },    pattern: url + 'labels/<label>' },
+        { name: 'createLabel',   data: { method: 'PUT' },    pattern: url + 'labels' },
+        { name: 'updateLabel',   data: { method: 'POST' },   pattern: url + 'labels/<label>' },
+        { name: 'deleteLabel',   data: { method: 'DELETE' }, pattern: url + 'labels/<label>' }
     ].forEach(function(item) {
         susanin.addRoute(item);
     });
 };
 
+/**
+ * Return matched route for url
+ * @param url - {String} request url
+ * @returns {*}
+ */
 exports.getRoute = function(url) {
-    var r = susanin.findFirst(url);
-    return r ? r[0] : null;
+    return susanin.findFirst(url);
 };
