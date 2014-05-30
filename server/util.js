@@ -1,8 +1,18 @@
 var _ = require('lodash'),
     md = require('marked'),
-    hljs = require('highlight.js');
+    hljs = require('highlight.js'),
+    config = require('./config');
 
 module.exports = {
+
+    /**
+     * Returns true if current environment is development
+     * @returns {boolean}
+     */
+    isDev: function() {
+        return 'development' === config.get('NODE_ENV')
+    },
+
     /**
      * Compile *.md files & issue.body string with md to html
      * with marked module
