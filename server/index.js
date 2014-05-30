@@ -19,8 +19,9 @@ app
     .use(st(process.cwd()))
     .use(morgan('default'))
     .use(cookieParser()) //also is necessary for forum
-    .use(forum(/^\//)) //forum middleware
+    .use(forum('/')) //forum middleware
     .use(function(req, res) {
+        console.log('!!!!!');
         return template.run({ block: 'page' }, req.query.__mode)
             .then(function(html) {
                 res.end(html);

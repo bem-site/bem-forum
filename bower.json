@@ -11,8 +11,5 @@
   "dependencies": {
     "bem-core": "v2.2.2",
     "bem-components": "v2"
-  },
-  "resolutions": {
-    "bem-core": "v2.2.2"
   }
 }

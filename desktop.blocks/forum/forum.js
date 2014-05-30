@@ -7,7 +7,8 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
 
                     $.ajax({
                         dataType: 'html',
-                        url: '/getIssues',
+                        url: '/issues',
+                        type: 'GET',
                         success: function(html) {
                             BEMDOM.update(_this.domElem, html);
                         }

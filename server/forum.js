@@ -8,8 +8,9 @@ var url = require('url'),
     github = require('./github'),
     config = require('./config'),
     template = require('./template'),
+    routes = require('./routes'),
 
-    urlPattern = /^\/forum\/?/,
+    urlPattern = '/forum',
     blockHash = {
         getIssues: { block: 'forum', mods: { view: 'issues' }},
         getIssue:  { block: 'forum', mods: { view: 'issue' }}
@@ -35,8 +36,11 @@ var url = require('url'),
         }, {});
     })();
 
+
+
 module.exports = function(pattern) {
     urlPattern = pattern || urlPattern;
+    routes.init(urlPattern);
 
     return function(req, res, next) {
         var _url = url.parse(req.url),
@@ -45,9 +49,12 @@ module.exports = function(pattern) {
 
             path = _url.pathname || '',
             query = querystring.parse(_url.query),
-            redirectUrl = _config.redirectUrl;
+            redirectUrl = _config.redirectUrl,
+            route = routes.getRoute(path);
 
-        if(!path.match(urlPattern)) {
+        console.log('path: %s urlPattern: %s', path, urlPattern);
+
+        if(!route) {
             next();
             return;
         }
@@ -83,16 +90,18 @@ module.exports = function(pattern) {
 
         github.addUserAPI(req.cookies['forum_token']);
 
-        var method = path.replace(urlPattern, '');
+        var action = route._data ? route._data.action : null;
 
-        if(!github[method]) {
+        if(!action || !github[action]) {
             next();
             return;
         }
 
-        return github[method]
+        return github[action]
             .call(github, req.cookies['forum_token'], query || {})
             .then(function(data) {
+                //console.log(data);
+
                 if('json' === query.__mode) {
                     res.json(data);
                     return;
