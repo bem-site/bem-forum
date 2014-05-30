@@ -1,3 +1,6 @@
+- block: variables
+  required: true
+
 - block: flex
 - block: link
 - block: button
@@ -5,5 +8,6 @@
 - block: date
 - block: user
 - block: text
+- block: highlightjs
 
 - elems: ['label', 'avatar', 'body-text', 'line', 'col', 'number', 'title', 'username']

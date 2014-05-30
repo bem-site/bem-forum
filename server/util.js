@@ -1,5 +1,6 @@
 var _ = require('lodash'),
-    md = require('marked');
+    md = require('marked'),
+    hljs = require('highlight.js');
 
 module.exports = {
     /**
@@ -17,7 +18,10 @@ module.exports = {
         return md(content, _.extend({
             gfm: true,
             pedantic: false,
-            sanitize: false
+            sanitize: false,
+            highlight: function (content) {
+              return hljs.highlightAuto(content).value;
+            }
         }, config));
     }
 };

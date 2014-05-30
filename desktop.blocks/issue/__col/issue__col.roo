@@ -2,11 +2,12 @@
 {
     &_left
     {
-        width: 60px;
+        width: 65px;
     }
 
     &_right
     {
+        width: 100%;
         padding-left: 20px;
     }
 }

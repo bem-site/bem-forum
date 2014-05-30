@@ -5,7 +5,7 @@ block('issue')(
         return [
             {
                 elem: 'line',
-                elemMods: { top: true },
+                elemMods: { top: true, gap: true },
                 mix: { block: 'flex' },
                 content: apply('linetop', { issue: issue })
             },
@@ -20,6 +20,12 @@ block('issue')(
                 elemMods: { body: true },
                 mix: { block: 'flex' },
                 content: apply('linebody', { body: issue.body })
+            },
+            {
+                elem: 'line',
+                elemMods: { bottom: true },
+                mix: { block: 'flex' },
+                content: apply('linebottom', { comments: issue.comments })
             }
         ]
     }),
@@ -79,7 +85,7 @@ block('issue')(
                             {
                                 block: 'link',
                                 mix: { block: this.block, elem: 'title' },
-                                url: issue.number,
+                                url: 'issues/' + issue.number,
                                 title: issue.title,
                                 content: issue.title
                             }
@@ -99,22 +105,14 @@ block('issue')(
         }
     }),
 
-    mode('bottomline')(function() {
+    mode('linebottom')(function() {
         var comments = this.comments;
 
-        return [
-            {
-                block : 'button',
-                text : comments === 0 ? 'Ответить' : 'Ответов: ' + comments,
-                mods : { theme : 'normal', size : 's', togglable : 'check' }
-            },
-            {
-                block: 'button',
-                text: 'Подписаться',
-                mods : { theme : 'normal', size : 's', type : 'link' },
-                url: '#'
-            }
-        ]
+        return {
+            block : 'button',
+            text : comments === 0 ? 'Ответить' : 'Ответов: ' + comments,
+            mods : { theme : 'normal', size : 's', togglable : 'check' }
+        };
     }),
 
     mode('labels')(function() {

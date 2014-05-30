@@ -4,7 +4,7 @@ block('issue').elem('label')(
             block: 'link',
             mix: { block: this.block, elem: this.elem },
             url: this.ctx.url,
-            attrs: { style: 'background-color:#' + this.ctx.color + ';' },
+            attrs: { style: 'border-color:#' + this.ctx.color + ';' },
             content: this.ctx.content
         });
     })
