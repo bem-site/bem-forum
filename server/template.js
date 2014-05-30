@@ -5,16 +5,24 @@ var path = require('path'),
     vfs = require('vow-fs'),
     _ = require('lodash'),
     stringify = require('json-stringify-safe'),
-    util = require('./util'),
-
-    builder = require('./builder');
+    util = require('./util');
 
 var targets = {
     bemtree: 'desktop.bundles/index/index.min.bemtree.js',
     bemhtml: 'desktop.bundles/index/index.min.bemhtml.js'
 };
 
+/**
+ * Recompile bemtree and bemhtml templates (only for development environment)
+ * throw context and applies bemtree and bemhtml templates
+ * @param ctx  - {Object} context for templates
+ * @param mode - {String} mode for output format
+ * @returns {*}
+ */
 exports.run = function(ctx, mode) {
+    var builder = util.isDev() ?
+        require('./builder') : { build: function() { return vow.resolve(); }};
+
     return builder.build(_.values(targets))
         .then(function() {
             var p = path.join(process.cwd(), targets.bemtree),
