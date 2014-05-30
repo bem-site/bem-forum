@@ -4,11 +4,12 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     forum = require('./forum'),
     config = require('./config'),
+    util = require('./util'),
     template = require('./template');
 
 var app = express();
 
-if('development' === config.get('NODE_ENV')) {
+if(util.isDev()) {
     app.use(require('enb/lib/server/server-middleware').createMiddleware({
         cdir: process.cwd(),
         noLog: false
@@ -21,7 +22,6 @@ app
     .use(cookieParser()) //also is necessary for forum
     .use(forum('/')) //forum middleware
     .use(function(req, res) {
-        console.log('!!!!!');
         return template.run({ block: 'page' }, req.query.__mode)
             .then(function(html) {
                 res.end(html);
