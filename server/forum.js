@@ -107,7 +107,7 @@ module.exports = function(pattern) {
                     return;
                 }
 
-                return template.run(_.extend(blockHash[method] || {}, { data: data }), query.__mode)
+                return template.run(_.extend(blockHash[action] || {}, { data: data }), query.__mode)
                     .then(function(html) {
                         res.end(html);
                     })
