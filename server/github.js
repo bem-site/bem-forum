@@ -8,23 +8,24 @@ var apiHash = {};
 /**
  * Calls github api method
  * @param token - {String} auth token
+ * @param group - {String} api group (user, issues ...)
  * @param name - {String} name of api method
  * @param options - {Object} params hash which can contain
  * different set of key depending on command
  * @returns {*}
  */
-var apiCall = function(token, name, options) {
+var apiCall = function(token, group, name, options) {
     var def = vow.defer(),
         opts = _.extend({}, config.get('github:forum'), options),
         api = module.exports.getUserAPI(token);
 
-    console.log('apiCall ', token, name, opts);
+    console.log('apiCall ', token, group, name, opts);
 
     if(!api) {
         return vow.reject('no api was found');
     }
 
-    api.issues[name].call(null, opts, function(err, res) {
+    api[group][name].call(null, opts, function(err, res) {
         (err || !res) ? def.reject(err) : def.resolve(res);
     });
 
@@ -91,7 +92,7 @@ module.exports = {
      * @returns {*}
      */
     getIssues: function(token, options) {
-        return apiCall(token, 'repoIssues', options);
+        return apiCall(token, 'issues', 'repoIssues', options);
     },
 
     /**
@@ -102,7 +103,7 @@ module.exports = {
      * @returns {*}
      */
     getIssue: function(token, options) {
-        return apiCall(token, 'getRepoIssue', options);
+        return apiCall(token, 'issues', 'getRepoIssue', options);
     },
 
     /**
@@ -115,7 +116,7 @@ module.exports = {
      * @returns {*}
      */
     createIssue: function(token, options) {
-        return apiCall(token, 'create', options);
+        return apiCall(token, 'issues', 'create', options);
     },
 
     /**
@@ -130,7 +131,7 @@ module.exports = {
      * @returns {*}
      */
     updateIssue: function(token, options) {
-        return apiCall(token, 'edit', options);
+        return apiCall(token, 'issues', 'edit', options);
     },
 
     /**
@@ -143,7 +144,7 @@ module.exports = {
      * @returns {*}
      */
     getComments: function(token, options) {
-        return apiCall(token, getFnName(arguments.callee), options);
+        return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
     /**
@@ -154,7 +155,7 @@ module.exports = {
      * @returns {*}
      */
     getComment: function(token, options) {
-        return apiCall(token, getFnName(arguments.callee), options);
+        return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
     /**
@@ -166,7 +167,7 @@ module.exports = {
      * @returns {*}
      */
     createComment: function(token, options) {
-        return apiCall(token, getFnName(arguments.callee), options);
+        return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
     /**
@@ -178,7 +179,7 @@ module.exports = {
      * @returns {*}
      */
     updateComment: function(token, options) {
-        return apiCall(token, getFnName(arguments.callee), options);
+        return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
     /**
@@ -189,7 +190,7 @@ module.exports = {
      * @returns {*}
      */
     deleteComment: function(token, options) {
-        return apiCall(token, getFnName(arguments.callee), options);
+        return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
     /**
@@ -199,7 +200,7 @@ module.exports = {
      * @returns {*}
      */
     getLabels: function(token, options) {
-        return apiCall(token, getFnName(arguments.callee), options);
+        return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
     /**
@@ -210,7 +211,7 @@ module.exports = {
      * @returns {*}
      */
     getLabel: function(token, options) {
-        return apiCall(token, getFnName(arguments.callee), options);
+        return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
     /**
@@ -222,7 +223,7 @@ module.exports = {
      * @returns {*}
      */
     createLabel: function(token, options) {
-        return apiCall(token, getFnName(arguments.callee), options);
+        return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
     /**
@@ -234,7 +235,7 @@ module.exports = {
      * @returns {*}
      */
     updateLabel: function(token, options) {
-        return apiCall(token, getFnName(arguments.callee), options);
+        return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
     /**
@@ -245,6 +246,16 @@ module.exports = {
      * @returns {*}
      */
     deleteLabel: function (token, options) {
-        return apiCall(token, getFnName(arguments.callee), options);
+        return apiCall(token, 'issues', getFnName(arguments.callee), options);
+    },
+
+    /**
+     * Returns authentificated user
+     * @param token - {String} oauth user token
+     * @param options - {Object} empty object
+     * @returns {*}
+     */
+    getAuthUser: function(token, options) {
+        return apiCall(token, 'user', 'get', options);
     }
 };
