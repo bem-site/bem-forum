@@ -46,8 +46,10 @@ module.exports = function(pattern) {
 
             redirectUrl = _config.redirectUrl,
             route = routes.getRoute(req.url),
-            query;
+            query,
+            action;
 
+        //if request is not forum request then call nex middleware in stack
         if(!route) {
             next();
             return;
@@ -85,11 +87,15 @@ module.exports = function(pattern) {
             return;
         }
 
+        //authorize user and set his api to hash by his cookie token
         github.addUserAPI(req.cookies['forum_token']);
 
-        var action = route.getData() ? route.getData().action : null;
+        //get action that should be called
+        action = route.getName();
 
         if(!action || !github[action]) {
+            //res.writeHead(500);
+            //res.end('Action was not found');
             next();
             return;
         }
@@ -97,22 +103,21 @@ module.exports = function(pattern) {
         return github[action]
             .call(github, req.cookies['forum_token'], query || {})
             .then(function(data) {
-                //console.log(data);
 
                 if('json' === query.__mode) {
                     res.json(data);
                     return;
                 }
-
-                return template.run(_.extend(blockHash[action] || {}, { data: data }), query.__mode)
-                    .then(function(html) {
-                        res.end(html);
-                    })
-                    .fail(function(err) {
-                        res.end(err);
-                    });
-
+                return data;
             })
-            .fail(function(err) { res.end(err); });
+            .then(function(data) {
+                return template.run(_.extend(blockHash[action] || {}, { data: data }), query.__mode);
+            })
+            .then(function(html) {
+                res.end(html);
+            })
+            .fail(function(err) {
+                res.end(err);
+            });
     };
 };
