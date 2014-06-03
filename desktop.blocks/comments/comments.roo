@@ -1,0 +1,19 @@
+.comments
+{
+    margin-top: 20px;
+
+    position: relative;
+
+    &::before
+    {
+        display: block;
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 100px;
+        width: 1px;
+        background-color: $color-grey;
+        z-index: -1;
+    }
+}

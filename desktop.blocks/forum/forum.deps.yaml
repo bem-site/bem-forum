@@ -1,2 +1,5 @@
+- block: variables
+  required: true
+
 - block: issues
 - block: jquery

@@ -1,0 +1,120 @@
+block('comment')(
+
+    match(function() { return this.ctx.comment; }).content()(function() {
+
+        var comment = this.ctx.comment;
+
+        return [
+            {
+                block: 'column',
+                mods: { side: 'left' },
+                mix: [{ block: 'comment', elem: 'column-main' }],
+                content: {
+                    block: 'comment',
+                    elem: 'write'
+                }
+            },
+            {
+                block: 'column',
+                mods: { side: 'right', gap: true, flex: true  },
+                content: [
+                    {
+                        block: 'column',
+                        mods: { side: 'left' },
+                        mix: [{ block: 'comment', elem: 'column-avatar' }],
+                        content: {
+                            block: 'comment',
+                            elem: 'avatar',
+                            avatar: comment.user.avatar_url
+                        }
+                    },
+                    {
+                        block: 'column',
+                        mods: { side: 'right', gap: true },
+                        content: [
+                            {
+                                block: 'comment',
+                                elem: 'header',
+                                comment: comment
+                            },
+                            {
+                                block: 'comment',
+                                elem: 'body',
+                                body: comment.body
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+    }),
+
+    elem('header')(
+        content()(function() {
+            var comment = this.ctx.comment;
+
+            return [
+                {
+                    elem: 'username',
+                    name: comment.user.login
+                },
+                {
+                    elem: 'date',
+                    date: comment.updated_at
+                },
+                {
+                    elem: 'edit'
+                }
+            ]
+        })
+    ),
+
+    elem('username')(
+        def()(function() {
+            return [
+                {
+                    block: 'user',
+                    elem: 'name',
+                    url: this.ctx.name,
+                    mix: [{ block: 'comment', elem: 'username' }],
+                    content: this.ctx.name
+                },
+                {
+                    block: 'comment',
+                    elem: 'usertext',
+                    content: 'ответил:'
+                }
+            ]
+        })
+    ),
+
+    elem('avatar')(
+        def()(function() {
+            return applyCtx({
+                block: 'user',
+                elem: 'avatar',
+                url: this.ctx.avatar,
+                alt: this.ctx.avatar,
+                mix: [{ block: 'comment', elem: 'avatar' }]
+            })
+        })
+    ),
+
+    elem('date')(
+        def()(function() {
+            return applyCtx({
+                block: 'date',
+                date: this.ctx.date,
+                mix: [{ block: 'comment', elem: 'date' }]
+            })
+        })
+    ),
+
+    elem('body')(
+       content()(function() {
+           var text = this.ctx.body;
+
+           return util.mdToHtml(text);
+       })
+    )
+);

@@ -1,0 +1,4 @@
+block('issue')(
+    js()(true),
+    mix()([{ block: 'island' }])
+);

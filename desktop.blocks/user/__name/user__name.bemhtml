@@ -1,9 +1,15 @@
 block('user').elem('name').def()(function() {
+    var mix = this.ctx.mix || [];
+
     return applyCtx({
         block: 'link',
-        url: this.ctx.url,
+        url: 'github.com/' + this.ctx.url,
         title: this.ctx.title,
         content: this.ctx.content,
-        mix: { block: this.block, elem: this.elem }
+        mix: (function() {
+            mix.push({ block: 'user', elem: 'name' });
+
+            return mix;
+        })()
     });
 });

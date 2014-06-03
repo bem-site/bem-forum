@@ -1,0 +1,4 @@
+.issue__avatar
+{
+    width: $avatar-size-main;
+}

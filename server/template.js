@@ -44,6 +44,10 @@ exports.run = function(ctx, mode) {
                         return stringify(bemjson, null, 2);
                     }
 
+                    if(mode === 'content') {
+                        bemjson = bemjson.content;
+                    }
+
                     return require(path.join(process.cwd(), targets.bemhtml)).BEMHTML.apply(bemjson);
                 });
         });

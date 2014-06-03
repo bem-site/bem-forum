@@ -1,0 +1,18 @@
+.comment__body
+{
+    border-bottom: 1px solid $color-grey;
+    padding-bottom: 15px;
+
+    :link
+    {
+        text-decoration: underline;
+    }
+
+    p
+    {
+        &:last-child
+        {
+            margin-bottom: 0;
+        }
+    }
+}

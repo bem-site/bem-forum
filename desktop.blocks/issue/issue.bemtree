@@ -1,135 +1,192 @@
 block('issue')(
-    content().match(this.ctx.issue)(function() {
-        var issue = this.ctx.issue;
+
+    match(function() { return this.ctx.issue; }).def()(function() {
+        return applyNext({ _issue: this.ctx.issue });
+    }),
+
+    match(function() { return this._issue; }).content()(function() {
+
+        var issue = this._issue;
 
         return [
             {
-                elem: 'line',
-                elemMods: { top: true, gap: true },
-                mix: { block: 'flex' },
-                content: apply('linetop', { issue: issue })
+                elem: 'wrap',
+                content: [
+                    {
+                        elem: 'line',
+                        elemMods: { level: 'top' },
+                        mix: { block: 'line', mods: { valign: 'middle' }}
+                    },
+                    {
+                        elem: 'line',
+                        elemMods: { level: 'middle' },
+                        mix: { block: 'line', mods: { valign: 'stretch' }}
+                    }
+                ]
             },
             {
-                elem: 'line',
-                elemMods: { subtop: true },
-                mix: { block: 'flex' },
-                content: apply('linesubtop', { issue: issue })
-            },
-            {
-                elem: 'line',
-                elemMods: { body: true },
-                mix: { block: 'flex' },
-                content: apply('linebody', { body: issue.body })
-            },
-            {
-                elem: 'line',
-                elemMods: { bottom: true },
-                mix: { block: 'flex' },
-                content: apply('linebottom', { comments: issue.comments })
+                block: 'comments',
+//                mods: { open: 'yes' },
+                js: { id: issue.number, comments: issue.comments }
             }
         ]
     }),
 
-    mode('linetop')(function() {
-        var issue = this.issue,
-            user = issue.user;
+    // user avatar + name
+    elem('line').elemMod('level', 'top')(
 
-        return [
-            {
-                elem: 'username',
-                content: [
-                    {
+        content()(function() {
+            var issue = this._issue,
+                user = issue.user,
+                date = issue.updated_at;
+
+            return [
+                {
+                    block: 'column',
+                    mods: { side: 'left' },
+                    content: {
                         block: 'user',
-                        elem: 'name',
-                        url: user.login,
-                        title: user.login,
-                        content: user.login
-                    },' написал'
-                ]
-            },
-            {
-                block: 'date',
-                date: issue.updated_at
-            }
-        ];
-    }),
-
-    mode('linesubtop')(function() {
-        var issue = this.issue,
-            user = issue.user;
-
-        return [
-            {
-                elem: 'col',
-                mods: { left: true },
-                content: {
-                    block: 'user',
-                    elem: 'avatar',
-                    mix: { block: 'issue', elem: 'avatar' },
-                    url: user.avatar_url,
-                    alt: user.login
-                }
-            },
-            {
-                elem: 'col',
-                mods: { right: true },
-                content: [
-                    apply('labels', { labels: issue.labels }),
-                    {
-                        elem: 'line',
+                        elem: 'avatar',
+                        url: user.avatar_url,
+                        alt: user.login,
+                        mix: [{ block: 'issue', elem: 'avatar' }]
+                    }
+                },
+                {
+                    block: 'column',
+                    mods: { side: 'right' },
+                    mix: { block: 'flex' },
+                    content: {
+                        block: 'line',
+                        mods: { valign: 'middle' },
                         content: [
                             {
-                                elem: 'number',
-                                content: '#' + issue.number
+                                block: 'user',
+                                elem: 'name',
+                                url: user.login,
+                                title: user.login,
+                                content: user.login,
+                                mix: [{ block: 'issue', elem: 'username' }]
                             },
                             {
-                                block: 'link',
-                                mix: { block: this.block, elem: 'title' },
-                                url: 'issues/' + issue.number,
-                                title: issue.title,
-                                content: issue.title
+                                block: 'issue',
+                                elem: 'usertext',
+                                content: 'написал'
+                            },
+                            {
+                                block: 'date',
+                                date: date,
+                                mix: [{ block: 'issue', elem: 'date' }]
                             }
                         ]
                     }
-                ]
-            }
-        ];
-    }),
+                }
+            ]
+        })
+    ),
 
-    mode('linebody')(function() {
-        var text = util.mdToHtml(this.body);
+    // body content + edit,delete buttons + labels + date
+    elem('line').elemMod('level', 'middle')(
 
-        return {
-            block: 'text',
-            content: text
-        }
-    }),
+        content()(function() {
+            var issue = this._issue;
 
-    mode('linebottom')(function() {
-        var comments = this.comments;
+            return [
+                {
+                    block: 'column',
+                    mods: { side: 'left' },
+                    content: [
+                        {
+                            elem: 'edit',
+                            content: '&nbsp;'
+                        },
+                        {
+                            elem: 'remove'
+                        }
+                    ]
+                },
+                {
+                    block: 'column',
+                    mods: { side: 'right' },
+                    content: [
+                        {
+                            block: 'issue',
+                            elem: 'line',
+                            elemMods: { level: 'titles' },
+                            content: [
+                                {
+                                    block: 'issue',
+                                    elem: 'number',
+                                    content: '#' + issue.number
+                                },
+                                {
+                                    block: 'link',
+                                    mix: { block: this.block, elem: 'title' },
+                                    url: 'issues/' + issue.number,
+                                    title: issue.title,
+                                    content: issue.title
+                                },
+                                {
+                                    block: 'issue',
+                                    elem: 'labels'
+                                }
+                            ]
+                        },
+                        {
+                            block: 'issue',
+                            elem: 'body',
+                            mix: { block: 'text' }
+                        },
+                        {
+                            block: 'issue',
+                            elem: 'line',
+                            elemMods: { level: 'bottom' },
+                            mix: { block: 'line', mods: { valign: 'stretch' }}
+                        }
+                    ]
+                }
+            ]
 
-        return {
-            block : 'button',
-            text : comments === 0 ? 'Ответить' : 'Ответов: ' + comments,
-            mods : { theme : 'normal', size : 's', togglable : 'check' }
-        };
-    }),
+        })
+    ),
 
-    mode('labels')(function() {
-        var labels = this.labels;
+    // labels
+    elem('labels')(
+        match(function() { return this._issue.labels.length; }).def()(function() {
 
-        if(!labels.length) return '';
+            var labels = this._issue.labels;
 
-        return {
-            elem: 'labels',
-            content: labels.map(function(label) {
+            return labels.map(function(label) {
                 return {
                     elem: 'label',
                     url: label.name,
                     color: label.color,
                     content: label.name
                 }
-            })
-        };
-    })
+            });
+        })
+    ),
+
+    // body content
+    elem('body')(
+        content()(function() {
+            var text = this._issue.body;
+
+            return util.mdToHtml(text);
+        })
+    ),
+
+    // button 'answer'
+    elem('line').elemMod('level', 'bottom')(
+        content()(function() {
+            var comments = this._issue.comments;
+
+            return {
+                block : 'button',
+                text : comments === 0 ? 'Ответить' : 'Ответов: ' + comments,
+                mods : { theme : 'normal', size : 's', togglable : 'check' },
+                mix: { block: this.block, elem: 'comments-switcher' }
+            };
+        })
+    )
 );

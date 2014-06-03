@@ -1,0 +1,9 @@
+.comment
+{
+    margin-top: 20px;
+
+    &:last-child
+    {
+        background-color: #fff;
+    }
+}

@@ -1,0 +1,1 @@
+block('comments').js()(true);
