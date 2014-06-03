@@ -1,0 +1,19 @@
+block('comments')(
+
+    content()(function() {
+        return applyNext();
+    }),
+
+    match(function() { return this.ctx.data; }).content()(function() {
+
+        var comments = this.ctx.data;
+
+        return comments.map(function(comment) {
+            return {
+                block: 'comment',
+                comment: comment
+            }
+        });
+
+    })
+);

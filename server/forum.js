@@ -13,7 +13,8 @@ var url = require('url'),
     baseUrl = '/forum',
     blockHash = {
         getIssues: { block: 'forum', mods: { view: 'issues' }},
-        getIssue:  { block: 'forum', mods: { view: 'issue' }}
+        getIssue:  { block: 'forum', mods: { view: 'issue' }},
+        getComments: { block: 'comments' }
     },
     oauth = (function() {
         var _config = config.get('github:oauth'),

@@ -1,0 +1,7 @@
+.issue__body
+{
+    :link
+    {
+        text-decoration: underline;
+    }
+}

@@ -1,0 +1,13 @@
+.comment__col
+{
+    &_side_left
+    {
+        min-width: 95px;
+        text-align: center;
+    }
+
+    &_side_right
+    {
+        width: 100%;
+    }
+}

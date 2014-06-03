@@ -1,0 +1,6 @@
+- block: text
+- block: user
+- block: date
+- block: flex
+
+- elems: [avatar, col, body, header, column-avatar, column-main, usertext, username, date]

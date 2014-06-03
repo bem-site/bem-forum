@@ -1,0 +1,4 @@
+.comment__avatar
+{
+    width: $avatar-size-small;
+}

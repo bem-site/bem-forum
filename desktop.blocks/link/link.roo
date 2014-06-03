@@ -1,0 +1,19 @@
+:link,
+:visited
+{
+    text-decoration: none;
+
+    color: #000;
+
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+:link:hover,
+:visited:hover
+{
+    transition: color .15s ease-out;
+
+    text-decoration: underline;
+
+    color: #d14;
+}

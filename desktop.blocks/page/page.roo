@@ -1,6 +1,6 @@
 .page
 {
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-
-    background-color: #F6F5F3;
+    font-size: 14px;
+    line-height: 1.7;
 }

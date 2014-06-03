@@ -1,25 +1,20 @@
 .issue
 {
-    margin-bottom: 20px;
-    padding: 10px 15px;
+    margin-bottom: 40px;
 
-    background: #fff;
-    box-shadow: 0 0 0 1px rgba(0,0,0,.06);
-
-    .text
+    &__wrap
     {
-        font-size: 14px;
-    }
+        .column
+        {
+            &_side_left
+            {
+                max-width: $avatar-size-main;
+            }
 
-    .date
-    {
-        text-align: right;
-    }
-
-    .user__avatar
-    {
-        max-width: 100%;
-
-        border-radius: 50%;
+            &_side_right
+            {
+                margin-left: 20px;
+            }
+        }
     }
 }

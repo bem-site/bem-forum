@@ -1,40 +1,24 @@
 .issue__line
 {
-    &_gap
+    &_level
     {
-        margin-bottom: 10px;
-    }
+        &_top
+        {
+            .column_side_right
+            {
+                border-bottom: 1px solid $color-grey;
+            }
+        }
 
-    &_top
-    {
-        font-size: 12px;
+        &_titles
+        {
+            margin-bottom: 10px;
+        }
 
-        padding-bottom: 10px;
-
-        border-bottom: 1px solid;
-    }
-
-    &_subtop
-    {
-        align-items: center;
-    }
-
-    &_bottom
-    {
-        padding-top: 10px;
-
-        border-top: 1px solid;
-    }
-
-    &_bottom,
-    &_top
-    {
-        border-color: $border-color;
-    }
-
-    &_body,
-    &_bottom
-    {
-        padding-left: 80px;
+        &_bottom
+        {
+            border-bottom: 1px solid $color-grey;
+            padding-bottom: 15px;
+        }
     }
 }

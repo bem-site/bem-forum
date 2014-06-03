@@ -1,4 +1,6 @@
 .issue__title
 {
-    font-size: 18px;
+    font-size: 22px;
+    margin-right: 10px;
+    line-height: 1.4;
 }

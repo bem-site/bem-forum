@@ -1,13 +1,11 @@
-- block: variables
-  required: true
-
-- block: flex
+- block: column
+- block: line
 - block: link
-- block: button
-  mods: { theme: normal }
 - block: date
 - block: user
 - block: text
-- block: highlightjs
+- block: comments
+- block: button
+  mods: { theme: normal }
 
-- elems: ['label', 'avatar', 'body-text', 'line', 'col', 'number', 'title', 'username']
+- elems: [line, label, avatar, number, title, username, usertext, date, body]

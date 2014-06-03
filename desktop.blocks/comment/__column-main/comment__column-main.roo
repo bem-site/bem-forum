@@ -1,0 +1,4 @@
+.comment__column-main
+{
+    max-width: $avatar-size-main;
+}

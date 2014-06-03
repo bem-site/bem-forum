@@ -1,0 +1,30 @@
+.column
+{
+    &_side_left
+    {
+        width: 100%;
+    }
+
+    &_side_right
+    {
+        width: 100%;
+    }
+
+    &_gap
+    {
+        margin-left: 20px;
+    }
+
+    &_flex
+    {
+        display: flex;
+    }
+
+    &_valign
+    {
+        &_middle
+        {
+            align-items: center;
+        }
+    }
+}

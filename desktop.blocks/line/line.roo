@@ -1,0 +1,17 @@
+.line
+{
+    display: flex;
+
+    &_valign
+    {
+        &_stretch
+        {
+            align-items: stretch;
+        }
+
+        &_middle
+        {
+            align-items: center;
+        }
+    }
+}

@@ -1,0 +1,6 @@
+block('comment').elem('body')(
+    mix()([
+        { block: 'island' },
+        { block: 'text' }
+    ])
+);

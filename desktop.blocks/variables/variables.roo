@@ -1,1 +1,6 @@
-$border-color = #F6F5F3;
+$color-grey = #E1E1E1;
+$color-grey-light = #F6F5F3;
+$color-date = #999;
+
+$avatar-size-main = 60px;
+$avatar-size-small = 40px;
