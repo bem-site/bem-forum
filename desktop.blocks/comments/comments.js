@@ -4,12 +4,29 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             js: {
                 inited: function() {
 
-                    if(this.params.comments > 0) {
-                        this.on('show', this._showComments);
-                        this.on('close', this._closeComments);
-                    }
+                    var addForm = this.findBlockInside(this.elem('add-form'), 'form');
+
+                    addForm.on('submit', this._addComments, this);
+
+                    this.on('show', this._showComments);
+                    this.on('close', this._closeComments);
                 }
             }
+        },
+
+        _addComments: function(e, data) {
+            var _this = this;
+
+            data.push({ name: 'number', value: _this.params.id });
+
+            $.ajax({
+                dataType: 'html',
+                type: 'POST',
+                data: data,
+                url: '/issues/' + _this.params.id + '/comments'
+            }).done(function(html) {
+                _this._render(html, 'append', 'wrap');
+            });
         },
 
         _closeComments: function() {
@@ -19,10 +36,16 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
         _showComments: function() {
             var _this = this;
 
+            if(_this.params.comments === 0) {
+                _this._isHidden() && _this.delMod('hidden');
+
+                return this;
+            }
+
             _this.
                 _getComments(_this.params.id)
                 .done(function(html) {
-                    _this._render(html);
+                    _this._render(html, 'prepend');
                 });
         },
 
@@ -33,9 +56,11 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             })
         },
 
-        _render: function(html) {
+        _render: function(html, addMethod, elem) {
 
-            BEMDOM.update(this.domElem, html);
+            var container = (elem && this.elem(elem)) || this.domElem;
+
+            BEMDOM[addMethod](container, html);
 
             this._isHidden() && this.delMod('hidden');
         },

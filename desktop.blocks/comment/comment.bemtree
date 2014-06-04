@@ -1,8 +1,8 @@
 block('comment')(
 
-    match(function() { return this.ctx.comment; }).content()(function() {
+    match(function() { return this.ctx.comment || this.ctx.data; }).content()(function() {
 
-        var comment = this.ctx.comment;
+        var comment = this.ctx.comment || this.ctx.data;
 
         return [
             {

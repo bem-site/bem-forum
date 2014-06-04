@@ -4,6 +4,11 @@
 
     &:last-child
     {
-        background-color: #fff;
+        background-color: $color-background;
+
+        .comment__body
+        {
+            border-bottom: none;
+        }
     }
 }

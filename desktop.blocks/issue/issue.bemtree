@@ -26,7 +26,7 @@ block('issue')(
             },
             {
                 block: 'comments',
-//                mods: { open: 'yes' },
+                mods: { hidden: true },
                 js: { id: issue.number, comments: issue.comments }
             }
         ]
@@ -184,7 +184,7 @@ block('issue')(
             return {
                 block : 'button',
                 text : comments === 0 ? 'Ответить' : 'Ответов: ' + comments,
-                mods : { theme : 'normal', size : 's', togglable : 'check' },
+                mods : { theme : 'normal', size : 'm', togglable : 'check' },
                 mix: { block: this.block, elem: 'comments-switcher' }
             };
         })

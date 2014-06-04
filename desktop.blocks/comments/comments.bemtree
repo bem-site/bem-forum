@@ -1,19 +1,72 @@
 block('comments')(
 
     content()(function() {
-        return applyNext();
+        return {
+            elem: 'add-form'
+        };
     }),
 
     match(function() { return this.ctx.data; }).content()(function() {
 
-        var comments = this.ctx.data;
-
-        return comments.map(function(comment) {
+        var comments = this.ctx.data.map(function(comment) {
             return {
                 block: 'comment',
                 comment: comment
             }
         });
 
-    })
+        return {
+            block: 'comments',
+            elem: 'wrap',
+            content: comments
+        };
+    }),
+
+    elem('add-form')(
+        content()(function() {
+            return [
+                {
+                    block: 'column',
+                    mods: { side: 'left' }
+                },
+                {
+                    block: 'column',
+                    mods: { side: 'right', gap: true },
+                    content: [
+                        {
+                            block: 'input',
+                            mods: {
+                                theme: 'normal',
+                                type: 'textarea',
+                                'has-clear' : true
+                            },
+                            name: 'body',
+                            placeholder: 'Ответ',
+                            rows: 5,
+                            mix: [
+                                {
+                                    block: 'comments',
+                                    elem: 'add-textarea'
+                                },
+                                {
+                                    block: 'form',
+                                    elem: 'control',
+                                    elemMods: { autoclear: 'yes' }
+                                }
+                            ]
+                        },
+                        {
+                            block: 'flex',
+                            content: {
+                                block: 'button',
+                                mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
+                                text: 'Ответить',
+                                mix: [{ block: 'comments', elem: 'add-button' }]
+                            }
+                        }
+                    ]
+                }
+            ]
+        })
+    )
 );

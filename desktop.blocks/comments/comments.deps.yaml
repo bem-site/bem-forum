@@ -1,3 +1,4 @@
 - block: comment
 
+- elems: [add-form, add-textarea, add-button]
 - mods: { hidden: true, open: yes }
