@@ -57,6 +57,17 @@ module.exports = {
         return apiHash[token];
     },
 
+    addDefaultAPI: function() {
+        var api = new Api(_.extend(config.get('github:public'), config.get('github:common')));
+        api.authenticate({
+            type: config.get('github:auth:type'),
+            token: config.get('github:auth:token')
+        });
+
+        apiHash['default'] = api;
+        return this;
+    },
+
     /**
      * Create individual api for each users
      * Auth user by access token and add to api hash

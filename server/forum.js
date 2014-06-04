@@ -6,6 +6,7 @@ var url = require('url'),
     OAuth2 = require("oauth").OAuth2,
 
     github = require('./github'),
+    auth = require('./auth'),
     config = require('./config'),
     template = require('./template'),
     routes = require('./routes'),
@@ -16,40 +17,23 @@ var url = require('url'),
         getIssue:  { block: 'forum', mods: { view: 'issue' }},
         getComments: { block: 'comments' },
         createComment: { block: 'comment' }
-    },
-    oauth = (function() {
-        var _config = config.get('github:oauth'),
-            createOauth = function(id, secret) {
-                return new OAuth2(id, secret,
-                    "https://github.com/", "login/oauth/authorize", "login/oauth/access_token");
-            };
-
-        if(!_config || !_.isObject(_config) || _.isEmpty(_config)) {
-            throw new Error('Invalid oauth configuration');
-        }
-
-        if(_config['clientId'] && _config['secret']) {
-            return createOauth(_config['clientId'], _config['secret']);
-        }
-
-        return Object.keys(_config).reduce(function(prev, key) {
-            prev[key] = createOauth(_config[key]['clientId'], _config[key]['secret']);
-            return prev;
-        }, {});
-    })();
+    };
 
 module.exports = function(pattern) {
+
     baseUrl = pattern || baseUrl;
+
     routes.init(baseUrl);
+    auth.init();
+
+    github.addDefaultAPI();
 
     return function(req, res, next) {
-        var _oauth = oauth[req.host] || oauth,
-            _config = config.get('github:oauth')[req.host] || config.get('github:oauth'),
-
-            redirectUrl = _config.redirectUrl,
-            route = routes.getRoute(req.url, req.method),
+        var route = routes.getRoute(req.url, req.method),
             query,
-            action;
+            action,
+            token,
+            isGetRequest;
 
         //if request is not forum request then call nex middleware in stack
         if(!route) {
@@ -60,57 +44,42 @@ module.exports = function(pattern) {
         query = route[1]; //params hash
         route = route[0]; //route object
 
-        //check for cookie and non-callback
-        //send request for user authorization
-        if(!req.cookies['forum_token'] && !query.code) {
-            res.writeHead(303, {
-                Location: _oauth.getAuthorizeUrl({
-                    redirect_uri: redirectUrl,
-                    scope: "user,repo,gist"
-                })
-            });
-            res.end();
+        //get action that should be called
+        action = route.getName();
+        isGetRequest = 'GET' === route.getData().method;
+
+        console.log('action: %s method %s', action, route.getData().method);
+
+        if('index' === action) {
+            next();
             return;
         }
 
         //send request for retrieve access token by code
         if(query.code) {
-            _oauth.getOAuthAccessToken(query.code, {}, function (err, access_token) {
-                if (err) {
-                    res.writeHead(500);
-                    res.end(err);
-                    return;
-                }
-
-                res.cookie('forum_token', access_token, { expires: new Date(Date.now() + 86400000) });
-                res.writeHead(303, { Location: redirectUrl });
-                res.end();
-            });
-            return;
+           return auth.getAccessToken(req, res, query);
         }
 
-        //authorize user and set his api to hash by his cookie token
-        github.addUserAPI(req.cookies['forum_token']);
+        // for all non get requests and when forum token cookie is not exists
+        // send request for user authorization
+        if(!isGetRequest && !req.cookies['forum_token']) {
+            return auth.sendAuthRequest(req, res);
+        }
 
-        //get action that should be called
-        action = route.getName();
+        token = req.cookies['forum_token'] || 'default';
+        github.addUserAPI(token);
 
         if(!action || !github[action]) {
-            //res.writeHead(500);
-            //res.end('Action was not found');
-            next();
+            res.writeHead(500);
+            res.end('Action was not found');
             return;
         }
 
-        var options = 'GET' !== route.getData().method ? req.body : query;
-        options = options || {};
-
+        var options = (isGetRequest ? query : req.body) || {};
 
         return github[action]
-            .call(github, req.cookies['forum_token'], options)
+            .call(github, token, options)
             .then(function(data) {
-
-                console.log('NEW comment', data);
 
                 if('json' === query.__mode) {
                     res.json(data);

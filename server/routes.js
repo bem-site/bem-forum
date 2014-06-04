@@ -6,10 +6,14 @@ var Susanin = require('susanin'),
  * @param baseUrl - {String} base url
  */
 exports.init = function(baseUrl) {
+
+    //remove trailing slash
+    //var url = baseUrl.replace(/\/$/, '');
+
     var url = /\/$/.test(baseUrl) ? baseUrl : baseUrl + '/';
 
     susanin = [
-        { name: 'index',         data: { method: 'GET' },    pattern: baseUrl + '(/)' },
+        { name: 'index',         data: { method: 'GET' },    pattern: url },
         { name: 'getIssues',     data: { method: 'GET' },    pattern: url + 'issues' },
         { name: 'getIssue',      data: { method: 'GET' },    pattern: url + 'issues/<number>' },
         { name: 'createIssue',   data: { method: 'POST' },   pattern: url + 'issues' },
@@ -26,6 +30,7 @@ exports.init = function(baseUrl) {
         { name: 'deleteLabel',   data: { method: 'DELETE' }, pattern: url + 'labels/<label>' },
         { name: 'getAuthUser',   data: { method: 'GET' },    pattern: url + 'user' }
     ].reduce(function(_susanin, route) {
+            route.pattern += '(/)';
             _susanin.addRoute(route);
             return _susanin;
         }, new Susanin());
