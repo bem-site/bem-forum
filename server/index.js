@@ -1,6 +1,7 @@
 var express = require('express'),
     morgan  = require('morgan'),
     st = require('serve-static'),
+    bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     forum = require('./forum'),
     config = require('./config'),
@@ -20,6 +21,7 @@ app
     .use(st(process.cwd()))
     .use(morgan('default'))
     .use(cookieParser()) //also is necessary for forum
+    .use(bodyParser())
     .use(forum('/')) //forum middleware
     .use(function(req, res) {
         return template.run({ block: 'page' }, req.query.__mode)

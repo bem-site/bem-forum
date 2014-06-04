@@ -14,7 +14,8 @@ var url = require('url'),
     blockHash = {
         getIssues: { block: 'forum', mods: { view: 'issues' }},
         getIssue:  { block: 'forum', mods: { view: 'issue' }},
-        getComments: { block: 'comments' }
+        getComments: { block: 'comments' },
+        createComment: { block: 'comment' }
     },
     oauth = (function() {
         var _config = config.get('github:oauth'),
@@ -46,7 +47,7 @@ module.exports = function(pattern) {
             _config = config.get('github:oauth')[req.host] || config.get('github:oauth'),
 
             redirectUrl = _config.redirectUrl,
-            route = routes.getRoute(req.url),
+            route = routes.getRoute(req.url, req.method),
             query,
             action;
 
@@ -101,9 +102,15 @@ module.exports = function(pattern) {
             return;
         }
 
+        var options = 'GET' !== route.getData().method ? req.body : query;
+        options = options || {};
+
+
         return github[action]
-            .call(github, req.cookies['forum_token'], query || {})
+            .call(github, req.cookies['forum_token'], options)
             .then(function(data) {
+
+                console.log('NEW comment', data);
 
                 if('json' === query.__mode) {
                     res.json(data);

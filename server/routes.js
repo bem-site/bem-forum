@@ -9,7 +9,7 @@ exports.init = function(baseUrl) {
     var url = /\/$/.test(baseUrl) ? baseUrl : baseUrl + '/';
 
     susanin = [
-        { name: 'index', pattern: baseUrl + '(/)' },
+        { name: 'index',         data: { method: 'GET' },    pattern: baseUrl + '(/)' },
         { name: 'getIssues',     data: { method: 'GET' },    pattern: url + 'issues' },
         { name: 'getIssue',      data: { method: 'GET' },    pattern: url + 'issues/<number>' },
         { name: 'createIssue',   data: { method: 'POST' },   pattern: url + 'issues' },
@@ -36,6 +36,13 @@ exports.init = function(baseUrl) {
  * @param url - {String} request url
  * @returns {*}
  */
-exports.getRoute = function(url) {
-    return susanin.findFirst(url);
+exports.getRoute = function(url, method) {
+    var result = susanin.find(url, method);
+    if(!result.length) {
+        return null;
+    }
+
+    return result.filter(function(route) {
+        return method === route[0].getData().method;
+    })[0];
 };
