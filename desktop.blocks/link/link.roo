@@ -3,7 +3,7 @@
 {
     text-decoration: none;
 
-    color: #000;
+    color: $color-link;
 
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
@@ -13,7 +13,5 @@
 {
     transition: color .15s ease-out;
 
-    text-decoration: underline;
-
-    color: #d14;
+    color: $color-link-hover;
 }

@@ -1,0 +1,11 @@
+- block: input
+  mods: { theme: 'normal', type: 'textarea', 'has-clear': true }
+
+- block: button
+  mods: { theme: 'normal', type: 'submit' }
+
+- block: form
+  mods: { action: 'comments' }
+
+- block: column
+- block: flex

@@ -1,0 +1,18 @@
+.comments__add-form
+{
+    background-color: $color-background;
+    padding: 20px 0;
+
+    .column
+    {
+        &_side_left
+        {
+            max-width: $avatar-size-main;
+        }
+
+        &_gap
+        {
+            margin-left: 80px;
+        }
+    }
+}

@@ -1,0 +1,5 @@
+.comments__add-textarea
+{
+    margin-bottom: 10px;
+    width: 100%;
+}
