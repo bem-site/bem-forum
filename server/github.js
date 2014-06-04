@@ -3,7 +3,14 @@ var _ = require('lodash'),
     Api = require('github'),
     config = require('./config');
 
-var apiHash = {};
+var API_CONFIG = {
+        version: "3.0.0",
+        protocol: "https",
+        timeout: 5000,
+        debug: true,
+        host: "api.github.com"
+    },
+    apiHash = {};
 
 /**
  * Calls github api method
@@ -16,8 +23,10 @@ var apiHash = {};
  */
 var apiCall = function(token, group, name, options) {
     var def = vow.defer(),
-        opts = _.extend({}, config.get('github:forum'), options),
-        api = module.exports.getUserAPI(token);
+        opts = _.extend({}, config.get('forum:storage'), options),
+        api = token ?
+            module.exports.getUserAPI(token) :
+            module.exports.getDefaultAPI();
 
     console.log('apiCall ', token, group, name, opts);
 
@@ -57,14 +66,33 @@ module.exports = {
         return apiHash[token];
     },
 
-    addDefaultAPI: function() {
-        var api = new Api(_.extend(config.get('github:public'), config.get('github:common')));
-        api.authenticate({
-            type: config.get('github:auth:type'),
-            token: config.get('github:auth:token')
-        });
+    /**
+     * Returns random api for one of configured tokens for non auth users
+     * @returns {*}
+     */
+    getDefaultAPI: function() {
+        var tokens = config.get('forum:auth:tokens');
+        return apiHash[_.sample(tokens)];
+    },
 
-        apiHash['default'] = api;
+    /**
+     * Create github api for each configured token
+     * @returns {exports}
+     */
+    addDefaultAPI: function() {
+        var tokens = config.get('forum:auth:tokens');
+
+        apiHash = tokens.reduce(function(prev, token) {
+            var api = new Api(API_CONFIG);
+            api.authenticate({
+                type: 'oauth',
+                token: token
+            });
+
+            prev[token] = api;
+            return prev;
+        }, {});
+
         return this;
     },
 
@@ -79,7 +107,7 @@ module.exports = {
             return this;
         }
 
-        var api = new Api(_.extend(config.get('github:public'), config.get('github:common')));
+        var api = new Api(API_CONFIG);
         api.authenticate({
             type: 'oauth',
             token: token

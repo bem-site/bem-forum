@@ -1,13 +1,8 @@
-var url = require('url'),
-    querystring = require("querystring"),
-
-    _ = require('lodash'),
+var _ = require('lodash'),
     vow = require('vow'),
-    OAuth2 = require("oauth").OAuth2,
 
     github = require('./github'),
     auth = require('./auth'),
-    config = require('./config'),
     template = require('./template'),
     routes = require('./routes'),
 
@@ -33,6 +28,7 @@ module.exports = function(pattern) {
             query,
             action,
             token,
+            options,
             isGetRequest;
 
         //if request is not forum request then call nex middleware in stack
@@ -48,8 +44,6 @@ module.exports = function(pattern) {
         action = route.getName();
         isGetRequest = 'GET' === route.getData().method;
 
-        console.log('action: %s method %s', action, route.getData().method);
-
         if('index' === action) {
             next();
             return;
@@ -57,7 +51,7 @@ module.exports = function(pattern) {
 
         //send request for retrieve access token by code
         if(query.code) {
-           return auth.getAccessToken(req, res, query);
+           return auth.getAccessToken(req, res, query.code);
         }
 
         // for all non get requests and when forum token cookie is not exists
@@ -66,8 +60,8 @@ module.exports = function(pattern) {
             return auth.sendAuthRequest(req, res);
         }
 
-        token = req.cookies['forum_token'] || 'default';
-        github.addUserAPI(token);
+        token = req.cookies['forum_token'];
+        token && github.addUserAPI(token);
 
         if(!action || !github[action]) {
             res.writeHead(500);
@@ -75,7 +69,7 @@ module.exports = function(pattern) {
             return;
         }
 
-        var options = (isGetRequest ? query : req.body) || {};
+        options = (isGetRequest ? query : req.body) || {};
 
         return github[action]
             .call(github, token, options)

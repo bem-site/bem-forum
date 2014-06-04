@@ -1,6 +1,6 @@
 {
     "NODE_ENV": "development",
-    "github": {
+    "forum": {
         "oauth": {
             "localhost": {
                 "clientId": "58a9e4384278acbe9f81",

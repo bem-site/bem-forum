@@ -1,11 +1,11 @@
 {
     "NODE_ENV": "production",
-    "github": {
+    "forum": {
         "oauth": {
-            "localhost": {
-                "clientId": "your client id",
-                "secret": "your secret key",
-                "redirectUrl": "your redirect url"
+            "{host}": {
+                "clientId": "your client id for your {host}",
+                "secret": "your secret key for your {host}",
+                "redirectUrl": "your redirect url for your {host}"
             }
         }
     }

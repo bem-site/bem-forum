@@ -19,9 +19,9 @@ if(util.isDev()) {
 
 app
     .use(st(process.cwd()))
-    .use(morgan('default'))
+    .use(morgan('default')) //todo remove it after development
     .use(cookieParser()) //also is necessary for forum
-    .use(bodyParser())
+    .use(bodyParser()) //also is necessary for forum
     .use(forum('/')) //forum middleware
     .use(function(req, res) {
         return template.run({ block: 'page' }, req.query.__mode)

@@ -8,7 +8,7 @@ var _ = require('lodash'),
         return oauth[req.host] || oauth;
     },
     getRedirectUrl = function(req) {
-        var _config = config.get('github:oauth')[req.host] || config.get('github:oauth');
+        var _config = config.get('forum:oauth')[req.host] || config.get('forum:oauth');
         return _config.redirectUrl;
     };
 
@@ -16,10 +16,12 @@ module.exports = {
 
     init: function() {
         oauth = (function() {
-            var _config = config.get('github:oauth'),
+            var _config = config.get('forum:oauth'),
                 createOauth = function(id, secret) {
                     return new OAuth2(id, secret,
-                        "https://github.com/", "login/oauth/authorize", "login/oauth/access_token");
+                        "https://github.com/",
+                        "login/oauth/authorize",
+                        "login/oauth/access_token");
                 };
 
             if(!_config || !_.isObject(_config) || _.isEmpty(_config)) {
@@ -37,6 +39,11 @@ module.exports = {
         })();
     },
 
+    /**
+     * Send auth request
+     * @param req - {Object} request object
+     * @param res - {Object} response object
+     */
     sendAuthRequest: function(req, res) {
         res.writeHead(303, {
             Location: getOauth(req).getAuthorizeUrl({
@@ -47,8 +54,14 @@ module.exports = {
         res.end();
     },
 
-    getAccessToken: function(req, res, query) {
-        getOauth(req).getOAuthAccessToken(query.code, {}, function (err, access_token) {
+    /**
+     * Send request for retrieve access token
+     * @param req - {Object} request object
+     * @param res - {Object} response object
+     * @param code - {String} secret code as param for token retrieving
+     */
+    getAccessToken: function(req, res, code) {
+        getOauth(req).getOAuthAccessToken(code, {}, function (err, access_token) {
             if (err) {
                 res.writeHead(500);
                 res.end(err);
