@@ -12,9 +12,13 @@ modules.define('form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         clearInputs: function() {
             var inputs = this.findBlocksInside(this.elem('control', 'autoclear', 'yes'), 'input');
 
-            inputs.forEach(function(input) {
-                input.setVal('');
-            });
+            if(inputs.length > 1) {
+                inputs.forEach(function(input) {
+                    input.setVal('');
+                });
+            } else {
+                inputs[0].setVal('');
+            }
         },
 
         _getSerialize: function() {
