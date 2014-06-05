@@ -3,3 +3,8 @@
 
 - block: issues
 - block: jquery
+- block: forum-header
+- block: spin
+  mods: { theme: 'normal' }
+
+- elem: spin

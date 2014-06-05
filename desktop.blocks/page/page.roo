@@ -3,4 +3,6 @@
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
     font-size: 14px;
     line-height: 1.7;
+    margin: 0;
+    padding: 0;
 }

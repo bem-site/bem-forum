@@ -1,0 +1,7 @@
+.forum-header
+{
+    & &__auth-button
+    {
+        margin-left: auto;
+    }
+}

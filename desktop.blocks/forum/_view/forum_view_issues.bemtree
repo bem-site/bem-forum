@@ -1,6 +1,11 @@
-block('forum').mod('view', 'issues').def()(function() {
-    return applyCtx({
-        block: 'issues',
-        issues: this.ctx.data
-    });
-});
+block('forum').mod('view', 'issues')(
+
+    content()(function() {
+        return [
+            {
+                block: 'issues',
+                issues: this.ctx.data
+            }
+        ];
+    })
+);

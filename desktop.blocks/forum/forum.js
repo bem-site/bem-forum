@@ -5,12 +5,16 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                 inited: function() {
                     var _this = this;
 
+                    this._spin = this.findBlockInside(this.elem('spin'), 'spin');
+
                     $.ajax({
                         dataType: 'html',
-                        url: '/issues',
+                        url: '/issues?__mode=content',
                         type: 'GET',
                         success: function(html) {
-                            BEMDOM.update(_this.domElem, html);
+                            BEMDOM.append(_this.domElem, html);
+
+                            _this._spin.delMod('progress');
                         }
                     });
                 }

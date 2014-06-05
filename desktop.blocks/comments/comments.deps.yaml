@@ -1,4 +1,8 @@
+- block: spin
+  mods: { theme: 'normal' }
+
 - block: comment
+- block: flex
 
 - elems: [add-form, add-textarea, add-button]
 - mods: { hidden: true, open: yes }

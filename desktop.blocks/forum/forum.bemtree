@@ -1,0 +1,33 @@
+block('forum')(
+    def()(function() {
+        return applyNext({ _isAuth: req.cookies['forum_token'] });
+    }),
+
+    content()(function() {
+        return {
+            block: 'spin',
+            mods: { theme: 'normal', size: 'xl', progress: true },
+            mix: [{ block: 'forum', elem: 'spin' }]
+        }
+    }),
+
+    match(function() { return !this._isAuth; }).content()(function() {
+        return [
+            {
+                block: 'forum-header',
+                mods: { view: 'auth-no' }
+            },
+            applyNext()
+        ]
+    }),
+
+    match(function() { return this._isAuth; }).content()(function() {
+        return [
+            {
+                block: 'forum-header',
+                mods: { view: 'auth' }
+            },
+            applyNext()
+        ]
+    })
+);

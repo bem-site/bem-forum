@@ -1,0 +1,24 @@
+.forum-header_view_auth
+{
+    align-items: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    .user
+    {
+        margin-left: auto;
+    }
+
+    .user__avatar,
+    .user__name
+    {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 10px;
+    }
+
+    .user__avatar
+    {
+        width: 40px;
+    }
+}

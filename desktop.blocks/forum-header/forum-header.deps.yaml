@@ -1,0 +1,4 @@
+- block: flex
+
+- elems: [auth-button, title]
+- mods: { view: [auth, auth-no] }

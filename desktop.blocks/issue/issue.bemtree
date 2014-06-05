@@ -181,12 +181,22 @@ block('issue')(
         content()(function() {
             var comments = this._issue.comments;
 
-            return {
-                block : 'button',
-                text : comments === 0 ? 'Ответить' : 'Ответов: ' + comments,
-                mods : { theme : 'normal', size : 'm', togglable : 'check' },
-                mix: { block: this.block, elem: 'comments-switcher' }
-            };
+            if(!this._isAuth && comments === 0) {
+                return '';
+            }
+
+            return [
+                {
+                    block : 'button',
+                    text : comments === 0 ? 'Ответить' : 'Ответов: ' + comments,
+                    mods : { theme : 'normal', size : 'm', togglable : 'check' },
+                    mix: { block: this.block, elem: 'comments-switcher' }
+                },
+                {
+                    block: 'spin',
+                    mods: { theme: 'normal', size: 'm' }
+                }
+            ];
         })
     )
 );

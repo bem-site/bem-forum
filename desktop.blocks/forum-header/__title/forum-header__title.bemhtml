@@ -1,0 +1,3 @@
+block('forum-header').elem('title')(
+    tag()('h1')
+);

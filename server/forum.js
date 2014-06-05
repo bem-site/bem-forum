@@ -11,7 +11,8 @@ var _ = require('lodash'),
         getIssues: { block: 'forum', mods: { view: 'issues' }},
         getIssue:  { block: 'forum', mods: { view: 'issue' }},
         getComments: { block: 'comments' },
-        createComment: { block: 'comment' }
+        createComment: { block: 'comment' },
+        getAuthUser: { block: 'user', mods: { view: 'header' } }
     };
 
 module.exports = function(pattern, options) {

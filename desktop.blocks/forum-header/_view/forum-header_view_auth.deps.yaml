@@ -1,0 +1,2 @@
+- block: user
+  mods: { view: 'header' }

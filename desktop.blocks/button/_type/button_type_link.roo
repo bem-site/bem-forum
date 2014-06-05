@@ -1,0 +1,7 @@
+.button_type_link
+{
+    &:hover
+    {
+        color: #000;
+    }
+}

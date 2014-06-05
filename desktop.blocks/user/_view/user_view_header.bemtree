@@ -1,0 +1,21 @@
+block('user').mod('view', 'header')(
+    content()(function() {
+
+        var user = this.ctx.data;
+
+        return [
+            {
+                elem: 'avatar',
+                url: user.avatar_url,
+                alt: user.login
+            },
+            {
+                elem: 'name',
+                url: user.login,
+                title: user.login,
+                target: '_blank',
+                content: user.login
+            }
+        ]
+    })
+);

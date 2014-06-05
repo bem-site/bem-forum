@@ -1,0 +1,7 @@
+.issue__comments-switcher
+{
+    &.button
+    {
+        margin-right: 10px;
+    }
+}

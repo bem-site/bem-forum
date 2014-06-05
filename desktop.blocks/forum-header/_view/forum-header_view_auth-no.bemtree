@@ -1,0 +1,15 @@
+block('forum-header').mod('view', 'auth-no')(
+
+    match(function() { return !this._isAuth; }).content()(function() {
+        return [
+            applyNext(),
+            {
+                block : 'button',
+                url: '/auth',
+                text : 'Авторизоваться (github.com)',
+                mods : { theme : 'normal', size : 'm', action: true, type: 'link' },
+                mix: { block: 'forum-header', elem: 'auth-button' }
+            }
+        ]
+    })
+);
