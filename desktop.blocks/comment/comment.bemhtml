@@ -1,3 +1,7 @@
 block('comment')(
-    mix()([{ block: 'flex' }])
+
+    mix()([
+        { block: 'flex' },
+        { block: 'comments', elem: 'item' }
+    ])
 );

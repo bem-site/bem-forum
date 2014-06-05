@@ -22,8 +22,7 @@ block('comments')(
         return comments.map(function(comment) {
             return {
                 block: 'comment',
-                comment: comment,
-                mix: [{ block: 'comments', elem: 'item' }]
+                comment: comment
             }
         });
     }),
