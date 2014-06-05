@@ -1,22 +1,24 @@
 var _ = require('lodash'),
 
     OAuth2 = require("oauth").OAuth2,
-    config = require('./config'),
 
     oauth,
+    options,
     getOauth = function(req) {
         return oauth[req.host] || oauth;
     },
     getRedirectUrl = function(req) {
-        var _config = config.get('forum:oauth')[req.host] || config.get('forum:oauth');
-        return _config.redirectUrl;
+        var c = options.oauth[req.host] || options.oauth;
+        return c.redirectUrl;
     };
 
 module.exports = {
 
-    init: function() {
+    init: function(opts) {
+
+        options = opts || {};
         oauth = (function() {
-            var _config = config.get('forum:oauth'),
+            var config = options.oauth,
                 createOauth = function(id, secret) {
                     return new OAuth2(id, secret,
                         "https://github.com/",
@@ -24,16 +26,16 @@ module.exports = {
                         "login/oauth/access_token");
                 };
 
-            if(!_config || !_.isObject(_config) || _.isEmpty(_config)) {
+            if(!config || !_.isObject(config) || _.isEmpty(config)) {
                 throw new Error('Invalid oauth configuration');
             }
 
-            if(_config['clientId'] && _config['secret']) {
-                return createOauth(_config['clientId'], _config['secret']);
+            if(config['clientId'] && config['secret']) {
+                return createOauth(config['clientId'], config['secret']);
             }
 
-            return Object.keys(_config).reduce(function(prev, key) {
-                prev[key] = createOauth(_config[key]['clientId'], _config[key]['secret']);
+            return Object.keys(config).reduce(function(prev, key) {
+                prev[key] = createOauth(config[key]['clientId'], config[key]['secret']);
                 return prev;
             }, {});
         })();

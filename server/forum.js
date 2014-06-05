@@ -14,14 +14,14 @@ var _ = require('lodash'),
         createComment: { block: 'comment' }
     };
 
-module.exports = function(pattern) {
+module.exports = function(pattern, options) {
 
     baseUrl = pattern || baseUrl;
 
     routes.init(baseUrl);
-    auth.init();
+    auth.init(options);
 
-    github.addDefaultAPI();
+    github.init(options).addDefaultAPI();
 
     return function(req, res, next) {
         var route = routes.getRoute(req.url, req.method),

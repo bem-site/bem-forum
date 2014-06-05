@@ -1,7 +1,6 @@
 var _ = require('lodash'),
     vow = require('vow'),
-    Api = require('github'),
-    config = require('./config');
+    Api = require('github');
 
 var API_CONFIG = {
         version: "3.0.0",
@@ -10,7 +9,8 @@ var API_CONFIG = {
         debug: true,
         host: "api.github.com"
     },
-    apiHash = {};
+    options,
+    apiHash;
 
 /**
  * Calls github api method
@@ -21,12 +21,13 @@ var API_CONFIG = {
  * different set of key depending on command
  * @returns {*}
  */
-var apiCall = function(token, group, name, options) {
+var apiCall = function(token, group, name, opts) {
     var def = vow.defer(),
-        opts = _.extend({}, config.get('forum:storage'), options),
         api = token ?
             module.exports.getUserAPI(token) :
             module.exports.getDefaultAPI();
+
+    opts = _.extend({}, options.storage, opts);
 
     console.log('apiCall ', token, group, name, opts);
 
@@ -57,6 +58,11 @@ var getFnName = function(fn) {
 
 module.exports = {
 
+    init: function(opts) {
+        options = opts || {};
+        return this;
+    },
+
     /**
      * Returns individual github user api by access token
      * @param token - {String} github oauth access token
@@ -71,7 +77,7 @@ module.exports = {
      * @returns {*}
      */
     getDefaultAPI: function() {
-        var tokens = config.get('forum:auth:tokens');
+        var tokens = options.auth ? options.auth.tokens : [];
         return apiHash[_.sample(tokens)];
     },
 
@@ -80,7 +86,7 @@ module.exports = {
      * @returns {exports}
      */
     addDefaultAPI: function() {
-        var tokens = config.get('forum:auth:tokens');
+        var tokens = options.auth ? options.auth.tokens : [];
 
         apiHash = tokens.reduce(function(prev, token) {
             var api = new Api(API_CONFIG);
