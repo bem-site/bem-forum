@@ -24,7 +24,7 @@ app
     .use(bodyParser()) //also is necessary for forum
     .use(forum('/')) //forum middleware
     .use(function(req, res) {
-        return template.run({ block: 'page' }, req.query.__mode)
+        return template.run({ block: 'page' }, req)
             .then(function(html) {
                 res.end(html);
             })

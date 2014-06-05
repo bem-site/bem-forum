@@ -45,18 +45,18 @@ module.exports = function(pattern) {
         isGetRequest = 'GET' === route.getData().method;
 
         if('index' === action) {
-            next();
-            return;
-        }
-
-        //send request for retrieve access token by code
-        if(query.code) {
-           return auth.getAccessToken(req, res, query.code);
+            //send request for retrieve access token by code
+            if(query.code) {
+                return auth.getAccessToken(req, res, query.code);
+            } else {
+                next();
+                return;
+            }
         }
 
         // for all non get requests and when forum token cookie is not exists
         // send request for user authorization
-        if(!isGetRequest && !req.cookies['forum_token']) {
+        if((!isGetRequest || 'auth' === action) && !req.cookies['forum_token']) {
             return auth.sendAuthRequest(req, res);
         }
 
@@ -82,7 +82,7 @@ module.exports = function(pattern) {
                 return data;
             })
             .then(function(data) {
-                return template.run(_.extend(blockHash[action] || {}, { data: data }), query.__mode);
+                return template.run(_.extend(blockHash[action] || {}, { data: data }), req);
             })
             .then(function(html) {
                 res.end(html);

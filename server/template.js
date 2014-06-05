@@ -19,7 +19,7 @@ var targets = {
  * @param mode - {String} mode for output format
  * @returns {*}
  */
-exports.run = function(ctx, mode) {
+exports.run = function(ctx, req) {
     var builder = util.isDev() ?
         require('./builder') : { build: function() { return vow.resolve(); }};
 
@@ -29,7 +29,8 @@ exports.run = function(ctx, mode) {
                 context = vm.createContext({
                     console: console,
                     Vow: vow,
-                    util: util
+                    util: util,
+                    req: req
                 });
 
             return vfs.read(p).then(function(content) {
@@ -40,11 +41,11 @@ exports.run = function(ctx, mode) {
         .then(function(template) {
             return template.BEMTREE.apply(ctx)
                 .then(function(bemjson) {
-                    if (mode === 'bemjson') {
+                    if (req.query.__mode === 'bemjson') {
                         return stringify(bemjson, null, 2);
                     }
 
-                    if(mode === 'content') {
+                    if(req.query.__mode === 'content') {
                         bemjson = bemjson.content;
                     }
 
