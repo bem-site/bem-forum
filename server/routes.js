@@ -34,7 +34,8 @@ exports.init = function(baseUrl) {
             route.pattern += '(/)';
             _susanin.addRoute(route);
             return _susanin;
-        }, new Susanin());
+        }, new Susanin()
+    );
 };
 
 /**
