@@ -58,6 +58,8 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
 
             if(this.params.comments === 0) {
                 this._isHidden() && this.delMod('hidden');
+
+                return false;
             }
 
             this.emit('comments:loading');
