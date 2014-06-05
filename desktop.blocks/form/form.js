@@ -18,7 +18,7 @@ modules.define('form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         },
 
         _getSerialize: function() {
-            return this.domElem.serializeArray()
+            return this.domElem.serializeArray();
         }
 
     }, {

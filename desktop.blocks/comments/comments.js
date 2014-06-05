@@ -21,12 +21,21 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
         },
 
         _addComments: function(e, data) {
+
+            if(this._isEmptyBody(data)) {
+                this._showError({ type: 'emptyBody' });
+                return false;
+            }
+
+            this._beforeAdd();
+
+            this._postComment(data);
+        },
+
+        _postComment: function(data) {
             var _this = this;
 
-            this._spin.setMod('progress', true);
-            this._button.setMod('disabled', true);
-
-            data.push({ name: 'number', value: _this.params.id });
+            data.push({ name: 'number', value: this.params.id });
 
             $.ajax({
                 dataType: 'html',
@@ -36,12 +45,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             }).done(function(html) {
                 _this._render(html, 'append', 'wrap');
 
-                _this.params.comments += 1;
-
-                _this.emit('comment:add', { comments: _this.params.comments });
-
-                _this._spin.delMod('progress');
-                _this._button.delMod('disabled');
+                _this._afterAdd();
             });
         },
 
@@ -83,8 +87,47 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             this._isHidden() && this.delMod('hidden');
         },
 
+        _beforeAdd: function() {
+            this.emit('comment:beginAdd');
+
+            this._spin.setMod('progress', true);
+            this._button.setMod('disabled', true);
+        },
+
+        _afterAdd: function() {
+            this.params.comments += 1;
+
+            this.emit('comment:add', { comments: this.params.comments });
+
+            this._spin.delMod('progress');
+            this._button.delMod('disabled');
+        },
+
         _isHidden: function() {
             return this.hasMod('hidden');
+        },
+
+        _isEmptyBody: function(data) {
+
+            return data.some(function(obj) {
+                if(obj.name === 'body' && obj.value === '') {
+                    return true;
+                }
+            });
+        },
+
+        _showError: function(options) {
+
+            if(!options || (options && !options.type)) {
+                return false;
+            }
+
+            switch(options.type) {
+                case 'emptyBody' :
+                    this.emit('comment:empty');
+                    window.alert('Добавьте текст для вашего ответа');
+                    break;
+            }
         }
 
     }));
