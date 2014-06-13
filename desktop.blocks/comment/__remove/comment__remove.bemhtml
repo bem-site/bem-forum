@@ -1,0 +1,14 @@
+block('comment').elem('remove')(
+    def()(function() {
+        return applyCtx({
+            block: 'link',
+            url: '#',
+            title: 'Удалить ответ',
+            content: {
+                block: 'icon',
+                mods: { action: 'remove', hover: 'opacity' }
+            },
+            mix: { block: 'comment', elem: 'remove' }
+        });
+    })
+);

@@ -1,6 +1,6 @@
 block('forum')(
     def()(function() {
-        return applyNext({ _isAuth: req.cookies['forum_token'] });
+        return applyNext({ _authUser: req.cookies['forum_username'] });
     }),
 
     content()(function() {
@@ -11,7 +11,7 @@ block('forum')(
         }
     }),
 
-    match(function() { return !this._isAuth; }).content()(function() {
+    match(function() { return !this._authUser; }).content()(function() {
         return [
             {
                 block: 'forum-header',
@@ -21,7 +21,7 @@ block('forum')(
         ]
     }),
 
-    match(function() { return this._isAuth; }).content()(function() {
+    match(function() { return this._authUser; }).content()(function() {
         return [
             {
                 block: 'forum-header',

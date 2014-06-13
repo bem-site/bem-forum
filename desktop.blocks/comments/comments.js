@@ -70,7 +70,28 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
                     _this._render(html, 'update', 'wrap');
 
                     _this.emit('comments:complete');
+
+                    _this._commentAction();
                 });
+        },
+
+        _commentAction: function() {
+            var _this = this;
+
+            this.findBlocksInside(this.elem('item'), 'comment').forEach(function(comment) {
+                _this._listenCommentDelete(comment);
+            });
+        },
+
+        _listenCommentDelete: function(comment) {
+
+            var _this = this;
+
+            comment.on('comment:delete', function() {
+
+                _this.params.comments -= 1;
+                _this.emit('comment:delete', { comments: _this.params.comments });
+            });
         },
 
         _getComments: function(id) {
@@ -100,6 +121,8 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             this.params.comments += 1;
 
             this.emit('comment:add', { comments: this.params.comments });
+
+            this._listenCommentDelete(this.findBlocksInside(this.findElem('item'), 'comment').pop());
 
             this._spin.delMod('progress');
             this._button.delMod('disabled');

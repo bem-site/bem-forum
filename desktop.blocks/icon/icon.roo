@@ -1,0 +1,9 @@
+$icon-size = 16px;
+
+.icon_action_remove
+{
+    width: $icon-size;
+    height: $icon-size;
+    background: url('icon_action_remove.svg') no-repeat;
+    background-size: $icon-size;
+}

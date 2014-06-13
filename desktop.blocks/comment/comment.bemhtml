@@ -1,5 +1,11 @@
 block('comment')(
-
+    js()(true),
+    match(function() { return this.ctx.issueId; }).js()(function() {
+        return {
+            issueId: this.ctx.issueId,
+            id: this.ctx.data.id
+        }
+    }),
     mix()([
         { block: 'flex' },
         { block: 'comments', elem: 'item' }

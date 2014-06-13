@@ -1,4 +1,4 @@
-modules.define('issue', ['i-bem__dom', 'next-tick'], function(provide, BEMDOM, nextTick) {
+modules.define('issue', ['i-bem__dom', 'events__channels'], function(provide, BEMDOM, channels) {
     provide(BEMDOM.decl(this.name, {
         onSetMod: {
             js: {
@@ -7,6 +7,7 @@ modules.define('issue', ['i-bem__dom', 'next-tick'], function(provide, BEMDOM, n
                     var _this = this;
 
                     this._comments = this.findBlockInside('comments');
+
                     this._switcher = this.findBlockInside(this.elem('comments-switcher'), 'button');
                     this._spin = this.findBlockInside('spin');
 
@@ -16,6 +17,17 @@ modules.define('issue', ['i-bem__dom', 'next-tick'], function(provide, BEMDOM, n
 
                     this._comments.on('comment:add', function(e, data) {
                         _this._switcher.setText('Ответов: ' + data.comments);
+                    });
+
+                    this._comments.on('comment:delete', function(e, data) {
+                        var count = data.comments,
+                            text = 'Ответов: ' + count;
+
+                        if(count < 1) {
+                            text = 'Ответить'
+                        }
+
+                        _this._switcher.setText(text);
                     });
 
                     this._comments.on('comments:loading', function() {
@@ -28,11 +40,9 @@ modules.define('issue', ['i-bem__dom', 'next-tick'], function(provide, BEMDOM, n
                         _this._switcher.delMod('disabled');
                     });
 
-//                    nextTick(function() {
-//                        if(comments.hasMod('open', 'yes')) {
-//                            comments.emit('show');
-//                        }
-//                    });
+                    channels('comment').on('delete', function(e) {
+                        console.log('comment DELETE');
+                    });
                 }
             }
         },

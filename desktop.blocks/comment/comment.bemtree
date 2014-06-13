@@ -61,10 +61,14 @@ block('comment')(
                 {
                     elem: 'date',
                     date: comment.updated_at
-                },
-                {
-                    elem: 'edit'
                 }
+            ]
+        }),
+
+        match(function() { return req.cookies['forum_username'] === this.ctx.comment.user.login; }).content()(function() {
+            return [
+                applyNext(),
+                { elem: 'remove' }
             ]
         })
     ),

@@ -6,14 +6,7 @@ var _ = require('lodash'),
     template = require('./template'),
     routes = require('./routes'),
 
-    baseUrl = '/forum',
-    blockHash = {
-        getIssues: { block: 'forum', mods: { view: 'issues' }},
-        getIssue:  { block: 'forum', mods: { view: 'issue' }},
-        getComments: { block: 'comments' },
-        createComment: { block: 'comment' },
-        getAuthUser: { block: 'user', mods: { view: 'header' } }
-    };
+    baseUrl = '/forum';
 
 module.exports = function(pattern, options) {
 
@@ -28,9 +21,11 @@ module.exports = function(pattern, options) {
         var route = routes.getRoute(req.url, req.method),
             query,
             action,
+            method,
             token,
             options,
-            isGetRequest;
+            isGetRequest,
+            isDeleteRequest;
 
         //if request is not forum request then call nex middleware in stack
         if(!route) {
@@ -43,7 +38,10 @@ module.exports = function(pattern, options) {
 
         //get action that should be called
         action = route.getName();
-        isGetRequest = 'GET' === route.getData().method;
+        method = route.getData().method;
+
+        isGetRequest = 'GET' === method;
+        isDeleteRequest = 'DELETE' === method;
 
         if('index' === action) {
             //send request for retrieve access token by code
@@ -70,7 +68,15 @@ module.exports = function(pattern, options) {
             return;
         }
 
-        options = (isGetRequest ? query : req.body) || {};
+        options = (isGetRequest || isDeleteRequest ? query : req.body) || {};
+
+        var templateCtx = {
+            getIssues: { block: 'forum', mods: { view: 'issues' }},
+            getIssue:  { block: 'forum', mods: { view: 'issue' }},
+            getComments: { block: 'comments', issueId: options.number },
+            createComment: { block: 'comment', issueId: options.number },
+            getAuthUser: { block: 'user', mods: { view: 'header' } }
+        };
 
         return github[action]
             .call(github, token, options)
@@ -83,7 +89,7 @@ module.exports = function(pattern, options) {
                 return data;
             })
             .then(function(data) {
-                return template.run(_.extend(blockHash[action] || {}, { data: data }), req);
+                return template.run(_.extend(templateCtx[action] || {}, { data: data }), req);
             })
             .then(function(html) {
                 res.end(html);

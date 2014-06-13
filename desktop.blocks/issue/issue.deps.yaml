@@ -1,3 +1,7 @@
+- block: jquery
+- block: events
+  elem: channels
+
 - block: column
 - block: line
 - block: link

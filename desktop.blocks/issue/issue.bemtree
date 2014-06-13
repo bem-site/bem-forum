@@ -27,7 +27,10 @@ block('issue')(
             {
                 block: 'comments',
                 mods: { hidden: true },
-                js: { id: issue.number, comments: issue.comments }
+                js: {
+                    id: issue.number,
+                    comments: issue.comments
+                }
             }
         ]
     }),
@@ -181,7 +184,7 @@ block('issue')(
         content()(function() {
             var comments = this._issue.comments;
 
-            if(!this._isAuth && comments === 0) {
+            if(!this._authUser && comments === 0) {
                 return '';
             }
 

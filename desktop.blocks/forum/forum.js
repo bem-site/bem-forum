@@ -14,7 +14,8 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                         success: function(html) {
                             BEMDOM.append(_this.domElem, html);
 
-                            BEMDOM.destruct(_this._spin.domElem);
+//                            BEMDOM.destruct(_this._spin.domElem);
+                            _this._spin.delMod('progress');
                         }
                     });
                 }

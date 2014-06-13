@@ -1,0 +1,9 @@
+.comment__remove
+{
+    margin-left: auto;
+
+    .icon_action_remove
+    {
+        vertical-align: middle;
+    }
+}

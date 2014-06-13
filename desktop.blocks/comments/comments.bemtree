@@ -6,7 +6,7 @@ block('comments')(
         }
     }),
 
-    match(function() { return this._isAuth; }).content()(function() {
+    match(function() { return this._authUser; }).content()(function() {
         return [
             applyNext(),
             {
@@ -17,12 +17,17 @@ block('comments')(
 
     match(function() { return this.ctx.data; }).content()(function() {
 
-        var comments = this.ctx.data;
+        var comments = this.ctx.data,
+            issueId = this.ctx.issueId;
 
         return comments.map(function(comment) {
             return {
                 block: 'comment',
-                comment: comment
+                comment: comment,
+                js: {
+                    issueId: issueId,
+                    id: comment.id
+                }
             }
         });
     }),
@@ -47,7 +52,7 @@ block('comments')(
                             },
                             name: 'body',
                             placeholder: 'Ответ',
-                            rows: 5,
+                            attrs: { rows: 5 },
                             mix: [
                                 {
                                     block: 'comments',

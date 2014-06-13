@@ -15,4 +15,10 @@
             margin-left: 80px;
         }
     }
+
+    .input_type_textarea .input__control
+    {
+        padding: 5px;
+        min-height: 150px;
+    }
 }

@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+    github = require('./github'),
 
     OAuth2 = require("oauth").OAuth2,
 
@@ -70,9 +71,18 @@ module.exports = {
                 return;
             }
 
-            res.cookie('forum_token', access_token, { expires: new Date(Date.now() + 86400000) });
-            res.writeHead(303, { Location: getRedirectUrl(req) });
-            res.end();
+            github
+                .addUserAPI(access_token)
+                .getAuthUser(access_token, {})
+                .then(function(data) {
+                    var expires = new Date(Date.now() + 86400000);
+
+                    res.cookie('forum_token', access_token, { expires: expires });
+                    res.cookie('forum_username', data.login, { expires: expires });
+
+                    res.writeHead(303, { Location: getRedirectUrl(req) });
+                    res.end();
+                });
         });
     }
 }
