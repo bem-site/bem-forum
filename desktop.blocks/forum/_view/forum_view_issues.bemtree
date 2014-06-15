@@ -50,7 +50,7 @@ block('forum').mod('view', 'issues')(
                                     mix: [
                                         {
                                             block: 'forum',
-                                            elem: 'add-textarea'
+                                            elem: 'add-body'
                                         },
                                         {
                                             block: 'form',
@@ -66,17 +66,18 @@ block('forum').mod('view', 'issues')(
                                             block: 'button',
                                             mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
                                             text: 'Добавить',
-                                            mix: [{ block: 'forum', elem: 'add-button' }]
+                                            mix: [{ block: 'form', elem: 'submit' }]
                                         },
                                         {
                                             block: 'spin',
+                                            mix: { block: 'form', elem: 'spin' },
                                             mods: { theme: 'normal', size: 'm' }
                                         },
                                         {
                                             block: 'button',
                                             mods: { theme: 'normal', size : 'm' },
                                             text: 'Отменить',
-                                            mix: [{ block: 'forum', elem: 'add-cancel' }]
+                                            mix: [{ block: 'form', elem: 'cancel' }]
                                         }
                                     ]
                                 }

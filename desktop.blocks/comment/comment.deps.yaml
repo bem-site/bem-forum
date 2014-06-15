@@ -1,7 +1,3 @@
-- block: jquery
-- block: events
-  elem: channels
-
 - block: text
 - block: user
 - block: date

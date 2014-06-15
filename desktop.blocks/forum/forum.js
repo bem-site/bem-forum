@@ -4,36 +4,8 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             js: {
                 inited: function() {
                     this._loadIssues();
-
-                    this._addButton = this.findBlockInside(this.elem('add'), 'button');
-
-                    this._addButton && this._addButton.on('click', this._showFormAdd, this);
-
-                    this._showFormAdd();
                 }
             }
-        },
-
-        _showFormAdd: function() {
-            if(!this._formAdd) {
-                this._formAdd = this.findBlockInside('add-form', 'form');
-            }
-
-            this._formAdd &&
-                this._formAdd
-                    .toggleMod('visibility', 'hidden', '')
-                    .on('submit', this._addIssue, this);
-
-            if(!this._addCancel) {
-                this._addCancel = this.findBlockInside('add-cancel', 'button');
-            }
-
-            this._addCancel && this._addCancel.on('click', function() {
-
-                console.log('click');
-
-                this._formAdd.toggleMod('visibility', 'hidden', '')
-            }, this);
         },
 
         _addIssue: function(e, data) {
@@ -41,15 +13,12 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                 return false;
             }
 
-            var _this = this;
-
-            this._spin = this.findBlockInside('spin');
-            this._button =  this.findBlockInside(this.elem('add-button'), 'button');
-
-            this._beforeAdd();
-
             data.push({ name: 'labels[]', value: 'question' });
             data.push({ name: 'labels[]', value: 'custom' });
+
+            var _this = this;
+
+            this._beforeAdd();
 
             $.ajax({
                 dataType: 'html',
@@ -64,18 +33,24 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         },
 
         _beforeAdd: function() {
-            this._toggleLoaders();
+            this._formAdd.toggleLoadersUi();
         },
 
         _afterAdd: function() {
-            this._toggleLoaders();
-
-            this._formAdd.toggleMod('visibility', 'hidden', '');
+            this._formAdd
+                .toggleLoadersUi()
+                .toggle();
         },
 
-        _toggleLoaders: function() {
-            this._spin.toggleMod('progress', true, '');
-            this._button.toggleMod('disabled', true, '');
+        _subscribes: function() {
+            this._formAdd = this.findBlockInside('add-form', 'form');
+            this._formAdd.on('submit', this._addIssue, this);
+
+            this.findBlockInside(this.elem('add'), 'button').on('click', this._toggleFormAdd, this);
+        },
+
+        _toggleFormAdd: function() {
+            this._formAdd.toggle();
         },
 
         _loadIssues: function() {
@@ -90,7 +65,9 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             }).done(function(html) {
                 _this._render(html, 'append');
 
-                _this._spin && _this._spin.delMod('progress');
+                _this._spin.delMod('progress');
+
+                _this._subscribes();
             });
         },
 

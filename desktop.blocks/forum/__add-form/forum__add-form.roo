@@ -16,9 +16,4 @@
     {
         width: 70%;
     }
-
-    &__add-cancel.button
-    {
-        margin-left: auto;
-    }
 }
