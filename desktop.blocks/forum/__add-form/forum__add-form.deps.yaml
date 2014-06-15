@@ -1,0 +1,12 @@
+- block: spin
+
+- block: input
+  mods: { theme: 'normal', type: 'textarea', 'has-clear': true }
+
+- block: button
+  mods: { theme: 'normal', type: 'submit' }
+
+- block: form
+  mods: { visibility: 'hidden' }
+
+- elems: [add-title, add-body, add-button, add-cancel]

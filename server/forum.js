@@ -73,6 +73,7 @@ module.exports = function(pattern, options) {
         var templateCtx = {
             getIssues: { block: 'forum', mods: { view: 'issues' }},
             getIssue:  { block: 'forum', mods: { view: 'issue' }},
+            createIssue:  { block: 'issue' },
             getComments: { block: 'comments', issueId: options.number },
             createComment: { block: 'comment', issueId: options.number },
             editComment: { block: 'comment', issueId: options.number },

@@ -7,4 +7,4 @@
 - block: spin
   mods: { theme: 'normal' }
 
-- elem: spin
+- elems: [spin, add-form]

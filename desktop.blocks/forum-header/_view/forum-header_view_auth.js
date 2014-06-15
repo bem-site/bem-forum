@@ -25,7 +25,7 @@ modules.define('forum-header', ['i-bem__dom', 'jquery'], function(provide, BEMDO
         },
 
         _render: function(html) {
-            BEMDOM.append(this.domElem, html);
+            BEMDOM.append(this.elem('user-wrapper'), html);
         }
     }))
 });

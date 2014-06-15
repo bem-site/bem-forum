@@ -39,10 +39,6 @@ modules.define('issue', ['i-bem__dom', 'events__channels'], function(provide, BE
                         _this._spin.delMod('progress');
                         _this._switcher.delMod('disabled');
                     });
-
-                    channels('comment').on('delete', function(e) {
-                        console.log('comment DELETE');
-                    });
                 }
             }
         },

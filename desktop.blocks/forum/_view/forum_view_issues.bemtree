@@ -3,8 +3,99 @@ block('forum').mod('view', 'issues')(
     content()(function() {
         return [
             {
+                block: 'form',
+                mods: { visibility: 'hidden' },
+                mix: {
+                    block: 'forum',
+                    elem: 'add-form'
+                },
+                content: {
+                    block: 'forum',
+                    elem: 'inner',
+                    mix: { block: 'flex' },
+                    content: [
+                        {
+                            elem: 'add-form-left',
+                            content: [
+                                {
+                                    block: 'input',
+                                    mods: {
+                                        theme: 'normal',
+                                        size: 'l',
+                                        'has-clear' : true
+                                    },
+                                    name: 'title',
+                                    placeholder: 'Заголовок',
+                                    mix: [
+                                        {
+                                            block: 'forum',
+                                            elem: 'add-title'
+                                        },
+                                        {
+                                            block: 'form',
+                                            elem: 'control',
+                                            elemMods: { autoclear: 'yes' }
+                                        }
+                                    ]
+                                },
+                                {
+                                    block: 'input',
+                                    mods: {
+                                        theme: 'normal',
+                                        size: 'l',
+                                        type: 'textarea'
+                                    },
+                                    name: 'body',
+                                    placeholder: 'Описание',
+                                    mix: [
+                                        {
+                                            block: 'forum',
+                                            elem: 'add-textarea'
+                                        },
+                                        {
+                                            block: 'form',
+                                            elem: 'control',
+                                            elemMods: { autoclear: 'yes' }
+                                        }
+                                    ]
+                                },
+                                {
+                                    block: 'flex',
+                                    content: [
+                                        {
+                                            block: 'button',
+                                            mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
+                                            text: 'Добавить',
+                                            mix: [{ block: 'forum', elem: 'add-button' }]
+                                        },
+                                        {
+                                            block: 'spin',
+                                            mods: { theme: 'normal', size: 'm' }
+                                        },
+                                        {
+                                            block: 'button',
+                                            mods: { theme: 'normal', size : 'm' },
+                                            text: 'Отменить',
+                                            mix: [{ block: 'forum', elem: 'add-cancel' }]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            elem: 'add-form-right',
+                            content: {
+                                elem: 'labels',
+                                content: 'лейблы'
+                            }
+                        }
+                    ]
+                }
+            },
+            {
                 block: 'issues',
-                issues: this.ctx.data
+                issues: this.ctx.data,
+                mix: { block: 'forum', elem: 'issues' }
             }
         ];
     })

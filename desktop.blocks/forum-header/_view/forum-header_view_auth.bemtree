@@ -1,0 +1,23 @@
+block('forum-header').mod('view', 'auth')(
+
+    match(function() { return this._authUser; }).content()(function() {
+        return [
+            applyNext(),
+            {
+                elem: 'side-right',
+                content: [
+                    { elem: 'user-wrapper' },
+                    {
+                        block : 'button',
+                        text : 'Добавить пост',
+                        mods : { theme : 'normal', size : 'm', action: true },
+                        mix: [
+                            { block: 'forum-header', elem: 'add-button' },
+                            { block: 'forum', elem: 'add' }
+                        ]
+                    }
+                ]
+            }
+        ]
+    })
+);

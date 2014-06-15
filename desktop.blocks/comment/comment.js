@@ -52,8 +52,6 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
         _onClickEditCancel: function(e) {
             e.preventDefault();
 
-            console.log('cancel');
-
             this._toggleFormEdit();
         },
 

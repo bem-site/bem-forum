@@ -1,6 +1,6 @@
 block('forum-header').mod('view', 'auth-no')(
 
-    match(function() { return !this._isAuth; }).content()(function() {
+    match(function() { return !this._authUser; }).content()(function() {
         return [
             applyNext(),
             {

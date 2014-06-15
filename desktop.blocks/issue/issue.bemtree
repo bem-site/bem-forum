@@ -1,7 +1,10 @@
 block('issue')(
 
-    match(function() { return this.ctx.issue; }).def()(function() {
-        return applyNext({ _issue: this.ctx.issue });
+    match(function() { return this.ctx.issue || this.ctx.data; }).def()(function() {
+
+        var issue = this.ctx.issue || this.ctx.data;
+
+        return applyNext({ _issue: issue });
     }),
 
     match(function() { return this._issue; }).content()(function() {
@@ -184,7 +187,7 @@ block('issue')(
         content()(function() {
             var comments = this._issue.comments;
 
-            if(!this._authUser && comments === 0) {
+            if(!req.cookies['forum_username'] && comments === 0) {
                 return '';
             }
 

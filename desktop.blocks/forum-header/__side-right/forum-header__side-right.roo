@@ -1,0 +1,12 @@
+.forum-header
+{
+    &__side-right
+    {
+        margin-left: auto;
+    }
+
+    &__add-button.button
+    {
+        margin-left: 10px;
+    }
+}
