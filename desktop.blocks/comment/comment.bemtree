@@ -1,5 +1,14 @@
 block('comment')(
 
+    match(function() { return this.ctx.comment || this.ctx.data; }).def()(function() {
+        var login = (this.ctx.comment && this.ctx.comment.user.login) ||
+                    (this.ctx.data && this.ctx.data.user.login);
+
+        var isOwner = req.cookies['forum_username'] === login;
+
+        return applyNext({ _isOwner: isOwner });
+    }),
+
     match(function() { return this.ctx.comment || this.ctx.data; }).content()(function() {
 
         var comment = this.ctx.comment || this.ctx.data;
@@ -41,6 +50,11 @@ block('comment')(
                                 block: 'comment',
                                 elem: 'body',
                                 body: comment.body
+                            },
+                            {
+                                block: 'comment',
+                                elem: 'edit-form',
+                                body: comment.body
                             }
                         ]
                     }
@@ -65,10 +79,16 @@ block('comment')(
             ]
         }),
 
-        match(function() { return req.cookies['forum_username'] === this.ctx.comment.user.login; }).content()(function() {
+        match(function() { return this._isOwner; }).content()(function() {
             return [
                 applyNext(),
-                { elem: 'remove' }
+                {
+                    elem: 'owner-actions',
+                    content: [
+                        { elem: 'edit' },
+                        { elem: 'remove' }
+                    ]
+                }
             ]
         })
     ),
@@ -120,5 +140,65 @@ block('comment')(
 
            return util.mdToHtml(text);
        })
+    ),
+
+    elem('edit-form')(
+        def()(function() {
+            return '';
+        }),
+
+        match(function() { return this._isOwner; }).def()(function() {
+            return {
+                    block: 'form',
+                    mods: { visibility: 'hidden' },
+                    mix: {
+                        block: 'comment',
+                        elem: 'edit-form'
+                    },
+                    content: [
+                        {
+                            block: 'input',
+                            mods: {
+                                theme: 'normal',
+                                type: 'textarea'
+                            },
+                            name: 'body',
+                            val: this.ctx.body,
+                            mix: [
+                                {
+                                    block: 'comment',
+                                    elem: 'edit-textarea'
+                                },
+                                {
+                                    block: 'form',
+                                    elem: 'control',
+                                    elemMods: { autoclear: 'yes' }
+                                }
+                            ]
+                        },
+                        {
+                            block: 'flex',
+                            content: [
+                                {
+                                    block: 'button',
+                                    mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
+                                    text: 'Сохранить',
+                                    mix: [{ block: 'comment', elem: 'edit-button' }]
+                                },
+                                {
+                                    block: 'spin',
+                                    mods: { theme: 'normal', size: 'm' }
+                                },
+                                {
+                                    block: 'button',
+                                    mods: { theme: 'normal', size : 'm' },
+                                    text: 'Отменить',
+                                    mix: [{ block: 'comment', elem: 'edit-cancel' }]
+                                }
+                            ]
+                        }
+                    ]
+             }
+        })
     )
 );

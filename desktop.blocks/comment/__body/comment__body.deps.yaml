@@ -1,0 +1,10 @@
+- mods: { visibility: hidden }
+
+- block: input
+  mods: { theme: 'normal', type: 'textarea' }
+
+- block: button
+  mods: { theme: 'normal', type: 'submit' }
+
+- block: form
+  mods: { visibility: 'hidden' }

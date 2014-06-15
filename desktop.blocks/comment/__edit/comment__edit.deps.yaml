@@ -1,0 +1,6 @@
+- block: icon
+  mods: { action: edit, hover: opacity }
+
+- block: link
+
+- elems: [edit-form]

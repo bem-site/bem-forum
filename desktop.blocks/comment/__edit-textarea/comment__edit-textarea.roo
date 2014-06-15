@@ -1,0 +1,11 @@
+.comment__edit-textarea
+{
+    margin-bottom: 10px;
+    width: 100%;
+
+    &.input_type_textarea .input__control
+    {
+        padding: $input-padding;
+        min-height: 100px;
+    }
+}

@@ -7,4 +7,4 @@
 - block: date
 - block: flex
 
-- elems: [avatar, col, body, header, column-avatar, column-main, usertext, username, date, remove]
+- elems: [avatar, col, body, header, column-avatar, column-main, usertext, username, date, remove, edit, owner-actions]

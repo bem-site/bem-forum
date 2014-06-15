@@ -7,3 +7,5 @@ $color-link-hover = #d14;
 
 $avatar-size-main = 60px;
 $avatar-size-small = 40px;
+
+$input-padding = 5px;

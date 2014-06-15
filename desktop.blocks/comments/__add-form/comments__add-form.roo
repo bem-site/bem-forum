@@ -18,7 +18,7 @@
 
     .input_type_textarea .input__control
     {
-        padding: 5px;
+        padding: $input-padding;
         min-height: 150px;
     }
 }

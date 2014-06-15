@@ -1,0 +1,11 @@
+- block: spin
+
+- block: input
+  mods: { theme: 'normal', type: 'textarea' }
+
+- block: button
+  mods: { theme: 'normal', type: 'submit' }
+
+- block: form
+
+- elems: [edit-textarea, edit-button, edit-cancel]

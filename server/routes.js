@@ -21,7 +21,7 @@ exports.init = function(baseUrl) {
         { name: 'getComments',   data: { method: 'GET' },    pattern: url + 'issues/<number>/comments' },
         { name: 'getComment',    data: { method: 'GET' },    pattern: url + 'issues/<number>/comments/<id>' },
         { name: 'createComment', data: { method: 'POST' },   pattern: url + 'issues/<number>/comments' },
-        { name: 'updateComment', data: { method: 'PUT' },    pattern: url + 'issues/<number>/comments/<id>' },
+        { name: 'editComment',   data: { method: 'PUT' },    pattern: url + 'issues/<number>/comments/<id>' },
         { name: 'deleteComment', data: { method: 'DELETE' }, pattern: url + 'issues/<number>/comments/<id>' },
         { name: 'getLabels',     data: { method: 'GET' },    pattern: url + 'labels' },
         { name: 'getLabel',      data: { method: 'GET' },    pattern: url + 'labels/<label>' },

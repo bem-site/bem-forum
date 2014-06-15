@@ -175,7 +175,7 @@ module.exports = {
      *  - state {String} state of issue (open|closed) (optional)
      * @returns {*}
      */
-    updateIssue: function(token, options) {
+    editIssue: function(token, options) {
         return apiCall(token, 'issues', 'edit', options);
     },
 
@@ -223,7 +223,7 @@ module.exports = {
      *  - body {String} text of comment (required)
      * @returns {*}
      */
-    updateComment: function(token, options) {
+    editComment: function(token, options) {
         return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 

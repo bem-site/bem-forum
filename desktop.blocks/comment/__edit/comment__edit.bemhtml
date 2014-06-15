@@ -1,0 +1,14 @@
+block('comment').elem('edit')(
+    def()(function() {
+        return applyCtx({
+            block: 'link',
+            url: '#',
+            title: 'Редактировать ответ',
+            content: {
+                block: 'icon',
+                mods: { action: 'edit', hover: 'opacity' }
+            },
+            mix: { block: 'comment', elem: 'edit' }
+        });
+    })
+);
