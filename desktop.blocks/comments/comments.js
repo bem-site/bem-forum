@@ -3,27 +3,25 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
         onSetMod: {
             js: {
                 inited: function() {
+                    this._toggleComments();
 
-                    this.on('show', this._showComments);
-
-                    this.on('close', this._closeComments);
-
-                    var form = this.findBlockInside(this.elem('add-form'), 'form');
-
-                    if(form) {
-                        form.on('submit', this._addComments, this);
-                    }
-
-                    this._spin = this.findBlockInside('spin');
-                    this._button =  this.findBlockInside(this.elem('add-button'), 'button');
+                    this._formSubmit();
                 }
             }
         },
 
-        _addComments: function(e, data) {
+        _formSubmit: function() {
+            this._form = this.findBlockInside(this.elem('add-form'), 'form');
+            this._form && this._form.on('submit', this._addComments, this);
+        },
 
-            if(this._isEmptyBody(data)) {
-                this._showError({ type: 'emptyBody' });
+        _toggleComments: function() {
+            this.on('show', this._showComments);
+            this.on('close', this._closeComments);
+        },
+
+        _addComments: function(e, data) {
+            if(this._form.isEmpty('body')) {
                 return false;
             }
 
@@ -56,35 +54,42 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
         _showComments: function() {
             var _this = this;
 
+            // if comments is empty - show only add form
             if(this.params.comments === 0) {
-                this._isHidden() && this.delMod('hidden');
+                this._toggle();
 
                 return false;
             }
 
             this.emit('comments:loading');
 
-            this.
-                _getComments(this.params.id)
-                .done(function(html) {
-                    _this._render(html, 'update', 'wrap');
+            $.ajax({
+                dataType: 'html',
+                url: '/issues/' + _this.params.id + '/comments?__mode=content'
+            }).done(function(html) {
+                _this._render(html, 'update', 'wrap');
 
-                    _this.emit('comments:complete');
-
-                    _this._commentAction();
-                });
-        },
-
-        _commentAction: function() {
-            var _this = this;
-
-            this.findBlocksInside(this.elem('item'), 'comment').forEach(function(comment) {
-                _this._listenCommentDelete(comment);
+                _this._afterShow();
             });
         },
 
-        _listenCommentDelete: function(comment) {
+        _afterShow: function() {
+            this.emit('comments:complete');
 
+            this._toggle();
+
+            this._subscribes();
+        },
+
+        _subscribes: function() {
+            var _this = this;
+
+            this.findBlocksInside(this.elem('item'), 'comment').forEach(function(comment) {
+                _this._subscribeDelete(comment);
+            });
+        },
+
+        _subscribeDelete: function(comment) {
             var _this = this;
 
             comment.on('comment:delete', function() {
@@ -94,27 +99,20 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             });
         },
 
-        _getComments: function(id) {
-            return $.ajax({
-                dataType: 'html',
-                url: '/issues/' + id + '/comments?__mode=content'
-            })
-        },
-
         _render: function(html, addMethod, elem) {
-
             var container = (elem && this.elem(elem)) || this.domElem;
 
             BEMDOM[addMethod](container, html);
+        },
 
-            this._isHidden() && this.delMod('hidden');
+        _toggle: function() {
+            this.toggleMod('hidden', true, '');
         },
 
         _beforeAdd: function() {
             this.emit('comment:beginAdd');
 
-            this._spin.setMod('progress', true);
-            this._button.setMod('disabled', true);
+            this._form.toggleLoadersUi();
         },
 
         _afterAdd: function() {
@@ -122,38 +120,9 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
 
             this.emit('comment:add', { comments: this.params.comments });
 
-            this._listenCommentDelete(this.findBlocksInside(this.findElem('item'), 'comment').pop());
+            this._subscribeDelete(this.findBlocksInside(this.findElem('item'), 'comment').pop());
 
-            this._spin.delMod('progress');
-            this._button.delMod('disabled');
-        },
-
-        _isHidden: function() {
-            return this.hasMod('hidden');
-        },
-
-        _isEmptyBody: function(data) {
-
-            return data.some(function(obj) {
-                if(obj.name === 'body' && obj.value === '') {
-                    return true;
-                }
-            });
-        },
-
-        _showError: function(options) {
-
-            if(!options || (options && !options.type)) {
-                return false;
-            }
-
-            switch(options.type) {
-                case 'emptyBody' :
-                    this.emit('comment:empty');
-                    window.alert('Добавьте текст для вашего ответа');
-                    break;
-            }
+            this._form.toggleLoadersUi();
         }
-
     }));
 });

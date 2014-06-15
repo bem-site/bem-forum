@@ -72,11 +72,12 @@ block('comments')(
                                     block: 'button',
                                     mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
                                     text: 'Ответить',
-                                    mix: [{ block: 'comments', elem: 'add-button' }]
+                                    mix: [{ block: 'form', elem: 'submit' }]
                                 },
                                 {
                                     block: 'spin',
-                                    mods: { theme: 'normal', size: 'm' }
+                                    mods: { theme: 'normal', size: 'm' },
+                                    mix: [{ block: 'form', elem: 'spin' }]
                                 }
                             ]
                         }

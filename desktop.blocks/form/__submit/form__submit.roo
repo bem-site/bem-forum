@@ -1,0 +1,7 @@
+.form__submit
+{
+    &.button
+    {
+        margin-right: 10px;
+    }
+}
