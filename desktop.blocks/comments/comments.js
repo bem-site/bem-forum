@@ -33,13 +33,13 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
         _postComment: function(data) {
             var _this = this;
 
-            data.push({ name: 'number', value: this.params.id });
+            data.push({ name: 'number', value: this.params.issueNumber });
 
             $.ajax({
                 dataType: 'html',
                 type: 'POST',
                 data: data,
-                url: '/issues/' + _this.params.id + '/comments'
+                url: '/issues/' + _this.params.issueNumber + '/comments'
             }).done(function(html) {
                 _this._render(html, 'append', 'wrap');
 
@@ -65,7 +65,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
 
             $.ajax({
                 dataType: 'html',
-                url: '/issues/' + _this.params.id + '/comments?__mode=content'
+                url: '/issues/' + _this.params.issueNumber + '/comments?__mode=content'
             }).done(function(html) {
                 _this._render(html, 'update', 'wrap');
 

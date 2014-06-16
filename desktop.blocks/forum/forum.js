@@ -59,7 +59,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
 
             $.ajax({
                 dataType: 'html',
-                url: '/issues?__mode=content',
+                url: '/issues?per_page=2&__mode=content',
                 type: 'GET'
             }).done(function(html) {
                 _this._render(html, 'append');

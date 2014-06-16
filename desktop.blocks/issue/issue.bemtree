@@ -31,7 +31,7 @@ block('issue')(
                 block: 'comments',
                 mods: { hidden: true },
                 js: {
-                    id: issue.number,
+                    issueNumber: issue.number,
                     comments: issue.comments
                 }
             }
@@ -83,6 +83,18 @@ block('issue')(
                                 block: 'date',
                                 date: date,
                                 mix: [{ block: 'issue', elem: 'date' }]
+                            },
+                            {
+                                block: 'issue',
+                                elem: 'owner-action',
+                                content: [
+                                    {
+                                        elem: 'edit'
+                                    },
+                                    {
+                                        elem: 'remove'
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -100,16 +112,7 @@ block('issue')(
             return [
                 {
                     block: 'column',
-                    mods: { side: 'left' },
-                    content: [
-                        {
-                            elem: 'edit',
-                            content: '&nbsp;'
-                        },
-                        {
-                            elem: 'remove'
-                        }
-                    ]
+                    mods: { side: 'left' }
                 },
                 {
                     block: 'column',
@@ -200,7 +203,8 @@ block('issue')(
                 },
                 {
                     block: 'spin',
-                    mods: { theme: 'normal', size: 'm' }
+                    mods: { theme: 'normal', size: 'm' },
+                    mix: { block: 'issue', elem: 'spin' }
                 }
             ];
         })

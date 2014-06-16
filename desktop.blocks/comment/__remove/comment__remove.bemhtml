@@ -6,7 +6,7 @@ block('comment').elem('remove')(
             title: 'Удалить ответ',
             content: {
                 block: 'icon',
-                mods: { action: 'remove', hover: 'opacity' }
+                mods: { action: 'remove', size: '16', hover: 'opacity' }
             },
             mix: { block: 'comment', elem: 'remove' }
         });

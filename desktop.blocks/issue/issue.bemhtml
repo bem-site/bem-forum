@@ -1,3 +1,6 @@
 block('issue')(
-    js()(true)
+    js()(true),
+    match(function() { return this.ctx.data && this.ctx.data.number; }).js()(function() {
+        return { number: this.ctx.data.number };
+    })
 );

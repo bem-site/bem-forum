@@ -1,5 +1,5 @@
 - block: icon
-  mods: { action: edit, hover: opacity, size: 16 }
+  mods: { action: edit, hover: opacity, size: 18 }
 
 - block: link
 

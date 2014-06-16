@@ -1,0 +1,14 @@
+block('issue').elem('remove')(
+    def()(function() {
+        return applyCtx({
+            block: 'link',
+            url: '#',
+            title: 'Удалить пост',
+            content: {
+                block: 'icon',
+                mods: { action: 'remove', size: '18', hover: 'opacity' }
+            },
+            mix: { block: 'issue', elem: 'remove' }
+        });
+    })
+);

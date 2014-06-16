@@ -12,6 +12,7 @@
         &_middle
         {
             align-items: center;
+            width: 100%;
         }
     }
 }

@@ -20,7 +20,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
                 dataType: 'html',
                 type: 'PUT',
                 data: data,
-                url: '/issues/' + _this.params.issueId + '/comments/' + _this.params.id + '?__mode=content'
+                url: '/issues/' + _this.params.issueNumber + '/comments/' + _this.params.id + '?__mode=content'
             }).done(function(html) {
                 _this._render(html, 'update');
 
@@ -45,9 +45,10 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
         },
 
         _toggleFormEdit: function() {
-            this.toggleMod(this.elem('body'), 'visibility', '');
+            this.toggleMod(this.elem('body'), 'visibility', 'hidden', '');
             this._formEdit.toggleMod('visibility', 'hidden', '');
         },
+
 
         _onClickEditCancel: function(e) {
             e.preventDefault();
@@ -55,8 +56,16 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
             this._toggleFormEdit();
         },
 
+        _setFormEditHeight: function() {
+            var height = this.elem('body').outerHeight();
+
+            this.elem('edit-textarea').height(height);
+        },
+
         _onClickEdit: function() {
             this._formEdit = this.findBlockInside(this.findElem('edit-form'), 'form');
+
+            this._setFormEditHeight();
 
             this._toggleFormEdit();
 
@@ -72,7 +81,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
             if(window.confirm('Вы уверены?')) {
                 $.ajax({
                     type: 'DELETE',
-                    url: '/issues/' + _this.params.issueId + '/comments/' + _this.params.id
+                    url: '/issues/' + _this.params.issueNumber + '/comments/' + _this.params.id
                 }).done(function() {
                     _this.emit('comment:delete');
 

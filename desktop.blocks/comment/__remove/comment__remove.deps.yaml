@@ -1,4 +1,4 @@
 - block: icon
-  mods: { action: remove, hover: opacity }
+  mods: { action: remove, hover: opacity, size: 16 }
 
 - block: link

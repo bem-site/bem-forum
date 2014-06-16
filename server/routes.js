@@ -17,7 +17,7 @@ exports.init = function(baseUrl) {
         { name: 'getIssues',     data: { method: 'GET' },    pattern: url + 'issues' },
         { name: 'getIssue',      data: { method: 'GET' },    pattern: url + 'issues/<number>' },
         { name: 'createIssue',   data: { method: 'POST' },   pattern: url + 'issues' },
-        { name: 'updateIssue',   data: { method: 'PUT' },    pattern: url + 'issues/<number>' },
+        { name: 'editIssue',     data: { method: 'PUT' },    pattern: url + 'issues/<number>' },
         { name: 'getComments',   data: { method: 'GET' },    pattern: url + 'issues/<number>/comments' },
         { name: 'getComment',    data: { method: 'GET' },    pattern: url + 'issues/<number>/comments/<id>' },
         { name: 'createComment', data: { method: 'POST' },   pattern: url + 'issues/<number>/comments' },

@@ -18,14 +18,14 @@ block('comments')(
     match(function() { return this.ctx.data; }).content()(function() {
 
         var comments = this.ctx.data,
-            issueId = this.ctx.issueId;
+            issueNumber = this.ctx.issueNumber;
 
         return comments.map(function(comment) {
             return {
                 block: 'comment',
                 comment: comment,
                 js: {
-                    issueId: issueId,
+                    issueNumber: issueNumber,
                     id: comment.id
                 }
             }

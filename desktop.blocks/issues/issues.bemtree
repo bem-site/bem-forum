@@ -1,11 +1,13 @@
 block('issues')(
-    content().match(this.ctx.issues)(function() {
-        var issues = this.ctx.issues;
+    match(function() { return this.ctx.issues; }).content()(function() {
+        var issues = this.ctx.issues,
+            id = this.ctx.issueId;
 
         return issues.map(function(issue) {
             return {
                 block: 'issue',
-                issue: issue
+                issue: issue,
+                js: { number: issue.number }
             }
         });
     })

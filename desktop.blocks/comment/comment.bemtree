@@ -170,6 +170,10 @@ block('comment')(
                                     elem: 'edit-textarea'
                                 },
                                 {
+                                    block: 'comments',
+                                    elem: 'edit-textarea'
+                                },
+                                {
                                     block: 'form',
                                     elem: 'control',
                                     elemMods: { autoclear: 'yes' }

@@ -1,0 +1,14 @@
+block('issue').elem('edit')(
+    def()(function() {
+        return applyCtx({
+            block: 'link',
+            url: '#',
+            title: 'Редактировать пост',
+            content: {
+                block: 'icon',
+                mods: { action: 'edit', size: '18', hover: 'opacity' }
+            },
+            mix: { block: 'issue', elem: 'edit' }
+        });
+    })
+);

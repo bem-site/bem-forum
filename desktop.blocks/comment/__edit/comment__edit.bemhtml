@@ -6,7 +6,7 @@ block('comment').elem('edit')(
             title: 'Редактировать ответ',
             content: {
                 block: 'icon',
-                mods: { action: 'edit', hover: 'opacity' }
+                mods: { action: 'edit', size: '16', hover: 'opacity' }
             },
             mix: { block: 'comment', elem: 'edit' }
         });

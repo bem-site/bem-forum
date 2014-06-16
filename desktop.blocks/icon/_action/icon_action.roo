@@ -1,0 +1,13 @@
+.icon_action
+{
+    &_remove
+    {
+        background: url('icon_action_remove.svg') no-repeat;
+
+    }
+
+    &_edit
+    {
+        background: url('icon_action_edit.svg') no-repeat;
+    }
+}

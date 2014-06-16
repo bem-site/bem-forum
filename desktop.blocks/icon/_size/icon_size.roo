@@ -1,0 +1,19 @@
+$icon-size-16 = 16px;
+$icon-size-18 = 18px;
+
+.icon_size
+{
+    &_16
+    {
+        width: $icon-size-16;
+        height: $icon-size-16;
+        background-size: $icon-size-16;
+    }
+
+    &_18
+    {
+        width: $icon-size-18;
+        height: $icon-size-18;
+        background-size: $icon-size-18;
+    }
+}

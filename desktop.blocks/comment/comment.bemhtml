@@ -1,8 +1,8 @@
 block('comment')(
     js()(true),
-    match(function() { return this.ctx.issueId; }).js()(function() {
+    match(function() { return this.ctx.issueNumber; }).js()(function() {
         return {
-            issueId: this.ctx.issueId,
+            issueNumber: this.ctx.issueNumber,
             id: this.ctx.data.id
         }
     }),
