@@ -1,5 +1,6 @@
 var _ = require('lodash'),
     vow = require('vow'),
+    mime = require('mime-types'),
 
     github = require('./github'),
     auth = require('./auth'),
@@ -29,6 +30,9 @@ module.exports = function(pattern, options) {
 
         //if request is not forum request then call nex middleware in stack
         if(!route) {
+            // fix mime type for block images
+            res.type(mime.lookup(req.url));
+
             next();
             return;
         }
@@ -77,7 +81,8 @@ module.exports = function(pattern, options) {
             getComments: { block: 'comments', issueId: options.number },
             createComment: { block: 'comment', issueId: options.number },
             editComment: { block: 'comment', issueId: options.number },
-            getAuthUser: { block: 'user', mods: { view: 'header' } }
+            getAuthUser: { block: 'user', mods: { view: 'header' } },
+            getLabels: { block: 'forum-labels' }
         };
 
         return github[action]

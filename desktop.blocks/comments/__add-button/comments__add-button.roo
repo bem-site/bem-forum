@@ -1,7 +1,0 @@
-.comments__add-button
-{
-    &.button
-    {
-        margin-right: 10px;
-    }
-}

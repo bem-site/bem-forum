@@ -4,4 +4,6 @@
 - block: form
   mods: { visibility: 'hidden' }
 
+- block: forum-labels
+
 - elems: [add-title, add-body]

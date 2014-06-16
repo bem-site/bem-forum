@@ -13,9 +13,6 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                 return false;
             }
 
-            data.push({ name: 'labels[]', value: 'question' });
-            data.push({ name: 'labels[]', value: 'custom' });
-
             var _this = this;
 
             this._beforeAdd();
@@ -46,15 +43,17 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             this._formAdd = this.findBlockInside('add-form', 'form');
             this._formAdd.on('submit', this._addIssue, this);
 
-            this.findBlockInside(this.elem('add'), 'button').on('click', this._toggleFormAdd, this);
+            this.findBlockInside('add', 'button').on('click', this._toggleFormAdd, this);
         },
 
         _toggleFormAdd: function() {
+            this.findBlockInside('labels', 'forum-labels').getLabels();
+
             this._formAdd.toggle();
         },
 
         _loadIssues: function() {
-            this._spin = this.findBlockInside(this.elem('spin'), 'spin');
+            this._spin = this.findBlockInside('spin', 'spin');
 
             var _this = this;
 

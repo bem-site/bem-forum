@@ -1,11 +1,7 @@
 - block: forum
   mods:
-    view: [issues, issue]
+    view: [issues]
 
-- block: i-bem
-  required: true
-
-- block: button
-  mods: { theme: normal }
-
-- elems: [css, js]
+- elems:
+  - css
+  - js

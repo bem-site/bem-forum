@@ -1,5 +1,5 @@
 - block: comment
 - block: flex
 
-- elems: [add-form, add-textarea, add-button]
+- elems: [add-form]
 - mods: { hidden: true, open: yes }

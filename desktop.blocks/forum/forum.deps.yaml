@@ -1,10 +1,23 @@
 - block: variables
   required: true
 
-- block: issues
+- block: i-bem
+  required: true
+
 - block: jquery
+
+- block: issues
 - block: forum-header
 - block: spin
   mods: { theme: 'normal' }
 
-- elems: [spin, add-form]
+- elems:
+  - add-body
+  - add-form
+  - add-title
+  - inner
+  - labels
+  - labels-spin
+  - spin
+
+- mods: { view: issues }

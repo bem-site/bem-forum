@@ -2,18 +2,12 @@
 {
     &__add-form
     {
-        margin-bottom: 20px;
+        margin-bottom: 40px;
         padding: 0 15px;
 
         .input
         {
             width: 100%;
-            margin-bottom: 10px;
         }
-    }
-
-    &__add-form-left
-    {
-        width: 70%;
     }
 }

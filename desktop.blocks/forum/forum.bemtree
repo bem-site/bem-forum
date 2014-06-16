@@ -7,6 +7,7 @@ block('forum')(
         return {
             block: 'spin',
             mods: { theme: 'normal', size: 'xl', progress: true },
+//            mods: { theme: 'normal', size: 'xl'},
             mix: [{ block: 'forum', elem: 'spin' }]
         }
     }),
@@ -26,6 +27,101 @@ block('forum')(
             {
                 block: 'forum-header',
                 mods: { view: 'auth' }
+            },
+            {
+                block: 'form',
+                mods: { visibility: 'hidden' },
+                mix: {
+                    block: 'forum',
+                    elem: 'add-form'
+                },
+                content: {
+                    block: 'forum',
+                    elem: 'inner',
+                    content: [
+                        {
+                            block: 'input',
+                            mods: {
+                                theme: 'normal',
+                                size: 'l',
+                                'has-clear' : true
+                            },
+                            name: 'title',
+                            placeholder: 'Заголовок',
+                            mix: [
+                                {
+                                    block: 'forum',
+                                    elem: 'add-title'
+                                },
+                                {
+                                    block: 'form',
+                                    elem: 'control',
+                                    elemMods: { autoclear: 'yes' }
+                                }
+                            ]
+                        },
+                        {
+                            block: 'input',
+                            mods: {
+                                theme: 'normal',
+                                size: 'l',
+                                type: 'textarea'
+                            },
+                            name: 'body',
+                            placeholder: 'Описание',
+                            mix: [
+                                {
+                                    block: 'forum',
+                                    elem: 'add-body'
+                                },
+                                {
+                                    block: 'form',
+                                    elem: 'control',
+                                    elemMods: { autoclear: 'yes' }
+                                }
+                            ]
+                        },
+                        {
+                            block: 'forum-labels',
+                            mix: { block: 'forum', elem: 'labels' },
+                            content: [
+                                {
+                                    block: 'spin',
+                                    mods: { theme: 'normal', size: 'l', progress: true },
+                                    mix: [
+                                        { block: 'forum-labels', elem: 'spin' },
+                                        { block: 'forum', elem: 'labels-spin' }
+                                    ]
+                                },
+                                {
+                                    elem: 'wrap'
+                                }
+                            ]
+                        },
+                        {
+                            block: 'flex',
+                            content: [
+                                {
+                                    block: 'button',
+                                    mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
+                                    text: 'Добавить',
+                                    mix: [{ block: 'form', elem: 'submit' }]
+                                },
+                                {
+                                    block: 'spin',
+                                    mix: { block: 'form', elem: 'spin' },
+                                    mods: { theme: 'normal', size: 'm' }
+                                },
+                                {
+                                    block: 'button',
+                                    mods: { theme: 'normal', size : 'm' },
+                                    text: 'Отменить',
+                                    mix: [{ block: 'form', elem: 'cancel' }]
+                                }
+                            ]
+                        }
+                    ]
+                }
             },
             applyNext()
         ]

@@ -1,0 +1,4 @@
+.forum__inner
+{
+    align-items: stretch;
+}

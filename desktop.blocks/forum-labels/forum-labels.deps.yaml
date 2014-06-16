@@ -1,0 +1,8 @@
+- block: checkbox
+  mods: { theme: normal }
+
+- block: spin
+  mods: { theme: normal }
+
+- elems:
+  - title

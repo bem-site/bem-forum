@@ -1,0 +1,4 @@
+.forum__add-title
+{
+    margin-bottom: 20px;
+}
