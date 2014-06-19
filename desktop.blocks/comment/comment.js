@@ -3,7 +3,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
 
         _onSubmitEdit: function(e, data) {
 
-            if(this._formEdit.isEmpty('body')) {
+            if(this._formEdit.isEmptyInput('body')) {
                 return false;
             }
 
@@ -45,8 +45,10 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
         },
 
         _toggleFormEdit: function() {
-            this.toggleMod(this.elem('body'), 'visibility', 'hidden', '');
+            var body = this.findElem('body');
+
             this._formEdit.toggleMod('visibility', 'hidden', '');
+            this.toggleMod(body, 'visibility', 'hidden', '', !this._formEdit.hasMod('visibility', 'hidden'));
         },
 
 
@@ -57,9 +59,9 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
         },
 
         _setFormEditHeight: function() {
-            var height = this.elem('body').outerHeight();
+            var height = this.findElem('body').outerHeight();
 
-            this.elem('edit-textarea').height(height);
+            this.findElem('edit-textarea').height(height);
         },
 
         _onClickEdit: function() {

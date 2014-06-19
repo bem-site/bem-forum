@@ -6,7 +6,7 @@ block('forum-labels')(
             {
                 block: 'forum-labels',
                 elem: 'title',
-                content: 'Добавьте теги'
+                content: 'Добавьте лейблы'
             },
             {
                 block: 'forum-labels',
@@ -22,7 +22,10 @@ block('forum-labels')(
                         val: label.name,
                         text: label.name,
                         color: label.color,
-                        mix: { block: 'forum-labels', elem: 'label' }
+                        mix: [
+                            { block: 'forum-labels', elem: 'label' },
+                            { block: 'form', elem: 'control' }
+                        ]
                     }
                 })
             }

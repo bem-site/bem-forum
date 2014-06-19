@@ -50,27 +50,45 @@ modules.define('issue', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                 this._toggleLoadersUi();
             }, this);
 
-            this.findBlockInside('edit', 'link').on('click', this._onClickEdit, this);
-            this.findBlockInside('remove', 'link').on('click', this._onClickRemove, this);
+            this.bindTo('edit', 'click', this._onClickEdit);
+            this.bindTo('remove', 'click', this._onClickRemove);
 
             return this;
         },
 
         _onClickRemove: function(e) {
-            if(window.confirm('Вы уверены?')) {
-                e.preventDefault();
+            e.preventDefault();
 
+            this._toggleStartAnimateRemove();
+
+            if(window.confirm('Вы уверены?')) {
                 var _this = this;
 
                 $.ajax({
                     dataType: 'html',
                     type: 'PUT',
                     data: [{ name: 'state', value: 'closed' }, { name: 'number', value: _this.params.number }],
-                    url: '/issues/' + _this.params.number + '?__mode=json'
+                    url: '/issues/' + _this.params.id + '?__mode=json'
                 }).done(function() {
+                    _this._endAnimateRemove();
+
                     BEMDOM.destruct(_this.domElem);
                 });
+            } else {
+                this._toggleStartAnimateRemove();
             }
+        },
+
+        _toggleStartAnimateRemove: function() {
+            this.toggleMod('remove-animate', 'start');
+        },
+
+        _endAnimateRemove: function() {
+            this.setMod('remove-animate', 'end');
+        },
+
+        _onClickEdit: function(e) {
+            e.preventDefault();
         },
 
         _toggleLoadersUi: function() {

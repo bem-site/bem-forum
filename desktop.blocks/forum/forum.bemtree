@@ -65,7 +65,8 @@ block('forum')(
                             mods: {
                                 theme: 'normal',
                                 size: 'l',
-                                type: 'textarea'
+                                type: 'textarea',
+                                'has-clear' : true
                             },
                             name: 'body',
                             placeholder: 'Описание',
@@ -83,7 +84,8 @@ block('forum')(
                         },
                         {
                             block: 'forum-labels',
-                            mix: { block: 'forum', elem: 'labels' },
+                            mix: [{ block: 'forum', elem: 'labels' }],
+                            labelMix: { block: 'form', elem: 'control' },
                             content: [
                                 {
                                     block: 'spin',

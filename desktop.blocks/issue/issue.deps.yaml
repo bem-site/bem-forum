@@ -28,3 +28,5 @@
   - title
   - username
   - usertext
+
+- mods: { remove-animate: [start, end] }

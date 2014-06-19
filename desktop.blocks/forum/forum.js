@@ -9,13 +9,17 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         },
 
         _addIssue: function(e, data) {
-            if(this._formAdd.isEmpty('title')) {
+            if(this._formAdd.isEmptyInput('title', 'Заголовок не может быть пустым')) {
+                return false;
+            }
+
+            if (this._formAdd.isEmptyCheckbox('labels[]', 'Выберете один из лейблов')) {
                 return false;
             }
 
             var _this = this;
 
-            this._beforeAdd();
+            this._formAdd.setMod('processing', 'yes');
 
             $.ajax({
                 dataType: 'html',
@@ -29,13 +33,9 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             });
         },
 
-        _beforeAdd: function() {
-            this._formAdd.toggleLoadersUi();
-        },
-
         _afterAdd: function() {
             this._formAdd
-                .toggleLoadersUi()
+                .delMod('processing')
                 .toggle();
         },
 

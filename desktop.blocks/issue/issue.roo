@@ -1,5 +1,6 @@
 .issue
 {
+    transition: all .5s ease;
     margin-bottom: 40px;
 
     &__wrap

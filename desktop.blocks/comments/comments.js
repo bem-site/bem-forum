@@ -21,11 +21,11 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
         },
 
         _addComments: function(e, data) {
-            if(this._form.isEmpty('body')) {
+            if(this._form.isEmptyInput('body')) {
                 return false;
             }
 
-            this._beforeAdd();
+            this._form.setMod('processing', 'yes');
 
             this._postComment(data);
         },
@@ -122,7 +122,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
 
             this._subscribeDelete(this.findBlocksInside(this.findElem('item'), 'comment').pop());
 
-            this._form.toggleLoadersUi();
+            this._form.delMod('processing');
         }
     }));
 });
