@@ -202,6 +202,7 @@ block('issue')(
                         },
                         name: 'title',
                         val: issue.title,
+                        placeholder: 'Заголовок',
                         mix: [
                             {
                                 block: 'issue',
@@ -224,6 +225,7 @@ block('issue')(
                         },
                         name: 'body',
                         val: issue.body,
+                        placeholder: 'Описание',
                         mix: [
                             {
                                 block: 'issue',

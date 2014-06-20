@@ -103,8 +103,9 @@ modules.define('issue', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             e.preventDefault();
 
             this._formEdit = this.findBlockInside('edit-form', 'form');
+            this._editLabels = this.findBlockInside('edit-labels', 'forum-labels');
 
-            this.findBlockInside('edit-labels', 'forum-labels').getLabels();
+            this._editLabels.getLabels(this.params.labels);
 
             var body = this.findElem('body');
             this.setMod(body, 'visibility', 'hidden') && this._toggleEditBody(body);
@@ -115,7 +116,11 @@ modules.define('issue', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         },
 
         _onSubmitEdit: function(e, data) {
-            if(this._formEdit.isEmptyInput('body')) {
+            if(this._formEdit.isEmptyInput('title', 'Заголовок не может быть пустым')) {
+                return false;
+            }
+
+            if (this._formEdit.isEmptyCheckbox('labels[]', 'Выберете один из лейблов')) {
                 return false;
             }
 
