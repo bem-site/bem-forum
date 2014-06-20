@@ -48,6 +48,7 @@ block('comments')(
                             mods: {
                                 theme: 'normal',
                                 type: 'textarea',
+                                size: 'l',
                                 'has-clear' : true
                             },
                             name: 'body',

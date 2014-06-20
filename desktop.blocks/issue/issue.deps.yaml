@@ -13,6 +13,7 @@
   mods: { theme: normal }
 - block: spin
   mods: { theme: 'normal' }
+- block: forum-labels
 
 - elems:
   - avatar

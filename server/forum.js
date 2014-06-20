@@ -78,6 +78,7 @@ module.exports = function(pattern, options) {
             getIssues: { block: 'forum', mods: { view: 'issues' } },
             getIssue:  { block: 'forum', mods: { view: 'issue' } },
             createIssue:  { block: 'issue' },
+            editIssue:  { block: 'issue' },
             getComments: { block: 'comments', issueNumber: options.number },
             createComment: { block: 'comment', issueNumber: options.number },
             editComment: { block: 'comment', issueNumber: options.number },

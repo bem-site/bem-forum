@@ -1,0 +1,4 @@
+.issue__edit-title
+{
+    margin-bottom: 10px;
+}

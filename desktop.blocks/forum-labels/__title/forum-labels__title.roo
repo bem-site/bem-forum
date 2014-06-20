@@ -1,4 +1,4 @@
 .forum-labels__title
 {
-
+    text-align: left;
 }

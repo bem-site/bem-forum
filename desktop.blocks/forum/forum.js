@@ -41,9 +41,9 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
 
         _subscribes: function() {
             this._formAdd = this.findBlockInside('add-form', 'form');
-            this._formAdd.on('submit', this._addIssue, this);
+            this._formAdd && this._formAdd.on('submit', this._addIssue, this);
 
-            this.findBlockInside('add', 'button').on('click', this._toggleFormAdd, this);
+            this.findBlockInside('add', 'button') && this.findBlockInside('add', 'button').on('click', this._toggleFormAdd, this);
         },
 
         _toggleFormAdd: function() {

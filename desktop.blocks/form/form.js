@@ -192,6 +192,8 @@ modules.define('form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         toggle: function() {
             this.toggleMod('visibility', 'hidden', '');
 
+            this.emit('toggle');
+
             return this;
         }
 

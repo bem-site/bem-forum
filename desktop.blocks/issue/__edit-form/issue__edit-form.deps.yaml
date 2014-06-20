@@ -7,4 +7,4 @@
 - block: forum-labels
   mods: { inline: true }
 
-- elems: [add-title, add-body]
+- elems: [edit-title, edit-textarea]

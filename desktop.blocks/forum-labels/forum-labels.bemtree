@@ -5,11 +5,6 @@ block('forum-labels')(
         return [
             {
                 block: 'forum-labels',
-                elem: 'title',
-                content: 'Добавьте лейблы'
-            },
-            {
-                block: 'forum-labels',
                 elem: 'group',
                 content: labels.map(function(label) {
                     return {

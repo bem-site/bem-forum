@@ -3,16 +3,18 @@ modules.define('issue', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         onSetMod: {
             js: {
                 inited: function() {
-                    this._findElems();
-
-                    this._setSwitcherCount();
-
-                    this._subscribes();
-
-                    if(this._comments && this._switcher) {
-                        this._toggleComments();
-                    }
+                    this._init();
                 }
+            }
+        },
+
+        _init: function() {
+            this._findElems();
+            this._setSwitcherCount();
+            this._subscribes();
+
+            if(this._comments && this._switcher) {
+                this._toggleComments();
             }
         },
 
@@ -50,10 +52,14 @@ modules.define('issue', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                 this._toggleLoadersUi();
             }, this);
 
-            this.bindTo('edit', 'click', this._onClickEdit);
-            this.bindTo('remove', 'click', this._onClickRemove);
+            this._subscribeOwnerActions();
 
             return this;
+        },
+
+        _subscribeOwnerActions: function() {
+            this.bindTo(this.findElem('edit'), 'click', this._onClickEdit);
+            this.bindTo(this.findElem('remove'), 'click', this._onClickRemove);
         },
 
         _onClickRemove: function(e) {
@@ -87,8 +93,66 @@ modules.define('issue', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             this.setMod('remove-animate', 'end');
         },
 
+        _toggleEditBody: function(body) {
+            this._formEdit.on('toggle', function() {
+                this.toggleMod(body, 'visibility', 'hidden', '', !this._formEdit.hasMod('visibility', 'hidden'));
+            }, this);
+        },
+
         _onClickEdit: function(e) {
             e.preventDefault();
+
+            this._formEdit = this.findBlockInside('edit-form', 'form');
+
+            this.findBlockInside('edit-labels', 'forum-labels').getLabels();
+
+            var body = this.findElem('body');
+            this.setMod(body, 'visibility', 'hidden') && this._toggleEditBody(body);
+
+            this._formEdit.toggle();
+            this._setFormEditHeight();
+            this._formEdit.on('submit', this._onSubmitEdit, this);
+        },
+
+        _onSubmitEdit: function(e, data) {
+            if(this._formEdit.isEmptyInput('body')) {
+                return false;
+            }
+
+            var _this = this;
+
+            this._formEdit.setMod('processing', 'yes');
+
+            data.push({ name: 'number', value: this.params.number });
+
+            $.ajax({
+                dataType: 'html',
+                type: 'PUT',
+                data: data,
+                url: '/issues/' + _this.params.number + '?__mode=content'
+            }).done(function(html) {
+                _this._render(html);
+
+                _this._afterEdit();
+            });
+        },
+
+        _render: function(html) {
+            BEMDOM.update(this.domElem, html);
+        },
+
+        _afterEdit: function() {
+            this._formEdit
+                .delMod('processing')
+                .toggle();
+
+            this._init();
+        },
+
+        _setFormEditHeight: function() {
+            var height = this.findElem('body').outerHeight();
+
+            this.findElem('edit-textarea').height(height);
         },
 
         _toggleLoadersUi: function() {

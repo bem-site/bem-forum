@@ -1,0 +1,4 @@
+.issue__edit-form
+{
+    margin-bottom: 20px;
+}

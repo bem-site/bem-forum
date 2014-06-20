@@ -84,9 +84,13 @@ block('forum')(
                         },
                         {
                             block: 'forum-labels',
+                            mods: { inline: true },
                             mix: [{ block: 'forum', elem: 'labels' }],
-                            labelMix: { block: 'form', elem: 'control' },
                             content: [
+                                {
+                                    elem: 'title',
+                                    content: 'Добавьте лейблы'
+                                },
                                 {
                                     block: 'spin',
                                     mods: { theme: 'normal', size: 'l', progress: true },

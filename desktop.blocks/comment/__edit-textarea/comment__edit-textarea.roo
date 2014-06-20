@@ -5,7 +5,6 @@
 
     &.input_type_textarea .input__control
     {
-        padding: $input-padding;
         height: 100%;
     }
 }
