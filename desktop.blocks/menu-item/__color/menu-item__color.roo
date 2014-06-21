@@ -1,0 +1,17 @@
+.menu-item
+{
+    &_size_m
+    {
+        padding-right: 38px;
+    }
+
+    &__color
+    {
+        position: absolute;
+        right: 4px;
+        top: 4px;
+        border-radius: 3px;
+        width: 32px;
+        height: 16px;
+    }
+}

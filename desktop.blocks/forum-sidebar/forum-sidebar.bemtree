@@ -1,0 +1,39 @@
+block('forum-sidebar')(
+    content()(function() {
+        return [
+            {
+                elem: 'labels',
+                mix: { elem: 'item' }
+            }
+        ]
+    }),
+
+    elem('labels')(
+        content()(function() {
+            return [
+                {
+                    block: 'forum-labels',
+                    mods: { view: 'menu' },
+                    content: [
+                        {
+                            block: 'forum-sidebar',
+                            elem: 'title',
+                            content: 'Лейблы'
+                        },
+                        {
+                            block: 'spin',
+                            mods: { theme: 'normal', size: 'l', progress: true },
+                            mix: [
+                                { block: 'forum-labels', elem: 'spin' },
+                                { block: 'forum-sidebar', elem: 'labels-spin' }
+                            ]
+                        },
+                        {
+                            elem: 'wrap'
+                        }
+                    ]
+                }
+            ]
+        })
+    )
+);

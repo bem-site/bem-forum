@@ -1,7 +1,7 @@
 block('issues')(
-    match(function() { return this.ctx.issues; }).content()(function() {
+    match(function() { return this.ctx.data; }).content()(function() {
 
-        return this.ctx.issues.map(function(issue) {
+        return this.ctx.data.map(function(issue) {
             var labelsName = [];
 
             issue.labels.forEach(function(label) {

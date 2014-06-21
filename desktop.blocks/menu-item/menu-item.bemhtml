@@ -1,0 +1,11 @@
+block('menu-item')(
+    match(function() { return this.ctx.color; }).content()(function() {
+        return applyCtx([
+            {
+                elem: 'color',
+                attrs: { style: 'background-color:#' + this.ctx.color + ';' }
+            },
+            applyNext()
+        ])
+    })
+);

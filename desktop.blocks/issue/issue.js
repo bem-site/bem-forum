@@ -3,12 +3,12 @@ modules.define('issue', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         onSetMod: {
             js: {
                 inited: function() {
-                    this._init();
+                    this._reinit();
                 }
             }
         },
 
-        _init: function() {
+        _reinit: function() {
             this._findElems();
             this._setSwitcherCount();
             this._subscribes();
@@ -44,15 +44,12 @@ modules.define('issue', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         },
 
         _subscribes: function() {
-            this._comments.on('comments:loading', function() {
-                this._toggleLoadersUi();
-            }, this);
-
-            this._comments.on('comments:complete', function() {
-                this._toggleLoadersUi();
-            }, this);
+            this._comments.on('comments:loading', this._toggleLoadersUi, this);
+            this._comments.on('comments:complete', this._toggleLoadersUi, this);
 
             this._subscribeOwnerActions();
+
+            this.bindTo('label', 'click', this._onClickLabel);
 
             return this;
         },
@@ -60,6 +57,12 @@ modules.define('issue', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         _subscribeOwnerActions: function() {
             this.bindTo(this.findElem('edit'), 'click', this._onClickEdit);
             this.bindTo(this.findElem('remove'), 'click', this._onClickRemove);
+        },
+
+        _onClickLabel: function(e) {
+            e.preventDefault();
+
+            this.emit('issue:label', { label: $(e.target).text() });
         },
 
         _onClickRemove: function(e) {

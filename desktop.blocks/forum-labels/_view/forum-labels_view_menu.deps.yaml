@@ -1,0 +1,2 @@
+- block: menu
+  mods: { theme: normal, select: check }

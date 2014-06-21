@@ -5,6 +5,6 @@
   mods: { visibility: 'hidden' }
 
 - block: forum-labels
-  mods: { inline: true }
+  mods: { inline: true, view: checkbox }
 
 - elems: [edit-title, edit-textarea]

@@ -1,0 +1,9 @@
+.forum-sidebar
+{
+    margin-right: 15px;
+
+    .menu
+    {
+        margin-left: -15px;
+    }
+}

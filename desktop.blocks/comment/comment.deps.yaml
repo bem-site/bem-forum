@@ -3,4 +3,16 @@
 - block: date
 - block: flex
 
-- elems: [avatar, col, body, header, column-avatar, column-main, usertext, username, date, remove, edit, owner-actions]
+- elems:
+  - avatar
+  - body
+  - col
+  - column-avatar
+  - column-main
+  - date
+  - edit
+  - header
+  - owner-actions
+  - remove
+  - username
+  - usertext

@@ -1,0 +1,8 @@
+.forum-labels
+{
+    &__spin.spin_progress
+    {
+        display: block;
+        margin: 0 auto;
+    }
+}

@@ -4,8 +4,10 @@
 - block: i-bem
   required: true
 
+- block: forum-sidebar
+- block: column
+- block: line
 - block: jquery
-
 - block: issues
 - block: forum-header
 - block: spin
@@ -15,9 +17,11 @@
   - add-body
   - add-form
   - add-title
+  - content
   - inner
   - labels
   - labels-spin
+  - sidebar
   - spin
 
 - mods: { view: issues }

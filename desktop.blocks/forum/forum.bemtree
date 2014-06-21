@@ -7,7 +7,6 @@ block('forum')(
         return {
             block: 'spin',
             mods: { theme: 'normal', size: 'xl', progress: true },
-//            mods: { theme: 'normal', size: 'xl'},
             mix: [{ block: 'forum', elem: 'spin' }]
         }
     }),
@@ -84,7 +83,7 @@ block('forum')(
                         },
                         {
                             block: 'forum-labels',
-                            mods: { inline: true },
+                            mods: { inline: true, view: 'checkbox' },
                             mix: [{ block: 'forum', elem: 'labels' }],
                             content: [
                                 {
@@ -129,7 +128,32 @@ block('forum')(
                     ]
                 }
             },
-            applyNext()
+            applyNext(),
+            {
+                block: 'forum',
+                elem: 'wrap',
+                mix: { block: 'line', mods: { valign: 'top' } },
+                content: [
+                    {
+                        block: 'forum',
+                        elem: 'content',
+                        mix: { block: 'column', mods: { side: 'left' } }
+                    },
+                    {
+                        block: 'forum-sidebar',
+                        mix: [
+                            {
+                                block: 'column',
+                                mods: { side: 'right', gap: true }
+                            },
+                            {
+                                block: 'forum',
+                                elem: 'sidebar'
+                            }
+                        ]
+                    }
+                ]
+            }
         ]
     })
 );

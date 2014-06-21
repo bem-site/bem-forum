@@ -1,0 +1,4 @@
+.forum-sidebar__title
+{
+    margin: 0;
+}

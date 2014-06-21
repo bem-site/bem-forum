@@ -240,7 +240,7 @@ block('issue')(
                     },
                     {
                         block: 'forum-labels',
-                        mods: { inline: true },
+                        mods: { inline: true, view: 'checkbox' },
                         mix: [{ block: 'issue', elem: 'edit-labels' }],
                         content: [
                             {

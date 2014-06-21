@@ -1,10 +1,13 @@
 .issue
 {
-    transition: all .5s ease;
+    padding: 0 15px;
+    min-width: 500px;
     margin-bottom: 40px;
 
     &__wrap
     {
+        transition: all .5s ease;
+
         .column
         {
             &_side_left

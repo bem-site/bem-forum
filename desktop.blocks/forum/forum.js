@@ -8,6 +8,14 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             }
         },
 
+        _getIssueByLabel: function() {
+            var _this = this;
+
+            this.findBlocksInside('issue').forEach(function(issue) {
+                issue.on('issue:label', _this._loadIssues, _this);
+            });
+        },
+
         _addIssue: function(e, data) {
             if(this._formAdd.isEmptyInput('title', 'Заголовок не может быть пустым')) {
                 return false;
@@ -44,6 +52,8 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             this._formAdd && this._formAdd.on('submit', this._addIssue, this);
 
             this.findBlockInside('add', 'button') && this.findBlockInside('add', 'button').on('click', this._toggleFormAdd, this);
+
+            this._getIssueByLabel();
         },
 
         _toggleFormAdd: function() {
@@ -52,17 +62,27 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             this._formAdd.toggle();
         },
 
-        _loadIssues: function() {
+        _loadIssues: function(e, data) {
+
+            console.log('data', data);
+
             this._spin = this.findBlockInside('spin', 'spin');
 
-            var _this = this;
+            var _this = this,
+                url = '/issues?per_page=2';
+
+            if(data && data.label) {
+                url = url + '&labels=' + data.label;
+
+                this._spin.setMod('progress', true);
+            }
 
             $.ajax({
                 dataType: 'html',
-                url: '/issues?per_page=2&__mode=content',
+                url: url,
                 type: 'GET'
             }).done(function(html) {
-                _this._render(html, 'append');
+                _this._render(html, 'update', 'content');
 
                 _this._spin.delMod('progress');
 

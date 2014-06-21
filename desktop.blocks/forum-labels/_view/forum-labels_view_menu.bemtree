@@ -1,21 +1,21 @@
-block('forum-labels')(
+block('forum-labels').mod('view', 'menu')(
     match(function() { return this.ctx.data; }).content()(function() {
         var labels = this.ctx.data;
 
         return [
             {
-                block: 'forum-labels',
-                elem: 'group',
+                block: 'menu',
+                mods: {
+                    theme: 'normal',
+                    size: 'm',
+                    select: 'check'
+                },
                 content: labels.map(function(label) {
                     return {
-                        block: 'checkbox',
-                        mods: {
-                            theme : 'normal',
-                            size : 'm'
-                        },
+                        block: 'menu-item',
                         name: 'labels[]',
                         val: label.name,
-                        text: label.name,
+                        content: label.name,
                         color: label.color,
                         mix: [
                             { block: 'forum-labels', elem: 'label' },

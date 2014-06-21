@@ -1,0 +1,5 @@
+- block: forum-labels
+  mods: { view: menu }
+
+- elems:
+  - title

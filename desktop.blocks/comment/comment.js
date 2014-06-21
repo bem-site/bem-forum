@@ -51,7 +51,6 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
             this.toggleMod(body, 'visibility', 'hidden', '', !this._formEdit.hasMod('visibility', 'hidden'));
         },
 
-
         _onClickEditCancel: function(e) {
             e.preventDefault();
 
