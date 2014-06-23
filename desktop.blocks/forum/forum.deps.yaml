@@ -4,6 +4,9 @@
 - block: i-bem
   required: true
 
+- block: events
+  elem: channels
+
 - block: forum-sidebar
 - block: column
 - block: line

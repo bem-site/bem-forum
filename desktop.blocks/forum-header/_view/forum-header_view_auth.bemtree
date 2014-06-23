@@ -1,6 +1,6 @@
 block('forum-header').mod('view', 'auth')(
 
-    match(function() { return this._authUser; }).content()(function() {
+    match(function() { return req.cookies['forum_username']; }).content()(function() {
         return [
             applyNext(),
             {

@@ -1,8 +1,4 @@
 block('forum')(
-    def()(function() {
-        return applyNext({ _authUser: req.cookies['forum_username'] });
-    }),
-
     content()(function() {
         return {
             block: 'spin',
@@ -11,7 +7,7 @@ block('forum')(
         }
     }),
 
-    match(function() { return !this._authUser; }).content()(function() {
+    match(function() { return !req.cookies['forum_username']; }).content()(function() {
         return [
             {
                 block: 'forum-header',
@@ -21,7 +17,7 @@ block('forum')(
         ]
     }),
 
-    match(function() { return this._authUser; }).content()(function() {
+    match(function() { return req.cookies['forum_username']; }).content()(function() {
         return [
             {
                 block: 'forum-header',

@@ -1,4 +1,4 @@
-modules.define('issue', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
+modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(provide, BEMDOM, $, channels) {
     provide(BEMDOM.decl(this.name, {
         onSetMod: {
             js: {
@@ -62,7 +62,7 @@ modules.define('issue', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         _onClickLabel: function(e) {
             e.preventDefault();
 
-            this.emit('issue:label', { label: $(e.target).text() });
+            channels('filter').emit('label:click', { labels: [$(e.target).text()] });
         },
 
         _onClickRemove: function(e) {

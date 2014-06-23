@@ -5,6 +5,7 @@ block('forum-labels').mod('view', 'menu')(
         return [
             {
                 block: 'menu',
+                mix: { block: 'forum-labels', elem: 'labels' },
                 mods: {
                     theme: 'normal',
                     size: 'm',

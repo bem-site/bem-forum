@@ -1,19 +1,29 @@
-modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
+modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(provide, BEMDOM, $, channels) {
     provide(BEMDOM.decl(this.name, {
         onSetMod: {
             js: {
                 inited: function() {
+                    this._spin = this.findBlockInside('spin', 'spin');
+
                     this._loadIssues();
+                }
+            },
+
+            progress: {
+                yes: function() {
+                    this._spin.setMod('progress', true);
+                },
+
+                '': function() {
+                    this._spin.delMod('progress');
+
+                    this._subscribes();
                 }
             }
         },
 
         _getIssueByLabel: function() {
-            var _this = this;
 
-            this.findBlocksInside('issue').forEach(function(issue) {
-                issue.on('issue:label', _this._loadIssues, _this);
-            });
         },
 
         _addIssue: function(e, data) {
@@ -35,7 +45,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                 data: data,
                 url: '/issues/'
             }).done(function(html) {
-                _this._render(html, 'prepend', 'issues');
+                _this._render(html, 'prepend', 'content');
 
                 _this._afterAdd();
             });
@@ -53,7 +63,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
 
             this.findBlockInside('add', 'button') && this.findBlockInside('add', 'button').on('click', this._toggleFormAdd, this);
 
-            this._getIssueByLabel();
+            channels('filter').on('label:loadIssue', this._loadIssuesByLabels, this);
         },
 
         _toggleFormAdd: function() {
@@ -62,19 +72,24 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             this._formAdd.toggle();
         },
 
-        _loadIssues: function(e, data) {
+        _loadIssuesByLabels: function(e, data) {
+            if(!data) {
+                return false;
+            }
 
-            console.log('data', data);
+            this._loadIssues(data);
 
-            this._spin = this.findBlockInside('spin', 'spin');
+            return this;
+        },
+
+        _loadIssues: function(data) {
+            this.setMod('progress', 'yes');
 
             var _this = this,
-                url = '/issues?per_page=2';
+                url = '/issues?per_page=10';
 
-            if(data && data.label) {
-                url = url + '&labels=' + data.label;
-
-                this._spin.setMod('progress', true);
+            if(data && data.labels) {
+                url = url + '&labels=' + data.labels.join(',');
             }
 
             $.ajax({
@@ -84,9 +99,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             }).done(function(html) {
                 _this._render(html, 'update', 'content');
 
-                _this._spin.delMod('progress');
-
-                _this._subscribes();
+                _this.delMod('progress');
             });
         },
 

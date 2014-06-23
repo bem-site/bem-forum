@@ -94,9 +94,7 @@ module.exports = function(pattern, options) {
                     res.json(data);
                     return;
                 }
-                return data;
-            })
-            .then(function(data) {
+
                 return template.run(_.extend(templateCtx[action] || {}, { data: data }), req);
             })
             .then(function(html) {

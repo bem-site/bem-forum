@@ -1,6 +1,18 @@
-modules.define('forum-labels', ['jquery'], function(provide, $, LABELS) {
+modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], function(provide, $, channels, nextTick, LABELS) {
 
     provide(LABELS.decl({ modName: 'view', modVal: 'menu' }, {
+
+        onSetMod: {
+            init: {
+                true: function() {
+                    this._labels = [];
+
+                    this._getMenu();
+
+                    channels('filter').on('label:click', this._checkedLabelByFilter, this);
+                }
+            }
+        },
 
         getLabels: function(labels) {
             var _this = this;
@@ -14,22 +26,57 @@ modules.define('forum-labels', ['jquery'], function(provide, $, LABELS) {
 
                 _this.findBlockInside('spin', 'spin').delMod('progress');
 
-                if(labels) {
-                    _this._checkedLabels(labels);
-                }
+                _this.setMod('init', true);
             });
 
             return this;
         },
 
-        _checkedLabels: function(labels) {
-            this.findBlocksInside('label', 'checkbox').forEach(function(checkbox) {
-                labels.forEach(function(label) {
-                    if(label === checkbox.elem('control').val()) {
-                        checkbox.setMod('checked', true);
+        _getMenu: function() {
+            this._menu = this.findBlockInside('labels', 'menu');
+            this._menu && this._menu.on('item-click', this._checkedLabelsByFilter, this);
+        },
+
+        _checkedLabelsByFilter: function(e, item) {
+            var _this = this,
+                val = item.getVal(),
+                position = this._labels.indexOf(val);
+
+            if(position === -1) {
+                this._labels.push(val);
+            } else {
+                this._labels.splice(position, 1);
+            }
+
+            _this._checkedLabels();
+        },
+
+        _checkedLabelByFilter: function(e, data) {
+            this._labels = data.labels;
+
+            this._checkedLabels();
+
+            return this;
+        },
+
+        _checkedLabels: function() {
+            var _this = this;
+
+            this._menu._getItems().forEach(function(menuItem) {
+                menuItem.delMod('checked');
+
+                _this._labels.forEach(function(label) {
+                    if(label === menuItem.getVal()) {
+                        nextTick(function() {
+                            menuItem.setMod('checked', true);
+                        });
                     }
                 });
             });
+
+            channels('filter').emit('label:loadIssue', { labels: _this._labels });
+
+            return this;
         }
     }));
 });

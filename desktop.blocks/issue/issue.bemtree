@@ -1,3 +1,10 @@
+//block('issue').match(function() { return this.ctx.issue || this.ctx.data; })(
+//    content()(function() {
+//        return JSON.stringify(this.ctx.issue || this.ctx.data, null ,4);
+//    })
+//);
+
+
 block('issue')(
 
     match(function() { return this.ctx.issue || this.ctx.data; }).def()(function() {
