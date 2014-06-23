@@ -3,7 +3,6 @@ block('issue').elem('label')(
         return applyCtx({
             block: 'link',
             mix: { block: this.block, elem: this.elem },
-            url: this.ctx.url,
             attrs: { style: 'border-color:#' + this.ctx.color + ';' },
             content: this.ctx.content
         });

@@ -22,6 +22,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             this._comments = this.findBlockInside('comments');
             this._switcher = this.findBlockInside('comments-switcher', 'button');
             this._spin = this.findBlockInside('spin', 'spin');
+            this._issueLink = this.findBlockInside('title', 'link');
 
             return this;
         },
@@ -46,12 +47,16 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         _subscribes: function() {
             this._comments.on('comments:loading', this._toggleLoadersUi, this);
             this._comments.on('comments:complete', this._toggleLoadersUi, this);
-
+            this._issueLink.on('click', this._onClickTitle, this);
             this._subscribeOwnerActions();
 
             this.bindTo('label', 'click', this._onClickLabel);
 
             return this;
+        },
+
+        _onClickTitle: function(e) {
+            channels('load').emit('issue', { url: e.target.domElem.data('url') + '?view=full' });
         },
 
         _subscribeOwnerActions: function() {
@@ -62,7 +67,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         _onClickLabel: function(e) {
             e.preventDefault();
 
-            channels('filter').emit('label:click', { labels: [$(e.target).text()] });
+            channels('filter').emit('labels', { labels: [$(e.target).text()] });
         },
 
         _onClickRemove: function(e) {

@@ -59,7 +59,8 @@ modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(p
 
             this.findBlockInside('add', 'button') && this.findBlockInside('add', 'button').on('click', this._toggleFormAdd, this);
 
-            channels('filter').on('label:loadIssue', this._loadIssuesByLabels, this);
+            channels('load').on('issues', this._loadIssues, this);
+            channels('load').on('issue', this._loadIssue, this);
         },
 
         _toggleFormAdd: function() {
@@ -78,17 +79,30 @@ modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             return this;
         },
 
-        _loadIssues: function(data) {
+        _loadIssue: function(e, data) {
+            this.setMod('progress', 'yes');
+
+            this._getRequest(data.url);
+        },
+
+        _loadIssues: function(e, data) {
             this._xhr && this._xhr.abort();
 
             this.setMod('progress', 'yes');
 
-            var _this = this,
-                url = '/issues?per_page=10';
+            var url = '/issues?per_page=10';
 
-            if(data && data.labels) {
-                url = url + '&labels=' + data.labels.join(',');
+            if(data) {
+                if(data.labels) {
+                    url = url + '&labels=' + data.labels.join(',');
+                }
             }
+
+            this._getRequest(url);
+        },
+
+        _getRequest: function(url) {
+            var _this = this;
 
             this._xhr = $.ajax({
                 dataType: 'html',

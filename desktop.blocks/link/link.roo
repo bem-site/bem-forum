@@ -15,3 +15,8 @@
 
     color: $color-link-hover;
 }
+
+.link
+{
+    cursor: pointer;
+}

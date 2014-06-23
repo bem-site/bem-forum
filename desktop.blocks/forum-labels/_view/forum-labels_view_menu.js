@@ -9,7 +9,8 @@ modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], func
 
                     this._getMenu();
 
-                    channels('filter').on('label:click', this._checkedLabelByFilter, this);
+                    channels('filter').on('labels', this._checkedLabelByFilter, this);
+                    channels('filter').on('labels:clear', this._clearLabels, this);
                 }
             }
         },
@@ -30,6 +31,12 @@ modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], func
             });
 
             return this;
+        },
+
+        _clearLabels: function(e) {
+            this._menu._getItems().forEach(function(menuItem) {
+                menuItem.delMod('checked');
+            });
         },
 
         _getMenu: function() {
@@ -72,7 +79,7 @@ modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], func
                 });
             });
 
-            channels('filter').emit('label:loadIssue', { labels: _this._labels });
+            channels('load').emit('issues', { labels: _this._labels });
 
             return this;
         }

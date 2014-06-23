@@ -143,7 +143,7 @@ block('issue')(
                                 {
                                     block: 'link',
                                     mix: { block: this.block, elem: 'title' },
-                                    url: 'issues/' + issue.number,
+                                    attrs: { 'data-url': 'issues/' + issue.number + '/' },
                                     title: issue.title,
                                     content: issue.title
                                 },
@@ -302,7 +302,6 @@ block('issue')(
             return labels.map(function(label) {
                 return {
                     elem: 'label',
-                    url: label.name,
                     color: label.color,
                     content: label.name
                 }
