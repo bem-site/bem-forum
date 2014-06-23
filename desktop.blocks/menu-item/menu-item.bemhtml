@@ -5,7 +5,7 @@ block('menu-item')(
                 elem: 'color',
                 attrs: { style: 'background-color:#' + this.ctx.color + ';' }
             },
-            applyNext()
+            this.ctx.content
         ])
     })
 );

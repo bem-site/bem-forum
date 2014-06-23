@@ -1,13 +1,25 @@
 block('page')(
 
-    def()(function () {
-        this.ctx.head = applyCtx({ elem: 'css' });
+    match(function() { return !this.ctx._head; }).def()(function () {
 
-        return applyNext(this.ctx);
+        console.log('ENTER HEAD------------------');
+
+        this.ctx._head = true;
+
+        !this.ctx.head && (this.ctx.head = []);
+
+        this.ctx.head.push({ elem: 'css', url: 'desktop.bundles/index/index.min.css' });
+
+        console.log('HEAD-----------------', this.ctx.head);
+
+        return applyCtx(this.ctx);
+//        return '';
     }),
 
-    content()([
-        { block: 'forum' },
-        { elem: 'js' }
-    ])
+    content()(function() {
+        return [
+            { block: 'forum' },
+            { elem: 'js' }
+        ];
+    })
 );

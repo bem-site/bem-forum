@@ -22,10 +22,6 @@ modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             }
         },
 
-        _getIssueByLabel: function() {
-
-        },
-
         _addIssue: function(e, data) {
             if(this._formAdd.isEmptyInput('title', 'Заголовок не может быть пустым')) {
                 return false;
@@ -83,6 +79,8 @@ modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         },
 
         _loadIssues: function(data) {
+            this._xhr && this._xhr.abort();
+
             this.setMod('progress', 'yes');
 
             var _this = this,
@@ -92,11 +90,13 @@ modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 url = url + '&labels=' + data.labels.join(',');
             }
 
-            $.ajax({
+            this._xhr = $.ajax({
                 dataType: 'html',
                 url: url,
                 type: 'GET'
-            }).done(function(html) {
+            });
+
+            this._xhr.done(function(html) {
                 _this._render(html, 'update', 'content');
 
                 _this.delMod('progress');

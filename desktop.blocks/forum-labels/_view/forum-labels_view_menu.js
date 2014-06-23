@@ -48,7 +48,7 @@ modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], func
                 this._labels.splice(position, 1);
             }
 
-            _this._checkedLabels();
+            nextTick(function() { _this._checkedLabels() });
         },
 
         _checkedLabelByFilter: function(e, data) {
@@ -67,9 +67,7 @@ modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], func
 
                 _this._labels.forEach(function(label) {
                     if(label === menuItem.getVal()) {
-                        nextTick(function() {
-                            menuItem.setMod('checked', true);
-                        });
+                        menuItem.setMod('checked', true);
                     }
                 });
             });

@@ -86,6 +86,9 @@ module.exports = function(pattern, options) {
             getLabels: { block: 'forum-labels', mods: { view: options.view }}
         };
 
+//        var start,
+//            end;
+
         return github[action]
             .call(github, token, options)
             .then(function(data) {
@@ -95,9 +98,19 @@ module.exports = function(pattern, options) {
                     return;
                 }
 
+//                if(action === 'getIssues') {
+//                    start = new Date();
+//                }
+
                 return template.run(_.extend(templateCtx[action] || {}, { data: data }), req);
             })
             .then(function(html) {
+//                if(action === 'getIssues') {
+//                    end = new Date();
+//
+//                    console.log('Время компляции: %s секунд', (end - start) / 1000 );
+//                }
+
                 res.end(html);
             })
             .fail(function(err) {
