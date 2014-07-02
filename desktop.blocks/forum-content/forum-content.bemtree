@@ -1,0 +1,12 @@
+block('forum-content')(
+    content()(function() {
+        return [
+            {
+                block: 'spin',
+                mods: { theme: 'normal', size: 'xl', progress: true },
+                mix: { block: this.block, elem: 'spin' }
+            },
+            { elem: 'container' }
+        ]
+    })
+);

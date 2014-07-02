@@ -1,19 +1,12 @@
 block('page')(
-
-    match(function() { return !this.ctx._head; }).def()(function () {
-
-        console.log('ENTER HEAD------------------');
-
-        this.ctx._head = true;
+    match(function() { return !this._myGuard; }).def()(function () {
+        this._myGuard = true;
 
         !this.ctx.head && (this.ctx.head = []);
 
         this.ctx.head.push({ elem: 'css', url: 'desktop.bundles/index/index.min.css' });
 
-        console.log('HEAD-----------------', this.ctx.head);
-
         return applyCtx(this.ctx);
-//        return '';
     }),
 
     content()(function() {

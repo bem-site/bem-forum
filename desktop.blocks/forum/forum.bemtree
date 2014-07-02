@@ -1,9 +1,8 @@
 block('forum')(
     content()(function() {
         return {
-            block: 'spin',
-            mods: { theme: 'normal', size: 'xl', progress: true },
-            mix: [{ block: 'forum', elem: 'spin' }]
+            elem: 'wrap-content',
+            mix: { block: 'line' }
         }
     }),
 
@@ -24,132 +23,36 @@ block('forum')(
                 mods: { view: 'auth' }
             },
             {
-                block: 'form',
-                mods: { visibility: 'hidden' },
-                mix: {
-                    block: 'forum',
-                    elem: 'add-form'
+                elem: 'add-form'
+            },
+            applyNext()
+        ]
+    }),
+
+    elem('wrap-content')(
+        content()(function() {
+            return [
+                {
+                    block: 'forum-content',
+                    mix: [
+                        { block: 'forum', elem: 'content' },
+                        { block: 'column', mods: { side: 'left' } }
+                    ]
                 },
-                content: {
-                    block: 'forum',
-                    elem: 'inner',
-                    content: [
+                {
+                    block: 'forum-sidebar',
+                    mix: [
                         {
-                            block: 'input',
-                            mods: {
-                                theme: 'normal',
-                                size: 'l',
-                                'has-clear' : true
-                            },
-                            name: 'title',
-                            placeholder: 'Заголовок',
-                            mix: [
-                                {
-                                    block: 'forum',
-                                    elem: 'add-title'
-                                },
-                                {
-                                    block: 'form',
-                                    elem: 'control',
-                                    elemMods: { autoclear: 'yes' }
-                                }
-                            ]
+                            block: 'column',
+                            mods: { side: 'right', gap: true }
                         },
                         {
-                            block: 'input',
-                            mods: {
-                                theme: 'normal',
-                                size: 'l',
-                                type: 'textarea',
-                                'has-clear' : true
-                            },
-                            name: 'body',
-                            placeholder: 'Описание',
-                            mix: [
-                                {
-                                    block: 'forum',
-                                    elem: 'add-body'
-                                },
-                                {
-                                    block: 'form',
-                                    elem: 'control',
-                                    elemMods: { autoclear: 'yes' }
-                                }
-                            ]
-                        },
-                        {
-                            block: 'forum-labels',
-                            mods: { inline: true, view: 'checkbox' },
-                            mix: [{ block: 'forum', elem: 'labels' }],
-                            content: [
-                                {
-                                    elem: 'title',
-                                    content: 'Добавьте лейблы'
-                                },
-                                {
-                                    block: 'spin',
-                                    mods: { theme: 'normal', size: 'l', progress: true },
-                                    mix: [
-                                        { block: 'forum-labels', elem: 'spin' },
-                                        { block: 'forum', elem: 'labels-spin' }
-                                    ]
-                                },
-                                {
-                                    elem: 'wrap'
-                                }
-                            ]
-                        },
-                        {
-                            block: 'flex',
-                            content: [
-                                {
-                                    block: 'button',
-                                    mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
-                                    text: 'Добавить',
-                                    mix: [{ block: 'form', elem: 'submit' }]
-                                },
-                                {
-                                    block: 'spin',
-                                    mix: { block: 'form', elem: 'spin' },
-                                    mods: { theme: 'normal', size: 'm' }
-                                },
-                                {
-                                    block: 'button',
-                                    mods: { theme: 'normal', size : 'm' },
-                                    text: 'Отменить',
-                                    mix: [{ block: 'form', elem: 'cancel' }]
-                                }
-                            ]
+                            block: 'forum',
+                            elem: 'sidebar'
                         }
                     ]
                 }
-            },
-            applyNext(),
-            {
-                block: 'forum',
-                elem: 'wrap',
-                mix: { block: 'line', mods: { valign: 'top' } },
-                content: [
-                    {
-                        block: 'forum',
-                        elem: 'content',
-                        mix: { block: 'column', mods: { side: 'left' } }
-                    },
-                    {
-                        block: 'forum-sidebar',
-                        mix: [
-                            {
-                                block: 'column',
-                                mods: { side: 'right', gap: true }
-                            },
-                            {
-                                block: 'forum',
-                                elem: 'sidebar'
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    })
+            ]
+        })
+    )
 );

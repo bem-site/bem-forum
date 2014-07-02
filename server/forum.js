@@ -75,19 +75,16 @@ module.exports = function(pattern, options) {
         options = (isGetRequest || isDeleteRequest ? query : req.body) || {};
 
         var templateCtx = {
-            getIssues: { block: 'issues' },
-            getIssue:  { block: 'issue', mods: { view: 'full' } },
-            createIssue:  { block: 'issue' },
-            editIssue:  { block: 'issue' },
-            getComments: { block: 'comments', issueNumber: options.number },
+            getIssues:     { block: 'issues' },
+            getIssue:      { block: 'issue', mods: { view: 'full' } },
+            createIssue:   { block: 'issue' },
+            editIssue:     { block: 'issue' },
+            getComments:   { block: 'comments', issueNumber: options.number },
             createComment: { block: 'comment', issueNumber: options.number },
-            editComment: { block: 'comment', issueNumber: options.number },
-            getAuthUser: { block: 'user', mods: { view: 'header' } },
-            getLabels: { block: 'forum-labels', mods: { view: options.view }}
+            editComment:   { block: 'comment', issueNumber: options.number },
+            getAuthUser:   { block: 'user', mods: { view: 'header' } },
+            getLabels:     { block: 'forum-labels', mods: { view: options.view }}
         };
-
-//        var start,
-//            end;
 
         return github[action]
             .call(github, token, options)
@@ -98,19 +95,9 @@ module.exports = function(pattern, options) {
                     return;
                 }
 
-//                if(action === 'getIssues') {
-//                    start = new Date();
-//                }
-
                 return template.run(_.extend(templateCtx[action] || {}, { data: data }), req);
             })
             .then(function(html) {
-//                if(action === 'getIssues') {
-//                    end = new Date();
-//
-//                    console.log('Время компляции: %s секунд', (end - start) / 1000 );
-//                }
-
                 res.end(html);
             })
             .fail(function(err) {
