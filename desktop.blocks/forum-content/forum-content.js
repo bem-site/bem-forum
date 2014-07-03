@@ -3,29 +3,29 @@ modules.define('forum-content', ['i-bem__dom', 'jquery', 'events__channels'], fu
         onSetMod: {
             js: {
                 inited: function() {
-                    this._spin = this.findBlockInside('spin', 'spin');
+                    this._loader = this.findBlockInside('forum-loader');
                     this._loadIssues();
                 }
             },
 
             loading: {
                 true: function() {
-                    this._spin.setMod('progress', true);
+                    this._loader.setMod('progress', true);
                 },
 
                 '': function() {
-                    this._spin.delMod('progress');
+                    this._loader.delMod('progress');
                     this._initSubscribes();
                 }
             }
         },
 
         _loadIssues: function(e, data) {
-            var url = '/issues?per_page=10';
+            var url = '/issues';
 
             if(data) {
                 if(data.labels) {
-                    url = url + '&labels=' + data.labels.join(',');
+                    url = url + '?labels=' + data.labels.join(',');
                 }
             }
 

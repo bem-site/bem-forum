@@ -1,2 +1,4 @@
 - block: events
   elem: channels
+
+- block: forum-loader

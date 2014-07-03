@@ -1,5 +1,6 @@
 .forum-sidebar
 {
+    position: relative;
     margin-right: 15px;
 
     .menu

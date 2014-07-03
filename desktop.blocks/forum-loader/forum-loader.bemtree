@@ -1,0 +1,8 @@
+block('forum-loader')(
+    content()(function() {
+        return {
+            block: 'spin',
+            mods: { theme: 'normal', size: 'xl', progress: true }
+        }
+    })
+);

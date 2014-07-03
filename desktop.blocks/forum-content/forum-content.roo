@@ -1,0 +1,4 @@
+.forum-content
+{
+    position: relative;
+}

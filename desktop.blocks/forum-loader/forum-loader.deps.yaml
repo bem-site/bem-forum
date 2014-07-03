@@ -1,0 +1,4 @@
+- block: spin
+  mods: { theme: normal }
+
+- mods: { progress: true }
