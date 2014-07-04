@@ -4,6 +4,11 @@
     min-width: 500px;
     margin-bottom: 40px;
 
+    &:last-child
+    {
+        margin-bottom: 10px;
+    }
+
     &__wrap
     {
         transition: all .5s ease;

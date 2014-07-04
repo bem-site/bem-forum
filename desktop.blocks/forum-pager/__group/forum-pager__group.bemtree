@@ -1,0 +1,13 @@
+block('forum-pager').elem('group')(
+    content()(function() {
+        return ['1', '2', '3', '4', '5'].map(function(page) {
+            return {
+                block : 'button',
+                url: '#',
+                text : page,
+                mods : { theme : 'normal', size : 'm', type: 'link' },
+                mix: { block: 'forum-pager', elem: 'button' }
+            }
+        });
+    })
+);

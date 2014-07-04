@@ -3,6 +3,7 @@ var express = require('express'),
     st = require('serve-static'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
+    _ = require('lodash'),
     forum = require('./forum'),
     config = require('./config'),
     util = require('./util'),
@@ -17,28 +18,7 @@ if(util.isDev()) {
     }));
 }
 
-/*
-{
-     "auth": {
-        "tokens": [
-            "7a2fb4d7a380f8a20562f5fc910f35d3b1605341"
-         ]
-     },
-     "storage": {
-        "user": "name of github user or organization",
-        "repo": "name of repository"
-     },
-     "oauth": {
-         "localhost": {
-            "clientId": "....",
-            "secret": "....",
-            "redirectUrl": "http://...."
-         }
-     }
-}
- */
 var forumOptions = config.get('forum');
-
 
 app
     .use(st(process.cwd()))
@@ -47,7 +27,7 @@ app
     .use(bodyParser()) //also is necessary for forum
     .use(forum('/', forumOptions)) //forum middleware
     .use(function(req, res) {
-        return template.run({ block: 'page' }, req)
+        return template.run(_.extend({ block: 'page' }, req.__data), req)
             .then(function(html) {
                 res.end(html);
             })

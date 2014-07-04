@@ -1,0 +1,3 @@
+- block: button
+  mods: { theme: normal, type: link }
+  required: true

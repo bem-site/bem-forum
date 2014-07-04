@@ -2,3 +2,4 @@
   elem: channels
 
 - block: forum-loader
+- block: forum-pager

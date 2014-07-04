@@ -29,7 +29,8 @@ exports.init = function(baseUrl) {
         { name: 'updateLabel',   data: { method: 'PUT' },    pattern: url + 'labels/<label>' },
         { name: 'deleteLabel',   data: { method: 'DELETE' }, pattern: url + 'labels/<label>' },
         { name: 'getAuthUser',   data: { method: 'GET' },    pattern: url + 'user' },
-        { name: 'auth',          data: { method: 'GET' },   pattern: url + 'auth' }
+        { name: 'auth',          data: { method: 'GET' },   pattern: url + 'auth' },
+        { name: 'getRepoInfo',   data: { method: 'GET' },   pattern: url + 'repo' }
     ].reduce(function(_susanin, route) {
             route.pattern += '(/)';
             _susanin.addRoute(route);

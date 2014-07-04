@@ -3,16 +3,19 @@ block('page')(
         this._myGuard = true;
 
         !this.ctx.head && (this.ctx.head = []);
+        this.ctx.head.push({ elem: 'css', url: '/desktop.bundles/index/index.min.css' });
 
-        this.ctx.head.push({ elem: 'css', url: 'desktop.bundles/index/index.min.css' });
-
-        return applyCtx(this.ctx);
+        return applyNext({ _forum: this.ctx.forum });
     }),
 
-    content()(function() {
+    match(function() { return this.ctx.forum }).content()(function() {
         return [
             { block: 'forum' },
             { elem: 'js' }
         ];
+    }),
+
+    match(function() { return !this.ctx.forum }).content()(function() {
+        return 'this.ctx.forum empty';
     })
 );

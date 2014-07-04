@@ -1,5 +1,7 @@
 .forum-loader
 {
+    transition: background-color .3s ease-in;
+
     &_progress,
     .spin
     {

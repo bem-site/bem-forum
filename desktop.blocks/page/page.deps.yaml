@@ -1,6 +1,4 @@
 - block: forum
-  mods:
-    view: [issues]
 
 - elems:
   - css

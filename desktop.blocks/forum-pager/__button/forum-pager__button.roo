@@ -1,0 +1,4 @@
+.forum-pager__button
+{
+    margin-right: 10px;
+}

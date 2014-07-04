@@ -302,5 +302,9 @@ module.exports = {
      */
     getAuthUser: function(token, options) {
         return apiCall(token, 'user', 'get', options);
+    },
+
+    getRepoInfo: function(token, options) {
+        return apiCall(token, 'repos', 'get', options)
     }
 };

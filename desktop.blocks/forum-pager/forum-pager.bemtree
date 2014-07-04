@@ -1,0 +1,22 @@
+block('forum-pager')(
+    def()(function() {
+        return this.doAsync(function() {
+            var defer = Vow.defer(),
+                promise = defer.promise;
+
+            github.get
+        });
+    }),
+
+    content()(function() {
+        return [
+            {
+                elem: 'title',
+                content: 'Страницы'
+            },
+            {
+                elem: 'group'
+            }
+        ]
+    })
+);

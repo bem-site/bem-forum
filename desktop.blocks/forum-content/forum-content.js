@@ -4,7 +4,7 @@ modules.define('forum-content', ['i-bem__dom', 'jquery', 'events__channels'], fu
             js: {
                 inited: function() {
                     this._loader = this.findBlockInside('forum-loader');
-                    this._loadIssues();
+                    this._initSubscribes();
                 }
             },
 
@@ -21,13 +21,15 @@ modules.define('forum-content', ['i-bem__dom', 'jquery', 'events__channels'], fu
         },
 
         _loadIssues: function(e, data) {
-            var url = '/issues';
+            var url = '/issues?per_page=2';
 
             if(data) {
                 if(data.labels) {
-                    url = url + '?labels=' + data.labels.join(',');
+                    url = url + '&labels=' + data.labels.join(',');
                 }
             }
+
+            console.log('url');
 
             this._doRequest(url);
         },

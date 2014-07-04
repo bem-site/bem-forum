@@ -28,12 +28,11 @@ module.exports = function(pattern, options) {
             isGetRequest,
             isDeleteRequest;
 
-        //if request is not forum request then call nex middleware in stack
+        // fix mime type for block images
         if(!route) {
-            // fix mime type for block images
-            res.type(mime.lookup(req.url));
-
-            next();
+            res
+                .type(mime.lookup(req.url))
+                .end();
             return;
         }
 
@@ -47,14 +46,9 @@ module.exports = function(pattern, options) {
         isGetRequest = 'GET' === method;
         isDeleteRequest = 'DELETE' === method;
 
-        if('index' === action) {
-            //send request for retrieve access token by code
-            if(query.code) {
-                return auth.getAccessToken(req, res, query.code);
-            } else {
-                next();
-                return;
-            }
+        // get access token after redirect from github.com
+        if('index' === action && query.code) {
+            return auth.getAccessToken(req, res, query.code);
         }
 
         // for all non get requests and when forum token cookie is not exists
@@ -66,7 +60,7 @@ module.exports = function(pattern, options) {
         token = req.cookies['forum_token'];
         token && github.addUserAPI(token);
 
-        if(!action || !github[action]) {
+        if(!action) {
             res.writeHead(500);
             res.end('Action was not found');
             return;
@@ -86,22 +80,47 @@ module.exports = function(pattern, options) {
             getLabels:     { block: 'forum-labels', mods: { view: options.view }}
         };
 
-        return github[action]
-            .call(github, token, options)
-            .then(function(data) {
+        if(!req.xhr) {
+            // collect all required data for templates
+            var promises = {
+                repo: github.getRepoInfo.call(github, token, options),
+                user: github.getAuthUser.call(github, token, options),
+                labels: github.getLabels.call(github, token, options)
+            };
 
-                if('json' === query.__mode) {
-                    res.json(data);
-                    return;
-                }
+            if(options.number) {
+                // get issue data, that have a number option
+                _.extend(promises, {
+                    issue: github.getIssue.call(github, token, options),
+                    comments: github.getComments.call(github, token, options)
+                });
+            } else {
+                _.extend(promises, { issues: github.getIssues.call(github, token, options) });
+            }
 
-                return template.run(_.extend(templateCtx[action] || {}, { data: data }), req);
-            })
-            .then(function(html) {
-                res.end(html);
-            })
-            .fail(function(err) {
-                res.end(err);
+            return vow.all(promises).then(function(values) {
+                req.__data = req.__data || {};
+                req.__data.forum = values;
+
+                return next();
             });
+        } else {
+            // ajax get data
+            return github[action].call(github, token, options)
+                .then(function(data) {
+                    if('json' === query.__mode) {
+                        res.json(data);
+                        return;
+                    }
+
+                    return template.run(_.extend(templateCtx[action] || {}, { data: data }), req);
+                })
+                .then(function(html) {
+                    res.end(html);
+                })
+                .fail(function(err) {
+                    res.end(err);
+                });
+        }
     };
 };
