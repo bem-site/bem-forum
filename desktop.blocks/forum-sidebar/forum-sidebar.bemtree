@@ -14,24 +14,7 @@ block('forum-sidebar')(
                 {
                     block: 'forum-labels',
                     mods: { view: 'menu' },
-                    content: [
-                        {
-                            block: 'forum-sidebar',
-                            elem: 'title',
-                            content: 'Лейблы'
-                        },
-                        {
-                            block: 'spin',
-                            mods: { theme: 'normal', size: 'l', progress: true },
-                            mix: [
-                                { block: 'forum-labels', elem: 'spin' },
-                                { block: 'forum-sidebar', elem: 'labels-spin' }
-                            ]
-                        },
-                        {
-                            elem: 'wrap'
-                        }
-                    ]
+                    title: 'Лейблы'
                 }
             ]
         })

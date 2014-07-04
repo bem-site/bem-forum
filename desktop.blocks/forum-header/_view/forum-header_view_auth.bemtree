@@ -7,17 +7,46 @@ block('forum-header').mod('view', 'auth')(
                 elem: 'side-right',
                 content: [
                     { elem: 'user-wrapper' },
-                    {
-                        block : 'button',
-                        text : 'Добавить пост',
-                        mods : { theme : 'normal', size : 'm', action: true },
-                        mix: [
-                            { block: 'forum-header', elem: 'add-button' },
-                            { block: 'forum', elem: 'add' }
-                        ]
-                    }
+                    { elem: 'add-button' }
                 ]
             }
         ]
-    })
+    }),
+
+    elem('user-wrapper')(
+        content()(function() {
+            var user = this._forum.user;
+
+            return [
+                {
+                    block: 'user',
+                    elem: 'avatar',
+                    url: user.avatar_url,
+                    alt: user.login
+                },
+                {
+                    block: 'user',
+                    elem: 'name',
+                    url: user.login,
+                    title: user.login,
+                    target: '_blank',
+                    content: user.login
+                }
+            ]
+        })
+    ),
+
+    elem('add-button')(
+        def()(function() {
+            return {
+                block : 'button',
+                text : 'Добавить пост',
+                mods : { theme : 'normal', size : 'm', action: true },
+                mix: [
+                    { block: 'forum-header', elem: 'add-button' },
+                    { block: 'forum', elem: 'add' }
+                ]
+            }
+        })
+    )
 );

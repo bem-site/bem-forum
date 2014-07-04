@@ -3,7 +3,6 @@ modules.define('forum-sidebar', ['i-bem__dom', 'jquery'], function(provide, BEMD
         onSetMod: {
             js: {
                 inited: function() {
-                    this.findBlockInside('forum-labels').getLabels();
                 }
             }
         }

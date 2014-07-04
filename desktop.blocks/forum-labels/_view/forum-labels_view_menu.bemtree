@@ -1,30 +1,49 @@
 block('forum-labels').mod('view', 'menu')(
-    match(function() { return this.ctx.data; }).content()(function() {
-        var labels = this.ctx.data;
-
+    match(function() { return this._forum.labels; }).content()(function() {
         return [
             {
-                block: 'menu',
-                mix: { block: 'forum-labels', elem: 'labels' },
-                mods: {
-                    theme: 'normal',
-                    size: 'm',
-                    select: 'check'
-                },
-                content: labels.map(function(label) {
-                    return {
-                        block: 'menu-item',
-                        name: 'labels[]',
-                        val: label.name,
-                        content: label.name,
-                        color: label.color,
-                        mix: [
-                            { block: 'forum-labels', elem: 'label' },
-                            { block: 'form', elem: 'control' }
-                        ]
-                    }
-                })
+                elem: 'title',
+                content: this.ctx.title
+            },
+            {
+                block: 'spin',
+                mods: { theme: 'normal', size: 'l' },
+                mix: { block: 'forum-labels', elem: 'spin' }
+            },
+            {
+                elem: 'wrap'
             }
         ];
-    })
+    }),
+
+    elem('wrap')(
+        content()(function() {
+            var labels = this._forum.labels;
+
+            return [
+                {
+                    block: 'menu',
+                    mix: { block: 'forum-labels', elem: 'labels' },
+                    mods: {
+                        theme: 'normal',
+                        size: 'm',
+                        select: 'check'
+                    },
+                    content: labels.map(function(label) {
+                        return {
+                            block: 'menu-item',
+                            name: 'labels[]',
+                            val: label.name,
+                            content: label.name,
+                            color: label.color,
+                            mix: [
+                                { block: 'forum-labels', elem: 'label' },
+                                { block: 'form', elem: 'control' }
+                            ]
+                        }
+                    })
+                }
+            ]
+        })
+    )
 );

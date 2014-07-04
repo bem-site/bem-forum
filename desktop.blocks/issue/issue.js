@@ -159,7 +159,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 .delMod('processing')
                 .toggle();
 
-            this._init();
+            this._reinit();
         },
 
         _setFormEditHeight: function() {

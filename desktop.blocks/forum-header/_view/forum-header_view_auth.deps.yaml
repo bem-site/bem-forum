@@ -1,5 +1,4 @@
 - block: user
-  mods: { view: 'header' }
 
 - block: button
   mods: { theme: 'normal' }

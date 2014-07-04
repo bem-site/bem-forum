@@ -1,5 +1,12 @@
 block('forum').elem('add-form')(
     def()(function() {
+        var forum = this._forum,
+            labels = [];
+
+        forum.labels.forEach(function(label) {
+            return labels.push(label.name);
+        });
+
         return {
             block: 'form',
             mods: { visibility: 'hidden' },
@@ -56,6 +63,7 @@ block('forum').elem('add-form')(
                     },
                     {
                         block: 'forum-labels',
+                        js: { labels: labels },
                         mods: { inline: true, view: 'checkbox' },
                         mix: [{ block: 'forum', elem: 'labels' }],
                         content: [

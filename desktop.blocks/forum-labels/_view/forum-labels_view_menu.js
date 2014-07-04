@@ -3,8 +3,8 @@ modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], func
     provide(LABELS.decl({ modName: 'view', modVal: 'menu' }, {
 
         onSetMod: {
-            init: {
-                true: function() {
+            js: {
+                inited: function() {
                     this._labels = [];
 
                     this._getMenu();
@@ -13,24 +13,6 @@ modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], func
                     channels('filter').on('labels:clear', this._clearLabels, this);
                 }
             }
-        },
-
-        getLabels: function(labels) {
-            var _this = this;
-
-            $.ajax({
-                dataType: 'html',
-                url: '/labels?__mode=content&view=menu',
-                type: 'GET'
-            }).done(function(html) {
-                LABELS.update(_this.elem('wrap'), html);
-
-                _this.findBlockInside('spin', 'spin').delMod('progress');
-
-                _this.setMod('init', true);
-            });
-
-            return this;
         },
 
         _clearLabels: function(e) {

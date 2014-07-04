@@ -21,15 +21,13 @@ modules.define('forum-content', ['i-bem__dom', 'jquery', 'events__channels'], fu
         },
 
         _loadIssues: function(e, data) {
-            var url = '/issues?per_page=2';
+            var url = '/issues?';
 
             if(data) {
                 if(data.labels) {
                     url = url + '&labels=' + data.labels.join(',');
                 }
             }
-
-            console.log('url');
 
             this._doRequest(url);
         },
