@@ -174,7 +174,7 @@ block('issue')(
                                 {
                                     block: 'link',
                                     mix: { block: this.block, elem: 'title' },
-                                    url: '/issues/' + issue.number + '/',
+                                    url: req.baseUrl + '/issues/' + issue.number + '/',
                                     title: issue.title,
                                     content: issue.title
                                 },
@@ -345,7 +345,8 @@ block('issue')(
         content()(function() {
             var text = this._issue.body;
 
-            return util.mdToHtml(text);
+            return text;
+//            return util.mdToHtml(text); // TODO: put in context mdToHtml
         })
     ),
 

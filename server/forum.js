@@ -80,6 +80,9 @@ module.exports = function(pattern, options) {
             getLabels:     { block: 'forum-labels', mods: { view: options.view }}
         };
 
+        // for access in templates
+        req.baseUrl = baseUrl;
+
         if(!req.xhr) {
             // collect all required data for templates
             var promises = {
@@ -104,7 +107,7 @@ module.exports = function(pattern, options) {
 
             return vow.all(promises).then(function(values) {
                 req.__data = req.__data || {};
-                req.__data.forum = _.extend(values, { baseUrl: baseUrl });
+                req.__data.forum = values;
 
                 return next();
             });

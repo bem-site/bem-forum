@@ -36,14 +36,14 @@ block('forum')(
     elem('wrap-content')(
         content()(function() {
             return [
-//                {
-//                    block: 'forum-content',
-//                    mods: { view: this._forum.view },
-//                    mix: [
-//                        { block: 'forum', elem: 'content' },
-//                        { block: 'column', mods: { side: 'left' } }
-//                    ]
-//                },
+                {
+                    block: 'forum-content',
+                    mods: { view: this._forum.view },
+                    mix: [
+                        { block: 'forum', elem: 'content' },
+                        { block: 'column', mods: { side: 'left' } }
+                    ]
+                },
                 {
                     block: 'forum-sidebar',
                     mix: [
