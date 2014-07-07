@@ -11,8 +11,6 @@ block('comment')(
 
     match(function() { return this.ctx.comment || this.ctx.data; }).content()(function() {
 
-        console.log('comment bemtree----------------');
-
         var comment = this.ctx.comment || this.ctx.data;
 
         return [
