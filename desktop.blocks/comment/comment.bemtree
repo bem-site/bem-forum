@@ -183,7 +183,7 @@ block('comment')(
                             ]
                         },
                         {
-                            block: 'flex',
+                            block: 'forum-flex',
                             content: [
                                 {
                                     block: 'button',

@@ -95,7 +95,7 @@ block('issue')(
                 {
                     block: 'column',
                     mods: { side: 'right' },
-                    mix: { block: 'flex' },
+                    mix: { block: 'forum-flex' },
                     content: {
                         block: 'line',
                         mods: { valign: 'middle' },
@@ -292,7 +292,7 @@ block('issue')(
                         ]
                     },
                     {
-                        block: 'flex',
+                        block: 'forum-flex',
                         content: [
                             {
                                 block: 'button',

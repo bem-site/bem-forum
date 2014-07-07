@@ -1,5 +1,5 @@
 - block: comment
-- block: flex
+- block: forum-flex
 
 - elems:
   - add-form

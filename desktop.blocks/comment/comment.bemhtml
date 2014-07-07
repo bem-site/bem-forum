@@ -7,7 +7,7 @@ block('comment')(
         }
     }),
     mix()([
-        { block: 'flex' },
+        { block: 'forum-flex' },
         { block: 'comments', elem: 'item' }
     ])
 );

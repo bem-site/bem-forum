@@ -1,7 +1,7 @@
 - block: text
 - block: user
 - block: date
-- block: flex
+- block: forum-flex
 
 - elems:
   - avatar

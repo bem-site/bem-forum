@@ -1,4 +1,4 @@
-.flex
+.forum-flex
 {
     display: flex;
     align-items: center;

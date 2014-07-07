@@ -1,1 +1,1 @@
-block('line').mix()({ block: 'flex' });
+block('line').mix()({ block: 'forum-flex' });

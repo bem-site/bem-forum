@@ -1,3 +1,3 @@
 block('comment').elem('header')(
-    mix()([{ block: 'flex' }])
+    mix()([{ block: 'forum-flex' }])
 );

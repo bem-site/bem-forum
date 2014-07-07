@@ -33,7 +33,7 @@ block('comments').elem('add-form')(
                         ]
                     },
                     {
-                        block: 'flex',
+                        block: 'forum-flex',
                         content: [
                             {
                                 block: 'button',

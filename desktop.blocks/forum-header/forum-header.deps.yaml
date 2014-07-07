@@ -1,4 +1,4 @@
-- block: flex
+- block: forum-flex
 
 - elems: [auth-button, title, side-right]
 
