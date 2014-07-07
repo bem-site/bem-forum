@@ -1,4 +1,4 @@
-- block: user
+- block: forum-user
 
 - block: button
   mods: { theme: 'normal' }

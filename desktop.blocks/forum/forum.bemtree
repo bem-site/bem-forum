@@ -6,7 +6,7 @@ block('forum')(
     content()(function() {
         return {
             elem: 'wrap-content',
-            mix: { block: 'line' }
+            mix: { block: 'forum-line' }
         }
     }),
 
@@ -41,14 +41,14 @@ block('forum')(
                     mods: { view: this._forum.view },
                     mix: [
                         { block: 'forum', elem: 'content' },
-                        { block: 'column', mods: { side: 'left' } }
+                        { block: 'forum-column', mods: { side: 'left' } }
                     ]
                 },
                 {
                     block: 'forum-sidebar',
                     mix: [
                         {
-                            block: 'column',
+                            block: 'forum-column',
                             mods: { side: 'right', gap: true }
                         },
                         {

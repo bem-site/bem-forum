@@ -38,7 +38,7 @@ block('forum-labels').mod('view', 'menu')(
                             color: label.color,
                             mix: [
                                 { block: 'forum-labels', elem: 'label' },
-                                { block: 'form', elem: 'control' }
+                                { block: 'forum-form', elem: 'control' }
                             ]
                         }
                     })

@@ -10,7 +10,7 @@ block('forum-content').mod('view', 'issues')(
     elem('container')(
         content()(function() {
             return {
-                block: 'issues',
+                block: 'forum-issues',
                 data: this._forum.issues
             }
         })

@@ -6,6 +6,6 @@
 - block: button
   mods: { theme: 'normal', type: 'submit' }
 
-- block: form
+- block: forum-form
 
 - elems: [edit-textarea, edit-button, edit-cancel]

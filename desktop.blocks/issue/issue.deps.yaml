@@ -2,12 +2,11 @@
 - block: events
   elem: channels
 
-- block: column
-- block: line
+- block: forum-column
+- block: forum-line
 - block: link
-- block: date
-- block: user
-- block: text
+- block: forum-date
+- block: forum-user
 - block: comments
 - block: button
   mods: { theme: normal }

@@ -19,13 +19,13 @@ block('forum-header').mod('view', 'auth')(
 
             return [
                 {
-                    block: 'user',
+                    block: 'forum-user',
                     elem: 'avatar',
                     url: user.avatar_url,
                     alt: user.login
                 },
                 {
-                    block: 'user',
+                    block: 'forum-user',
                     elem: 'name',
                     url: user.login,
                     title: user.login,

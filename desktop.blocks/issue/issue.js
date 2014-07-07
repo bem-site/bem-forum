@@ -115,7 +115,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         _onClickEdit: function(e) {
             e.preventDefault();
 
-            this._formEdit = this.findBlockInside('edit-form', 'form');
+            this._formEdit = this.findBlockInside('edit-form', 'forum-form');
             this._editLabels = this.findBlockInside('edit-labels', 'forum-labels');
 
             this._editLabels.getLabels(this.params.labels);

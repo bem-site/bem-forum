@@ -1,6 +1,6 @@
 - elem: add-textarea
 
-- block: form
+- block: forum-form
 
-- block: column
+- block: forum-column
 - block: forum-flex

@@ -1,4 +1,4 @@
-- block: variables
+- block: forum-variables
   required: true
 
 - block: i-bem
@@ -9,10 +9,9 @@
 
 - block: forum-content
 - block: forum-sidebar
-- block: column
-- block: line
+- block: forum-column
+- block: forum-line
 - block: jquery
-- block: issues
 - block: forum-header
 - block: spin
   mods: { theme: 'normal' }

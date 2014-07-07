@@ -11,7 +11,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
         },
 
         _formSubmit: function() {
-            this._form = this.findBlockInside(this.elem('add-form'), 'form');
+            this._form = this.findBlockInside(this.elem('add-form'), 'forum-form');
             this._form && this._form.on('submit', this._addComments, this);
         },
 
@@ -67,8 +67,6 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
                 dataType: 'html',
                 url: '/issues/' + _this.params.issueNumber + '/comments?__mode=content'
             }).done(function(html) {
-                console.log('html', html);
-
                 _this._render(html, 'update', 'container');
 
                 _this._afterShow();

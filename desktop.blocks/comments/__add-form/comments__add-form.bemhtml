@@ -4,7 +4,7 @@ block('comments').elem('add-form')(
 
     def()(function() {
         applyCtx({
-            block: 'form',
+            block: 'forum-form',
             mix: [{ block: 'comments', elem: 'add-form' }, { block: 'forum-flex' }],
             content: this.ctx.content
         });

@@ -1,0 +1,14 @@
+block('forum-user').elem('avatar').def()(function() {
+    var mix = this.ctx.mix || [];
+
+    return applyCtx({
+        block: 'image',
+        url: this.ctx.url,
+        alt: this.ctx.alt,
+        mix: (function() {
+            mix.push({ block: 'forum-user', elem: 'avatar' });
+
+            return mix;
+        })()
+    });
+});

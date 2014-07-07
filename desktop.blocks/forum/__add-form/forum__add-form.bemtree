@@ -8,7 +8,7 @@ block('forum').elem('add-form')(
         });
 
         return {
-            block: 'form',
+            block: 'forum-form',
             mods: { visibility: 'hidden' },
             mix: {
                 block: 'forum',
@@ -33,7 +33,7 @@ block('forum').elem('add-form')(
                                 elem: 'add-title'
                             },
                             {
-                                block: 'form',
+                                block: 'forum-form',
                                 elem: 'control',
                                 elemMods: { autoclear: 'yes' }
                             }
@@ -55,7 +55,7 @@ block('forum').elem('add-form')(
                                 elem: 'add-body'
                             },
                             {
-                                block: 'form',
+                                block: 'forum-form',
                                 elem: 'control',
                                 elemMods: { autoclear: 'yes' }
                             }
@@ -91,18 +91,18 @@ block('forum').elem('add-form')(
                                 block: 'button',
                                 mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
                                 text: 'Добавить',
-                                mix: [{ block: 'form', elem: 'submit' }]
+                                mix: [{ block: 'forum-form', elem: 'submit' }]
                             },
                             {
                                 block: 'spin',
-                                mix: { block: 'form', elem: 'spin' },
+                                mix: { block: 'forum-form', elem: 'spin' },
                                 mods: { theme: 'normal', size: 'm' }
                             },
                             {
                                 block: 'button',
                                 mods: { theme: 'normal', size : 'm' },
                                 text: 'Отменить',
-                                mix: [{ block: 'form', elem: 'cancel' }]
+                                mix: [{ block: 'forum-form', elem: 'cancel' }]
                             }
                         ]
                     }

@@ -1,6 +1,7 @@
 - block: events
   elem: channels
 
+- block: forum-issues
 - block: forum-loader
 - block: forum-pager
 

@@ -1,7 +1,0 @@
-.form__control
-{
-    &.input
-    {
-        width: 100%;
-    }
-}

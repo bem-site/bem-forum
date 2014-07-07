@@ -15,7 +15,7 @@ block('comment')(
 
         return [
             {
-                block: 'column',
+                block: 'forum-column',
                 mods: { side: 'left' },
                 mix: [{ block: 'comment', elem: 'column-main' }],
                 content: {
@@ -24,11 +24,11 @@ block('comment')(
                 }
             },
             {
-                block: 'column',
+                block: 'forum-column',
                 mods: { side: 'right', gap: true, flex: true  },
                 content: [
                     {
-                        block: 'column',
+                        block: 'forum-column',
                         mods: { side: 'left' },
                         mix: [{ block: 'comment', elem: 'column-avatar' }],
                         content: {
@@ -38,7 +38,7 @@ block('comment')(
                         }
                     },
                     {
-                        block: 'column',
+                        block: 'forum-column',
                         mods: { side: 'right', gap: true },
                         content: [
                             {
@@ -97,7 +97,7 @@ block('comment')(
         def()(function() {
             return [
                 {
-                    block: 'user',
+                    block: 'forum-user',
                     elem: 'name',
                     url: this.ctx.name,
                     mix: [{ block: 'comment', elem: 'username' }],
@@ -115,7 +115,7 @@ block('comment')(
     elem('avatar')(
         def()(function() {
             return applyCtx({
-                block: 'user',
+                block: 'forum-user',
                 elem: 'avatar',
                 url: this.ctx.avatar,
                 alt: this.ctx.avatar,
@@ -127,7 +127,7 @@ block('comment')(
     elem('date')(
         def()(function() {
             return applyCtx({
-                block: 'date',
+                block: 'forum-date',
                 date: this.ctx.date,
                 mix: [{ block: 'comment', elem: 'date' }]
             })
@@ -150,7 +150,7 @@ block('comment')(
 
         match(function() { return this._isOwner; }).def()(function() {
             return {
-                    block: 'form',
+                    block: 'forum-form',
                     mods: { visibility: 'hidden' },
                     mix: {
                         block: 'comment',
@@ -177,7 +177,7 @@ block('comment')(
                                     elem: 'edit-textarea'
                                 },
                                 {
-                                    block: 'form',
+                                    block: 'forum-form',
                                     elem: 'control',
                                     elemMods: { autoclear: 'yes' }
                                 }

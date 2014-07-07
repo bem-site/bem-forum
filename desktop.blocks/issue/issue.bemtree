@@ -21,12 +21,12 @@ block('issue')(
                     {
                         elem: 'line',
                         elemMods: { level: 'top' },
-                        mix: { block: 'line', mods: { valign: 'middle' }}
+                        mix: { block: 'forum-line', mods: { valign: 'middle' }}
                     },
                     {
                         elem: 'line',
                         elemMods: { level: 'middle' },
-                        mix: { block: 'line', mods: { valign: 'middle' }}
+                        mix: { block: 'forum-line', mods: { valign: 'middle' }}
                     }
                 ]
             },
@@ -82,10 +82,10 @@ block('issue')(
 
             return [
                 {
-                    block: 'column',
+                    block: 'forum-column',
                     mods: { side: 'left' },
                     content: {
-                        block: 'user',
+                        block: 'forum-user',
                         elem: 'avatar',
                         url: user.avatar_url,
                         alt: user.login,
@@ -93,15 +93,15 @@ block('issue')(
                     }
                 },
                 {
-                    block: 'column',
+                    block: 'forum-column',
                     mods: { side: 'right' },
                     mix: { block: 'forum-flex' },
                     content: {
-                        block: 'line',
+                        block: 'forum-line',
                         mods: { valign: 'middle' },
                         content: [
                             {
-                                block: 'user',
+                                block: 'forum-user',
                                 elem: 'name',
                                 url: user.login,
                                 title: user.login,
@@ -114,7 +114,7 @@ block('issue')(
                                 content: 'написал'
                             },
                             {
-                                block: 'date',
+                                block: 'forum-date',
                                 date: date,
                                 mix: [{ block: 'issue', elem: 'date' }]
                             },
@@ -154,11 +154,11 @@ block('issue')(
 
             return [
                 {
-                    block: 'column',
+                    block: 'forum-column',
                     mods: { side: 'left' }
                 },
                 {
-                    block: 'column',
+                    block: 'forum-column',
                     mods: { side: 'right' },
                     content: [
                         {
@@ -198,7 +198,7 @@ block('issue')(
                             block: 'issue',
                             elem: 'line',
                             elemMods: { level: 'bottom' },
-                            mix: { block: 'line', mods: { valign: 'stretch' }}
+                            mix: { block: 'forum-line', mods: { valign: 'stretch' }}
                         }
                     ]
                 }
@@ -217,7 +217,7 @@ block('issue')(
             var issue = this._issue;
 
             return {
-                block: 'form',
+                block: 'forum-form',
                 mods: { visibility: 'hidden' },
                 mix: {
                     block: 'issue',
@@ -240,7 +240,7 @@ block('issue')(
                                 elem: 'edit-title'
                             },
                             {
-                                block: 'form',
+                                block: 'forum-form',
                                 elem: 'control',
                                 elemMods: { autoclear: 'yes' }
                             }
@@ -263,7 +263,7 @@ block('issue')(
                                 elem: 'edit-textarea'
                             },
                             {
-                                block: 'form',
+                                block: 'forum-form',
                                 elem: 'control',
                                 elemMods: { autoclear: 'yes' }
                             }
@@ -300,13 +300,13 @@ block('issue')(
                                 text: 'Сохранить',
                                 mix: [
                                     { block: 'issue', elem: 'edit-button' },
-                                    { block: 'form', elem: 'submit' }
+                                    { block: 'forum-form', elem: 'submit' }
                                 ]
                             },
                             {
                                 block: 'spin',
                                 mods: { theme: 'normal', size: 'm' },
-                                mix: { block: 'form', elem: 'spin' }
+                                mix: { block: 'forum-form', elem: 'spin' }
                             },
                             {
                                 block: 'button',
@@ -314,7 +314,7 @@ block('issue')(
                                 text: 'Отменить',
                                 mix: [
                                     { block: 'issue', elem: 'edit-cancel' },
-                                    { block: 'form', elem: 'cancel' }
+                                    { block: 'forum-form', elem: 'cancel' }
                                 ]
                             }
                         ]

@@ -9,7 +9,7 @@ modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         },
 
         _subscribes: function() {
-            this._formAdd = this.findBlockInside('add-form', 'form');
+            this._formAdd = this.findBlockInside('add-form', 'forum-form');
             this._formAdd && this._formAdd.on('submit', this._addIssue, this);
             this.findBlockInside('add', 'button') && this.findBlockInside('add', 'button').on('click', this._toggleFormAdd, this);
         },
@@ -33,8 +33,6 @@ modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 data: data,
                 url: '/issues/'
             }).done(function(html) {
-                console.log('html', html);
-
                 _this._render(html, 'prepend');
 
                 _this._afterAdd();

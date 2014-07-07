@@ -64,7 +64,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
         },
 
         _onClickEdit: function() {
-            this._formEdit = this.findBlockInside(this.findElem('edit-form'), 'form');
+            this._formEdit = this.findBlockInside(this.findElem('edit-form'), 'forum-form');
 
             this._setFormEditHeight();
 

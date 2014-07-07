@@ -1,6 +1,5 @@
-- block: text
-- block: user
-- block: date
+- block: forum-user
+- block: forum-date
 - block: forum-flex
 
 - elems:

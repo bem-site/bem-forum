@@ -1,7 +1,7 @@
 - block: input
   mods: { theme: 'normal', type: 'textarea', 'has-clear': true }
 
-- block: form
+- block: forum-form
   mods: { visibility: 'hidden' }
 
 - block: forum-labels

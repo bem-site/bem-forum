@@ -13,7 +13,7 @@
     {
         transition: all .5s ease;
 
-        .column
+        .forum-column
         {
             &_side_left
             {

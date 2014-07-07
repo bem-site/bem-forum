@@ -6,5 +6,5 @@
 - block: button
   mods: { theme: 'normal', type: 'submit' }
 
-- block: form
+- block: forum-form
   mods: { visibility: 'hidden' }

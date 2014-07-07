@@ -3,7 +3,7 @@
     background-color: $color-background;
     padding: 20px 0;
 
-    .column
+    .forum-column
     {
         &_side_left
         {

@@ -2,11 +2,11 @@ block('comments').elem('add-form')(
     content()(function() {
         return [
             {
-                block: 'column',
+                block: 'forum-column',
                 mods: { side: 'left' }
             },
             {
-                block: 'column',
+                block: 'forum-column',
                 mods: { side: 'right', gap: true },
                 content: [
                     {
@@ -26,7 +26,7 @@ block('comments').elem('add-form')(
                                 elem: 'add-textarea'
                             },
                             {
-                                block: 'form',
+                                block: 'forum-form',
                                 elem: 'control',
                                 elemMods: { autoclear: 'yes' }
                             }
@@ -39,12 +39,12 @@ block('comments').elem('add-form')(
                                 block: 'button',
                                 mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
                                 text: 'Ответить',
-                                mix: [{ block: 'form', elem: 'submit' }]
+                                mix: [{ block: 'forum-form', elem: 'submit' }]
                             },
                             {
                                 block: 'spin',
                                 mods: { theme: 'normal', size: 'm' },
-                                mix: [{ block: 'form', elem: 'spin' }]
+                                mix: [{ block: 'forum-form', elem: 'spin' }]
                             }
                         ]
                     }

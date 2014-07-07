@@ -69,14 +69,13 @@ module.exports = function(pattern, options) {
         options = (isGetRequest || isDeleteRequest ? query : req.body) || {};
 
         var templateCtx = {
-            getIssues:     { block: 'issues' },
-            getIssue:      { block: 'issue', mods: { view: 'full' } },
+            getIssues:     { block: 'forum-issues' },
+            getIssue:      { block: 'issue' },
             createIssue:   { block: 'issue' },
             editIssue:     { block: 'issue' },
             getComments:   { block: 'comments', mods: { view: 'close' }, issueNumber: options.number },
             createComment: { block: 'comment', issueNumber: options.number },
             editComment:   { block: 'comment', issueNumber: options.number },
-            getAuthUser:   { block: 'user', mods: { view: 'header' } },
             getLabels:     { block: 'forum-labels', mods: { view: options.view }}
         };
 
