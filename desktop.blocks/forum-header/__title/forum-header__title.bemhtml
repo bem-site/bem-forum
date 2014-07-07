@@ -1,3 +1,13 @@
 block('forum-header').elem('title')(
-    tag()('h1')
+    def()(function() {
+        return applyCtx({
+            block: 'link',
+            url: this.ctx.url,
+            content: {
+                tag: 'h1',
+                content: this.ctx.content
+            },
+            mix: { block: 'forum-header', elem: 'title' }
+        })
+    })
 );

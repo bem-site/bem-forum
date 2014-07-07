@@ -2,7 +2,8 @@ block('forum-header')(
     content()(function() {
         return {
             elem: 'title',
-            content: 'Форум'
+            content: 'Форум',
+            url: this._forum.baseUrl
         }
     })
 );

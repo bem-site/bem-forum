@@ -49,8 +49,8 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 this._comments.on('comments:loading', this._toggleLoadersUi, this);
                 this._comments.on('comments:complete', this._toggleLoadersUi, this);
             }
-
-            this._issueLink.on('click', this._onClickTitle, this);
+//
+//            this._issueLink.on('click', this._onClickTitle, this);
             this._subscribeOwnerActions();
 
             this.bindTo('label', 'click', this._onClickLabel);
@@ -68,6 +68,8 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         },
 
         _onClickLabel: function(e) {
+            console.log('onclicklabel');
+
             e.preventDefault();
 
             channels('filter').emit('labels', { labels: [$(e.target).text()] });

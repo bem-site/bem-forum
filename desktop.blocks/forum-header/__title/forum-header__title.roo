@@ -1,5 +1,8 @@
 .forum-header__title
 {
-    font-size: 17px;
-    margin: 0;
+    h1
+    {
+        font-size: 17px;
+        margin: 0;
+    }
 }

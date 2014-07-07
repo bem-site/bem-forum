@@ -58,7 +58,7 @@ block('issue')(
         match(function() { return !this._forum || !this._forum.comments; }).def()(function() {
             var issue = this._issue;
 
-            return  applyCtx({
+            return applyCtx({
                 block: 'comments',
                 mods: { hidden: true },
                 js: {
@@ -174,7 +174,7 @@ block('issue')(
                                 {
                                     block: 'link',
                                     mix: { block: this.block, elem: 'title' },
-                                    url: 'issues/' + issue.number + '/',
+                                    url: '/issues/' + issue.number + '/',
                                     title: issue.title,
                                     content: issue.title
                                 },

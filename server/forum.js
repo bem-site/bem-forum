@@ -104,7 +104,7 @@ module.exports = function(pattern, options) {
 
             return vow.all(promises).then(function(values) {
                 req.__data = req.__data || {};
-                req.__data.forum = values;
+                req.__data.forum = _.extend(values, { baseUrl: baseUrl });
 
                 return next();
             });

@@ -5,12 +5,15 @@ block('page')(
         !this.ctx.head && (this.ctx.head = []);
         this.ctx.head.push({ elem: 'css', url: '/desktop.bundles/index/index.min.css' });
 
-        return applyNext({ _forum: this.ctx.forum });
+        return applyNext();
     }),
 
     match(function() { return this.ctx.forum }).content()(function() {
         return [
-            { block: 'forum' },
+            {
+                block: 'forum',
+                forum: this.ctx.forum
+            },
             { elem: 'js' }
         ];
     }),
