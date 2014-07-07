@@ -1,22 +1,5 @@
 block('forum-content')(
     content()(function() {
         return { block: 'forum-loader' };
-    }),
-
-    match(function() { return this._forum.issues; }).content()(function() {
-        return [
-            applyNext(),
-            { elem: 'container' },
-            { block: 'forum-pager' }
-        ]
-    }),
-
-    elem('container')(
-        content()(function() {
-            return {
-                block: 'issues',
-                data: this._forum.issues
-            }
-        })
-    )
+    })
 );

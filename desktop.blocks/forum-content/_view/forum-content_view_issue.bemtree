@@ -1,0 +1,11 @@
+block('forum-content').mod('view', 'issue')(
+    content()(function() {
+        return [
+            applyNext(),
+            {
+                block: 'issue',
+                issue: this._forum.issue
+            }
+        ]
+    })
+);

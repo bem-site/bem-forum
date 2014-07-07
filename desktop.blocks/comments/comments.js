@@ -41,7 +41,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
                 data: data,
                 url: '/issues/' + _this.params.issueNumber + '/comments'
             }).done(function(html) {
-                _this._render(html, 'append', 'wrap');
+                _this._render(html, 'append', 'container');
 
                 _this._afterAdd();
             });
@@ -67,7 +67,9 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
                 dataType: 'html',
                 url: '/issues/' + _this.params.issueNumber + '/comments?__mode=content'
             }).done(function(html) {
-                _this._render(html, 'update', 'wrap');
+                console.log('html', html);
+
+                _this._render(html, 'update', 'container');
 
                 _this._afterShow();
             });

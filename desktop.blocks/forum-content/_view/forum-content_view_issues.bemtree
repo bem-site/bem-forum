@@ -1,0 +1,18 @@
+block('forum-content').mod('view', 'issues')(
+    content()(function() {
+        return [
+            applyNext(),
+            { elem: 'container' },
+            { block: 'forum-pager' }
+        ]
+    }),
+
+    elem('container')(
+        content()(function() {
+            return {
+                block: 'issues',
+                data: this._forum.issues
+            }
+        })
+    )
+);

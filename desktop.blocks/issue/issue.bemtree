@@ -31,15 +31,46 @@ block('issue')(
                 ]
             },
             {
+                elem: 'comments'
+            }
+        ]
+    }),
+
+    elem('comments')(
+        match(function() { return this._forum && this._forum.comments; }).def()(function() {
+            var forum = this._forum,
+                issue = forum.issue,
+                comments = forum.comments;
+
+            return applyCtx([
+                {
+                    block: 'comments',
+                    mods: { view: 'open' },
+                    data: comments,
+                    js: {
+                        issueNumber: issue.number,
+                        comments: issue.comments
+                    }
+                }
+            ]);
+        }),
+
+        match(function() { return !this._forum || !this._forum.comments; }).def()(function() {
+            var issue = this._issue;
+
+            return  applyCtx({
                 block: 'comments',
                 mods: { hidden: true },
                 js: {
                     issueNumber: issue.number,
                     comments: issue.comments
+                },
+                content: {
+                    elem: 'container'
                 }
-            }
-        ]
-    }),
+            });
+        })
+    ),
 
     // user avatar + name
     elem('line').elemMod('level', 'top')(
@@ -143,7 +174,7 @@ block('issue')(
                                 {
                                     block: 'link',
                                     mix: { block: this.block, elem: 'title' },
-                                    attrs: { 'data-url': 'issues/' + issue.number + '/' },
+                                    url: 'issues/' + issue.number + '/',
                                     title: issue.title,
                                     content: issue.title
                                 },
@@ -320,7 +351,7 @@ block('issue')(
 
     // button 'answer'
     elem('line').elemMod('level', 'bottom')(
-        content()(function() {
+        match(function() { return !this._forum || !this._forum.comments; }).content()(function() {
             var comments = this._issue.comments;
 
             if(!req.cookies['forum_username'] && comments === 0) {

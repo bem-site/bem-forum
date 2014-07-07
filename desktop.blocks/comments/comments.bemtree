@@ -1,90 +1,10 @@
 block('comments')(
-
-    content()(function() {
-        return {
-            elem: 'wrap'
-        }
-    }),
-
     match(function() { return req.cookies['forum_username']; }).content()(function() {
         return [
-            applyNext(),
+            !this._forum.comments ? applyNext() : undefined,
             {
                 elem: 'add-form'
             }
-        ];
-    }),
-
-    match(function() { return this.ctx.data; }).content()(function() {
-
-        var comments = this.ctx.data,
-            issueNumber = this.ctx.issueNumber;
-
-        return comments.map(function(comment) {
-            return {
-                block: 'comment',
-                comment: comment,
-                js: {
-                    issueNumber: issueNumber,
-                    id: comment.id
-                }
-            }
-        });
-    }),
-
-    elem('add-form')(
-        content()(function() {
-            return [
-                {
-                    block: 'column',
-                    mods: { side: 'left' }
-                },
-                {
-                    block: 'column',
-                    mods: { side: 'right', gap: true },
-                    content: [
-                        {
-                            block: 'input',
-                            mods: {
-                                theme: 'normal',
-                                type: 'textarea',
-                                size: 'l',
-                                'has-clear' : true
-                            },
-                            name: 'body',
-                            placeholder: 'Ответ',
-                            attrs: { rows: 5 },
-                            mix: [
-                                {
-                                    block: 'comments',
-                                    elem: 'add-textarea'
-                                },
-                                {
-                                    block: 'form',
-                                    elem: 'control',
-                                    elemMods: { autoclear: 'yes' }
-                                }
-                            ]
-                        },
-                        {
-                            block: 'flex',
-                            content: [
-                                {
-                                    block: 'button',
-                                    mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
-                                    text: 'Ответить',
-                                    mix: [{ block: 'form', elem: 'submit' }]
-                                },
-                                {
-                                    block: 'spin',
-                                    mods: { theme: 'normal', size: 'm' },
-                                    mix: [{ block: 'form', elem: 'spin' }]
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        })
-    )
+        ]
+    })
 );

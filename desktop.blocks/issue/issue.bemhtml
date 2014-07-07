@@ -1,7 +1,7 @@
 block('issue')(
     js()(true),
-    match(function() { return this.ctx.data; }).js()(function() {
-        var issue = this.ctx.data,
+    match(function() { return this.ctx.data || this.ctx.issue; }).js()(function() {
+        var issue = this.ctx.data || this.ctx.issue,
             labels = issue.labels,
             labelsName = [];
 

@@ -33,6 +33,8 @@ modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 data: data,
                 url: '/issues/'
             }).done(function(html) {
+                console.log('html', html);
+
                 _this._render(html, 'prepend');
 
                 _this._afterAdd();

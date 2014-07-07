@@ -3,3 +3,5 @@
 
 - block: forum-loader
 - block: forum-pager
+
+- mods: { view: [issues, issue] }

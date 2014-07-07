@@ -1,0 +1,28 @@
+block('comments').mod('view', 'open')(
+
+    content()(function() {
+        return [
+            { elem: 'container' },
+            applyNext()
+        ]
+    }),
+
+    elem('container')(
+        content()(function() {
+            var forum = this._forum,
+                comments = forum.comments,
+                issueNumber = forum.issue.number;
+
+            return comments.map(function(comment) {
+                return {
+                    block: 'comment',
+                    comment: comment,
+                    js: {
+                        issueNumber: issueNumber,
+                        id: comment.id
+                    }
+                }
+            })
+        })
+    )
+);

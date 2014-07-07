@@ -73,7 +73,7 @@ module.exports = function(pattern, options) {
             getIssue:      { block: 'issue', mods: { view: 'full' } },
             createIssue:   { block: 'issue' },
             editIssue:     { block: 'issue' },
-            getComments:   { block: 'comments', issueNumber: options.number },
+            getComments:   { block: 'comments', mods: { view: 'close' }, issueNumber: options.number },
             createComment: { block: 'comment', issueNumber: options.number },
             editComment:   { block: 'comment', issueNumber: options.number },
             getAuthUser:   { block: 'user', mods: { view: 'header' } },
@@ -92,10 +92,14 @@ module.exports = function(pattern, options) {
                 // get issue data, that have a number option
                 _.extend(promises, {
                     issue: github.getIssue.call(github, token, options),
-                    comments: github.getComments.call(github, token, options)
+                    comments: github.getComments.call(github, token, options),
+                    view: 'issue'
                 });
             } else {
-                _.extend(promises, { issues: github.getIssues.call(github, token, options) });
+                _.extend(promises, {
+                    issues: github.getIssues.call(github, token, options),
+                    view: 'issues'
+                });
             }
 
             return vow.all(promises).then(function(values) {
