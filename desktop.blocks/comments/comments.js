@@ -3,59 +3,76 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
         onSetMod: {
             js: {
                 inited: function() {
-                    this._toggleComments();
+                    // Форма добавления комментария
+                    this._form = this.findBlockInside('add-form', 'forum-form');
 
-                    this._formSubmit();
+                    this._binds();
                 }
             }
         },
 
-        _formSubmit: function() {
-            this._form = this.findBlockInside(this.elem('add-form'), 'forum-form');
+        /**
+         * Подписываемся на события после инициализации
+         * @private
+         */
+        _binds: function() {
+            this.on('show', this._showComments);
+            this.on('close', this._closeComments);
             this._form && this._form.on('submit', this._addComments, this);
         },
 
-        _toggleComments: function() {
-            this.on('show', this._showComments);
-            this.on('close', this._closeComments);
-        },
-
+        /**
+         * Обработчик сабмита формы добавления комментария
+         * @param e
+         * @param data
+         * @returns {boolean}
+         * @private
+         */
         _addComments: function(e, data) {
-            if(this._form.isEmptyInput('body')) {
-                return false;
-            }
+            if(this._form.isEmptyInput('body')) return false;
 
             this._form.setMod('processing', 'yes');
 
             this._postComment(data);
         },
 
+        /**
+         * Отправляем комментарий
+         * @param data
+         * @private
+         */
         _postComment: function(data) {
-            var _this = this;
-
             data.push({ name: 'number', value: this.params.issueNumber });
 
             $.ajax({
                 dataType: 'html',
                 type: 'POST',
                 data: data,
-                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/'
+                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/',
+                context: this
             }).done(function(html) {
-                _this._render(html, 'append', 'container');
+                this._render(html, 'append', 'container');
 
-                _this._afterAdd();
+                this._afterAdd();
             });
         },
 
+        /**
+         * Закрываем комментарии
+         * @private
+         */
         _closeComments: function() {
-            this.setMod('hidden', true);
+            this.setMod('hidden');
         },
 
+        /**
+         * Показываем комментарии
+         * @returns {boolean}
+         * @private
+         */
         _showComments: function() {
-            var _this = this;
-
             // if comments is empty - show only add form
-            if(this.params.comments === 0) {
+            if(!this.params.comments) {
                 this._toggle();
 
                 return false;
@@ -65,14 +82,20 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
 
             $.ajax({
                 dataType: 'html',
-                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/?__mode=content'
+                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/?__mode=content',
+                context: this
             }).done(function(html) {
-                _this._render(html, 'update', 'container');
+                this._render(html, 'update', 'container');
 
-                _this._afterShow();
+                this._afterShow();
             });
         },
 
+        /**
+         * После загрузки показываем форму добавления комментария
+         * и комментарии + подписывамся на их удаление
+         * @private
+         */
         _afterShow: function() {
             this.emit('comments:complete');
 
@@ -81,45 +104,56 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             this._subscribes();
         },
 
+        /**
+         * Подписываемся на удаление комментария
+         * @private
+         */
         _subscribes: function() {
-            var _this = this;
-
-            this.findBlocksInside(this.elem('item'), 'comment').forEach(function(comment) {
-                _this._subscribeDelete(comment);
-            });
+            this.findBlocksInside('item', 'comment').forEach(this._subscribeDelete, this);
         },
 
+        /**
+         * Обработчик удаления комментария
+         * @private
+         */
         _subscribeDelete: function(comment) {
-            var _this = this;
-
             comment.on('comment:delete', function() {
-
-                _this.params.comments -= 1;
-                _this.emit('comment:delete', { comments: _this.params.comments });
-            });
+                this.params.comments -= 1;
+                this.emit('comment:delete', { comments: this.params.comments });
+            }, this);
         },
 
+        /**
+         * Обертка над BEMDOM[append, update, replace..]
+         * @param html
+         * @param addMethod
+         * @param elem
+         * @private
+         */
         _render: function(html, addMethod, elem) {
             var container = (elem && this.elem(elem)) || this.domElem;
 
             BEMDOM[addMethod](container, html);
         },
 
+        /**
+         * Показать / скрыть комментарии
+         * @private
+         */
         _toggle: function() {
-            this.toggleMod('hidden', true, '');
+            this.toggleMod('hidden');
         },
 
-        _beforeAdd: function() {
-            this.emit('comment:beginAdd');
-
-            this._form.toggleLoadersUi();
-        },
-
+        /**
+         * После добавления комментария
+         * @private
+         */
         _afterAdd: function() {
             this.params.comments += 1;
 
             this.emit('comment:add', { comments: this.params.comments });
 
+            // подписываемся на удаление добавленного комментария
             this._subscribeDelete(this.findBlocksInside(this.findElem('item'), 'comment').pop());
 
             this._form.delMod('processing');
