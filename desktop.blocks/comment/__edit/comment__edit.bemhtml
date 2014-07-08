@@ -4,7 +4,7 @@ block('comment').elem('edit')(
             block: 'link',
             title: 'Редактировать ответ',
             mods: { pseudo: true },
-            js: { action: 'edit' },
+            js: { action: 'Edit' },
             content: {
                 block: 'icon',
                 mods: { action: 'edit', size: '16', hover: 'opacity' }

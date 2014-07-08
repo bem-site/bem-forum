@@ -157,14 +157,8 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
     }, {
         live: function() {
             this.liveInitOnBlockInsideEvent('click', 'link', function(e) {
-                // проверяем куда ткнули и выбираем действие
-                var action = e.target.params.action;
-
-                if(action === 'edit') {
-                    this._onClickEdit();
-                } else if(action === 'remove') {
-                    this._onClickRemove();
-                }
+                // Задаем необходимый обработчик для клика по кнопкам Удалить/редактировать
+                this['_onClick' + e.target.params.action]();
             });
         }
     }));

@@ -4,7 +4,7 @@ block('comment').elem('remove')(
             block: 'link',
             title: 'Удалить ответ',
             mods: { pseudo: true },
-            js: { action: 'remove' },
+            js: { action: 'Remove' },
             content: {
                 block: 'icon',
                 mods: { action: 'remove', size: '16', hover: 'opacity' }
