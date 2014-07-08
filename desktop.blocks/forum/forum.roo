@@ -1,4 +1,24 @@
 .forum
 {
     height: 100%;
+    font-size: 14px;
+    line-height: 1.7;
+
+    :link,
+    :visited
+    {
+        transition: opacity .15s ease-out;
+        color: $color-link;
+    }
+
+    :link:hover,
+    :visited:hover
+    {
+        opacity: .5;
+    }
+
+    .link
+    {
+        cursor: pointer;
+    }
 }

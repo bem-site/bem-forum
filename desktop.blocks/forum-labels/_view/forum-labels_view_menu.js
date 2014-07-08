@@ -14,8 +14,8 @@ modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], func
             }
         },
 
-        _clearLabels: function(e) {
-            this._menu._getItems().forEach(function(menuItem) {
+        _clearLabels: function() {
+            this._menu.getItems().forEach(function(menuItem) {
                 menuItem.delMod('checked');
             });
         },
@@ -27,7 +27,7 @@ modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], func
 
         _checkedLabelsByFilter: function(e, item) {
             var _this = this,
-                val = item.getVal(),
+                val = item.item.getVal(),
                 position = this._labels.indexOf(val);
 
             if(position === -1) {
@@ -50,7 +50,7 @@ modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], func
         _checkedLabels: function() {
             var _this = this;
 
-            this._menu._getItems().forEach(function(menuItem) {
+            this._menu.getItems().forEach(function(menuItem) {
                 menuItem.delMod('checked');
 
                 _this._labels.forEach(function(label) {
