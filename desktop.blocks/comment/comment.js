@@ -20,7 +20,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
                 dataType: 'html',
                 type: 'PUT',
                 data: data,
-                url: '/issues/' + _this.params.issueNumber + '/comments/' + _this.params.id + '?__mode=content'
+                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '?__mode=content'
             }).done(function(html) {
                 _this._render(html, 'update');
 
@@ -82,7 +82,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
             if(window.confirm('Вы уверены?')) {
                 $.ajax({
                     type: 'DELETE',
-                    url: '/issues/' + _this.params.issueNumber + '/comments/' + _this.params.id
+                    url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id
                 }).done(function() {
                     _this.emit('comment:delete');
 

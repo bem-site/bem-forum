@@ -86,8 +86,8 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 $.ajax({
                     dataType: 'html',
                     type: 'PUT',
-                    data: [{ name: 'state', value: 'closed' }, { name: 'number', value: _this.params.number }],
-                    url: '/issues/' + _this.params.id + '?__mode=json'
+                    data: [{ name: 'state', value: 'closed' }, { name: 'number', value: this.params.number }],
+                    url: this.params.forumUrl + 'issues/' + this.params.id + '?__mode=json'
                 }).done(function() {
                     _this._endAnimateRemove();
 
@@ -147,7 +147,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 dataType: 'html',
                 type: 'PUT',
                 data: data,
-                url: '/issues/' + _this.params.number + '?__mode=content'
+                url: this.params.forumUrl + 'issues/' + this.params.number + '?__mode=content'
             }).done(function(html) {
                 _this._render(html);
 

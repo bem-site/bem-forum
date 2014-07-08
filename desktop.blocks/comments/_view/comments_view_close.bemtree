@@ -1,7 +1,8 @@
 block('comments').mod('view', 'close')(
     content()(function() {
         var comments = this.ctx.data,
-            issueNumber = this.ctx.issueNumber;
+            issueNumber = this.ctx.issueNumber,
+            forumUrl = this.ctx.forumUrl;
 
         return comments.map(function(comment) {
             return {
@@ -9,7 +10,8 @@ block('comments').mod('view', 'close')(
                 comment: comment,
                 js: {
                     issueNumber: issueNumber,
-                    id: comment.id
+                    id: comment.id,
+                    forumUrl: forumUrl
                 }
             }
         });

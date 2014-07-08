@@ -1,6 +1,5 @@
-modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], function(provide, $, channels, nextTick, LABELS) {
-
-    provide(LABELS.decl({ modName: 'view', modVal: 'menu' }, {
+modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], function(provide, $, channels, nextTick, Labels) {
+    provide(Labels.decl({ modName: 'view', modVal: 'menu' }, {
 
         onSetMod: {
             js: {

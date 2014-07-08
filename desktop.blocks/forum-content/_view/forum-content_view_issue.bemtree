@@ -3,8 +3,12 @@ block('forum-content').mod('view', 'issue')(
         return [
             applyNext(),
             {
-                block: 'issue',
-                issue: this._forum.issue
+                elem: 'container',
+                content: {
+                    block: 'issue',
+                    issue: this._forum.issue,
+                    js: { forumUrl: req.forumUrl }
+                }
             }
         ]
     })

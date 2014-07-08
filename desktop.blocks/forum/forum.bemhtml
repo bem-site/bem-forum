@@ -1,1 +1,3 @@
-block('forum').js()(true);
+block('forum')(
+    js()(true)
+);

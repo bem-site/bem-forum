@@ -1,4 +1,4 @@
-modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(provide, BEMDOM, $, channels) {
+modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
     provide(BEMDOM.decl(this.name, {
         onSetMod: {
             js: {
@@ -23,7 +23,8 @@ modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 return false;
             }
 
-            var _this = this;
+            var _this = this,
+                forumUrl = this._formAdd.params['forumUrl'] || '/';
 
             this._formAdd.setMod('processing', 'yes');
 
@@ -31,7 +32,7 @@ modules.define('forum', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 dataType: 'html',
                 type: 'POST',
                 data: data,
-                url: '/issues/'
+                url: forumUrl + 'issues'
             }).done(function(html) {
                 _this._render(html, 'prepend');
 

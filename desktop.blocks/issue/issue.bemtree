@@ -49,7 +49,8 @@ block('issue')(
                     data: comments,
                     js: {
                         issueNumber: issue.number,
-                        comments: issue.comments
+                        comments: issue.comments,
+                        forumUrl: req.forumUrl
                     }
                 }
             ]);
@@ -63,7 +64,8 @@ block('issue')(
                 mods: { hidden: true },
                 js: {
                     issueNumber: issue.number,
-                    comments: issue.comments
+                    comments: issue.comments,
+                    forumUrl: req.forumUrl
                 },
                 content: {
                     elem: 'container'

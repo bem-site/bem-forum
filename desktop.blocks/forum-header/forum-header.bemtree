@@ -3,7 +3,7 @@ block('forum-header')(
         return {
             elem: 'title',
             content: 'Форум',
-            url: req.baseUrl
+            url: req.forumUrl
         }
     })
 );

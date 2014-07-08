@@ -19,7 +19,8 @@ block('comments').mod('view', 'open')(
                     comment: comment,
                     js: {
                         issueNumber: issueNumber,
-                        id: comment.id
+                        id: comment.id,
+                        forumUrl: req.forumUrl
                     }
                 }
             })

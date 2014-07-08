@@ -39,6 +39,7 @@ block('forum')(
                 {
                     block: 'forum-content',
                     mods: { view: this._forum.view },
+                    js: { forumUrl: req.forumUrl },
                     mix: [
                         { block: 'forum', elem: 'content' },
                         { block: 'forum-column', mods: { side: 'left' } }

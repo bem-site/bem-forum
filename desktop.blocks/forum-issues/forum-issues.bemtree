@@ -13,7 +13,8 @@ block('forum-issues')(
                 issue: issue,
                 js: {
                     number: issue.number,
-                    labels: labelsName
+                    labels: labelsName,
+                    forumUrl: req.forumUrl
                 }
             }
         });

@@ -68,19 +68,19 @@ module.exports = function(pattern, options) {
 
         options = (isGetRequest || isDeleteRequest ? query : req.body) || {};
 
+        // for access in templates
+        req.forumUrl = baseUrl;
+
         var templateCtx = {
             getIssues:     { block: 'forum-issues' },
             getIssue:      { block: 'issue' },
-            createIssue:   { block: 'issue' },
-            editIssue:     { block: 'issue' },
-            getComments:   { block: 'comments', mods: { view: 'close' }, issueNumber: options.number },
-            createComment: { block: 'comment', issueNumber: options.number },
-            editComment:   { block: 'comment', issueNumber: options.number },
-            getLabels:     { block: 'forum-labels', mods: { view: options.view }}
+            createIssue:   { block: 'issue', forumUrl: req.forumUrl },
+            editIssue:     { block: 'issue', forumUrl: req.forumUrl },
+            getComments:   { block: 'comments', mods: { view: 'close' }, issueNumber: options.number, forumUrl: req.forumUrl },
+            createComment: { block: 'comment', issueNumber: options.number, forumUrl: req.forumUrl },
+            editComment:   { block: 'comment', issueNumber: options.number, forumUrl: req.forumUrl },
+            getLabels:     { block: 'forum-labels', mods: { view: options.view } }
         };
-
-        // for access in templates
-        req.baseUrl = baseUrl;
 
         if(!req.xhr) {
             // collect all required data for templates

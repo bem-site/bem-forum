@@ -21,7 +21,7 @@ modules.define('forum-content', ['i-bem__dom', 'jquery', 'events__channels'], fu
         },
 
         _loadIssues: function(e, data) {
-            var url = '/issues?';
+            var url = 'issues?';
 
             if(data) {
                 if(data.labels) {
@@ -52,7 +52,7 @@ modules.define('forum-content', ['i-bem__dom', 'jquery', 'events__channels'], fu
             this._xhr = $.ajax({
                 type: 'GET',
                 dataType: 'html',
-                url: url,
+                url: this.params.forumUrl + url,
                 cache: false,
                 success: this._onSuccess.bind(this)
             });

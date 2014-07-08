@@ -9,6 +9,7 @@ block('forum').elem('add-form')(
 
         return {
             block: 'forum-form',
+            js: { forumUrl: req.forumUrl },
             mods: { visibility: 'hidden' },
             mix: {
                 block: 'forum',
@@ -63,7 +64,7 @@ block('forum').elem('add-form')(
                     },
                     {
                         block: 'forum-labels',
-                        js: { labels: labels },
+                        js: { labels: labels, forumUrl: req.forumUrl },
                         mods: { inline: true, view: 'checkbox' },
                         mix: [{ block: 'forum', elem: 'labels' }],
                         content: [

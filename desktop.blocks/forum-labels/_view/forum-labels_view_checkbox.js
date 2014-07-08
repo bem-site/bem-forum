@@ -1,16 +1,17 @@
-modules.define('forum-labels', ['jquery'], function(provide, $, LABELS) {
+modules.define('forum-labels', ['jquery'], function(provide, $, Labels) {
 
-    provide(LABELS.decl({ modName: 'view', modVal: 'checkbox' }, {
+    provide(Labels.decl({ modName: 'view', modVal: 'checkbox' }, {
 
         getLabels: function(labels) {
-            var _this = this;
+            var _this = this,
+                forumUrl = this.params['forumUrl'] || '/';
 
             $.ajax({
                 dataType: 'html',
-                url: '/labels?__mode=content&view=checkbox',
+                url: forumUrl + 'labels?__mode=content&view=checkbox',
                 type: 'GET'
             }).done(function(html) {
-                LABELS.update(_this.elem('wrap'), html);
+                Labels.update(_this.elem('wrap'), html);
 
                 _this.findBlockInside('spin', 'spin').delMod('progress');
 

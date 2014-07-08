@@ -3,7 +3,8 @@ block('comment')(
     match(function() { return this.ctx.issueNumber; }).js()(function() {
         return {
             issueNumber: this.ctx.issueNumber,
-            id: this.ctx.data.id
+            id: this.ctx.data.id,
+            forumUrl: this.ctx.forumUrl
         }
     }),
     mix()([
