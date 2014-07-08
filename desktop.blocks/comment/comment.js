@@ -108,7 +108,6 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
 
         /**
          * Обработчик клика по кнопке отмены редактирования
-         * @param e
          * @private
          */
         _onClickEditCancel: function() {
