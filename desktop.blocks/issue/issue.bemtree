@@ -346,9 +346,7 @@ block('issue')(
     elem('body')(
         content()(function() {
             var text = this._issue.body;
-
-            return text;
-//            return util.mdToHtml(text); // TODO: put in context mdToHtml
+            return this._forum.util.mdToHtml(text);
         })
     ),
 

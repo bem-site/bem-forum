@@ -137,9 +137,7 @@ block('comment')(
     elem('body')(
        content()(function() {
            var text = this.ctx.body;
-
-//           return util.mdToHtml(text);
-           return text; // TODO: put in context mdToHtml
+           return this._forum.util.mdToHtml(text);
        })
     ),
 

@@ -42,7 +42,6 @@ exports.run = function(ctx, req) {
                 context = vm.createContext({
                     console: console,
                     Vow: vow,
-                    util: util,
                     req: req
                 });
 

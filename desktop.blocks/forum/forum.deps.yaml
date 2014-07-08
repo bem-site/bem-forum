@@ -7,14 +7,15 @@
 - block: events
   elem: channels
 
+- block: spin
+  mods: { theme: 'normal' }
+- block: jquery
+- block: forum-highlightjs
 - block: forum-content
 - block: forum-sidebar
 - block: forum-column
 - block: forum-line
-- block: jquery
 - block: forum-header
-- block: spin
-  mods: { theme: 'normal' }
 
 - elems:
   - add-body

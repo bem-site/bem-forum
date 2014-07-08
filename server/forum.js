@@ -6,6 +6,7 @@ var _ = require('lodash'),
     auth = require('./auth'),
     template = require('./template'),
     routes = require('./routes'),
+    util = require('./util'),
 
     baseUrl = '/forum/';
 
@@ -107,7 +108,7 @@ module.exports = function(pattern, options) {
 
             return vow.all(promises).then(function(values) {
                 req.__data = req.__data || {};
-                req.__data.forum = values;
+                req.__data.forum = _.extend(values, { util: util });
 
                 return next();
             });
