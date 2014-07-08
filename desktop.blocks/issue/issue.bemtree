@@ -346,7 +346,8 @@ block('issue')(
     elem('body')(
         content()(function() {
             var text = this._issue.body;
-            return this._forum.util.mdToHtml(text);
+//            return text;
+            return req.util.mdToHtml(text);
         })
     ),
 

@@ -71,7 +71,10 @@ module.exports = function(pattern, options) {
         options = (isGetRequest || isDeleteRequest ? query : req.body) || {};
 
         // for access in templates
-        req.forumUrl = baseUrl;
+        req = _.extend(req, {
+            forumUrl: baseUrl,
+            util: util
+        });
 
         var templateCtx = {
             getIssues:     { block: 'forum-issues' },
@@ -108,7 +111,7 @@ module.exports = function(pattern, options) {
 
             return vow.all(promises).then(function(values) {
                 req.__data = req.__data || {};
-                req.__data.forum = _.extend(values, { util: util });
+                req.__data.forum = values;
 
                 return next();
             });
