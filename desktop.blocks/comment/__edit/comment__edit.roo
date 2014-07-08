@@ -1,4 +1,9 @@
 .comment__edit
 {
     margin-left: 10px;
+
+    &:focus
+    {
+        outline: none;
+    }
 }

@@ -2,3 +2,4 @@
   mods: { action: remove, hover: opacity, size: 16 }
 
 - block: link
+  mods: { pseudo: true }

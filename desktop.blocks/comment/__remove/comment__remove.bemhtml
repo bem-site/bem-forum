@@ -2,8 +2,9 @@ block('comment').elem('remove')(
     def()(function() {
         return applyCtx({
             block: 'link',
-            url: '#',
             title: 'Удалить ответ',
+            mods: { pseudo: true },
+            js: { action: 'remove' },
             content: {
                 block: 'icon',
                 mods: { action: 'remove', size: '16', hover: 'opacity' }
