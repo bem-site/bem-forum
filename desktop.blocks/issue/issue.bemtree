@@ -176,7 +176,7 @@ block('issue')(
                                 {
                                     block: 'link',
                                     mix: { block: this.block, elem: 'title' },
-                                    url: req.baseUrl + '/issues/' + issue.number + '/',
+                                    url: req.forumUrl + 'issues/' + issue.number + '/',
                                     title: issue.title,
                                     content: issue.title
                                 },

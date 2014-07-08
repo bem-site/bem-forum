@@ -35,6 +35,9 @@ block('forum')(
 
     elem('wrap-content')(
         content()(function() {
+
+            logger.info('REQ FORUM URL', req.forumUrl);
+
             return [
                 {
                     block: 'forum-content',

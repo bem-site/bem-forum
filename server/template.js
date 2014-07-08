@@ -1,4 +1,5 @@
-var path = require('path'),
+var u = require('util'),
+    path = require('path'),
     vm = require('vm'),
 
     vow = require('vow'),
@@ -7,9 +8,21 @@ var path = require('path'),
     stringify = require('json-stringify-safe'),
     util = require('./util');
 
-var targets = {
-    bemtree: 'desktop.bundles/index/index.min.bemtree.js',
-    bemhtml: 'desktop.bundles/index/index.min.bemhtml.js'
+var targets;
+
+exports.init = function(options) {
+    var t = options.template;
+    targets = {
+        bemtree: u.format('%s.bundles/%s/%s.bemtree.js', t.level, t.bundle, t.bundle),
+        bemhtml: u.format('%s.bundles/%s/%s.bemhtml.js', t.level, t.bundle, t.bundle)
+    };
+
+    if(t.prefix) {
+        targets = Object.keys(targets).reduce(function(prev, item) {
+            prev[item] = path.join(t.prefix, targets[item]);
+            return prev;
+        }, {})
+    }
 };
 
 /**

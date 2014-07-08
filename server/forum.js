@@ -7,7 +7,7 @@ var _ = require('lodash'),
     template = require('./template'),
     routes = require('./routes'),
 
-    baseUrl = '/forum';
+    baseUrl = '/forum/';
 
 module.exports = function(pattern, options) {
 
@@ -15,6 +15,7 @@ module.exports = function(pattern, options) {
 
     routes.init(baseUrl);
     auth.init(options);
+    template.init(options);
 
     github.init(options).addDefaultAPI();
 
@@ -53,7 +54,7 @@ module.exports = function(pattern, options) {
 
         // for all non get requests and when forum token cookie is not exists
         // send request for user authorization
-        if((!isGetRequest || 'auth' === action) && !req.cookies['forum_token']) {
+        if((!isGetRequest || 'auth' === action) && (!req.cookies || !req.cookies['forum_token'])) {
             return auth.sendAuthRequest(req, res);
         }
 

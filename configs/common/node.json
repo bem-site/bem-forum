@@ -10,6 +10,10 @@
         "storage": {
             "user": "tavriaforever",
             "repo": "bem-forum-tests"
+        },
+        "template": {
+            "level": "desktop",
+            "bundle": "index"
         }
     }
 }
