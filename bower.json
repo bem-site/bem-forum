@@ -1,15 +1,22 @@
 {
-  "author": "tormozz48",
-  "name": "bem-forum-stub",
-  "email": "tormozz48@gmail.com",
-  "version": "0.0.0",
+  "name": "bem-forum",
+  "description": "The forum built on BEM methodology and uses github issues as storage.",
+  "version": "0.0.1",
+  "authors": [
+      { "name": "bemer", "email": "bemer@yandex-team.ru" },
+      { "name": "tavria", "email": "tavria@yandex-team.ru" }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bem/bem-forum.git"
+  },
   "ignore": [
-    ".bem/cache",
+    ".enb/tmp",
     "node_modules",
     "libs"
   ],
   "dependencies": {
-    "bem-core": "v2.2.3",
-    "bem-components": "git://github.com/bem/bem-components.git#2af26c7c53a2e4ceb0dd1bf05cbc2a750ee23224"
+    "bem-core": "git://github.com/bem/bem-core.git#v2.3.0",
+    "bem-components": "git://github.com/bem/bem-components.git#74195dc46a12b375393c9ca1d5484d161a83c047"
   }
 }
