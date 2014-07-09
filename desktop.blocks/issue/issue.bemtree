@@ -273,6 +273,7 @@ block('issue')(
                     },
                     {
                         block: 'forum-labels',
+                        js: { forumUrl: req.forumUrl },
                         mods: { inline: true, view: 'checkbox' },
                         mix: [{ block: 'issue', elem: 'edit-labels' }],
                         content: [
