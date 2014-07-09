@@ -1,9 +1,10 @@
 block('issue')(
     js()(true),
-    match(function() { return this.ctx.data || this.ctx.issue; }).js()(function() {
-        var issue = this.ctx.data || this.ctx.issue,
+    match(function() { return this.ctx.data }).js()(function() {
+        var issue = this.ctx.data,
             labels = issue.labels,
-            labelsName = [];
+            labelsName = [],
+            forumUrl = this.ctx.forumUrl;
 
         labels.forEach(function(label) {
             labelsName.push(label.name);
@@ -12,7 +13,7 @@ block('issue')(
         return {
             number: issue.number,
             labels: labelsName,
-            forumUrl: this.ctx.forumUrl
+            forumUrl: forumUrl
         };
     })
 );

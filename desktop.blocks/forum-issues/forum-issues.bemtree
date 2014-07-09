@@ -10,12 +10,8 @@ block('forum-issues')(
 
             return {
                 block: 'issue',
-                issue: issue,
-                js: {
-                    number: issue.number,
-                    labels: labelsName,
-                    forumUrl: req.forumUrl
-                }
+                data: issue,
+                forumUrl: req.forumUrl
             }
         });
     })
