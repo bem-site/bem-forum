@@ -1,5 +1,8 @@
 .issue_remove-animate_start
 {
-    background-color: #ffeba0;
-    padding: 20px;
+    .issue__wrap
+    {
+        background-color: #ffeba0;
+        padding: 20px;
+    }
 }

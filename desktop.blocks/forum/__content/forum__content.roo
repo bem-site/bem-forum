@@ -1,4 +1,0 @@
-.forum__content
-{
-    border-right: 1px solid $color-grey;
-}
