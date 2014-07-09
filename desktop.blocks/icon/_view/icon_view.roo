@@ -1,0 +1,17 @@
+.icon_view
+{
+    &_comments
+    {
+        background: url('icon_view_comments.svg') no-repeat;
+    }
+
+    &_forum
+    {
+        background: url('icon_view_forum.svg') no-repeat;
+    }
+
+    &_quote
+    {
+        background: url('icon_view_quote.svg') no-repeat;
+    }
+}

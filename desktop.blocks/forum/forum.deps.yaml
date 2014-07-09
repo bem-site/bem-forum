@@ -17,6 +17,10 @@
 - block: forum-line
 - block: forum-header
 
+- block: icon
+  mods: { view: quote }
+  required: true
+
 - elems:
   - add-body
   - add-form
