@@ -3,6 +3,5 @@
     min-height: 40px;
     background-color: $color-background;
     border-bottom: 1px solid $color-grey;
-    margin-bottom: 30px;
     padding: 10px 15px;
 }

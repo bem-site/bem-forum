@@ -1,2 +1,3 @@
 - block: menu
   mods: { theme: normal, select: check }
+  required: true

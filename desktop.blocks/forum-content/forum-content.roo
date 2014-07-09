@@ -1,4 +1,5 @@
 .forum-content
 {
     position: relative;
+    padding-top: 20px;
 }

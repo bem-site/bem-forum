@@ -2,8 +2,7 @@
 {
     transition: background-color .3s ease-in;
 
-    &_progress,
-    .spin
+    &_progress
     {
         position: absolute;
         top: 0;
@@ -17,5 +16,15 @@
     {
         background-color: rgba(255,255,255, 0.8);
         z-index: 999;
+
+        .spin
+        {
+            position: absolute;
+            top: 150px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: 0 auto;
+        }
     }
 }

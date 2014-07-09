@@ -1,0 +1,7 @@
+.forum-labels_view_menu
+{
+    .menu_size_m .menu-item_theme_normal
+    {
+        /*padding: 0 15px;*/
+    }
+}
