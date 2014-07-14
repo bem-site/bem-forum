@@ -21,7 +21,7 @@ modules.define('forum-content', ['i-bem__dom', 'jquery', 'events__channels'], fu
         },
 
         _loadIssues: function(e, data) {
-            var url = 'issues?';
+            var url = 'issues/?';
 
             if(data) {
                 if(data.labels) {

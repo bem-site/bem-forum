@@ -22,7 +22,6 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             this._comments = this.findBlockInside('comments');
             this._switcher = this.findBlockInside('comments-switcher', 'button');
             this._spin = this.findBlockInside('spin', 'spin');
-            this._issueLink = this.findBlockInside('title', 'link');
 
             return this;
         },
@@ -49,18 +48,13 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 this._comments.on('comments:loading', this._toggleLoadersUi, this);
                 this._comments.on('comments:complete', this._toggleLoadersUi, this);
             }
-//
-//            this._issueLink.on('click', this._onClickTitle, this);
+
             this._subscribeOwnerActions();
 
             this.bindTo('label', 'click', this._onClickLabel);
 
             return this;
         },
-
-//        _onClickTitle: function(e) {
-//            channels('load').emit('issue', { url: e.target.domElem.data('url') + '?view=full' });
-//        },
 
         _subscribeOwnerActions: function() {
             this.bindTo(this.findElem('edit'), 'click', this._onClickEdit);
@@ -85,7 +79,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                     dataType: 'html',
                     type: 'PUT',
                     data: [{ name: 'state', value: 'closed' }, { name: 'number', value: this.params.number }],
-                    url: this.params.forumUrl + 'issues/' + this.params.id + '?__mode=json'
+                    url: this.params.forumUrl + 'issues/' + this.params.id + '/?__mode=json'
                 }).done(function() {
                     _this._endAnimateRemove();
 
@@ -145,7 +139,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 dataType: 'html',
                 type: 'PUT',
                 data: data,
-                url: this.params.forumUrl + 'issues/' + this.params.number + '?__mode=content'
+                url: this.params.forumUrl + 'issues/' + this.params.number + '/?__mode=content'
             }).done(function(html) {
                 _this._render(html);
 

@@ -5,7 +5,7 @@ block('forum-header').mod('view', 'auth-no')(
             applyNext(),
             {
                 block : 'button',
-                url: 'auth',
+                url: 'auth/',
                 text : 'Авторизоваться (github.com)',
                 mods : { theme : 'normal', size : 'm', action: true, type: 'link' },
                 mix: { block: 'forum-header', elem: 'auth-button' }

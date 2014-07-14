@@ -32,7 +32,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                 dataType: 'html',
                 type: 'POST',
                 data: data,
-                url: forumUrl + 'issues'
+                url: forumUrl + 'issues/'
             }).done(function(html) {
                 _this._render(html, 'prepend');
 

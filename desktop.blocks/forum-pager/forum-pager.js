@@ -18,7 +18,7 @@ modules.define('forum-pager', ['i-bem__dom', 'jquery'], function(provide, BEMDOM
             this._xhr = $.ajax({
                 type: 'GET',
                 dataType: 'json',
-                url: 'repo?__mode=json',
+                url: 'repo/?__mode=json',
                 cache: false,
                 success: this._onSuccess.bind(this)
             });
