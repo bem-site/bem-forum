@@ -29,4 +29,4 @@
   - username
   - usertext
 
-- mods: { remove-animate: [start, end], view: full }
+- mods: { remove-animate: start }

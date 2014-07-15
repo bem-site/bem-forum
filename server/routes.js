@@ -10,7 +10,7 @@ exports.init = function(baseUrl) {
     //remove trailing slash
     //var url = baseUrl.replace(/\/$/, '');
 
-    var url = /\/$/.test(baseUrl) ? baseUrl : baseUrl + '/';
+    var url = baseUrl;
 
     susanin = [
         { name: 'index',         data: { method: 'GET' },    pattern: url },
