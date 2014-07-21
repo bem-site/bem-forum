@@ -6,7 +6,7 @@
     {
         position: fixed;
         top: 0;
-        right: 236px;
+        right: 208px;
         bottom: 0;
         left: 0;
         margin: auto;
@@ -15,7 +15,7 @@
     &_progress
     {
         background-color: rgba(255,255,255, 0.8);
-        z-index: 999;
+        z-index: $z-index;
 
         .spin
         {

@@ -1,5 +1,7 @@
 .forum-header
 {
+    position: relative;
+    z-index: $z-index + 1;
     min-height: 40px;
     background-color: $color-background;
     border-bottom: 1px solid $color-grey;

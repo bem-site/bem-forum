@@ -69,10 +69,6 @@ modules.define(
             } else {
                 location.change({ params: { labels: this._labels.join(',') }, forceParams: true });
             }
-
-            channels('load').emit('issues', { labels: this._labels });
-
-            return this;
         }
     }));
 });

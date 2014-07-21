@@ -70,6 +70,8 @@ module.exports = function(pattern, options) {
 
         options = (isGetRequest || isDeleteRequest ? query : req.body) || {};
 
+//        options.per_page = 5;
+
         // for access in templates
             req = _.extend(req, {
             forumUrl: baseUrl,
@@ -103,7 +105,7 @@ module.exports = function(pattern, options) {
                     view: 'issue'
                 });
             } else {
-//                options.per_page = 2;
+
 
                 _.extend(promises, {
                     issues: github.getIssues.call(github, token, options),
@@ -118,7 +120,9 @@ module.exports = function(pattern, options) {
                 return next();
             });
         } else {
-            // ajax get data
+            var result = {};
+
+            // get data by ajax
             return github[action].call(github, token, options)
                 .then(function(data) {
                     if('json' === query.__mode) {
@@ -126,12 +130,20 @@ module.exports = function(pattern, options) {
                         return;
                     }
 
-//                  if(!data.length || data.length < 30) res.end();
+                    // check if current page is last for paginator
+                    if(action === 'getIssues') {
+                        result.isLastPage = (!data.length || data.length < 30)
+                    }
 
                     return template.run(_.extend(templateCtx[action] || {}, { data: data }), req);
                 })
                 .then(function(html) {
-                    res.end(html);
+                    if(action === 'getIssues') {
+                        result.html = html;
+                        res.json(result);
+                    } else {
+                        res.end(html);
+                    }
                 })
                 .fail(function(err) {
                     res.end(err);

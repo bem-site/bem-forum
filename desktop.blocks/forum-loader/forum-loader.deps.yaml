@@ -1,3 +1,6 @@
+- block: forum-variables
+  required: true
+
 - block: spin
   mods: { theme: normal }
 
