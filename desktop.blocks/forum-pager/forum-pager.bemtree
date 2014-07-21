@@ -1,22 +1,24 @@
 block('forum-pager')(
-    def()(function() {
-        return this.doAsync(function() {
-            var defer = Vow.defer(),
-                promise = defer.promise;
-
-            github.get
-        });
-    }),
-
     content()(function() {
-        return [
-            {
-                elem: 'title',
-                content: 'Страницы'
-            },
-            {
-                elem: 'group'
-            }
-        ]
+        return {
+            elem: 'wrap',
+            content: [
+                {
+                    block : 'button',
+                    mods : { theme : 'normal', size : 'xl' },
+                    mix: { block: 'forum-pager', elem: 'button' },
+                    text: 'Показать еще',
+                    icon:  {
+                        block : 'icon',
+                        mods : { view : 'more', size: 16 }
+                    }
+                },
+                {
+                    block: 'spin',
+                    mods: { theme: 'normal', size: 'xl' },
+                    mix: { block: 'forum-pager', elem: 'spin' }
+                }
+            ]
+        };
     })
 );

@@ -1,4 +1,8 @@
-modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], function(provide, $, channels, nextTick, Labels) {
+modules.define(
+    'forum-labels',
+    ['jquery', 'events__channels', 'next-tick', 'location', 'objects'],
+    function(provide, $, channels, nextTick, location, objects, Labels) {
+
     provide(Labels.decl({ modName: 'view', modVal: 'menu' }, {
 
         onSetMod: {
@@ -60,7 +64,13 @@ modules.define('forum-labels', ['jquery', 'events__channels', 'next-tick'], func
                 });
             });
 
-            channels('load').emit('issues', { labels: _this._labels });
+            if(objects.isEmpty(this._labels)) {
+                location.change({ forceParams: true });
+            } else {
+                location.change({ params: { labels: this._labels.join(',') }, forceParams: true });
+            }
+
+            channels('load').emit('issues', { labels: this._labels });
 
             return this;
         }

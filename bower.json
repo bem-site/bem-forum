@@ -23,7 +23,8 @@
   ],
   "dependencies": {
     "bem-core": "git://github.com/bem/bem-core.git#v2.3.0",
-    "bem-components": "git://github.com/bem/bem-components.git#74195dc46a12b375393c9ca1d5484d161a83c047"
+    "bem-components": "git://github.com/bem/bem-components.git#74195dc46a12b375393c9ca1d5484d161a83c047",
+    "bem-history": "git://github.com/bem/bem-history.git#v2"
   },
   "resolutions": {
     "bem-core": "v2.3.0"

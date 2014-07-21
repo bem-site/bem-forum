@@ -4,7 +4,11 @@
 - block: forum-issues
 - block: forum-loader
 - block: forum-pager
+- block: location
 
-- elem: container
+- elems:
+  - container
+  - left
+  - right
 
 - mods: { view: [issues, issue] }

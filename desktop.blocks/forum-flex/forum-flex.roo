@@ -2,4 +2,9 @@
 {
     display: flex;
     align-items: center;
+
+    &_align_start
+    {
+        align-items: flex-start;
+    }
 }

@@ -71,7 +71,7 @@ module.exports = function(pattern, options) {
         options = (isGetRequest || isDeleteRequest ? query : req.body) || {};
 
         // for access in templates
-        req = _.extend(req, {
+            req = _.extend(req, {
             forumUrl: baseUrl,
             util: util
         });
@@ -90,9 +90,9 @@ module.exports = function(pattern, options) {
         if(!req.xhr) {
             // collect all required data for templates
             var promises = {
-                repo: github.getRepoInfo.call(github, token, options),
-                user: github.getAuthUser.call(github, token, options),
-                labels: github.getLabels.call(github, token, options)
+                repo: github.getRepoInfo.call(github, token, {}),
+                user: github.getAuthUser.call(github, token, {}),
+                labels: github.getLabels.call(github, token, {})
             };
 
             if(options.number) {
@@ -103,6 +103,8 @@ module.exports = function(pattern, options) {
                     view: 'issue'
                 });
             } else {
+//                options.per_page = 2;
+
                 _.extend(promises, {
                     issues: github.getIssues.call(github, token, options),
                     view: 'issues'
@@ -123,6 +125,8 @@ module.exports = function(pattern, options) {
                         res.json(data);
                         return;
                     }
+
+//                  if(!data.length || data.length < 30) res.end();
 
                     return template.run(_.extend(templateCtx[action] || {}, { data: data }), req);
                 })

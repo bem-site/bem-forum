@@ -1,0 +1,5 @@
+.forum-pager__wrap
+{
+    margin: 0 auto;
+    display: flex;
+}

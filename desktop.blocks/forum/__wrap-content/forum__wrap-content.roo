@@ -1,7 +1,0 @@
-.forum__wrap-content
-{
-    height: 100%;
-    margin-top: -81px;
-    padding-top: 81px;
-    box-sizing: border-box;
-}

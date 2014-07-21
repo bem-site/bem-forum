@@ -1,4 +1,10 @@
 .forum-pager__button
 {
     margin-right: 10px;
+
+    &.button_size_xl .icon
+    {
+        margin: 0 10px 0 18px;
+        width: 16px;
+    }
 }

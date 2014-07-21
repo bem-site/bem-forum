@@ -1,3 +1,0 @@
-block('forum-pager').elem('title')(
-    tag()('h4')
-);

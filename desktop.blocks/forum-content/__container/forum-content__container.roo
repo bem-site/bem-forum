@@ -1,5 +1,5 @@
 .forum-content__container
 {
+    width: 100%;
     border-right: 1px solid #E1E1E1;
-    padding-top: 20px;
 }

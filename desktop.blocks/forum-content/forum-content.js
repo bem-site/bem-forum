@@ -1,4 +1,8 @@
-modules.define('forum-content', ['i-bem__dom', 'jquery', 'events__channels'], function(provide, BEMDOM, $, channels) {
+modules.define(
+    'forum-content',
+    ['i-bem__dom', 'jquery', 'events__channels', 'location'],
+    function(provide, BEMDOM, $, channels, location) {
+
     provide(BEMDOM.decl(this.name, {
         onSetMod: {
             js: {
@@ -21,15 +25,62 @@ modules.define('forum-content', ['i-bem__dom', 'jquery', 'events__channels'], fu
         },
 
         _loadIssues: function(e, data) {
-            var url = 'issues/?';
+            var uri = location.getUri(),
+                url = 'issues/',
+                options = {};
 
-            if(data) {
-                if(data.labels) {
-                    url = url + '&labels=' + data.labels.join(',');
-                }
-            }
+            if(!data) return;
 
-            this._doRequest(url);
+            console.log('query', uri.getQuery());
+
+            options.url  = url + uri.getQuery();
+
+//            if(data.labels && data.labels.length) {
+//                var labels = data.labels.join(',');
+//
+////                !this._pageLabel ? this._pageLabel = 1 : this._pageLabel += 1;
+//
+//                location.change({
+//                    params: {
+//                        per_page: 2,
+//                        page: 1,
+//                        labels: labels
+//                    },
+//                    forceParams: true
+//                });
+//
+//                console.log('uri get', uri.getQuery());
+//
+//                options = {
+//                    url: url + uri.getQuery(),
+//                    type: 'update'
+//                };
+//            } else if (data.page) {
+//                var page = data.page;
+//
+//                location.change({ params: { per_page: 2, page: page } });
+//
+//                options = {
+//                    url: url + uri.getQuery(),
+//                    type: 'append'
+//                };
+//
+//                console.log('location.change', uri.getQuery());
+//
+//                return;
+//
+//            } else {
+//                location.change({ params: { per_page: 2, page: 1 }});
+//
+//                options = {
+//                    url: url + uri.getQuery(),
+//                    type: 'update'
+//                };
+//            }
+
+//            return;
+
+            this._doRequest(options);
         },
 
         _loadIssue: function(e, data) {
@@ -41,20 +92,22 @@ modules.define('forum-content', ['i-bem__dom', 'jquery', 'events__channels'], fu
             channels('load').on('issue', this._loadIssue, this);
         },
 
-        _doRequest: function(url) {
+        _doRequest: function(options) {
             this.setMod('loading', true);
-            this._sendRequest(url);
+            this._sendRequest(options);
         },
 
-        _sendRequest: function(url) {
+        _sendRequest: function(options) {
             this._abortRequest();
 
             this._xhr = $.ajax({
                 type: 'GET',
                 dataType: 'html',
-                url: this.params.forumUrl + url,
+                url: this.params.forumUrl + options.url,
                 cache: false,
-                success: this._onSuccess.bind(this)
+                context: this
+            }).done(function(result) {
+                this._onSuccess(result, options.type)
             });
         },
 
@@ -62,9 +115,11 @@ modules.define('forum-content', ['i-bem__dom', 'jquery', 'events__channels'], fu
             this._xhr && this._xhr.abort();
         },
 
-        _onSuccess: function(html) {
+        _onSuccess: function(html, type) {
+            if(!type) type = 'update';
+
             this.delMod('loading');
-            this._render(html, 'update', 'container');
+            this._render(html, type, 'container');
         },
 
         _render: function(html, addMethod, elem) {

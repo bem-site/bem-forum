@@ -1,18 +1,34 @@
 block('forum-content').mod('view', 'issues')(
     content()(function() {
         return [
-            applyNext(),
-            { elem: 'container' },
+            {
+                elem: 'wrap',
+                mix: { block: 'forum-flex', mods: { align: 'start' } },
+                content: [
+                    {
+                        elem: 'left',
+                        content: [
+                            {
+                                block: 'forum-loader'
+                            },
+                            {
+                                elem: 'container',
+                                content: {
+                                    block: 'forum-issues',
+                                    data: this._forum.issues
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        elem: 'right',
+                        content: {
+                            block: 'forum-sidebar'
+                        }
+                    }
+                ]
+            },
             { block: 'forum-pager' }
         ]
-    }),
-
-    elem('container')(
-        content()(function() {
-            return {
-                block: 'forum-issues',
-                data: this._forum.issues
-            }
-        })
-    )
+    })
 );

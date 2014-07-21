@@ -5,8 +5,12 @@ block('forum')(
 
     content()(function() {
         return {
-            elem: 'wrap-content',
-            mix: { block: 'forum-line' }
+            block: 'forum-content',
+            mods: { view: this._forum.view },
+            js: { forumUrl: req.forumUrl },
+            mix: [
+                { block: 'forum', elem: 'content' }
+            ]
         }
     }),
 
@@ -31,34 +35,5 @@ block('forum')(
             },
             applyNext()
         ]
-    }),
-
-    elem('wrap-content')(
-        content()(function() {
-            return [
-                {
-                    block: 'forum-content',
-                    mods: { view: this._forum.view },
-                    js: { forumUrl: req.forumUrl },
-                    mix: [
-                        { block: 'forum', elem: 'content' },
-                        { block: 'forum-column', mods: { side: 'left' } }
-                    ]
-                },
-                {
-                    block: 'forum-sidebar',
-                    mix: [
-                        {
-                            block: 'forum-column',
-                            mods: { side: 'right', gap: true }
-                        },
-                        {
-                            block: 'forum',
-                            elem: 'sidebar'
-                        }
-                    ]
-                }
-            ]
-        })
-    )
+    })
 );

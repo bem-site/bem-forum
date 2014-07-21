@@ -10,6 +10,11 @@
         background: url('icon_view_forum.svg') no-repeat;
     }
 
+    &_more
+    {
+        background: url('icon_view_more.svg') no-repeat;
+    }
+
     &_quote
     {
         background: url('icon_view_quote.svg') no-repeat;
