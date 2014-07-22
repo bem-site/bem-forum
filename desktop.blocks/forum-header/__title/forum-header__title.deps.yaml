@@ -1,1 +1,5 @@
 - block: link
+
+- block: icon
+  mods: { view: comments, size: 18 }
+  required: true

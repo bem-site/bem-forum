@@ -5,5 +5,5 @@
     min-height: 40px;
     background-color: $color-background;
     border-bottom: 1px solid $color-grey;
-    padding: 10px 15px;
+    padding: 5px 15px;
 }

@@ -1,8 +1,6 @@
 .forum-header_view_auth
 {
     align-items: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
 
     .forum-user
     {
