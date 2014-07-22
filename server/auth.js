@@ -75,7 +75,7 @@ module.exports = {
                 .addUserAPI(access_token)
                 .getAuthUser(access_token, {})
                 .then(function(data) {
-                    var expires = new Date(Date.now() + 86400000);
+                    var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
 
                     res.cookie('forum_token', access_token, { expires: expires });
                     res.cookie('forum_username', data.login, { expires: expires });

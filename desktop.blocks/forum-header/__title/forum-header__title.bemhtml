@@ -3,11 +3,22 @@ block('forum-header').elem('title')(
         return applyCtx({
             block: 'link',
             url: this.ctx.url,
-            content: {
-                tag: 'h1',
-                content: this.ctx.content
-            },
-            mix: { block: 'forum-header', elem: 'title' }
+            content: [
+                {
+                    block: 'icon',
+                    mods: { view: 'logo' }
+                },
+                {
+                    block: 'icon',
+                    mods: { view: 'comments', size: 18 }
+                },
+                {
+                    tag: 'h1',
+                    content: this.ctx.content
+                }
+            ],
+            mix: { block: 'forum-header', elem: 'title' },
+            attrs: { 'data-status': 'Бета' }
         })
     })
 );

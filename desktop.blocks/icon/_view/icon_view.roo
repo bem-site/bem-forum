@@ -19,4 +19,9 @@
     {
         background: url('icon_view_quote.svg') no-repeat;
     }
+
+    &_logo
+    {
+        background: url('icon_view_logo.svg') no-repeat;
+    }
 }
