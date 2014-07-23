@@ -1,5 +1,6 @@
 var _ = require('lodash'),
     vow = require('vow'),
+    CronJob = require('cron').CronJob,
 
     github = require('./github'),
     archive = require('./archive');
@@ -14,7 +15,10 @@ var MAX_LIMIT = 100,
         }
     },
     isCacheEnabled = false,
-    issues = [];
+    issues = [],
+    opts,
+    job;
+
 
 /**
  * Loads All issues for configured github repository and returns them
@@ -82,20 +86,41 @@ function getFnName(fn) {
     })[0];
 }
 
+/**
+ * Loads issues from gh and archive file and unite them into single array
+ * @param o - {Object} forum configuration object
+ * @returns {*}
+ */
+function load(o) {
+    console.log('LOAD MODEL');
+
+    return vow.all([
+        loadAllGithubIssues(),
+        loadArchiveIssues(o)
+    ]).spread(function(ghIssues, archIssues) {
+        issues = ghIssues.concat(archIssues);
+    });
+}
+
 module.exports = {
     init: function(options) {
         if(!options.cache) {
             return;
         }
 
+        opts = options;
         isCacheEnabled = true;
 
-        return vow.all([
-            loadAllGithubIssues(),
-            loadArchiveIssues(options)
-        ]).spread(function(ghIssues, archIssues) {
-            issues = ghIssues.concat(archIssues);
-        });
+        if(options.update) {
+            job = new CronJob({
+                cronTime: options.update,
+                onTick: function() { load(opts); },
+                start: false
+            });
+            job.start();
+        }
+
+        return load(opts);
     },
 
     /**
