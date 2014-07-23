@@ -326,7 +326,17 @@ module.exports = {
      * @returns {*}
      */
     deleteComment: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github[getFnName(arguments.callee)].call(github, token, options).then(function(res) {
+            if(isEnabled()) {
+                var existed = issues.filter(function(item) {
+                    return item.number == options.number;
+                })[0];
+
+                existed && (issues[issues.indexOf(existed)].comments--);
+            }
+
+            return vow.resolve(res);
+        });
     },
 
     /**
