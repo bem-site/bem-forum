@@ -123,6 +123,11 @@ module.exports = {
             page,
             limit;
 
+        //show only open issues and issues from archive
+        result = result.filter(function(item) {
+            return item.state !== 'closed';
+        });
+
         //filter by issue labels
         if(options.labels && options.labels.length) {
             var filterLabels = options.labels.split(',');
