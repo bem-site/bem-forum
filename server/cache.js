@@ -245,9 +245,7 @@ module.exports = {
                         return item.number == issue.number;
                     })[0];
 
-                    if(existed) {
-                        issues[issues.indexOf(existed)] = issue;
-                    }
+                    existed && (issues[issues.indexOf(existed)] = issue);
                 }
 
                 return vow.resolve(issue);
@@ -295,7 +293,17 @@ module.exports = {
      * @returns {*}
      */
     createComment: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github[getFnName(arguments.callee)].call(github, token, options).then(function(comment) {
+            if(isEnabled()) {
+                var existed = issues.filter(function(item) {
+                    return item.number == options.number;
+                })[0];
+
+                existed && (issues[issues.indexOf(existed)].comments++);
+            }
+
+            return vow.resolve(comment);
+        });
     },
 
     /**
