@@ -201,9 +201,8 @@ module.exports = {
 
         var result = issues.filter(function(item) {
             return item.number == options.number;
-        });
+        })[0];
 
-        result = result.length ? result[0] : null;
         return vow.resolve(result);
     },
 
@@ -247,7 +246,7 @@ module.exports = {
                     })[0];
 
                     if(existed) {
-                        existed = issue;
+                        issues[issues.indexOf(existed)] = issue;
                     }
                 }
 
