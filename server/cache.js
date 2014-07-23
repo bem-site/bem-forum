@@ -9,7 +9,7 @@ var MAX_LIMIT = 100,
         PAGE: 1,
         LIMIT: 30,
         SORT: {
-            FIELD: 'created',
+            FIELD: 'updated',
             DIRECTION: 'desc'
         }
     },
@@ -148,16 +148,22 @@ module.exports = {
                 ? options.direction : DEFAULT.SORT.DIRECTION;
         order = DEFAULT.SORT.DIRECTION === sortDirection ? -1 : 1;
 
-        if('comments' === sortField) {
-            result = result.sort(function(a, b) {
-                return order*(a[sortField] - b[sortField]);
-            });
-        }else {
-            result = result.sort(function(a, b) {
+        result = result.sort(function(a, b) {
+            var an = +a.number,
+                bn = +b.number;
+
+            //separate gh and archive issues
+            if(an*bn < 0) {
+                return bn - an;
+            }
+
+            if('comments' === sortField) {
+                return order*(+a[sortField] - +b[sortField]);
+            }else {
                 return order*((new Date(a[sortField + '_at'])).getTime() -
-                              (new Date(b[sortField + '_at'])).getTime());
-            });
-        }
+                    (new Date(b[sortField + '_at'])).getTime());
+            }
+        });
 
         page = options.page || DEFAULT.PAGE;
         limit = options.per_page || DEFAULT.LIMIT;
