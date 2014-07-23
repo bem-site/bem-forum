@@ -128,9 +128,12 @@ module.exports = {
             var filterLabels = options.labels.split(',');
 
             result = result.filter(function(issueItem) {
-                return _.intersection(filterLabels, issueItem.labels.map(function(labelItem) {
-                    return _.isString(labelItem) ? labelItem : labelItem.name;
-                })).length;
+                var issueLabels = issueItem.labels.map(function(labelItem) {
+                    return labelItem.name || labelItem;
+                });
+                return filterLabels.every(function(filterLabel) {
+                    return issueLabels.indexOf(filterLabel) > -1;
+                });
             });
         }
 
@@ -209,7 +212,14 @@ module.exports = {
      * @returns {*}
      */
     createIssue: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github[getFnName(arguments.callee)].call(github, token, options)
+            .then(function(issue) {
+                if(isEnabled()) {
+                    issues.push(issue);
+                }
+
+                return vow.resolve(issue);
+            });
     },
 
     /**
@@ -224,7 +234,20 @@ module.exports = {
      * @returns {*}
      */
     editIssue: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github[getFnName(arguments.callee)].call(github, token, options)
+            .then(function(issue) {
+                if(isEnabled()) {
+                    var existed = issues.filter(function(item) {
+                        return item.number == issue.number;
+                    })[0];
+
+                    if(existed) {
+                        existed = issue;
+                    }
+                }
+
+                return vow.resolve(issue);
+            });
     },
 
     /**
