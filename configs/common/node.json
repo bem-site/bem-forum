@@ -11,6 +11,8 @@
             "user": "tavriaforever",
             "repo": "bem-forum-tests"
         },
+        "cache": true,
+        "archive": "archive.json",
         "template": {
             "level": "desktop",
             "bundle": "index"
