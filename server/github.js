@@ -6,7 +6,7 @@ var API_CONFIG = {
         version: "3.0.0",
         protocol: "https",
         timeout: 5000,
-        debug: true,
+        debug: false,
         host: "api.github.com"
     },
     options,
@@ -304,6 +304,12 @@ module.exports = {
         return apiCall(token, 'user', 'get', options);
     },
 
+    /**
+     * Returns detail information about github repository
+     * @param token - {String} oauth user token
+     * @param options - {Object} empty object
+     * @returns {*}
+     */
     getRepoInfo: function(token, options) {
         return apiCall(token, 'repos', 'get', options)
     }

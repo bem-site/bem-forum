@@ -1,13 +1,11 @@
 var _ = require('lodash'),
     vow = require('vow'),
     mime = require('mime-types'),
-
-    github = require('./github'),
     auth = require('./auth'),
+    model = require('./model'),
     template = require('./template'),
     routes = require('./routes'),
     util = require('./util'),
-
     baseUrl = '/forum/';
 
 module.exports = function(pattern, options) {
@@ -17,8 +15,7 @@ module.exports = function(pattern, options) {
     routes.init(baseUrl);
     auth.init(options);
     template.init(options);
-
-    github.init(options).addDefaultAPI();
+    model.init(options);
 
     return function(req, res, next) {
         var route = routes.getRoute(req.url, req.method),
@@ -48,7 +45,7 @@ module.exports = function(pattern, options) {
         isGetRequest = 'GET' === method;
         isDeleteRequest = 'DELETE' === method;
 
-        // get access token after redirect from github.com
+        // get access token after redirect
         if('index' === action && query.code) {
             return auth.getAccessToken(req, res, query.code);
         }
@@ -60,7 +57,7 @@ module.exports = function(pattern, options) {
         }
 
         token = req.cookies['forum_token'];
-        token && github.addUserAPI(token);
+        token && model.addUserAPI(token);
 
         if(!action) {
             res.writeHead(500);
@@ -70,10 +67,10 @@ module.exports = function(pattern, options) {
 
         options = (isGetRequest || isDeleteRequest ? query : req.body) || {};
 
-//        options.per_page = 5;
+        // options.per_page = 5;
 
         // for access in templates
-            req = _.extend(req, {
+        req = _.extend(req, {
             forumUrl: baseUrl,
             util: util
         });
@@ -92,38 +89,40 @@ module.exports = function(pattern, options) {
         if(!req.xhr) {
             // collect all required data for templates
             var promises = {
-                repo: github.getRepoInfo.call(github, token, {}),
-                user: github.getAuthUser.call(github, token, {}),
-                labels: github.getLabels.call(github, token, {})
+                repo: model.getRepoInfo(token, {}),
+                user: model.getAuthUser(token, {}),
+                labels: model.getLabels (token, {})
             };
 
             if(options.number) {
                 // get issue data, that have a number option
                 _.extend(promises, {
-                    issue: github.getIssue.call(github, token, options),
-                    comments: github.getComments.call(github, token, options),
+                    issue: model.getIssue(token, options),
+                    comments: model.getComments(token, options),
                     view: 'issue'
                 });
-            } else {
-
-
+            }else {
                 _.extend(promises, {
-                    issues: github.getIssues.call(github, token, options),
+                    issues: model.getIssues(token, options),
                     view: 'issues'
                 });
             }
 
-            return vow.all(promises).then(function(values) {
-                req.__data = req.__data || {};
-                req.__data.forum = values;
+            return vow.all(promises)
+                .then(function(values) {
+                    req.__data = req.__data || {};
+                    req.__data.forum = values;
 
-                return next();
-            });
+                    return next();
+                })
+                .fail(function(err) {
+                    console.err(err);
+                });
         } else {
             var result = {};
 
             // get data by ajax
-            return github[action].call(github, token, options)
+            return model[action](token, options)
                 .then(function(data) {
                     if('json' === query.__mode) {
                         res.json(data);
@@ -131,7 +130,7 @@ module.exports = function(pattern, options) {
                     }
 
                     // check if current page is last for paginator
-                    if(action === 'getIssues') {
+                    if('getIssues' === action) {
                         result.isLastPage = (!data.length || data.length < 30)
                     }
 

@@ -8,3 +8,4 @@ node_modules/
 configs/current
 *.bundles/*/*.*
 !*.bundles/*/*.bemdecl.js
+archive.json
