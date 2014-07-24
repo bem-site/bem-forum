@@ -1,9 +1,8 @@
 var _ = require('lodash'),
     vow = require('vow'),
     mime = require('mime-types'),
-    github = require('./github'),
     auth = require('./auth'),
-    cache = require('./cache'),
+    model = require('./model'),
     template = require('./template'),
     routes = require('./routes'),
     util = require('./util'),
@@ -16,8 +15,7 @@ module.exports = function(pattern, options) {
     routes.init(baseUrl);
     auth.init(options);
     template.init(options);
-    github.init(options).addDefaultAPI();
-    cache.init(options);
+    model.init(options);
 
     return function(req, res, next) {
         var route = routes.getRoute(req.url, req.method),
@@ -47,7 +45,7 @@ module.exports = function(pattern, options) {
         isGetRequest = 'GET' === method;
         isDeleteRequest = 'DELETE' === method;
 
-        // get access token after redirect from github.com
+        // get access token after redirect
         if('index' === action && query.code) {
             return auth.getAccessToken(req, res, query.code);
         }
@@ -59,7 +57,7 @@ module.exports = function(pattern, options) {
         }
 
         token = req.cookies['forum_token'];
-        token && github.addUserAPI(token);
+        token && model.addUserAPI(token);
 
         if(!action) {
             res.writeHead(500);
@@ -91,21 +89,21 @@ module.exports = function(pattern, options) {
         if(!req.xhr) {
             // collect all required data for templates
             var promises = {
-                repo: cache.getRepoInfo(token, {}),
-                user: cache.getAuthUser(token, {}),
-                labels: cache.getLabels (token, {})
+                repo: model.getRepoInfo(token, {}),
+                user: model.getAuthUser(token, {}),
+                labels: model.getLabels (token, {})
             };
 
             if(options.number) {
                 // get issue data, that have a number option
                 _.extend(promises, {
-                    issue: cache.getIssue(token, options),
-                    comments: cache.getComments(token, options),
+                    issue: model.getIssue(token, options),
+                    comments: model.getComments(token, options),
                     view: 'issue'
                 });
             }else {
                 _.extend(promises, {
-                    issues: cache.getIssues(token, options),
+                    issues: model.getIssues(token, options),
                     view: 'issues'
                 });
             }
@@ -124,7 +122,7 @@ module.exports = function(pattern, options) {
             var result = {};
 
             // get data by ajax
-            return cache[action](token, options)
+            return model[action](token, options)
                 .then(function(data) {
                     if('json' === query.__mode) {
                         res.json(data);

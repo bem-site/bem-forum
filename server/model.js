@@ -1,17 +1,19 @@
-var _ = require('lodash'),
+var path = require('path'),
+
+    _ = require('lodash'),
     vow = require('vow'),
+    vowFs = require('vow-fs'),
     CronJob = require('cron').CronJob,
 
-    github = require('./github'),
-    archive = require('./archive');
+    github = require('./github');
 
 var MAX_LIMIT = 100,
     DEFAULT = {
-        PAGE: 1,
-        LIMIT: 30,
-        SORT: {
-            FIELD: 'updated',
-            DIRECTION: 'desc'
+        page: 1,
+        limit: 30,
+        sort: {
+            field: 'updated',
+            direction: 'desc'
         }
     },
     isCacheEnabled = false,
@@ -19,9 +21,64 @@ var MAX_LIMIT = 100,
     opts,
     job;
 
+/**
+ * Archive module
+ * @returns {{init: init, getIssues: getIssues, getComments: getComments}}
+ */
+function archive() {
+    var model = {
+        issues: [],
+        comments: []
+    };
+
+    return {
+        /**
+         * Initializing archive
+         * @param options
+         * @returns {Object}
+         */
+        init: function(options) {
+            return vowFs.read(path.join(process.cwd(), options.archive), 'utf-8')
+                .then(function(data) {
+                    data = JSON.parse(data);
+                    model = Object.keys(data).reduce(function(prev, key) {
+                        prev[key] = data[key];
+                        return prev;
+                    }, {});
+                    return vow.resolve(model);
+                });
+        },
+
+        /**
+         * Return issues array from archive
+         * @returns {Array}
+         */
+        getIssues: function() {
+            return model.issues;
+        },
+
+        /**
+         * Returns comments array for issue with id
+         * @param issueId - {Number} id of issue
+         * @returns {Array}
+         */
+        getComments: function(issueId) {
+            return model.comments
+                .filter(function(item) {
+                    return item.number == issueId;
+                })
+                .sort(function(a, b) {
+                    var da = new Date(a['created_at']),
+                        db = new Date(b['created_at']);
+
+                    return db.getTime() - da.getTime();
+                });
+        }
+    };
+}
 
 /**
- * Loads All issues for configured github repository and returns them
+ * Loads all issues for configured github repository and returns them
  * @returns {Promise}
  */
 function loadAllGithubIssues() {
@@ -38,7 +95,7 @@ function loadAllGithubIssues() {
             }
 
             //calculate number of pages
-            pages = ~~(count/MAX_LIMIT) + (count%MAX_LIMIT > 0 ? 1 : 0);
+            pages = ~~(count/MAX_LIMIT) + (count % MAX_LIMIT > 0 ? 1 : 0);
 
             //create promises for load all issues by pages
             for(var i = 1; i<= pages; i++) {
@@ -55,20 +112,7 @@ function loadAllGithubIssues() {
         });
 }
 
-/**
- * Initialize archive model and loads issues from it
- * @param options - {Object} forum configuration object
- * @returns {*}
- */
-function loadArchiveIssues(options) {
-    return archive
-        .init(options)
-        .then(function() {
-            return archive.getIssues();
-        });
-}
-
-function isEnabled() {
+function isCacheEnabled() {
     return isCacheEnabled;
 }
 
@@ -86,24 +130,21 @@ function getFnName(fn) {
     })[0];
 }
 
-/**
- * Loads issues from gh and archive file and unite them into single array
- * @param o - {Object} forum configuration object
- * @returns {*}
- */
 function load(o) {
-    console.log('LOAD MODEL');
-
-    return vow.all([
-        loadAllGithubIssues(),
-        loadArchiveIssues(o)
-    ]).spread(function(ghIssues, archIssues) {
-        issues = ghIssues.concat(archIssues);
+    return loadAllGithubIssues().then(function(ghIssues) {
+        if(!opts.archive) {
+            issues = ghIssues;
+        }
+        archive().init(o).then(function() {
+            issues = ghIssues.concat(archive().getIssues());
+        });
     });
-}
+};
 
 module.exports = {
     init: function(options) {
+        github.init(options).addDefaultAPI();
+
         if(!options.cache) {
             return;
         }
@@ -137,7 +178,7 @@ module.exports = {
      * @returns {*}
      */
     getIssues: function(token, options) {
-        if(!isEnabled()) {
+        if(!isCacheEnabled()) {
             return github[getFnName(arguments.callee)].call(github, token, options);
         }
 
@@ -176,10 +217,10 @@ module.exports = {
 
         //sort results
         sortField = (options.sort && /^(created|updated|comments)$/.test(options.sort))
-                ? options.sort : DEFAULT.SORT.FIELD;
+                ? options.sort : DEFAULT.sort.field;
         sortDirection = (options.direction && /^(asc|desc)$/.test(options.direction))
-                ? options.direction : DEFAULT.SORT.DIRECTION;
-        order = DEFAULT.SORT.DIRECTION === sortDirection ? -1 : 1;
+                ? options.direction : DEFAULT.sort.direction;
+        order = DEFAULT.sort.direction === sortDirection ? -1 : 1;
 
         result = result.sort(function(a, b) {
             var an = +a.number,
@@ -198,8 +239,8 @@ module.exports = {
             }
         });
 
-        page = options.page || DEFAULT.PAGE;
-        limit = options.per_page || DEFAULT.LIMIT;
+        page = options.page || DEFAULT.page;
+        limit = options.per_page || DEFAULT.limit;
 
         result = result.filter(function(item, index) {
             return index >= limit*(page - 1) && index < limit*page
@@ -216,7 +257,7 @@ module.exports = {
      * @returns {*}
      */
     getIssue: function(token, options) {
-        if(!isEnabled()) {
+        if(!isCacheEnabled()) {
             return github[getFnName(arguments.callee)].call(github, token, options);
         }
 
@@ -243,7 +284,7 @@ module.exports = {
     createIssue: function(token, options) {
         return github[getFnName(arguments.callee)].call(github, token, options)
             .then(function(issue) {
-                if(isEnabled()) {
+                if(isCacheEnabled()) {
                     issues.push(issue);
                 }
 
@@ -265,7 +306,7 @@ module.exports = {
     editIssue: function(token, options) {
         return github[getFnName(arguments.callee)].call(github, token, options)
             .then(function(issue) {
-                if(isEnabled()) {
+                if(isCacheEnabled()) {
                     var existed = issues.filter(function(item) {
                         return item.number == issue.number;
                     })[0];
@@ -295,7 +336,7 @@ module.exports = {
             return github[getFnName(arguments.callee)].call(github, token, options);
         }
 
-        return vow.resolve(archive.getComments(options.number));
+        return vow.resolve(archive().getComments(options.number));
     },
 
     /**
@@ -319,7 +360,7 @@ module.exports = {
      */
     createComment: function(token, options) {
         return github[getFnName(arguments.callee)].call(github, token, options).then(function(comment) {
-            if(isEnabled()) {
+            if(isCacheEnabled()) {
                 var existed = issues.filter(function(item) {
                     return item.number == options.number;
                 })[0];
@@ -352,7 +393,7 @@ module.exports = {
      */
     deleteComment: function(token, options) {
         return github[getFnName(arguments.callee)].call(github, token, options).then(function(res) {
-            if(isEnabled()) {
+            if(isCacheEnabled()) {
                 var existed = issues.filter(function(item) {
                     return item.number == options.number;
                 })[0];
@@ -438,5 +479,9 @@ module.exports = {
      */
     getRepoInfo: function(token, options) {
         return github[getFnName(arguments.callee)].call(github, token, options);
+    },
+
+    addUserAPI: function(token) {
+        return github[getFnName(arguments.callee)].call(github, token);
     }
 };
