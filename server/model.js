@@ -18,6 +18,7 @@ var MAX_LIMIT = 100,
     },
     useCache = false,
     issues = [],
+    archive,
     opts,
     job;
 
@@ -25,57 +26,57 @@ var MAX_LIMIT = 100,
  * Archive module
  * @returns {{init: init, getIssues: getIssues, getComments: getComments}}
  */
-function archive() {
-    var model = {
+var Archive = function() {};
+
+Archive.prototype = {
+    model: {
         issues: [],
         comments: []
-    };
+    },
 
-    return {
-        /**
-         * Initializing archive
-         * @param options
-         * @returns {Object}
-         */
-        init: function(options) {
-            return vowFs.read(path.join(process.cwd(), options.archive), 'utf-8')
-                .then(function(data) {
-                    data = JSON.parse(data);
-                    model = Object.keys(data).reduce(function(prev, key) {
-                        prev[key] = data[key];
-                        return prev;
-                    }, {});
-                    return vow.resolve(model);
-                });
-        },
+    /**
+     * Initializing archive
+     * @param options
+     * @returns {Object}
+     */
+    init: function(options) {
+        return vowFs.read(path.join(process.cwd(), options.archive), 'utf-8')
+            .then(function(data) {
+                data = JSON.parse(data);
+                this.model = Object.keys(data).reduce(function(prev, key) {
+                    prev[key] = data[key];
+                    return prev;
+                }, {});
+                return vow.resolve(this.model);
+            }, this);
+    },
 
-        /**
-         * Return issues array from archive
-         * @returns {Array}
-         */
-        getIssues: function() {
-            return model.issues;
-        },
+    /**
+     * Return issues array from archive
+     * @returns {Array}
+     */
+    getIssues: function() {
+        return this.model.issues;
+    },
 
-        /**
-         * Returns comments array for issue with id
-         * @param issueId - {Number} id of issue
-         * @returns {Array}
-         */
-        getComments: function(issueId) {
-            return model.comments
-                .filter(function(item) {
-                    return item.number == issueId;
-                })
-                .sort(function(a, b) {
-                    var da = new Date(a['created_at']),
-                        db = new Date(b['created_at']);
+    /**
+     * Returns comments array for issue with id
+     * @param issueId - {Number} id of issue
+     * @returns {Array}
+     */
+    getComments: function(issueId) {
+        return this.model.comments
+            .filter(function(item) {
+                return item.number == issueId;
+            })
+            .sort(function(a, b) {
+                var da = new Date(a['created_at']),
+                    db = new Date(b['created_at']);
 
-                    return db.getTime() - da.getTime();
-                });
-        }
-    };
-}
+                return db.getTime() - da.getTime();
+            });
+    }
+};
 
 /**
  * Loads all issues for configured github repository and returns them
@@ -144,8 +145,9 @@ function load() {
         if(!opts.archive) {
             issues = ghIssues;
         }
-        archive().init(opts).then(function() {
-            issues = ghIssues.concat(archive().getIssues());
+        archive = new Archive();
+        archive.init(opts).then(function() {
+            issues = ghIssues.concat(archive.getIssues());
         });
     });
 };
@@ -351,7 +353,7 @@ module.exports = {
             return github[getFnName(arguments.callee)].call(github, token, options);
         }
 
-        return vow.resolve(archive().getComments(options.number));
+        return vow.resolve(archive.getComments(options.number));
     },
 
     /**
