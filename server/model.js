@@ -16,7 +16,7 @@ var MAX_LIMIT = 100,
             direction: 'desc'
         }
     },
-    isCacheEnabled = false,
+    useCache = false,
     issues = [],
     opts,
     job;
@@ -113,7 +113,7 @@ function loadAllGithubIssues() {
 }
 
 function isCacheEnabled() {
-    return isCacheEnabled;
+    return useCache;
 }
 
 /**
@@ -150,7 +150,7 @@ module.exports = {
         }
 
         opts = options;
-        isCacheEnabled = true;
+        useCache = true;
 
         if(options.update) {
             job = new CronJob({
