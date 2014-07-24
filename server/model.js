@@ -112,6 +112,10 @@ function loadAllGithubIssues() {
         });
 }
 
+/**
+ * Function that detects if cache enabled or not
+ * @returns {boolean}
+ */
 function isCacheEnabled() {
     return useCache;
 }
@@ -130,18 +134,29 @@ function getFnName(fn) {
     })[0];
 }
 
-function load(o) {
+/**
+ * Loads all github issues issues
+ * Optionally loads issues from archive file and merge all issues in single array
+ * @returns {*}
+ */
+function load() {
     return loadAllGithubIssues().then(function(ghIssues) {
         if(!opts.archive) {
             issues = ghIssues;
         }
-        archive().init(o).then(function() {
+        archive().init(opts).then(function() {
             issues = ghIssues.concat(archive().getIssues());
         });
     });
 };
 
 module.exports = {
+
+    /**
+     * Initialize forum model
+     * @param options - {Object} forum options
+     * @returns {*}
+     */
     init: function(options) {
         github.init(options).addDefaultAPI();
 
@@ -155,13 +170,13 @@ module.exports = {
         if(options.update) {
             job = new CronJob({
                 cronTime: options.update,
-                onTick: function() { load(opts); },
+                onTick: function() { load(); },
                 start: false
             });
             job.start();
         }
 
-        return load(opts);
+        return load();
     },
 
     /**
