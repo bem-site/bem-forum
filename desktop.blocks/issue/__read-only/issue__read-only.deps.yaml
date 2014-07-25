@@ -1,0 +1,3 @@
+- block: icon
+  mods: { view: read-only, size: 16 }
+  required: true

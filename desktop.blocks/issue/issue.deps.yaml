@@ -24,6 +24,7 @@
   - line
   - number
   - owner-action
+  - read-only
   - remove
   - title
   - username

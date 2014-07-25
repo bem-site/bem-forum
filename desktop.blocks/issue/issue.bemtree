@@ -4,9 +4,12 @@ block('issue')(
 
         var issue = this.ctx.issue || this.ctx.data,
             login = issue.user.login,
-            isOwner = req.cookies['forum_username'] === login;
+            isArchive = issue.labels.some(function(label) {
+                return label.name === 'archive';
+            }),
+            isOwner = isArchive ? false : req.cookies['forum_username'] === login;
 
-        return applyNext({ _issue: issue, _isOwner: isOwner });
+        return applyNext({ _issue: issue, _isOwner: isOwner, _isArchive: isArchive });
     }),
 
     match(function() { return this._issue; }).content()(function() {
@@ -41,6 +44,7 @@ block('issue')(
             var forum = this._forum,
                 issue = forum.issue,
                 comments = forum.comments;
+
 
             return applyCtx([
                 {
@@ -122,12 +126,26 @@ block('issue')(
                             },
                             {
                                 block: 'issue',
+                                elem: 'read-only'
+                            },
+                            {
+                                block: 'issue',
                                 elem: 'owner-action'
                             }
                         ]
                     }
                 }
             ]
+        })
+    ),
+
+    elem('read-only')(
+        match(function() { return !this._isArchive }).def()(function() {
+            return false;
+        }),
+
+        match(function() { return this._isArchive }).content()(function() {
+            return 'Read-only';
         })
     ),
 
@@ -347,8 +365,7 @@ block('issue')(
     elem('body')(
         content()(function() {
             var text = this._issue.body;
-//            return text;
-            return req.util.mdToHtml(text);
+            return this._isArchive ? text : req.util.mdToHtml(text);
         })
     ),
 
@@ -357,7 +374,7 @@ block('issue')(
         match(function() { return !this._forum || !this._forum.comments; }).content()(function() {
             var comments = this._issue.comments;
 
-            if(!req.cookies['forum_username'] && comments === 0) {
+            if((!req.cookies['forum_username'] || this._isArchive) && comments === 0) {
                 return '';
             }
 

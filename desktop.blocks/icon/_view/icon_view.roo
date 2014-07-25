@@ -24,4 +24,9 @@
     {
         background: url('icon_view_logo.svg') no-repeat;
     }
+
+    &_read-only
+    {
+        background: url('icon_view_read-only.svg') no-repeat;
+    }
 }

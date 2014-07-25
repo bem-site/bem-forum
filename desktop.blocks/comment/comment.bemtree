@@ -2,11 +2,12 @@ block('comment')(
 
     match(function() { return this.ctx.comment || this.ctx.data; }).def()(function() {
         var login = (this.ctx.comment && this.ctx.comment.user.login) ||
-                    (this.ctx.data && this.ctx.data.user.login);
+                    (this.ctx.data && this.ctx.data.user.login),
+            comment  = this.ctx.comment || this.ctx.data,
+            isArchive = comment.number && (comment.number < 0),
+            isOwner = req.cookies['forum_username'] === login;
 
-        var isOwner = req.cookies['forum_username'] === login;
-
-        return applyNext({ _isOwner: isOwner });
+        return applyNext({ _isOwner: isOwner, _isArchive: isArchive });
     }),
 
     match(function() { return this.ctx.comment || this.ctx.data; }).content()(function() {
@@ -79,7 +80,7 @@ block('comment')(
             ]
         }),
 
-        match(function() { return this._isOwner; }).content()(function() {
+        match(function() { return this._isOwner && !this._isArchive; }).content()(function() {
             return [
                 applyNext(),
                 {
@@ -142,11 +143,11 @@ block('comment')(
     ),
 
     elem('edit-form')(
-        def()(function() {
+        match(function() { return !this._isOwner; }).def()(function() {
             return '';
         }),
 
-        match(function() { return this._isOwner; }).def()(function() {
+        match(function() { return this._isOwner && !this._isArchive; }).def()(function() {
             return {
                     block: 'forum-form',
                     mods: { visibility: 'hidden' },

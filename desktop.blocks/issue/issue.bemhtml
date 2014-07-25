@@ -13,7 +13,10 @@ block('issue')(
         return {
             number: issue.number,
             labels: labelsName,
-            forumUrl: forumUrl
+            forumUrl: forumUrl,
+            isArchive: labels.some(function(label) {
+                return label.name === 'archive';
+            })
         };
     })
 );

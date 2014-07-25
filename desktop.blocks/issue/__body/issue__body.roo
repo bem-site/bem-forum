@@ -1,5 +1,7 @@
 .issue__body
 {
+    overflow: auto;
+
     :link
     {
         text-decoration: underline;
