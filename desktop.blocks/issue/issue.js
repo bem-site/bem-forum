@@ -129,8 +129,6 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 return false;
             }
 
-            var _this = this;
-
             this._formEdit.setMod('processing', 'yes');
 
             data.push({ name: 'number', value: this.params.number });
@@ -139,16 +137,17 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 dataType: 'html',
                 type: 'PUT',
                 data: data,
-                url: this.params.forumUrl + 'issues/' + this.params.number + '/?__mode=content'
+                url: this.params.forumUrl + 'issues/' + this.params.number + '/?__access=owner',
+                context: this
             }).done(function(html) {
-                _this._render(html);
+                this._render(html);
 
-                _this._afterEdit();
+                this._afterEdit();
             });
         },
 
         _render: function(html) {
-            BEMDOM.update(this.domElem, html);
+            BEMDOM.replace(this.domElem, html);
         },
 
         _afterEdit: function() {
