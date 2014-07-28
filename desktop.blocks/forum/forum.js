@@ -11,6 +11,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         _subscribes: function() {
             this._formAdd = this.findBlockInside('add-form', 'forum-form');
             this._formAdd && this._formAdd.on('submit', this._addIssue, this);
+            this._forumUrl = this._formAdd.params.forumUrl;
             this.findBlockInside('add', 'button') && this.findBlockInside('add', 'button').on('click', this._toggleFormAdd, this);
         },
 
@@ -23,20 +24,45 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                 return false;
             }
 
-            var _this = this,
-                forumUrl = this._formAdd.params['forumUrl'] || '/';
-
             this._formAdd.setMod('processing', 'yes');
+
+            var labels = data
+                .filter(function(item) {
+                    return item.name === 'labels[]';
+                })
+                .map(function(label) {
+                    return label.value;
+                });
 
             $.ajax({
                 dataType: 'html',
                 type: 'POST',
                 data: data,
-                url: forumUrl + 'issues/'
-            }).done(function(html) {
-                _this._render(html, 'prepend');
+                url: this._forumUrl + 'issues/?__mode=json',
+                context: this
+            }).done(function(json) {
+                this._addLabelsAfter(JSON.parse(json), labels);
+            });
+        },
 
-                _this._afterAdd();
+        _addLabelsAfter: function(result, labels) {
+            var data = {
+                number: result.number,
+                title: result.title,
+                body: result.body,
+                labels: labels
+            };
+
+            $.ajax({
+                dataType: 'html',
+                type: 'PUT',
+                data: data,
+                url: this._forumUrl + 'issues/' + result.number + '/?__access=owner',
+                context: this
+            }).done(function(html) {
+                this._render(html, 'prepend');
+
+                this._afterAdd();
             });
         },
 
@@ -53,7 +79,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         },
 
         _render: function(html, addMethod) {
-            var container = this.findBlockInside('forum-content').elem('container');
+            var container = this.findBlockInside('forum-issues').domElem;
 
             BEMDOM[addMethod](container, html);
         }

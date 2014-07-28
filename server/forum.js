@@ -17,6 +17,8 @@ module.exports = function(pattern, options) {
     template.init(options);
     model.init(options);
 
+    var ownerToken = options.owner_token;
+
     return function(req, res, next) {
         var route = routes.getRoute(req.url, req.method),
             query,
@@ -120,6 +122,11 @@ module.exports = function(pattern, options) {
                 });
         } else {
             var result = {};
+
+            if(query.__access === 'owner' && ownerToken) {
+                token = ownerToken;
+                model.addUserAPI(token);
+            }
 
             // get data by ajax
             return model[action](token, options)
