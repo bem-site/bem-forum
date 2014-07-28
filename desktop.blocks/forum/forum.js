@@ -3,16 +3,17 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         onSetMod: {
             js: {
                 inited: function() {
-                    this._subscribes();
+                    this._formAdd = this.findBlockInside('add-form', 'forum-form');
+
+                    if(this._formAdd) {
+                        this._formAdd.on('submit', this._addIssue, this);
+                        this._forumUrl = this._formAdd.params.forumUrl;
+                    }
+
+                    var addButton = this.findBlockInside('add', 'button');
+                    addButton && addButton.on('click', this._toggleFormAdd, this);
                 }
             }
-        },
-
-        _subscribes: function() {
-            this._formAdd = this.findBlockInside('add-form', 'forum-form');
-            this._formAdd && this._formAdd.on('submit', this._addIssue, this);
-            this._forumUrl = this._formAdd.params.forumUrl;
-            this.findBlockInside('add', 'button') && this.findBlockInside('add', 'button').on('click', this._toggleFormAdd, this);
         },
 
         _addIssue: function(e, data) {
