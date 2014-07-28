@@ -4,6 +4,11 @@
 
     &_valign
     {
+        &_baseline
+        {
+            align-items: baseline;
+        }
+
         &_top
         {
             align-items: flex-start;

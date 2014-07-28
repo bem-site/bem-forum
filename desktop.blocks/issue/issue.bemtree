@@ -104,7 +104,7 @@ block('issue')(
                     mix: { block: 'forum-flex' },
                     content: {
                         block: 'forum-line',
-                        mods: { valign: 'middle' },
+                        mods: { valign: 'baseline' },
                         content: [
                             {
                                 block: 'forum-user',
