@@ -3,8 +3,6 @@ var path = require('path'),
     _ = require('lodash'),
     vow = require('vow'),
     vowFs = require('vow-fs'),
-    CronJob = require('cron').CronJob,
-
     github = require('./github');
 
 var MAX_LIMIT = 100,
@@ -16,17 +14,15 @@ var MAX_LIMIT = 100,
             direction: 'desc'
         }
     },
-    useCache = false,
-    issues = [],
-    archive,
-    opts,
-    job;
+    archive;
 
 /**
  * Archive module
  * @returns {{init: init, getIssues: getIssues, getComments: getComments}}
  */
-var Archive = function() {};
+var Archive = function(options) {
+    this.init(options);
+};
 
 Archive.prototype = {
     model: {
@@ -59,6 +55,12 @@ Archive.prototype = {
         return this.model.issues;
     },
 
+    getIssue: function(number) {
+        return this.getIssues().filter(function(item) {
+            return item.number == number;
+        })[0];
+    },
+
     /**
      * Returns comments array for issue with id
      * @param issueId - {Number} id of issue
@@ -82,8 +84,8 @@ Archive.prototype = {
  * Loads all issues for configured github repository and returns them
  * @returns {Promise}
  */
-function loadAllGithubIssues() {
-    return github.getRepoInfo(null, {})
+function loadAllGithubIssues(token) {
+    return github.getRepoInfo(token, {})
         .then(function(res) {
             var count = res['open_issues'],
                 promises = [],
@@ -91,8 +93,7 @@ function loadAllGithubIssues() {
 
             //check for existed issues count for current repository
             if(!count) {
-                issues = [];
-                return vow.resolve(issues);
+                return vow.resolve([]);
             }
 
             //calculate number of pages
@@ -100,7 +101,7 @@ function loadAllGithubIssues() {
 
             //create promises for load all issues by pages
             for(var i = 1; i<= pages; i++) {
-                promises.push(github.getIssues(null, { page: i, per_page: MAX_LIMIT }));
+                promises.push(github.getIssues(token, { page: i, per_page: MAX_LIMIT }));
             }
 
             //after all load processes we should unite results and return common array of issues
@@ -111,14 +112,6 @@ function loadAllGithubIssues() {
                 }, []);
             });
         });
-}
-
-/**
- * Function that detects if cache enabled or not
- * @returns {boolean}
- */
-function isCacheEnabled() {
-    return useCache;
 }
 
 /**
@@ -135,23 +128,6 @@ function getFnName(fn) {
     })[0];
 }
 
-/**
- * Loads all github issues issues
- * Optionally loads issues from archive file and merge all issues in single array
- * @returns {*}
- */
-function load() {
-    return loadAllGithubIssues().then(function(ghIssues) {
-        if(!opts.archive) {
-            issues = ghIssues;
-        }
-        archive = new Archive();
-        archive.init(opts).then(function() {
-            issues = ghIssues.concat(archive.getIssues());
-        });
-    });
-};
-
 module.exports = {
 
     /**
@@ -161,24 +137,7 @@ module.exports = {
      */
     init: function(options) {
         github.init(options).addDefaultAPI();
-
-        if(!options.cache) {
-            return;
-        }
-
-        opts = options;
-        useCache = true;
-
-        if(options.update) {
-            job = new CronJob({
-                cronTime: options.update,
-                onTick: function() { load(); },
-                start: false
-            });
-            job.start();
-        }
-
-        return load();
+        archive = new Archive(options);
     },
 
     /**
@@ -195,75 +154,73 @@ module.exports = {
      * @returns {*}
      */
     getIssues: function(token, options) {
-        if(!isCacheEnabled()) {
-            return github[getFnName(arguments.callee)].call(github, token, options);
-        }
+        return loadAllGithubIssues(token).then(function(issues) {
+            var result = issues.concat(archive.getIssues()),
+                sortField,
+                sortDirection,
+                order,
+                page,
+                limit;
 
-        var result = issues,
-            sortField,
-            sortDirection,
-            order,
-            page,
-            limit;
-
-        //show only open issues and issues from archive
-        result = result.filter(function(item) {
-            return item.state !== 'closed';
-        });
-
-        //filter by issue labels
-        if(options.labels && options.labels.length) {
-            var filterLabels = options.labels.split(',');
-
-            result = result.filter(function(issueItem) {
-                var issueLabels = issueItem.labels.map(function(labelItem) {
-                    return labelItem.name || labelItem;
-                });
-                return filterLabels.every(function(filterLabel) {
-                    return issueLabels.indexOf(filterLabel) > -1;
-                });
-            });
-        }
-
-        //filter by updated date
-        if(options['since'] && _.isDate(options['since'])) {
+            //show only open issues and issues from archive
             result = result.filter(function(item) {
-                return (new Date(item['created_at'])).getTime() >= options['since'].getTime();
+                return item.state !== 'closed';
             });
-        }
 
-        //sort results
-        sortField = (options.sort && /^(created|updated|comments)$/.test(options.sort))
+            //filter by issue labels
+            if(options.labels && options.labels.length) {
+                var filterLabels = options.labels.split(',');
+
+                result = result.filter(function(issueItem) {
+                    var issueLabels = issueItem.labels.map(function(labelItem) {
+                        return labelItem.name || labelItem;
+                    });
+                    return filterLabels.every(function(filterLabel) {
+                        return issueLabels.indexOf(filterLabel) > -1;
+                    });
+                });
+            }
+
+            //filter by updated date
+            if(options['since'] && _.isDate(options['since'])) {
+                result = result.filter(function(item) {
+                    return (new Date(item['created_at'])).getTime() >= options['since'].getTime();
+                });
+            }
+
+            //sort results
+            sortField = (options.sort && /^(created|updated|comments)$/.test(options.sort))
                 ? options.sort : DEFAULT.sort.field;
-        sortDirection = (options.direction && /^(asc|desc)$/.test(options.direction))
+            sortDirection = (options.direction && /^(asc|desc)$/.test(options.direction))
                 ? options.direction : DEFAULT.sort.direction;
-        order = DEFAULT.sort.direction === sortDirection ? -1 : 1;
+            order = DEFAULT.sort.direction === sortDirection ? -1 : 1;
 
-        result = result.sort(function(a, b) {
-            var an = +a.number,
-                bn = +b.number;
+            result = result.sort(function(a, b) {
+                var an = +a.number,
+                    bn = +b.number;
 
-            //separate gh and archive issues
-            if(an*bn < 0) {
-                return bn - an;
-            }
+                //separate gh and archive issues
+                if(an*bn < 0) {
+                    return bn - an;
+                }
 
-            if('comments' === sortField) {
-                return order*(+a[sortField] - +b[sortField]);
-            }else {
-                return order*((new Date(a[sortField + '_at'])).getTime() -
-                    (new Date(b[sortField + '_at'])).getTime());
-            }
+                if('comments' === sortField) {
+                    return order*(+a[sortField] - +b[sortField]);
+                }else {
+                    return order*((new Date(a[sortField + '_at'])).getTime() -
+                        (new Date(b[sortField + '_at'])).getTime());
+                }
+            });
+
+            page = options.page || DEFAULT.page;
+            limit = options.per_page || DEFAULT.limit;
+
+            result = result.filter(function(item, index) {
+                return index >= limit*(page - 1) && index < limit*page
+            });
+
+            return vow.resolve(result);
         });
-
-        page = options.page || DEFAULT.page;
-        limit = options.per_page || DEFAULT.limit;
-
-        result = result.filter(function(item, index) {
-            return index >= limit*(page - 1) && index < limit*page
-        });
-
-        return vow.resolve(result);
     },
 
     /**
@@ -274,19 +231,17 @@ module.exports = {
      * @returns {*}
      */
     getIssue: function(token, options) {
-        if(!isCacheEnabled()) {
-            return github[getFnName(arguments.callee)].call(github, token, options);
-        }
+        var issueNumber = options.number;
 
-        if(!options.number) {
+        if(!issueNumber) {
             return null;
         }
 
-        var result = issues.filter(function(item) {
-            return item.number == options.number;
-        })[0];
+        if(issueNumber < 0) {
+            return vow.resolve(archive.getIssue(issueNumber));
+        }
 
-        return vow.resolve(result);
+        return github[getFnName(arguments.callee)].call(github, token, options);
     },
 
     /**
@@ -299,14 +254,7 @@ module.exports = {
      * @returns {*}
      */
     createIssue: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options)
-            .then(function(issue) {
-                if(isCacheEnabled()) {
-                    issues.push(issue);
-                }
-
-                return vow.resolve(issue);
-            });
+        return github[getFnName(arguments.callee)].call(github, token, options);
     },
 
     /**
@@ -321,18 +269,7 @@ module.exports = {
      * @returns {*}
      */
     editIssue: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options)
-            .then(function(issue) {
-                if(isCacheEnabled()) {
-                    var existed = issues.filter(function(item) {
-                        return item.number == issue.number;
-                    })[0];
-
-                    existed && (issues[issues.indexOf(existed)] = issue);
-                }
-
-                return vow.resolve(issue);
-            });
+        return github[getFnName(arguments.callee)].call(github, token, options);
     },
 
     /**
@@ -349,11 +286,11 @@ module.exports = {
             return vow.resolve([]);
         }
 
-        if(options.number > 0) {
-            return github[getFnName(arguments.callee)].call(github, token, options);
+        if(options.number < 0) {
+            return vow.resolve(archive.getComments(options.number));
         }
 
-        return vow.resolve(archive.getComments(options.number));
+        return github[getFnName(arguments.callee)].call(github, token, options);
     },
 
     /**
@@ -376,17 +313,7 @@ module.exports = {
      * @returns {*}
      */
     createComment: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options).then(function(comment) {
-            if(isCacheEnabled()) {
-                var existed = issues.filter(function(item) {
-                    return item.number == options.number;
-                })[0];
-
-                existed && (issues[issues.indexOf(existed)].comments++);
-            }
-
-            return vow.resolve(comment);
-        });
+        return github[getFnName(arguments.callee)].call(github, token, options);
     },
 
     /**
@@ -409,17 +336,7 @@ module.exports = {
      * @returns {*}
      */
     deleteComment: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options).then(function(res) {
-            if(isCacheEnabled()) {
-                var existed = issues.filter(function(item) {
-                    return item.number == options.number;
-                })[0];
-
-                existed && (issues[issues.indexOf(existed)].comments--);
-            }
-
-            return vow.resolve(res);
-        });
+        return github[getFnName(arguments.callee)].call(github, token, options);
     },
 
     /**
