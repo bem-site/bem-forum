@@ -142,6 +142,8 @@ module.exports = {
     getIssues: function(token, options) {
         return loadAllGithubIssues(token).then(function(issues) {
             var result = issues.concat(archive.getIssues()),
+                filterLabels = options.labels,
+                filterSince = options.since,
                 sortField,
                 sortDirection,
                 order,
@@ -150,12 +152,12 @@ module.exports = {
 
             //show only open issues and issues from archive
             result = result.filter(function(item) {
-                return item.state !== 'closed';
+                return 'closed' !== item.state;
             });
 
             //filter by issue labels
-            if(options.labels && options.labels.length) {
-                var filterLabels = options.labels.split(',');
+            if(filterLabels) {
+                filterLabels = filterLabels.split(',');
 
                 result = result.filter(function(issueItem) {
                     var issueLabels = issueItem.labels.map(function(labelItem) {
@@ -168,9 +170,9 @@ module.exports = {
             }
 
             //filter by updated date
-            if(options['since'] && _.isDate(options['since'])) {
+            if(filterSince && _.isDate(filterSince)) {
                 result = result.filter(function(item) {
-                    return (new Date(item['created_at'])).getTime() >= options['since'].getTime();
+                    return (new Date(item.created_at)).getTime() >= filterSince.getTime();
                 });
             }
 
@@ -192,17 +194,17 @@ module.exports = {
 
                 if('comments' === sortField) {
                     return order*(+a[sortField] - +b[sortField]);
-                }else {
-                    return order*((new Date(a[sortField + '_at'])).getTime() -
-                        (new Date(b[sortField + '_at'])).getTime());
                 }
+
+                return order*((new Date(a[sortField + '_at'])).getTime() -
+                    (new Date(b[sortField + '_at'])).getTime());
             });
 
             page = options.page || DEFAULT.page;
             limit = options.per_page || DEFAULT.limit;
 
             result = result.filter(function(item, index) {
-                return index >= limit*(page - 1) && index < limit*page
+                return index >= limit * (page - 1) && index < limit * page
             });
 
             return vow.resolve(result);
@@ -223,10 +225,12 @@ module.exports = {
             return null;
         }
 
+        //load issue from archive
         if(issueNumber < 0) {
             return vow.resolve(archive.getIssue(issueNumber));
         }
 
+        //load gh issue
         return github.getIssue.call(github, token, options);
     },
 
@@ -272,10 +276,12 @@ module.exports = {
             return vow.resolve([]);
         }
 
+        //load archive comments
         if(options.number < 0) {
             return vow.resolve(archive.getComments(options.number));
         }
 
+        //load gh comments
         return github.getComments.call(github, token, options);
     },
 
