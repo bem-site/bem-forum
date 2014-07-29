@@ -51,7 +51,7 @@ module.exports = {
         res.writeHead(303, {
             Location: getOauth(req).getAuthorizeUrl({
                 redirect_uri: getRedirectUrl(req),
-                scope: "user,repo,gist"
+                scope: 'public_repo'
             })
         });
         res.end();
