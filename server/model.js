@@ -3,6 +3,8 @@ var path = require('path'),
     _ = require('lodash'),
     vow = require('vow'),
     vowFs = require('vow-fs'),
+    CronJob = require('cron').CronJob,
+
     github = require('./github');
 
 var MAX_LIMIT = 100,
@@ -14,7 +16,7 @@ var MAX_LIMIT = 100,
             direction: 'desc'
         }
     },
-    archive;
+    model;
 
 /**
  * Archive module
@@ -48,7 +50,7 @@ Archive.prototype = {
     },
 
     /**
-     * Return issues array from archive
+     * Returns issues array from archive
      * @returns {Array}
      */
     getIssues: function() {
@@ -77,6 +79,63 @@ Archive.prototype = {
 
                 return db.getTime() - da.getTime();
             });
+    }
+};
+
+var Model = function(options) {
+    this.init(options);
+};
+
+Model.prototype = {
+    archive: null,
+    labels: [],
+    job: null,
+
+    init: function(options) {
+        this.archive = new Archive(options);
+        this.loadLabels();
+        this.job = new CronJob({
+            cronTime: '0 0 */1 * * *',
+            onTick: function() { this.loadLabels(); },
+            start: false,
+            context: this
+        });
+        this.job.start();
+    },
+
+    /**
+     * Loads labels from github and cache them to model
+     * @returns {*}
+     */
+    loadLabels: function() {
+        return github.getLabels.call(github, null, {}).then(function(labels) {
+            this.labels = labels || [];
+        }, this);
+    },
+
+    /**
+     * Returns cached array of labels
+     * @returns {Array}
+     */
+    getLabels: function() {
+        return this.labels;
+    },
+
+    /**
+     * Return archive model
+     * @returns {Archive}
+     */
+    getArchive: function() {
+        return this.archive;
+    },
+
+    /**
+     * Returns length of labels array.
+     * Can be used for check is labels were loaded and cached
+     * @returns {Number}
+     */
+    areLabelsLoaded: function() {
+        return this.labels.length;
     }
 };
 
@@ -123,7 +182,7 @@ module.exports = {
      */
     init: function(options) {
         github.init(options).addDefaultAPI();
-        archive = new Archive(options);
+        model = new Model(options);
     },
 
     /**
@@ -141,7 +200,7 @@ module.exports = {
      */
     getIssues: function(token, options) {
         return loadAllGithubIssues(token).then(function(issues) {
-            var result = issues.concat(archive.getIssues()),
+            var result = issues.concat(model.getArchive().getIssues()),
                 filterLabels = options.labels,
                 filterSince = options.since,
                 sortField,
@@ -227,7 +286,7 @@ module.exports = {
 
         //load issue from archive
         if(issueNumber < 0) {
-            return vow.resolve(archive.getIssue(issueNumber));
+            return vow.resolve(model.getArchive().getIssue(issueNumber));
         }
 
         //load gh issue
@@ -278,7 +337,7 @@ module.exports = {
 
         //load archive comments
         if(options.number < 0) {
-            return vow.resolve(archive.getComments(options.number));
+            return vow.resolve(model.getArchive().getComments(options.number));
         }
 
         //load gh comments
@@ -327,7 +386,8 @@ module.exports = {
      * @returns {*}
      */
     getLabels: function(token, options) {
-        return github.getLabels.call(github, token, options);
+        return model.areLabelsLoaded() ? vow.resolve(model.getLabels()) :
+            github.getLabels.call(github, token, options);
     },
 
     /**
