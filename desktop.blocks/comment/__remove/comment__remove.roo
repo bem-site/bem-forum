@@ -1,4 +1,10 @@
 .comment__remove
 {
     margin-left: 10px;
+
+    &:focus
+    {
+        outline: none;
+    }
 }
+

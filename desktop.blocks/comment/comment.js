@@ -1,18 +1,17 @@
 modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
     provide(BEMDOM.decl(this.name, {
 
+        /**
+         * Обработчик на сабмит формы редактирования
+         * @param e
+         * @param data
+         * @returns {boolean}
+         * @private
+         */
         _onSubmitEdit: function(e, data) {
+            if(this._getFormEdit().isEmptyInput('body')) return false;
 
-            if(this._formEdit.isEmptyInput('body')) {
-                return false;
-            }
-
-            var _this = this;
-
-            this._spin = this.findBlockInside('spin');
-            this._button =  this.findBlockInside(this.elem('edit-button'), 'button');
-
-            this._beforeEdit();
+            this._submitProgress(true);
 
             data.push({ name: 'id', value: this.params.id });
 
@@ -20,88 +19,146 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
                 dataType: 'html',
                 type: 'PUT',
                 data: data,
-                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/?__mode=content'
+                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/?__mode=content',
+                context: this
             }).done(function(html) {
-                _this._render(html, 'update');
+                BEMDOM.update(this.domElem, html);
 
-                _this._afterEdit();
+                this._dropCached();
+                this._submitProgress(false);
             });
         },
 
-        _beforeEdit: function() {
-            this._spin.setMod('progress', true);
-            this._button.setMod('disabled', true);
+        /**
+         * Кешируем инстанс формы редактирования
+         */
+        _formEdit: null,
+
+        /**
+         * Возвращает инстанс формы редактирования
+         * @returns {BEMDOM}
+         * @private
+         */
+        _getFormEdit: function() {
+            return this._formEdit || (this._formEdit = this.findBlockInside('edit-form', 'forum-form'));
         },
 
-        _afterEdit: function() {
-            this._toggleFormEdit();
+        /**
+         * Кешируем инстанс кнопки отмены
+         */
+        _cancelButton: null,
 
-            this._spin.delMod('progress');
-            this._button.delMod('disabled');
+        /**
+         * Возвращает инстанс инопки отмены
+         * @returns {BEMDOM}
+         * @private
+         */
+        _getCancelButton: function() {
+            return this._cancelButton || (this._cancelButton = this.findBlockInside('edit-cancel', 'button'));
         },
 
-        _render: function(html, type) {
-            BEMDOM[type](this.domElem, html);
+        /**
+         * Кешируем инстанс кнопки редактирования
+         */
+        _editButton: null,
+
+        /**
+         * Возвращает инстанс кнопки редактирования
+         * @returns {BEMDOM}
+         * @private
+         */
+        _getEditButton: function() {
+            return this._editButton || (this._editButton = this.findBlockInside('edit-button', 'button'));
         },
 
+        /**
+         * Сбрасываем закешированные инстансы после обновления контента
+         * @private
+         */
+        _dropCached: function() {
+            this._formEdit = null;
+            this._editButton = null;
+            this._cancelButton = null;
+        },
+
+        /**
+         * Прогресс сохранения отредактированного комментария
+         * @param progress
+         * @private
+         */
+        _submitProgress: function(progress) {
+            var spin = this.findBlockInside('spin'),
+                button =  this._getEditButton();
+
+            spin.setMod('progress', progress);
+            button.setMod('disabled', progress);
+        },
+
+        /**
+         * Показываем / скрываем форму редактирования
+         * @private
+         */
         _toggleFormEdit: function() {
-            var body = this.findElem('body');
+            var body = this.findElem('body'),
+                formEdit = this._getFormEdit();
 
-            this._formEdit.toggleMod('visibility', 'hidden', '');
-            this.toggleMod(body, 'visibility', 'hidden', '', !this._formEdit.hasMod('visibility', 'hidden'));
+            formEdit.toggleMod('visibility', 'hidden', '');
+            this.toggleMod(body, 'visibility', 'hidden', '', !formEdit.hasMod('visibility', 'hidden'));
         },
 
-        _onClickEditCancel: function(e) {
-            e.preventDefault();
-
+        /**
+         * Обработчик клика по кнопке отмены редактирования
+         * @private
+         */
+        _onClickEditCancel: function() {
             this._toggleFormEdit();
+            this._getFormEdit().un('submit', this._onSubmitEdit, this);
         },
 
+        /**
+         * Задаем высоту формы редактирования
+         * @private
+         */
         _setFormEditHeight: function() {
             var height = this.findElem('body').outerHeight();
 
             this.findElem('edit-textarea').height(height);
         },
 
+        /**
+         * Обработчик клика по иконке редактирования
+         * @private
+         */
         _onClickEdit: function() {
-            this._formEdit = this.findBlockInside(this.findElem('edit-form'), 'forum-form');
-
             this._setFormEditHeight();
-
             this._toggleFormEdit();
 
-            this._formEdit.on('submit', this._onSubmitEdit, this);
-
-            this._buttonCancel = this.findBlockInside(this.findElem('edit-cancel'), 'button');
-            this._buttonCancel.on('click', this._onClickEditCancel, this);
+            this._getFormEdit().on('submit', this._onSubmitEdit, this);
+            this._getCancelButton().on('click', this._onClickEditCancel, this);
         },
 
+        /**
+         * Обработчик клика по иконке удаления
+         * @private
+         */
         _onClickRemove: function() {
-            var _this = this;
-
             if(window.confirm('Вы уверены?')) {
                 $.ajax({
                     type: 'DELETE',
-                    url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/'
+                    url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/',
+                    context: this
                 }).done(function() {
-                    _this.emit('comment:delete');
+                    this.emit('comment:delete');
 
-                    BEMDOM.destruct(_this.domElem);
+                    BEMDOM.destruct(this.domElem);
                 });
             }
         }
     }, {
         live: function() {
-            this.liveBindTo('remove', 'click', function(e) {
-                e.preventDefault();
-
-                this._onClickRemove();
-            });
-
-            this.liveBindTo('edit', 'click', function(e) {
-                e.preventDefault();
-
-                this._onClickEdit();
+            this.liveInitOnBlockInsideEvent('click', 'link', function(e) {
+                // Задаем необходимый обработчик для клика по кнопкам Удалить/редактировать
+                this['_onClick' + e.target.params.action]();
             });
         }
     }));

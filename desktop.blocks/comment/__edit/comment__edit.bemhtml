@@ -2,8 +2,9 @@ block('comment').elem('edit')(
     def()(function() {
         return applyCtx({
             block: 'link',
-            url: '#',
             title: 'Редактировать ответ',
+            mods: { pseudo: true },
+            js: { action: 'Edit' },
             content: {
                 block: 'icon',
                 mods: { action: 'edit', size: '16', hover: 'opacity' }
