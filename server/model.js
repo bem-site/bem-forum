@@ -114,20 +114,6 @@ function loadAllGithubIssues(token) {
         });
 }
 
-/**
- * Returns name of function
- * @param fn - {Function}
- * @returns {*}
- * @private
- */
-function getFnName(fn) {
-    var _this = module.exports;
-
-    return Object.keys(module.exports).filter(function(key) {
-        return _this[key] == fn;
-    })[0];
-}
-
 module.exports = {
 
     /**
@@ -241,7 +227,7 @@ module.exports = {
             return vow.resolve(archive.getIssue(issueNumber));
         }
 
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.getIssue.call(github, token, options);
     },
 
     /**
@@ -254,7 +240,7 @@ module.exports = {
      * @returns {*}
      */
     createIssue: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.createIssue.call(github, token, options);
     },
 
     /**
@@ -269,7 +255,7 @@ module.exports = {
      * @returns {*}
      */
     editIssue: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.editIssue.call(github, token, options);
     },
 
     /**
@@ -290,7 +276,7 @@ module.exports = {
             return vow.resolve(archive.getComments(options.number));
         }
 
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.getComments.call(github, token, options);
     },
 
     /**
@@ -301,7 +287,7 @@ module.exports = {
      * @returns {*}
      */
     getComment: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.getComment.call(github, token, options);
     },
 
     /**
@@ -313,7 +299,7 @@ module.exports = {
      * @returns {*}
      */
     createComment: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.createComment.call(github, token, options);
     },
 
     /**
@@ -325,7 +311,7 @@ module.exports = {
      * @returns {*}
      */
     editComment: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.editComment.call(github, token, options);
     },
 
     /**
@@ -336,7 +322,7 @@ module.exports = {
      * @returns {*}
      */
     deleteComment: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.deleteComment.call(github, token, options);
     },
 
     /**
@@ -346,7 +332,7 @@ module.exports = {
      * @returns {*}
      */
     getLabels: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.getLabels.call(github, token, options);
     },
 
     /**
@@ -357,7 +343,7 @@ module.exports = {
      * @returns {*}
      */
     getLabel: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.getLabel.call(github, token, options);
     },
 
     /**
@@ -369,7 +355,7 @@ module.exports = {
      * @returns {*}
      */
     createLabel: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.createLabel.call(github, token, options);
     },
 
     /**
@@ -381,7 +367,7 @@ module.exports = {
      * @returns {*}
      */
     updateLabel: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.updateLabel.call(github, token, options);
     },
 
     /**
@@ -392,7 +378,7 @@ module.exports = {
      * @returns {*}
      */
     deleteLabel: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.deleteLabel.call(github, token, options);
     },
 
     /**
@@ -402,7 +388,7 @@ module.exports = {
      * @returns {*}
      */
     getAuthUser: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.getAuthUser.call(github, token, options);
     },
 
     /**
@@ -412,10 +398,10 @@ module.exports = {
      * @returns {*}
      */
     getRepoInfo: function(token, options) {
-        return github[getFnName(arguments.callee)].call(github, token, options);
+        return github.getRepoInfo.call(github, token, options);
     },
 
     addUserAPI: function(token) {
-        return github[getFnName(arguments.callee)].call(github, token);
+        return github.addUserAPI.call(github, token);
     }
 };
