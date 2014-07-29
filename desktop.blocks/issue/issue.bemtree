@@ -95,6 +95,7 @@ block('issue')(
                         elem: 'avatar',
                         url: user.avatar_url,
                         alt: user.login,
+                        link: user.html_url,
                         mix: [{ block: 'issue', elem: 'avatar' }]
                     }
                 },
@@ -109,7 +110,7 @@ block('issue')(
                             {
                                 block: 'forum-user',
                                 elem: 'name',
-                                url: user.login,
+                                url: user.html_url,
                                 title: user.login,
                                 content: user.login,
                                 mix: [{ block: 'issue', elem: 'username' }]

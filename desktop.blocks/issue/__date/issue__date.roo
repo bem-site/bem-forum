@@ -1,4 +1,4 @@
 .issue__date
 {
-    color: $color-date;
+    color: $color-grey-dark;
 }

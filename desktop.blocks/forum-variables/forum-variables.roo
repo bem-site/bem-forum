@@ -1,6 +1,6 @@
 $color-grey = #E1E1E1;
 $color-grey-light = #F6F5F3;
-$color-date = #999;
+$color-grey-dark = #999;
 $color-background = #fff;
 $color-link = #000;
 $color-link-hover = #d14;

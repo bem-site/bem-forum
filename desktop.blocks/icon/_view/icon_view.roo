@@ -29,4 +29,9 @@
     {
         background: url('icon_view_read-only.svg') no-repeat;
     }
+
+    &_avatar-default
+    {
+        background: url('icon_view_avatar-default.svg') no-repeat;
+    }
 }

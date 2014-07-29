@@ -35,7 +35,9 @@ block('comment')(
                         content: {
                             block: 'comment',
                             elem: 'avatar',
-                            avatar: comment.user.avatar_url
+                            url: comment.user.avatar_url,
+                            alt: comment.user.login,
+                            link: comment.user.html_url
                         }
                     },
                     {
@@ -71,6 +73,7 @@ block('comment')(
             return [
                 {
                     elem: 'username',
+                    url: comment.user.html_url,
                     name: comment.user.login
                 },
                 {
@@ -100,7 +103,7 @@ block('comment')(
                 {
                     block: 'forum-user',
                     elem: 'name',
-                    url: this.ctx.name,
+                    url: this.ctx.url,
                     mix: [{ block: 'comment', elem: 'username' }],
                     content: this.ctx.name
                 },
@@ -118,8 +121,9 @@ block('comment')(
             return applyCtx({
                 block: 'forum-user',
                 elem: 'avatar',
-                url: this.ctx.avatar,
-                alt: this.ctx.avatar,
+                url: this.ctx.url,
+                alt: this.ctx.alt,
+                link: this.ctx.link,
                 mix: [{ block: 'comment', elem: 'avatar' }]
             })
         })

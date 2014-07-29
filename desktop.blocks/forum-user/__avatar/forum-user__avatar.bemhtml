@@ -1,14 +1,34 @@
-block('forum-user').elem('avatar').def()(function() {
-    var mix = this.ctx.mix || [];
+block('forum-user').elem('avatar')(
+    match(function() { return this.ctx.url; }).def()(function() {
+        var mix = this.ctx.mix || [];
 
-    return applyCtx({
-        block: 'image',
-        url: this.ctx.url,
-        alt: this.ctx.alt,
-        mix: (function() {
-            mix.push({ block: 'forum-user', elem: 'avatar' });
+        return applyCtx({
+            block: 'link',
+            url: this.ctx.link,
+            title: this.ctx.alt,
+            content: {
+                block: 'image',
+                url: this.ctx.url,
+                alt: this.ctx.alt,
+                mix: (function() {
+                    mix.push({ block: 'forum-user', elem: 'avatar' });
 
-            return mix;
-        })()
-    });
-});
+                    return mix;
+                })()
+            }
+        });
+    }),
+
+    match(function() { return !this.ctx.url; }).def()(function() {
+        this.ctx.mods = { icon: true };
+        return applyNext();
+    }),
+
+    match(function() { return !this.ctx.url; }).content()(function() {
+        return {
+            block: 'icon',
+            mods: { view: 'avatar-default' }
+        }
+    })
+
+);

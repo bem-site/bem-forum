@@ -3,7 +3,7 @@ block('forum-user').elem('name').def()(function() {
 
     return applyCtx({
         block: 'link',
-        url: '//github.com/' + this.ctx.url,
+        url: this.ctx.url,
         title: this.ctx.title,
         target: this.ctx.target || undefined,
         content: this.ctx.content,

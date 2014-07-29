@@ -22,12 +22,13 @@ block('forum-header').mod('view', 'auth')(
                     block: 'forum-user',
                     elem: 'avatar',
                     url: user.avatar_url,
-                    alt: user.login
+                    alt: user.login,
+                    link: user.html_url
                 },
                 {
                     block: 'forum-user',
                     elem: 'name',
-                    url: user.login,
+                    url: user.html_url,
                     title: user.login,
                     target: '_blank',
                     content: user.login

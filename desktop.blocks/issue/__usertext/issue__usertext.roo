@@ -1,4 +1,5 @@
 .issue__usertext
 {
+    color: $color-grey-dark;
     margin-right: 5px;
 }

@@ -1,1 +1,4 @@
+- block: link
 - block: image
+
+- mods: { icon: true }
