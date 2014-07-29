@@ -286,17 +286,6 @@ module.exports = {
     },
 
     /**
-     * Returns comment by it id
-     * @param token - {String} oauth user token
-     * @param options - {Object} with fields:
-     *  - id {String} unique id of comment (required)
-     * @returns {*}
-     */
-    getComment: function(token, options) {
-        return github.getComment.call(github, token, options);
-    },
-
-    /**
      * Create new comment for issue
      * @param token - {String} oauth user token
      * @param options - {Object} with fields:
@@ -339,52 +328,6 @@ module.exports = {
      */
     getLabels: function(token, options) {
         return github.getLabels.call(github, token, options);
-    },
-
-    /**
-     * Returns label from repository by it name
-     * @param token - {String} oauth user token
-     * @param options - {Object} with fields:
-     *  - name {String} label name (required)
-     * @returns {*}
-     */
-    getLabel: function(token, options) {
-        return github.getLabel.call(github, token, options);
-    },
-
-    /**
-     * Creates new label in repository
-     * @param token - {String} oauth user token
-     * @param options - {Object} with fields:
-     *  - name {String} label name (required)
-     *  - color {String} 6 symbol hex color of label (required)
-     * @returns {*}
-     */
-    createLabel: function(token, options) {
-        return github.createLabel.call(github, token, options);
-    },
-
-    /**
-     * Updates label in repository
-     * @param token - {String} oauth user token
-     * @param options - {Object} with fields:
-     *  - name {String} label name (required)
-     *  - color {String} 6 symbol hex color of label (required)
-     * @returns {*}
-     */
-    updateLabel: function(token, options) {
-        return github.updateLabel.call(github, token, options);
-    },
-
-    /**
-     * Removes label from repository
-     * @param token - {String} oauth user token
-     * @param options - {Object} with fields:
-     *  - name {String} label name (required)
-     * @returns {*}
-     */
-    deleteLabel: function(token, options) {
-        return github.deleteLabel.call(github, token, options);
     },
 
     /**

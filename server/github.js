@@ -193,17 +193,6 @@ module.exports = {
     },
 
     /**
-     * Returns comment by it id
-     * @param token - {String} oauth user token
-     * @param options - {Object} with fields:
-     *  - id {String} unique id of comment (required)
-     * @returns {*}
-     */
-    getComment: function(token, options) {
-        return apiCall(token, 'issues', getFnName(arguments.callee), options);
-    },
-
-    /**
      * Create new comment for issue
      * @param token - {String} oauth user token
      * @param options - {Object} with fields:
@@ -245,52 +234,6 @@ module.exports = {
      * @returns {*}
      */
     getLabels: function(token, options) {
-        return apiCall(token, 'issues', getFnName(arguments.callee), options);
-    },
-
-    /**
-     * Returns label from repository by it name
-     * @param token - {String} oauth user token
-     * @param options - {Object} with fields:
-     *  - name {String} label name (required)
-     * @returns {*}
-     */
-    getLabel: function(token, options) {
-        return apiCall(token, 'issues', getFnName(arguments.callee), options);
-    },
-
-    /**
-     * Creates new label in repository
-     * @param token - {String} oauth user token
-     * @param options - {Object} with fields:
-     *  - name {String} label name (required)
-     *  - color {String} 6 symbol hex color of label (required)
-     * @returns {*}
-     */
-    createLabel: function(token, options) {
-        return apiCall(token, 'issues', getFnName(arguments.callee), options);
-    },
-
-    /**
-     * Updates label in repository
-     * @param token - {String} oauth user token
-     * @param options - {Object} with fields:
-     *  - name {String} label name (required)
-     *  - color {String} 6 symbol hex color of label (required)
-     * @returns {*}
-     */
-    updateLabel: function(token, options) {
-        return apiCall(token, 'issues', getFnName(arguments.callee), options);
-    },
-
-    /**
-     * Removes label from repository
-     * @param token - {String} oauth user token
-     * @param options - {Object} with fields:
-     *  - name {String} label name (required)
-     * @returns {*}
-     */
-    deleteLabel: function (token, options) {
         return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
