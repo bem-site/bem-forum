@@ -298,7 +298,7 @@ block('issue')(
                         content: [
                             {
                                 elem: 'title',
-                                content: 'Изменить лейблы'
+                                content: 'Изменить метки'
                             },
                             {
                                 block: 'spin',

@@ -14,7 +14,7 @@ block('forum-sidebar')(
                 {
                     block: 'forum-labels',
                     mods: { view: 'menu' },
-                    title: 'Лейблы'
+                    title: 'Метки'
                 }
             ]
         })

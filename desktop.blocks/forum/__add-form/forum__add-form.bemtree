@@ -70,7 +70,7 @@ block('forum').elem('add-form')(
                         content: [
                             {
                                 elem: 'title',
-                                content: 'Добавьте лейблы'
+                                content: 'Добавьте метки'
                             },
                             {
                                 block: 'spin',
