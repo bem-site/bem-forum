@@ -108,7 +108,7 @@ Model.prototype = {
      * @returns {*}
      */
     loadLabels: function() {
-        return github.getLabels.call(github, null, {}).then(function(labels) {
+        return github.getLabels.call(github, null, { per_page: 100, page: 1 }).then(function(labels) {
             this.labels = labels || [];
         }, this);
     },
