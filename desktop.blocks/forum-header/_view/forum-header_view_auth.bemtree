@@ -1,13 +1,16 @@
 block('forum-header').mod('view', 'auth')(
 
     match(function() { return req.cookies['forum_username']; }).content()(function() {
+        var header = applyNext();
+
         return [
-            applyNext(),
+            header[0],
             {
                 elem: 'side-right',
                 content: [
                     { elem: 'user-wrapper' },
-                    { elem: 'add-button' }
+                    { elem: 'add-button' },
+                    header[1]
                 ]
             }
         ]

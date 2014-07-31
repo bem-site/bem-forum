@@ -34,4 +34,9 @@
     {
         background: url('icon_view_avatar-default.svg') no-repeat;
     }
+
+    &_bug
+    {
+        background: url('icon_view_bug.svg') no-repeat;
+    }
 }

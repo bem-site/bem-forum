@@ -3,6 +3,10 @@
 
 - block: forum-flex
 
-- elems: [auth-button, title, side-right]
+- elems:
+  - auth-button
+  - bug-button
+  - side-right
+  - title
 
 - mods: { view: [auth, auth-no] }

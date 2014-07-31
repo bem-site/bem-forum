@@ -64,6 +64,8 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         _onClickLabel: function(e) {
             e.preventDefault();
 
+            console.log('click label');
+
             channels('filter').emit('labels', { labels: [$(e.target).text()] });
         },
 

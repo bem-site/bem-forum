@@ -1,9 +1,19 @@
 block('forum-header')(
     content()(function() {
-        return {
-            elem: 'title',
-            content: 'Форум',
-            url: req.forumUrl
-        }
+        return [
+            {
+                elem: 'title',
+                content: 'Форум',
+                url: req.forumUrl
+            },
+            {
+                block : 'button',
+                url: req.forumUrl + '?labels=bem-forum',
+                icon : { block : 'icon', mods : { view : 'bug' } },
+                mods : { theme : 'normal', size : 'm', type: 'link' },
+                mix: { block: 'forum-header', elem: 'bug-button' },
+                attrs: { title: 'Репорт багов' }
+            }
+        ]
     })
 );

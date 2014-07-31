@@ -1,0 +1,7 @@
+- block: icon
+  mods: { view: bug }
+  required: true
+
+- block: button
+  mods: { theme: 'normal', type: 'link' }
+  required: true
