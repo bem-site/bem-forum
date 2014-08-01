@@ -99,20 +99,13 @@ block('comment')(
 
     elem('username')(
         def()(function() {
-            return [
-                {
-                    block: 'forum-user',
-                    elem: 'name',
-                    url: this.ctx.url,
-                    mix: [{ block: 'comment', elem: 'username' }],
-                    content: this.ctx.name
-                },
-                {
-                    block: 'comment',
-                    elem: 'usertext',
-                    content: 'ответил:'
-                }
-            ]
+            return {
+                block: 'forum-user',
+                elem: 'name',
+                url: this.ctx.url,
+                mix: [{ block: 'comment', elem: 'username' }],
+                content: this.ctx.name
+            }
         })
     ),
 

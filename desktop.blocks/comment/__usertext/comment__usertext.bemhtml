@@ -1,3 +1,0 @@
-block('comment').elem('usertext')(
-    tag()('span')
-);

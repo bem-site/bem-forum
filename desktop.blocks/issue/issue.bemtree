@@ -116,11 +116,6 @@ block('issue')(
                                 mix: [{ block: 'issue', elem: 'username' }]
                             },
                             {
-                                block: 'issue',
-                                elem: 'usertext',
-                                content: 'написал'
-                            },
-                            {
                                 block: 'forum-date',
                                 date: date,
                                 mix: [{ block: 'issue', elem: 'date' }]
