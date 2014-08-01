@@ -1,0 +1,3 @@
+block('comments').elem('auth-text')(
+    tag()('span')
+);

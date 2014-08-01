@@ -1,0 +1,7 @@
+.comments__auth
+{
+    color: $color-grey-dark;
+    margin-left: 80px;
+    background-color: #fff;
+    font-size: 12px;
+}

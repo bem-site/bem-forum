@@ -62,7 +62,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
          * @private
          */
         _closeComments: function() {
-            this.setMod('hidden');
+            this._toggle();
         },
 
         /**
@@ -141,7 +141,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
          * @private
          */
         _toggle: function() {
-            this.toggleMod('hidden');
+            this.toggleMod('state', 'hidden', '');
         },
 
         /**

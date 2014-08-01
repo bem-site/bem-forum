@@ -3,6 +3,6 @@
 
 - elems:
   - add-form
-  - container
+  - auth
 
-- mods: { hidden: true, view: [open, close] }
+- mods: { state: hidden, view: [open, close] }

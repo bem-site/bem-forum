@@ -1,4 +1,5 @@
 block('comments')(
+    // authorized user show for him add comment form
     match(function() { return req.cookies['forum_username'] && !this._isArchive; }).content()(function() {
         return [
             (!this._forum || !this._forum.comments) ? applyNext() : undefined,
@@ -6,5 +7,15 @@ block('comments')(
                 elem: 'add-form'
             }
         ]
+    }),
+
+    // guest user, show for him link to auth
+    match(function() { return !req.cookies['forum_username'] && !this._isArchive; }).content()(function() {
+        return [
+            (!this._forum || !this._forum.comments) ? applyNext() : undefined,
+            {
+                elem: 'auth'
+            }
+        ];
     })
 );

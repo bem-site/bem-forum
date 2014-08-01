@@ -40,32 +40,31 @@ block('issue')(
     }),
 
     elem('comments')(
+        // open comment on issue page
         match(function() { return this._forum && this._forum.comments; }).def()(function() {
             var forum = this._forum,
                 issue = forum.issue,
                 comments = forum.comments;
 
-
-            return applyCtx([
-                {
-                    block: 'comments',
-                    mods: { view: 'open' },
-                    data: comments,
-                    js: {
-                        issueNumber: issue.number,
-                        comments: issue.comments,
-                        forumUrl: req.forumUrl
-                    }
+            return applyCtx({
+                block: 'comments',
+                mods: { view: 'open' },
+                data: comments,
+                js: {
+                    issueNumber: issue.number,
+                    comments: issue.comments,
+                    forumUrl: req.forumUrl
                 }
-            ]);
+            });
         }),
 
+        // hidden comments on issues list page
         match(function() { return !this._forum || !this._forum.comments; }).def()(function() {
             var issue = this._issue;
 
             return applyCtx({
                 block: 'comments',
-                mods: { hidden: true },
+                mods: { state: 'hidden' },
                 js: {
                     issueNumber: issue.number,
                     comments: issue.comments,
@@ -370,7 +369,7 @@ block('issue')(
         match(function() { return !this._forum || !this._forum.comments; }).content()(function() {
             var comments = this._issue.comments;
 
-            if((!req.cookies['forum_username'] || this._isArchive) && comments === 0) {
+            if(this._isArchive && comments === 0) {
                 return '';
             }
 
