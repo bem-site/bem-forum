@@ -1,42 +1,48 @@
+// all icons optimized by SVGO
 .icon_view
 {
     &_comments
     {
-        background: url('icon_view_comments.svg') no-repeat;
+        background-image: url('icon_view_comments.svg');
     }
 
     &_forum
     {
-        background: url('icon_view_forum.svg') no-repeat;
+        background-image: url('icon_view_forum.svg');
     }
 
     &_more
     {
-        background: url('icon_view_more.svg') no-repeat;
+        background-image: url('icon_view_more.svg');
     }
 
     &_quote
     {
-        background: url('icon_view_quote.svg') no-repeat;
+        background-image: url('icon_view_quote.svg');
     }
 
     &_logo
     {
-        background: url('icon_view_logo.svg') no-repeat;
+        background-image: url('icon_view_logo.svg');
     }
 
     &_read-only
     {
-        background: url('icon_view_read-only.svg') no-repeat;
+        background-image: url('icon_view_read-only.svg');
     }
 
     &_avatar-default
     {
-        background: url('icon_view_avatar-default.svg') no-repeat;
+        background-image: url('icon_view_avatar-default.svg');
     }
 
     &_bug
     {
-        background: url('icon_view_bug.svg') no-repeat;
+        background-image: url('icon_view_bug.svg');
+    }
+
+    &_github-logo
+    {
+        background-image: url('icon_view_github-logo.svg');
     }
 }

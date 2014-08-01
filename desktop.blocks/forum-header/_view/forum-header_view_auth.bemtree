@@ -10,7 +10,8 @@ block('forum-header').mod('view', 'auth')(
                 content: [
                     { elem: 'user-wrapper' },
                     { elem: 'add-button' },
-                    header[1]
+                    header[1],
+                    header[2]
                 ]
             }
         ]

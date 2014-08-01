@@ -1,0 +1,14 @@
+$size = 40px;
+
+.forum-header__github-button.button
+{
+    margin-left: 10px;
+
+    .icon_view_github-logo
+    {
+        width: $size;
+        height: 100%;
+        background-size: $size;
+        margin: 0 5px;
+    }
+}

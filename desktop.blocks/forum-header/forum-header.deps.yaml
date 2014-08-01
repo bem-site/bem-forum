@@ -6,6 +6,8 @@
 - elems:
   - auth-button
   - bug-button
+  - github-button
+  - icon-button
   - side-right
   - title
 

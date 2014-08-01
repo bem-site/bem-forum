@@ -12,7 +12,8 @@ block('forum-header').mod('view', 'auth-no')(
                 mods : { theme : 'normal', size : 'm', action: true, type: 'link' },
                 mix: { block: 'forum-header', elem: 'auth-button' }
             },
-            header[1]
+            header[1],
+            header[2]
         ]
     })
 );
