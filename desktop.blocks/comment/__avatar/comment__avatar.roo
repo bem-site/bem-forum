@@ -2,4 +2,7 @@
 {
     width: $avatar-size-small;
     height: $avatar-size-small;
+    vertical-align: top;
+    padding: 5px 0;
+    background-color: #fff;
 }

@@ -1,6 +1,6 @@
 modules.define('forum-header', ['i-bem__dom', 'jquery', 'events__channels'], function(provide, BEMDOM, $, channels) {
     provide(BEMDOM.decl(this.name, {
-        _showLabel: function(e) {
+        _showLabel: function() {
             channels('filter').emit('labels', { labels: ['bem-forum'] });
         }
     }, {
