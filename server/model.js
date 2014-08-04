@@ -109,18 +109,10 @@ Model.prototype = {
      */
     loadLabels: function() {
         return github.getLabels.call(github, null, { per_page: 100, page: 1 }).then(function(labels) {
-            if(!labels || !labels.length) {
-                this.labels = [];
-            }else {
-                this.labels = labels.sort(function(a, b) {
-                    var an = a.name.toLowerCase(),
-                        bn = b.name.toLowerCase(),
-                        aGreaterThenB = an > bn;
-
-                    if(an === bn) return 0;
-                    return aGreaterThenB ? 1 : -1;
-                });
-            }
+            this.labels = (labels || []).sort(function(a, b) {
+                if(a.name === b.name) return 0;
+                return a.name > b.name ? 1 : -1;
+            });
         }, this);
     },
 
