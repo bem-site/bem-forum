@@ -41,5 +41,6 @@
   "scripts": {
     "start": "node server/index.js",
     "postinstall": "cd configs && ln -snf development current && cd .. && bower install && enb make --no-cache"
+
   }
 }
