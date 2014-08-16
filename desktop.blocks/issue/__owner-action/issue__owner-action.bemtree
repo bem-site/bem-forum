@@ -5,12 +5,8 @@ block('issue').elem('owner-action')(
 
    match(function() { return this._isOwner; }).content()(function() {
        return [
-           {
-               elem: 'edit'
-           },
-           {
-               elem: 'remove'
-           }
+           { elem: 'edit' },
+           { elem: 'remove' }
        ];
    })
 )
