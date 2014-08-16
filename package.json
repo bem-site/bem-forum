@@ -40,6 +40,6 @@
   },
   "scripts": {
     "start": "node server/index.js",
-    "postinstall": "bower install && enb make --no-cache && cd configs && ln -snf development current"
+    "postinstall": "cd configs && ln -snf development current && cd .. && bower install && enb make --no-cache"
   }
 }
