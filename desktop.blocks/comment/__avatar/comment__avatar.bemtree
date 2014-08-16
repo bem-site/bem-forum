@@ -1,0 +1,12 @@
+block('comment').elem('avatar')(
+    def()(function() {
+        return applyCtx({
+            block: 'forum-user',
+            elem: 'avatar',
+            url: this.ctx.url,
+            alt: this.ctx.alt,
+            link: this.ctx.link,
+            mix: [{ block: 'comment', elem: 'avatar' }]
+        })
+    })
+)

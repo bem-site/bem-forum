@@ -1,0 +1,65 @@
+block('comment').elem('edit-form')(
+    match(function() { return !this._isOwner; }).def()(function() {
+        return '';
+    }),
+
+    match(function() { return this._isOwner && !this._isArchive; }).def()(function() {
+        return {
+            block: 'forum-form',
+            mods: { visibility: 'hidden' },
+            mix: {
+                block: 'comment',
+                elem: 'edit-form'
+            },
+            content: [
+                {
+                    block: 'input',
+                    mods: {
+                        theme: 'normal',
+                        type: 'textarea',
+                        size: 'l',
+                        'has-clear' : true
+                    },
+                    name: 'body',
+                    val: this.ctx.body,
+                    mix: [
+                        {
+                            block: 'comment',
+                            elem: 'edit-textarea'
+                        },
+                        {
+                            block: 'comments',
+                            elem: 'edit-textarea'
+                        },
+                        {
+                            block: 'forum-form',
+                            elem: 'control',
+                            elemMods: { autoclear: 'yes' }
+                        }
+                    ]
+                },
+                {
+                    block: 'forum-flex',
+                    content: [
+                        {
+                            block: 'button',
+                            mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
+                            text: 'Сохранить',
+                            mix: [{ block: 'comment', elem: 'edit-button' }]
+                        },
+                        {
+                            block: 'spin',
+                            mods: { theme: 'normal', size: 'm' }
+                        },
+                        {
+                            block: 'button',
+                            mods: { theme: 'normal', size : 'm' },
+                            text: 'Отменить',
+                            mix: [{ block: 'comment', elem: 'edit-cancel' }]
+                        }
+                    ]
+                }
+            ]
+        }
+    })
+)

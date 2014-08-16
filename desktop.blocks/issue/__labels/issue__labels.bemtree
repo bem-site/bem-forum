@@ -1,0 +1,14 @@
+block('issue').elem('labels')(
+    match(function() { return this._issue.labels.length; }).def()(function() {
+
+        var labels = this._issue.labels;
+
+        return labels.map(function(label) {
+            return {
+                elem: 'label',
+                color: label.color,
+                content: label.name
+            }
+        });
+    })
+)

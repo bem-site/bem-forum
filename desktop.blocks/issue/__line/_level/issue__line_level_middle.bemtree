@@ -1,0 +1,59 @@
+block('issue').elem('line').elemMod('level', 'middle')(
+
+   content()(function() {
+       var issue = this._issue;
+
+       return [
+           {
+               block: 'forum-column',
+               mods: { side: 'left' }
+           },
+           {
+               block: 'forum-column',
+               mods: { side: 'right' },
+               content: [
+                   {
+                       block: 'issue',
+                       elem: 'line',
+                       elemMods: { level: 'titles' },
+                       content: [
+                           {
+                               block: 'issue',
+                               elem: 'number',
+                               content: '#' + issue.number
+                           },
+                           {
+                               block: 'link',
+                               mix: { block: this.block, elem: 'title' },
+                               url: req.forumUrl + 'issues/' + issue.number + '/',
+                               title: issue.title,
+                               content: issue.title
+                           },
+                           {
+                               block: 'issue',
+                               elem: 'labels'
+                           }
+                       ]
+                   },
+                   {
+                       block: 'issue',
+                       elem: 'body',
+                       mix: { block: 'text' }
+                   },
+                   {
+                       block: 'issue',
+                       elem: 'edit-form',
+                       mix: { block: 'text' }
+                   },
+                   {
+                       block: 'issue',
+                       elem: 'line',
+                       elemMods: { level: 'bottom' },
+                       mix: { block: 'forum-line', mods: { valign: 'stretch' }}
+                   }
+               ]
+           }
+       ]
+
+   })
+)

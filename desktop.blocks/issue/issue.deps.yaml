@@ -29,5 +29,7 @@
   - title
   - username
   - usertext
+  - labels
+  - comments
 
 - mods: { remove-animate: start }
