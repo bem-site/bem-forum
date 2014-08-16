@@ -53,7 +53,7 @@ block('issue').elem('line').elemMod('level', 'middle')(
                    }
                ]
            }
-       ]
+       ];
 
    })
-)
+);

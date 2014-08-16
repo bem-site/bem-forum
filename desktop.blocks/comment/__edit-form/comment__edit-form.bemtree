@@ -60,6 +60,6 @@ block('comment').elem('edit-form')(
                     ]
                 }
             ]
-        }
+        };
     })
 )

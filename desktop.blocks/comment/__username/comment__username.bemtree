@@ -6,6 +6,6 @@ block('comment').elem('username')(
             url: this.ctx.url,
             mix: [{ block: 'comment', elem: 'username' }],
             content: this.ctx.name
-        }
+        };
     })
 )

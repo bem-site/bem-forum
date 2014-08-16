@@ -6,4 +6,4 @@ elem('read-only')(
     match(function() { return this._isArchive }).content()(function() {
         return 'Read-only';
     })
-)
+);

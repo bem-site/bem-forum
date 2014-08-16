@@ -112,6 +112,6 @@ block('issue').elem('edit-form')(
                     ]
                 }
             ]
-        }
+        };
     })
-)
+);

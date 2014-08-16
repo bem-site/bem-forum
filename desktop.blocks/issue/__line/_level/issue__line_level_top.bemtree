@@ -50,6 +50,6 @@ block('issue').elem('line').elemMod('level', 'top')(
                    ]
                }
            }
-       ]
+       ];
    })
-)
+);

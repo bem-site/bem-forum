@@ -12,7 +12,7 @@ block('comment').elem('header')(
                 elem: 'date',
                 date: comment.updated_at
             }
-        ]
+        ];
     }),
 
     match(function() { return this._isOwner && !this._isArchive; }).content()(function() {
@@ -25,6 +25,6 @@ block('comment').elem('header')(
                     { elem: 'remove' }
                 ]
             }
-        ]
+        ];
     })
 )

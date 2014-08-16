@@ -11,6 +11,6 @@ block('issue').elem('owner-action')(
            {
                elem: 'remove'
            }
-       ]
+       ];
    })
 )

@@ -7,6 +7,6 @@ block('comment').elem('avatar')(
             alt: this.ctx.alt,
             link: this.ctx.link,
             mix: [{ block: 'comment', elem: 'avatar' }]
-        })
+        });
     })
 )

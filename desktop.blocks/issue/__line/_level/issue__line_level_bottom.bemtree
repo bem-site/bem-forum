@@ -20,4 +20,4 @@ block('issue').elem('line').elemMod('level', 'bottom')(
            }
        ];
    })
-)
+);

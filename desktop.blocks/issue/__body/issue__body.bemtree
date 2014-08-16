@@ -3,4 +3,4 @@ block('issue').elem('body')(
        var text = this._issue.body;
        return this._isArchive ? text : req.util.mdToHtml(text);
    })
-)
+);
