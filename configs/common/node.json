@@ -7,9 +7,10 @@
                 "265a82cf53438f87c98f0cbf0ba8aec68d14d761"
             ]
         },
+        "owner_token": "",
         "storage": {
-            "user": "tavriaforever",
-            "repo": "bem-forum-tests"
+            "user": "bem",
+            "repo": "bem-forum-content-ru"
         },
         "archive": "archive.json",
         "template": {
