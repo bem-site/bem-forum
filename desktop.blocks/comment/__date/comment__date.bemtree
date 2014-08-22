@@ -1,0 +1,9 @@
+block('comment').elem('date')(
+    def()(function() {
+        return applyCtx({
+            block: 'forum-date',
+            date: this.ctx.date,
+            mix: [{ block: 'comment', elem: 'date' }]
+        });
+    })
+)

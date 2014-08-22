@@ -1,0 +1,30 @@
+block('comment').elem('header')(
+    content()(function() {
+        var comment = this.ctx.comment;
+
+        return [
+            {
+                elem: 'username',
+                url: comment.user.html_url,
+                name: comment.user.login
+            },
+            {
+                elem: 'date',
+                date: comment.updated_at
+            }
+        ];
+    }),
+
+    match(function() { return this._isOwner && !this._isArchive; }).content()(function() {
+        return [
+            applyNext(),
+            {
+                elem: 'owner-actions',
+                content: [
+                    { elem: 'edit' },
+                    { elem: 'remove' }
+                ]
+            }
+        ];
+    })
+)

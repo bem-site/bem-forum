@@ -1,0 +1,6 @@
+block('issue').elem('body')(
+   content()(function() {
+       var text = this._issue.body;
+       return this._isArchive ? text : req.util.mdToHtml(text);
+   })
+);

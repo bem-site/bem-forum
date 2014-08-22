@@ -1,0 +1,117 @@
+block('issue').elem('edit-form')(
+    def()(function() {
+        return '';
+    }),
+
+    match(function() { return this._isOwner; }).def()(function() {
+
+        var issue = this._issue;
+
+        return {
+            block: 'forum-form',
+            mods: { visibility: 'hidden' },
+            mix: {
+                block: 'issue',
+                elem: 'edit-form'
+            },
+            content: [
+                {
+                    block: 'input',
+                    mods: {
+                        theme: 'normal',
+                        size: 'l',
+                        'has-clear' : true
+                    },
+                    name: 'title',
+                    val: issue.title,
+                    placeholder: 'Заголовок',
+                        mix: [
+                            {
+                                block: 'issue',
+                                elem: 'edit-title'
+                            },
+                            {
+                                block: 'forum-form',
+                                elem: 'control',
+                                elemMods: { autoclear: 'yes' }
+                            }
+                        ]
+                    },
+                    {
+                        block: 'input',
+                        mods: {
+                            theme: 'normal',
+                            type: 'textarea',
+                            size: 'l',
+                            'has-clear' : true
+                        },
+                        name: 'body',
+                        val: issue.body,
+                        placeholder: 'Описание',
+                        mix: [
+                            {
+                                block: 'issue',
+                                elem: 'edit-textarea'
+                            },
+                            {
+                                block: 'forum-form',
+                                elem: 'control',
+                                elemMods: { autoclear: 'yes' }
+                            }
+                        ]
+                },
+                {
+                    block: 'forum-labels',
+                    js: { forumUrl: req.forumUrl },
+                    mods: { inline: true, view: 'checkbox' },
+                    mix: [{ block: 'issue', elem: 'edit-labels' }],
+                    content: [
+                        {
+                            elem: 'title',
+                            content: 'Изменить метки'
+                        },
+                        {
+                            block: 'spin',
+                            mods: { theme: 'normal', size: 'l', progress: true },
+                            mix: [
+                                { block: 'forum-labels', elem: 'spin' },
+                                { block: 'issue', elem: 'edit-labels-spin' }
+                            ]
+                        },
+                        {
+                            elem: 'wrap'
+                        }
+                    ]
+                },
+                {
+                    block: 'forum-flex',
+                    content: [
+                        {
+                            block: 'button',
+                            mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
+                            text: 'Сохранить',
+                            mix: [
+                                { block: 'issue', elem: 'edit-button' },
+                                { block: 'forum-form', elem: 'submit' }
+                            ]
+                        },
+                        {
+                            block: 'spin',
+                            mods: { theme: 'normal', size: 'm' },
+                            mix: { block: 'forum-form', elem: 'spin' }
+                        },
+                        {
+                            block: 'button',
+                            mods: { theme: 'normal', size : 'm' },
+                            text: 'Отменить',
+                            mix: [
+                                { block: 'issue', elem: 'edit-cancel' },
+                                { block: 'forum-form', elem: 'cancel' }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+    })
+);

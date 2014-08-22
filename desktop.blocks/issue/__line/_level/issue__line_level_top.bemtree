@@ -1,0 +1,55 @@
+block('issue').elem('line').elemMod('level', 'top')(
+
+   content()(function() {
+       var issue = this._issue,
+           user = issue.user,
+           date = issue.updated_at;
+
+       return [
+           {
+               block: 'forum-column',
+               mods: { side: 'left' },
+               content: {
+                   block: 'forum-user',
+                   elem: 'avatar',
+                   url: user.avatar_url,
+                   alt: user.login,
+                   link: user.html_url,
+                   mix: [{ block: 'issue', elem: 'avatar' }]
+               }
+           },
+           {
+               block: 'forum-column',
+               mods: { side: 'right' },
+               mix: { block: 'forum-flex' },
+               content: {
+                   block: 'forum-line',
+                   mods: { valign: 'baseline' },
+                   content: [
+                       {
+                           block: 'forum-user',
+                           elem: 'name',
+                           url: user.html_url,
+                           title: user.login,
+                           content: user.login,
+                           mix: [{ block: 'issue', elem: 'username' }]
+                       },
+                       {
+                           block: 'forum-date',
+                           date: date,
+                           mix: [{ block: 'issue', elem: 'date' }]
+                       },
+                       {
+                           block: 'issue',
+                           elem: 'read-only'
+                       },
+                       {
+                           block: 'issue',
+                           elem: 'owner-action'
+                       }
+                   ]
+               }
+           }
+       ];
+   })
+);

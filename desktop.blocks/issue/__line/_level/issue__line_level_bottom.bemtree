@@ -1,0 +1,23 @@
+block('issue').elem('line').elemMod('level', 'bottom')(
+   match(function() { return !this._forum || !this._forum.comments; }).content()(function() {
+       var comments = this._issue.comments;
+
+       if((!req.cookies['forum_username'] || this._isArchive) && comments === 0) {
+           return '';
+       }
+
+       return [
+           {
+               block : 'button',
+               text : comments === 0 ? 'Ответить' : 'Ответов: ' + comments,
+               mods : { theme : 'normal', size : 'm', togglable : 'check' },
+               mix: { block: this.block, elem: 'comments-switcher' }
+           },
+           {
+               block: 'spin',
+               mods: { theme: 'normal', size: 'm' },
+               mix: { block: 'issue', elem: 'spin' }
+           }
+       ];
+   })
+);

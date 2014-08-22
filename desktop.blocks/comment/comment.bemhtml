@@ -5,7 +5,7 @@ block('comment')(
             issueNumber: this.ctx.issueNumber,
             id: this.ctx.data.id,
             forumUrl: this.ctx.forumUrl
-        }
+        };
     }),
     mix()([
         { block: 'forum-flex' },
