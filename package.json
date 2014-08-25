@@ -1,4 +1,4 @@
-{
+tq{
   "author": "tormozz48",
   "name": "bem-forum",
   "email": "tormozz48@gmail.com",
@@ -27,17 +27,16 @@
     "susanin": "~0.1.10",
     "vow": "~0.4.1",
     "vow-fs": "0.3.0",
-    "cron": "1.0.1"
-  },
-  "devDependencies": {
-    "bower": "~1.3.9",
+    "cron": "1.0.1",
+    "bower": "~1.3.5",
     "enb": "0.13.4",
     "enb-autoprefixer": "0.1.1",
     "enb-bemxjst": "1.2.0",
     "enb-diverse-js": "0.1.0",
     "enb-modules": "0.1.2",
-    "enb-roole": "0.2.1"
+    "enb-roole": "0.2.1"	
   },
+  "devDependencies": {},
   "scripts": {
     "start": "node server/index.js",
     "postinstall": "cd configs && ln -snf development current && cd .. && bower install && enb make --no-cache"
