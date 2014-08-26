@@ -12,7 +12,7 @@ bem-forum
 
 * Клонировать репозиторий: `git clone git@github.com:bem/bem-forum.git`
 * Перейти в папку со скаченным проектом: `cd bem-forum`
-* Установить зависимости `npm install`
+* Установить зависимости `npm run deps`
 * Запустить проект `npm start`
 
 В браузере перейти по адресу: `http://localhost:3000`.
