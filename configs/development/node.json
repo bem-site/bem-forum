@@ -3,8 +3,8 @@
     "forum": {
         "oauth": {
             "localhost": {
-                "clientId": "58a9e4384278acbe9f81",
-                "secret": "dbe1f6b86f3e97c73f0f6322a217292d8c984d00",
+                "clientId": "018c6befe354b6fcaa97",
+                "secret": "25c32f93d1ff717b03976dc24968116ae98bfa39",
                 "redirectUrl": "http://localhost:3000"
             }
         }
