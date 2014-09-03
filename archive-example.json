@@ -1,0 +1,111 @@
+{
+  "issues": [
+    {
+      "number": -1,
+      "title": "Archive post",
+      "user": {
+        "login": "mursya",
+        "avatar_url": "http://upics.yandex.net/127846884/normal"
+      },
+      "labels": [
+        {
+          "name": "archive",
+          "color": ""
+        },
+        {
+          "name": "link",
+          "color": ""
+        },
+        {
+          "name": "css",
+          "color": ""
+        },
+        {
+          "name": "community",
+          "color": ""
+        }
+      ],
+      "comments": 1,
+      "created_at": "2014-07-25T10:55:41Z",
+      "updated_at": "2014-07-26T12:25:59Z",
+      "body": "The content of the archive post"
+    },
+    {
+      "number": -2,
+      "title": "Another archive post",
+      "user": {
+        "login": "mursya",
+        "avatar_url": "http://upics.yandex.net/127846884/normal"
+      },
+      "labels": [
+        {
+          "name": "archive",
+          "color": ""
+        },
+        {
+          "name": "text",
+          "color": ""
+        },
+        {
+          "name": "deps.js",
+          "color": ""
+        },
+        {
+          "name": "asktheteam",
+          "color": ""
+        }
+      ],
+      "comments": 4,
+      "created_at": "2014-07-24T21:09:27Z",
+      "updated_at": "2014-07-29T07:39:34Z",
+      "body": "The content of the another archive post"
+    }
+  ],
+  "comments": [
+    {
+      "number": -1,
+      "user": {
+        "login": "mursya"
+      },
+      "created_at": "2014-07-26T12:25:59Z",
+      "updated_at": "2014-07-26T12:25:59Z",
+      "body": "<p>Два дня до окончательного закрытия проекта Я.ру. МЕСТО СБОРА \"потерявшихся\" ярушников в ЖЖ:<em> <a href=\"http://otrageniya.livejournal.com/\">http://otrageniya.livejournal.com/</a></em>  До встречи в новом доме!</p>"
+    },
+    {
+      "number": -2,
+      "user": {
+        "login": "ilyarsoftware"
+      },
+      "created_at": "2014-07-25T19:29:35Z",
+      "updated_at": "2014-07-25T19:29:35Z",
+      "body": "<p>Сделаю смелое предположение: необходимо переопределить технологию css подобно тому как это сделано в <a href=\"https://github.com/ilyar/bem-examples/blob/master/.bem/techs/browser.js%2Bbemhtml%2Bbemtree.js\">browser.js+bemhtml+bemtree.js</a>, смыл в том в процессе сборке учесть описаный в deps.js  tech: 'css' и добавить в результат необходимое.</p><p>Учитывая что для блока button оформление реализовано в темах, надо указать нужную тему в зависимости, примерно так:</p><pre Liberation Mono\",Menlo,Courier,monospace;font-size:13px;margin-top:15px;margin-bottom:15px;border:1px solid #dddddd;line-height:19px;padding:6px 10px;border-top-left-radius:3px;border-top-right-radius:3px;border-bottom-right-radius:3px;border-bottom-left-radius:3px;word-wrap:normal;color:#333333;background-color:#f8f8f8;\"><span >({</span><br/>    <span >tech</span> <span >:</span> <span >'css'</span><span >,</span><br/>    <span >shouldDeps</span> <span >:</span> <span >{</span><br/>        <span >tech</span><span >:</span> <span >'stylus'</span><span >,</span><br/>        <span >block</span> <span >:</span> <span >'button'</span><span >,</span> <span >mods</span> <span >:</span> <span >{</span> <span >theme</span> <span >:</span> <span >'normal'</span><span >,</span> <span >size</span> <span >:</span> <span >'l'</span> <span >}</span><br/>    <span >}</span><br/><span >})</span></pre><p>или <span >переопределить технологию stylus, тогда описание зависомости немного измениться:</span></p><pre Liberation Mono\",Menlo,Courier,monospace;font-size:13px;margin-top:15px;margin-bottom:15px;border:1px solid #dddddd;line-height:19px;padding:6px 10px;border-top-left-radius:3px;border-top-right-radius:3px;border-bottom-right-radius:3px;border-bottom-left-radius:3px;word-wrap:normal;color:#333333;background-color:#f8f8f8;\">({<br/><span >- tech : 'css',</span><br/><span >+ tech : 'stylus',</span><br/>    shouldDeps : {<br/>        tech: 'stylus',<br/>        block : 'button', mods : { theme : 'normal', size : 'l' }<br/>    }<br/>})</pre>"
+    },
+    {
+      "number": -2,
+      "user": {
+        "login": "tadatuta"
+      },
+      "created_at": "2014-07-25T19:54:06Z",
+      "updated_at": "2014-07-25T19:54:06Z",
+      "body": "да, на текущий момент другого способа, к сожалению, нет.<br/><br/>в идеале необходимо научить все технологии нормально работать с depsByTech, но у нас в обозримом будущем не предвидятся ресурсы на это <ya-smile text=\":(\" code=\"3\" theme=\"default\"/>"
+    },
+    {
+      "number": -2,
+      "user": {
+        "login": "qfox"
+      },
+      "created_at": "2014-07-28T14:32:35Z",
+      "updated_at": "2014-07-28T14:32:35Z",
+      "body": "<p>А на формализацию задачи есть ресурс? В Issue оставляем только то, что в работе, и флаг туда ставим ready-to-play какой-нибудь, обозначающий, что задача формализована, но ей пока никто не занимается.</p><p>Бывает есть пара тройка часов в день, когда в голове вата и надо отвлечься на что-то — такие задачи были бы отличным способом отвлечения. Но когда не знаешь что делать, а в голове вата же — сложно понять, что именно надо делать.</p>"
+    },
+    {
+      "number": -2,
+      "user": {
+        "login": "ilyarsoftware"
+      },
+      "created_at": "2014-07-29T07:39:34Z",
+      "updated_at": "2014-07-29T07:39:34Z",
+      "body": "поддерживаю!<br/>еще думаю что будет полезно для  для deps.js сформулировать спецификацию."
+    }
+  ]
+}

@@ -12,7 +12,7 @@
             "user": "bem",
             "repo": "bem-forum-content-ru"
         },
-        "archive": "archive.json",
+        "archive": "archive-example.json",
         "template": {
             "level": "desktop",
             "bundle": "index"
