@@ -1,3 +1,5 @@
+![BEM:true](http://img.shields.io/badge/bem-true-yellow.svg?style=flat)
+
 bem-forum
 =========
 
