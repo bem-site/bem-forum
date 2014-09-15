@@ -313,7 +313,7 @@ block('issue')(
                         content: [
                             {
                                 block: 'button',
-                                mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
+                                mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
                                 text: 'Сохранить',
                                 mix: [
                                     { block: 'issue', elem: 'edit-button' },

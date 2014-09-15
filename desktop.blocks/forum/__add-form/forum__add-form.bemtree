@@ -90,7 +90,7 @@ block('forum').elem('add-form')(
                         content: [
                             {
                                 block: 'button',
-                                mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
+                                mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
                                 text: 'Добавить',
                                 mix: [{ block: 'forum-form', elem: 'submit' }]
                             },

@@ -184,7 +184,7 @@ block('comment')(
                             content: [
                                 {
                                     block: 'button',
-                                    mods: { theme: 'normal', size : 'm', type: 'submit', action: true },
+                                    mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
                                     text: 'Сохранить',
                                     mix: [{ block: 'comment', elem: 'edit-button' }]
                                 },

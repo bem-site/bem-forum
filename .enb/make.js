@@ -11,7 +11,7 @@ module.exports = function(config) {
                  target: '?.js',
                  source: '?.pre.js'
              } ],
-            [ require('enb-roole/techs/css-roole'), { target: '?.noprefix.css' } ],
+            [ require('enb-stylus/techs/css-stylus'), { target: '?.noprefix.css' } ],
             [ require('enb-bemxjst/techs/bemhtml'), { devMode: false } ]
         ]);
 

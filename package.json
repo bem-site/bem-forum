@@ -2,7 +2,7 @@
   "author": "tormozz48",
   "name": "bem-forum",
   "email": "tormozz48@gmail.com",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "type": "git",
     "url": "git://github.com/bem/bem-forum.git"
@@ -36,7 +36,7 @@
     "enb-bemxjst": "1.2.0",
     "enb-diverse-js": "0.1.0",
     "enb-modules": "0.1.2",
-    "enb-roole": "0.2.1"
+    "enb-stylus": "^1.1.4"
   },
   "scripts": {
     "start": "node server/index.js",

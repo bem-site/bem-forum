@@ -9,7 +9,7 @@ block('forum-header').mod('view', 'auth-no')(
                 block : 'button',
                 url: req.forumUrl + 'auth/',
                 text : 'Авторизоваться (github.com)',
-                mods : { theme : 'normal', size : 'm', action: true, type: 'link' },
+                mods : { theme : 'normal', size : 'm', view : 'action', type: 'link' },
                 mix: { block: 'forum-header', elem: 'auth-button' }
             },
             header[1],

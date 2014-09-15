@@ -3,5 +3,6 @@
 
 - block: spin
   mods: { theme: normal }
+  required: true
 
 - mods: { progress: true }

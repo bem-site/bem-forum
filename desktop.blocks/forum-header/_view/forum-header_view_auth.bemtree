@@ -46,7 +46,7 @@ block('forum-header').mod('view', 'auth')(
             return {
                 block : 'button',
                 text : 'Добавить пост',
-                mods : { theme : 'normal', size : 'm', action: true },
+                mods : { theme : 'normal', size : 'm', view: 'action' },
                 mix: [
                     { block: 'forum-header', elem: 'add-button' },
                     { block: 'forum', elem: 'add' }

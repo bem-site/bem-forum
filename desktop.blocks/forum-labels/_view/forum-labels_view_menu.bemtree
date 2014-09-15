@@ -27,7 +27,7 @@ block('forum-labels').mod('view', 'menu')(
                     mods: {
                         theme: 'normal',
                         size: 'm',
-                        select: 'check'
+                        mode: 'check'
                     },
                     content: labels.map(function(label) {
                         return {
