@@ -6,25 +6,28 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
 
 code
 {
-    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-family: Consolas, 'Liberation Mono', Courier, monospace;
     font-size: 12px;
+
+    padding: 2px 5px;
+
+    white-space: nowrap;
 
     color: #333;
     border: 1px solid $color-grey;
     border-radius: 3px;
     background: $color-grey-light;
-    padding: 2px 5px;
-    white-space: nowrap;
 }
 
-.hljs, pre > code
+.hljs,
+pre > code
 {
     line-height: 1.6;
 
     display: block;
     overflow: auto;
 
-    padding: 0.5em;
+    padding: .5em;
 
     white-space: pre;
 }

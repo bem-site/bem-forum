@@ -1,19 +1,23 @@
 .comments
 {
-    margin-top: 20px;
-
     position: relative;
+
+    margin-top: 20px;
 
     &::before
     {
-        display: block;
-        content: '';
         position: absolute;
+        z-index: -1;
         top: 0;
         bottom: 0;
         left: 100px;
+
+        display: block;
+
         width: 1px;
+
+        content: '';
+
         background-color: $color-grey;
-        z-index: -1;
     }
 }

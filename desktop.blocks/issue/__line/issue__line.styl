@@ -1,24 +1,19 @@
-.issue__line
+.issue__line_level
 {
-    &_level
+    &_top .column_side_right
     {
-        &_top
-        {
-            .column_side_right
-            {
-                border-bottom: 1px solid $color-grey;
-            }
-        }
+        border-bottom: 1px solid $color-grey;
+    }
 
-        &_titles
-        {
-            margin-bottom: 10px;
-        }
+    &_titles
+    {
+        margin-bottom: 10px;
+    }
 
-        &_bottom
-        {
-            border-bottom: 1px solid $color-grey;
-            padding-bottom: 15px;
-        }
+    &_bottom
+    {
+        padding-bottom: 15px;
+
+        border-bottom: 1px solid $color-grey;
     }
 }

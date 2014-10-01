@@ -6,9 +6,11 @@ $icon-logo-size = 10px;
 
     &:after
     {
-        content: attr(data-status);
-        position: absolute;
         font-size: 6px;
+
+        position: absolute;
+
+        content: attr(data-status);
         text-transform: uppercase;
     }
 
@@ -19,10 +21,12 @@ $icon-logo-size = 10px;
         &_view_logo
         {
             position: absolute;
-            left: .3em;
             top: .4em;
+            left: .3em;
+
             width: $icon-logo-size;
             height: $icon-logo-size;
+
             background-size: $icon-logo-size;
         }
     }
@@ -30,8 +34,10 @@ $icon-logo-size = 10px;
     h1
     {
         font-size: 17px;
-        margin: 0;
         line-height: 1;
+
         display: inline-block;
+
+        margin: 0;
     }
 }
