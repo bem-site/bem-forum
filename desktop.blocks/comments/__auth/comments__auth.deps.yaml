@@ -1,0 +1,6 @@
+- block: forum-variables
+  required: true
+
+- elems:
+  - auth-link
+  - auth-text

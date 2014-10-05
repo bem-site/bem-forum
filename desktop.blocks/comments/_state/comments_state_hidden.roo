@@ -1,0 +1,4 @@
+.comments_state_hidden
+{
+    display: none;
+}

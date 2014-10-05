@@ -1,0 +1,21 @@
+block('comments').elem('auth')(
+    // hidden, if user is auth or comments are archive
+    match(function() { return req.cookies['forum_username'] || this._isArchive; }).def()(function() {
+        return false;
+    }),
+
+    content()(function() {
+        return [
+            {
+                elem: 'auth-text',
+                content: 'Чтобы написать комментарий, необходимо'
+            },
+            {
+                block : 'link',
+                url: req.forumUrl + 'auth/',
+                content : 'Авторизоваться (github.com)',
+                mix: { block: this.block, elem: 'auth-link' }
+            }
+        ]
+    })
+);
