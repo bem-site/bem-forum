@@ -1,11 +1,13 @@
 var _ = require('lodash'),
     vow = require('vow'),
     mime = require('mime-types'),
+
     auth = require('./auth'),
     model = require('./model'),
     template = require('./template'),
     routes = require('./routes'),
     util = require('./util'),
+
     baseUrl = '/forum/';
 
 module.exports = function(pattern, options) {
@@ -17,7 +19,11 @@ module.exports = function(pattern, options) {
     template.init(options);
     model.init(options);
 
-    var ownerToken = options.owner_token;
+    var ownerToken = options.owner_token,
+        // for check, if user checked at least one label
+        // for create/edit issue forms - knowledge is taken
+        // from common config website
+        labelsRequired = options.labelsRequired;
 
     return function(req, res, next) {
         var route = routes.getRoute(req.url, req.method),
@@ -69,25 +75,25 @@ module.exports = function(pattern, options) {
 
         options = (isGetRequest || isDeleteRequest ? query : req.body) || {};
 
-        // options.per_page = 5;
-
         // for access in templates
         req = _.extend(req, {
             forumUrl: baseUrl,
+            labelsRequired: labelsRequired,
             util: util
         });
 
         var templateCtx = {
             getIssues:     { block: 'forum-issues' },
             getIssue:      { block: 'issue' },
-            createIssue:   { block: 'issue', forumUrl: req.forumUrl },
-            editIssue:     { block: 'issue', forumUrl: req.forumUrl },
+            createIssue:   { block: 'issue', forumUrl: req.forumUrl, labelsRequired: req.labelsRequired },
+            editIssue:     { block: 'issue', forumUrl: req.forumUrl, labelsRequired: req.labelsRequired },
             getComments:   { block: 'comments', mods: { view: 'close' }, issueNumber: options.number, forumUrl: req.forumUrl },
             createComment: { block: 'comment', issueNumber: options.number, forumUrl: req.forumUrl },
             editComment:   { block: 'comment', issueNumber: options.number, forumUrl: req.forumUrl },
             getLabels:     { block: 'forum-labels', mods: { view: options.view } }
         };
 
+        // get full page from server on first enter
         if(!req.xhr) {
             // collect all required data for templates
             var promises = {
@@ -121,11 +127,21 @@ module.exports = function(pattern, options) {
                     console.err(err);
                 });
         } else {
+            // ajax requests
             var result = {};
 
+            // do something with owner right,
+            // e.g. add labels when user create/edit issue
             if(query.__access === 'owner' && ownerToken) {
                 token = ownerToken;
                 model.addUserAPI(token);
+            }
+
+            // create issue without checked labels - default behaviors
+            var isIssueAction = (action === 'createIssue' || action === 'editIssue');
+
+            if((isIssueAction && !options.labels) || (isIssueAction && !ownerToken)) {
+                options.labels = [];
             }
 
             // get data by ajax

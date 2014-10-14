@@ -2,8 +2,9 @@ block('forum-content').mod('view', 'issue')(
     content()(function() {
         return {
             block: 'issue',
-            issue: this._forum.issue,
-            js: { forumUrl: req.forumUrl }
+            data: this._forum.issue,
+            forumUrl: req.forumUrl,
+            labelsRequired: req.labelsRequired
         }
     })
 );

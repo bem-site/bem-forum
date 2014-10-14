@@ -19,6 +19,6 @@ block('page')(
     }),
 
     match(function() { return !this.ctx.forum }).content()(function() {
-        return 'this.ctx.forum empty';
+        return 'Forum data is empty';
     })
 );

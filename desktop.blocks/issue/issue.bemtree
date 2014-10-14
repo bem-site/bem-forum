@@ -1,8 +1,7 @@
 block('issue')(
 
-    match(function() { return this.ctx.issue || this.ctx.data; }).def()(function() {
-
-        var issue = this.ctx.issue || this.ctx.data,
+    match(function() { return this.ctx.data; }).def()(function() {
+        var issue = this.ctx.data,
             login = issue.user.login,
             isArchive = issue.labels.some(function(label) {
                 return label.name === 'archive';
@@ -13,7 +12,6 @@ block('issue')(
     }),
 
     match(function() { return this._issue; }).content()(function() {
-
         var issue = this._issue;
 
         return [
@@ -40,11 +38,11 @@ block('issue')(
     }),
 
     elem('comments')(
+        // show comments on issue page
         match(function() { return this._forum && this._forum.comments; }).def()(function() {
             var forum = this._forum,
                 issue = forum.issue,
                 comments = forum.comments;
-
 
             return applyCtx([
                 {
@@ -60,6 +58,7 @@ block('issue')(
             ]);
         }),
 
+        // hide comments on list issues page
         match(function() { return !this._forum || !this._forum.comments; }).def()(function() {
             var issue = this._issue;
 
@@ -191,8 +190,7 @@ block('issue')(
                                     block: 'link',
                                     mix: { block: this.block, elem: 'title' },
                                     url: req.forumUrl + 'issues/' + issue.number + '/',
-                                    title: issue.title,
-                                    content: issue.title
+                                    content: _.escape(issue.title)
                                 },
                                 {
                                     block: 'issue',
@@ -271,7 +269,7 @@ block('issue')(
                             'has-clear' : true
                         },
                         name: 'body',
-                        val: issue.body,
+                        val: _.escape(issue.body),
                         placeholder: 'Описание',
                         mix: [
                             {
@@ -285,7 +283,7 @@ block('issue')(
                             }
                         ]
                     },
-                    {
+                    req.labelsRequired ? {
                         block: 'forum-labels',
                         js: { forumUrl: req.forumUrl },
                         mods: { inline: true, view: 'checkbox' },
@@ -307,7 +305,7 @@ block('issue')(
                                 elem: 'wrap'
                             }
                         ]
-                    },
+                    } : '',
                     {
                         block: 'forum-flex',
                         content: [
@@ -360,7 +358,8 @@ block('issue')(
     // body content
     elem('body')(
         content()(function() {
-            var text = this._issue.body;
+            var text = _.escape(this._issue.body);
+
             return this._isArchive ? text : req.util.mdToHtml(text);
         })
     ),

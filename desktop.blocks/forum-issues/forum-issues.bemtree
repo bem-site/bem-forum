@@ -1,17 +1,11 @@
 block('forum-issues')(
     match(function() { return this.ctx.data; }).content()(function() {
-
         return this.ctx.data.map(function(issue) {
-            var labelsName = [];
-
-            issue.labels.forEach(function(label) {
-                labelsName.push(label.name);
-            });
-
             return {
                 block: 'issue',
                 data: issue,
-                forumUrl: req.forumUrl
+                forumUrl: req.forumUrl,
+                labelsRequired: req.labelsRequired
             }
         });
     })
