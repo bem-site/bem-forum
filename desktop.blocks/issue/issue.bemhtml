@@ -1,10 +1,8 @@
 block('issue')(
-    js()(true),
     match(function() { return this.ctx.data }).js()(function() {
         var issue = this.ctx.data,
             labels = issue.labels,
-            labelsName = [],
-            forumUrl = this.ctx.forumUrl;
+            labelsName = [];
 
         labels.forEach(function(label) {
             labelsName.push(label.name);
@@ -13,10 +11,14 @@ block('issue')(
         return {
             number: issue.number,
             labels: labelsName,
-            forumUrl: forumUrl,
+            forumUrl: this.ctx.forumUrl,
             isArchive: labels.some(function(label) {
                 return label.name === 'archive';
-            })
+            }),
+            // for check, if user checked at least one label
+            // for create/edit issue forms - knowledge is taken
+            // from common config website
+            labelsRequired: this.ctx.labelsRequired
         };
     })
 );

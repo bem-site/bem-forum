@@ -42,7 +42,8 @@ exports.run = function(ctx, req) {
                 context = vm.createContext({
                     console: console,
                     Vow: vow,
-                    req: req
+                    req: req,
+                    _: _
                 });
 
             return vfs.read(p).then(function(content) {

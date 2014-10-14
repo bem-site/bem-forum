@@ -62,7 +62,7 @@ block('forum').elem('add-form')(
                             }
                         ]
                     },
-                    {
+                    req.labelsRequired ? {
                         block: 'forum-labels',
                         js: { labels: labels, forumUrl: req.forumUrl },
                         mods: { inline: true, view: 'checkbox' },
@@ -84,7 +84,7 @@ block('forum').elem('add-form')(
                                 elem: 'wrap'
                             }
                         ]
-                    },
+                    } : '',
                     {
                         block: 'forum-flex',
                         content: [

@@ -52,12 +52,12 @@ block('comment')(
                             {
                                 block: 'comment',
                                 elem: 'body',
-                                body: comment.body
+                                body: _.escape(comment.body)
                             },
                             {
                                 block: 'comment',
                                 elem: 'edit-form',
-                                body: comment.body
+                                body: _.escape(comment.body)
                             }
                         ]
                     }
@@ -135,7 +135,8 @@ block('comment')(
     elem('body')(
        content()(function() {
            var text = this.ctx.body;
-           return req.util.mdToHtml(text);
+
+           return this._isArchive ? text : req.util.mdToHtml(text);
        })
     ),
 

@@ -1,5 +1,0 @@
-block('forum-content')(
-    content()(function() {
-        return { block: 'forum-loader' };
-    })
-);

@@ -21,7 +21,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                 return false;
             }
 
-            if (this._formAdd.isEmptyCheckbox('labels[]', 'Выберете один из лейблов')) {
+            if (this.params.labelsRequired && this._formAdd.isEmptyCheckbox('labels[]', 'Выберете один из лейблов')) {
                 return false;
             }
 
@@ -74,7 +74,11 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         },
 
         _toggleFormAdd: function() {
-            this.findBlockInside('labels', 'forum-labels').getLabels();
+            var labels = this.findBlockInside('labels', 'forum-labels');
+
+            if(labels) {
+                labels.getLabels();
+            }
 
             this._formAdd.toggle();
         },

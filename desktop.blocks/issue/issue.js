@@ -112,7 +112,9 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             this._formEdit = this.findBlockInside('edit-form', 'forum-form');
             this._editLabels = this.findBlockInside('edit-labels', 'forum-labels');
 
-            this._editLabels.getLabels(this.params.labels);
+            if(this._editLabels) {
+                this._editLabels.getLabels(this.params.labels);
+            }
 
             var body = this.findElem('body');
             this.setMod(body, 'visibility', 'hidden') && this._toggleEditBody(body);
@@ -127,7 +129,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 return false;
             }
 
-            if (this._formEdit.isEmptyCheckbox('labels[]', 'Выберете один из лейблов')) {
+            if (this.params.labelsRequired && this._formEdit.isEmptyCheckbox('labels[]', 'Выберете один из лейблов')) {
                 return false;
             }
 

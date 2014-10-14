@@ -2,15 +2,14 @@
     "forum": {
         "auth": {
             "tokens": [
-                "7a2fb4d7a380f8a20562f5fc910f35d3b1605341",
-                "db2b748a0bcef3ef2f009bdcc425c86c9ab37770",
-                "265a82cf53438f87c98f0cbf0ba8aec68d14d761"
+                "7a2fb4d7a380f8a20562f5fc910f35d3b1605341"
             ]
         },
         "owner_token": "",
+        "labelsRequired": false,
         "storage": {
-            "user": "bem",
-            "repo": "bem-forum-content-ru"
+            "user": "tavriaforever",
+            "repo": "bem-forum-tests"
         },
         "archive": "archive-example.json",
         "template": {
