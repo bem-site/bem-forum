@@ -18,7 +18,8 @@ block('issue')(
             // for check, if user checked at least one label
             // for create/edit issue forms - knowledge is taken
             // from common config website
-            labelsRequired: this.ctx.labelsRequired
+            labelsRequired: this.ctx.labelsRequired,
+            csrf: this.ctx.csrf
         };
     })
 );

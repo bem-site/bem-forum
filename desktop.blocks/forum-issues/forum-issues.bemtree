@@ -5,7 +5,8 @@ block('forum-issues')(
                 block: 'issue',
                 data: issue,
                 forumUrl: req.forumUrl,
-                labelsRequired: req.labelsRequired
+                labelsRequired: req.labelsRequired,
+                csrf: req.csrf
             }
         });
     })

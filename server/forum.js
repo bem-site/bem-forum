@@ -79,17 +79,18 @@ module.exports = function(pattern, options) {
         req = _.extend(req, {
             forumUrl: baseUrl,
             labelsRequired: labelsRequired,
-            util: util
+            util: util,
+            csrf: req.csrfToken()
         });
 
         var templateCtx = {
             getIssues:     { block: 'forum-issues' },
             getIssue:      { block: 'issue' },
-            createIssue:   { block: 'issue', forumUrl: req.forumUrl, labelsRequired: req.labelsRequired },
-            editIssue:     { block: 'issue', forumUrl: req.forumUrl, labelsRequired: req.labelsRequired },
+            createIssue:   { block: 'issue', forumUrl: req.forumUrl, labelsRequired: req.labelsRequired, csrf: req.csrf },
+            editIssue:     { block: 'issue', forumUrl: req.forumUrl, labelsRequired: req.labelsRequired, csrf: req.csrf },
             getComments:   { block: 'comments', mods: { view: 'close' }, issueNumber: options.number, forumUrl: req.forumUrl },
-            createComment: { block: 'comment', issueNumber: options.number, forumUrl: req.forumUrl },
-            editComment:   { block: 'comment', issueNumber: options.number, forumUrl: req.forumUrl },
+            createComment: { block: 'comment', issueNumber: options.number, forumUrl: req.forumUrl, csrf: req.csrf },
+            editComment:   { block: 'comment', issueNumber: options.number, forumUrl: req.forumUrl, csrf: req.csrf },
             getLabels:     { block: 'forum-labels', mods: { view: options.view } }
         };
 

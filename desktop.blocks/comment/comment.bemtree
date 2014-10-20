@@ -181,6 +181,10 @@ block('comment')(
                             ]
                         },
                         {
+                            tag: 'input',
+                            attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
+                        },
+                        {
                             block: 'forum-flex',
                             content: [
                                 {

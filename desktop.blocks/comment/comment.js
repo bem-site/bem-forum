@@ -145,6 +145,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
             if(window.confirm('Вы уверены?')) {
                 $.ajax({
                     type: 'DELETE',
+                    data: { _csrf: this.params.csrf },
                     url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/',
                     context: this
                 }).done(function() {

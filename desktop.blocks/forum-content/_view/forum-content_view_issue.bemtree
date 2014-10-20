@@ -4,7 +4,8 @@ block('forum-content').mod('view', 'issue')(
             block: 'issue',
             data: this._forum.issue,
             forumUrl: req.forumUrl,
-            labelsRequired: req.labelsRequired
+            labelsRequired: req.labelsRequired,
+            csrf: req.csrf
         }
     })
 );

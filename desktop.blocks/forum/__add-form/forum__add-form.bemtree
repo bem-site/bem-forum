@@ -13,7 +13,8 @@ block('forum').elem('add-form')(
             mods: { visibility: 'hidden' },
             mix: {
                 block: 'forum',
-                elem: 'add-form'
+                elem: 'add-form',
+                js: { csrf: req.csrf }
             },
             content: {
                 block: 'forum',
@@ -39,6 +40,10 @@ block('forum').elem('add-form')(
                                 elemMods: { autoclear: 'yes' }
                             }
                         ]
+                    },
+                    {
+                        tag: 'input',
+                        attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
                     },
                     {
                         block: 'input',

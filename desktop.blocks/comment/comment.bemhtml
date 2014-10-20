@@ -4,7 +4,8 @@ block('comment')(
         return {
             issueNumber: this.ctx.issueNumber,
             id: this.ctx.data.id,
-            forumUrl: this.ctx.forumUrl
+            forumUrl: this.ctx.forumUrl,
+            csrf: this.ctx.csrf
         }
     }),
     mix()([
