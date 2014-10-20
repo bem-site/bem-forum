@@ -52,7 +52,7 @@ block('comment')(
                             {
                                 block: 'comment',
                                 elem: 'body',
-                                body: _.escape(comment.body)
+                                body: comment.body
                             },
                             {
                                 block: 'comment',

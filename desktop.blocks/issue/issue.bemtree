@@ -358,7 +358,7 @@ block('issue')(
     // body content
     elem('body')(
         content()(function() {
-            var text = _.escape(this._issue.body);
+            var text = this._issue.body;
 
             return this._isArchive ? text : req.util.mdToHtml(text);
         })
