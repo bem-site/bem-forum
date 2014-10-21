@@ -33,6 +33,10 @@ block('comments').elem('add-form')(
                         ]
                     },
                     {
+                        tag: 'input',
+                        attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
+                    },
+                    {
                         block: 'forum-flex',
                         content: [
                             {

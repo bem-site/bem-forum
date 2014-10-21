@@ -261,6 +261,10 @@ block('issue')(
                         ]
                     },
                     {
+                        tag: 'input',
+                        attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
+                    },
+                    {
                         block: 'input',
                         mods: {
                             theme: 'normal',

@@ -51,7 +51,8 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                 number: result.number,
                 title: result.title,
                 body: result.body,
-                labels: labels
+                labels: labels,
+                _csrf: this.elemParams('add-form').csrf
             };
 
             $.ajax({

@@ -3,6 +3,8 @@ var express = require('express'),
     st = require('serve-static'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
+    session = require('express-session'),
+    csrf = require('csurf'),
     _ = require('lodash'),
     forum = require('./forum'),
     config = require('./config'),
@@ -25,6 +27,8 @@ app
     .use(morgan('default')) //todo remove it after development
     .use(cookieParser()) //also is necessary for forum
     .use(bodyParser()) //also is necessary for forum
+    .use(session({ secret: 'forum-session', saveUninitialized: true, resave: true }))
+    .use(csrf())
     .use(forum('/', forumOptions)) //forum middleware
     .use(function(req, res) {
         return template.run(_.extend({ block: 'page' }, req.__data), req)

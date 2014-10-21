@@ -20,7 +20,8 @@ block('comments').mod('view', 'open')(
                     js: {
                         issueNumber: issueNumber,
                         id: comment.id,
-                        forumUrl: req.forumUrl
+                        forumUrl: req.forumUrl,
+                        csrf: req.csrf
                     }
                 }
             })

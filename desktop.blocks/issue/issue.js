@@ -64,28 +64,31 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         _onClickLabel: function(e) {
             e.preventDefault();
 
-            console.log('click label');
-
             channels('filter').emit('labels', { labels: [$(e.target).text()] });
         },
 
         _onClickRemove: function(e) {
             e.preventDefault();
 
+            var params = this.params;
+
             this._toggleStartAnimateRemove();
 
             if(window.confirm('Вы уверены?')) {
-                var _this = this;
-
                 $.ajax({
                     dataType: 'html',
                     type: 'PUT',
-                    data: [{ name: 'state', value: 'closed' }, { name: 'number', value: this.params.number }],
-                    url: this.params.forumUrl + 'issues/' + this.params.id + '/?__mode=json'
+                    data: {
+                        state: 'closed',
+                        number: params.number,
+                        _csrf: params.csrf
+                    },
+                    url: params.forumUrl + 'issues/' + params.id + '/?__mode=json',
+                    context: this
                 }).done(function() {
-                    _this._endAnimateRemove();
+                    this._endAnimateRemove();
 
-                    BEMDOM.destruct(_this.domElem);
+                    BEMDOM.destruct(this.domElem);
                 });
             } else {
                 this._toggleStartAnimateRemove();
@@ -125,23 +128,25 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         },
 
         _onSubmitEdit: function(e, data) {
+            var params = this.params;
+
             if(this._formEdit.isEmptyInput('title', 'Заголовок не может быть пустым')) {
                 return false;
             }
 
-            if (this.params.labelsRequired && this._formEdit.isEmptyCheckbox('labels[]', 'Выберете один из лейблов')) {
+            if (params.labelsRequired && this._formEdit.isEmptyCheckbox('labels[]', 'Выберете один из лейблов')) {
                 return false;
             }
 
             this._formEdit.setMod('processing', 'yes');
 
-            data.push({ name: 'number', value: this.params.number });
+            data.push({ name: 'number', value: params.number });
 
             $.ajax({
                 dataType: 'html',
                 type: 'PUT',
                 data: data,
-                url: this.params.forumUrl + 'issues/' + this.params.number + '/?__access=owner',
+                url: params.forumUrl + 'issues/' + params.number + '/?__access=owner',
                 context: this
             }).done(function(html) {
                 this._render(html);

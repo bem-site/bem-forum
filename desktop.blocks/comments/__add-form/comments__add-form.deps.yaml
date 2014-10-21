@@ -1,3 +1,6 @@
+- block: input
+  mods: { theme: 'normal', type: 'textarea' }
+
 - elem: add-textarea
 
 - block: forum-form
