@@ -23,7 +23,8 @@ module.exports = function(pattern, options) {
         // for check, if user checked at least one label
         // for create/edit issue forms - knowledge is taken
         // from common config website
-        labelsRequired = options.labelsRequired;
+        labelsRequired = options.labelsRequired,
+        forumDebug = options.debug;
 
     return function(req, res, next) {
         var route = routes.getRoute(req.url, req.method),
@@ -121,6 +122,11 @@ module.exports = function(pattern, options) {
                 .then(function(values) {
                     req.__data = req.__data || {};
                     req.__data.forum = values;
+
+                    // set global params window.forum.{params}
+                    req.__data.forum.global = {
+                        debug: (forumDebug && options.debug === 'true')
+                    };
 
                     return next();
                 })

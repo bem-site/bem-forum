@@ -54,6 +54,11 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
                 this._render(html, 'append', 'container');
 
                 this._afterAdd();
+            }).fail(function(xhr) {
+                alert('Не удалось добавить комментарий');
+                window.forum.debug && console.log('comment edit fail', xhr);
+            }).always(function() {
+                this._form.delMod('processing');
             });
         },
 

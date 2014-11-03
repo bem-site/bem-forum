@@ -1,5 +1,14 @@
 modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
     provide(BEMDOM.decl(this.name, {
+        onSetMod: {
+            progress: function(modName, modVal) {
+                this._spin || (this._spin = this.findBlockInside('spin'));
+                this._editButton || (this._editButton = this.findBlockInside('edit-button', 'button'));
+
+                this._spin.setMod('progress', modVal);
+                this._editButton.setMod('disabled', modVal);
+            }
+        },
 
         /**
          * Обработчик на сабмит формы редактирования
@@ -11,7 +20,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
         _onSubmitEdit: function(e, data) {
             if(this._getFormEdit().isEmptyInput('body')) return false;
 
-            this._submitProgress(true);
+            this.setMod('progress', true);
 
             data.push({ name: 'id', value: this.params.id });
 
@@ -23,9 +32,12 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
                 context: this
             }).done(function(html) {
                 BEMDOM.update(this.domElem, html);
-
                 this._dropCached();
-                this._submitProgress(false);
+            }).fail(function(xhr) {
+                alert('Не удалось отредактировать комментарий');
+                window.forum.debug && console.log('comment edit fail', xhr);
+            }).always(function() {
+                this.delMod('progress');
             });
         },
 

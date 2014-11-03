@@ -15,6 +15,7 @@
         "template": {
             "level": "desktop",
             "bundle": "index"
-        }
+        },
+        "debug": true
     }
 }

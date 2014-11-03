@@ -30,4 +30,4 @@
   - username
   - usertext
 
-- mods: { remove-animate: start }
+- mods: { animate-remove: true }
