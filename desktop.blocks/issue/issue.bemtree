@@ -311,7 +311,8 @@ block('issue')(
                         ]
                     } : '',
                     {
-                        block: 'forum-flex',
+                        block: 'forum-form',
+                        elem: 'actions',
                         content: [
                             {
                                 block: 'button',
