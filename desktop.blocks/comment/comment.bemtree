@@ -185,13 +185,17 @@ block('comment')(
                             attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
                         },
                         {
-                            block: 'forum-flex',
+                            block: 'forum-form',
+                            elem: 'actions',
                             content: [
                                 {
                                     block: 'button',
                                     mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
                                     text: 'Сохранить',
-                                    mix: [{ block: 'comment', elem: 'edit-button' }]
+                                    mix: [
+                                        { block: 'comment', elem: 'edit-button' },
+                                        { block: 'forum-form', elem: 'submit' }
+                                    ]
                                 },
                                 {
                                     block: 'spin',
@@ -201,7 +205,10 @@ block('comment')(
                                     block: 'button',
                                     mods: { theme: 'normal', size : 'm' },
                                     text: 'Отменить',
-                                    mix: [{ block: 'comment', elem: 'edit-cancel' }]
+                                    mix: [
+                                        { block: 'comment', elem: 'edit-cancel' },
+                                        { block: 'forum-form', elem: 'cancel' }
+                                    ]
                                 }
                             ]
                         }
