@@ -1,12 +1,14 @@
 var _ = require('lodash'),
     vow = require('vow'),
-    Api = require('github');
+    Api = require('github'),
+
+    config = require('./config');
 
 var API_CONFIG = {
         version: "3.0.0",
         protocol: "https",
         timeout: 5000,
-        debug: false,
+        debug: config.get('forum').debug,
         host: "api.github.com"
     },
     options,
@@ -36,7 +38,12 @@ var apiCall = function(token, group, name, opts) {
     }
 
     api[group][name].call(null, opts, function(err, res) {
-        (err || !res) ? def.reject(err) : def.resolve(res);
+        if(err || !res) {
+            console.error('api[%s][%s]: %s', group, name, err);
+            def.reject(err);
+        } else {
+            def.resolve(res);
+        }
     });
 
     return def.promise();

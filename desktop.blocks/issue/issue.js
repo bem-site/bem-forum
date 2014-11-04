@@ -72,7 +72,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
 
             var params = this.params;
 
-            this._toggleStartAnimateRemove();
+            this.setMod('animate-remove', true);
 
             if(window.confirm('Вы уверены?')) {
                 $.ajax({
@@ -86,21 +86,16 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                     url: params.forumUrl + 'issues/' + params.id + '/?__mode=json',
                     context: this
                 }).done(function() {
-                    this._endAnimateRemove();
-
                     BEMDOM.destruct(this.domElem);
+                }).fail(function(xhr) {
+                    alert('Не удалось удалить пост');
+                    window.forum.debug && console.log('issue remove fail', xhr);
+                }).always(function() {
+                    this.delMod('animate-remove');
                 });
             } else {
-                this._toggleStartAnimateRemove();
+                this.delMod('animate-remove');
             }
-        },
-
-        _toggleStartAnimateRemove: function() {
-            this.toggleMod('remove-animate', 'start');
-        },
-
-        _endAnimateRemove: function() {
-            this.setMod('remove-animate', 'end');
         },
 
         _toggleEditBody: function(body) {
@@ -150,8 +145,12 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 context: this
             }).done(function(html) {
                 this._render(html);
-
                 this._afterEdit();
+            }).fail(function(xhr) {
+                alert('Не удалось отредактировать пост');
+                window.forum.debug && console.log('issue add fail', xhr);
+            }).always(function() {
+                this._formEdit.delMod('processing');
             });
         },
 
@@ -160,9 +159,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         },
 
         _afterEdit: function() {
-            this._formEdit
-                .delMod('processing')
-                .toggle();
+            this._formEdit.toggle();
 
             this._reinit();
         },

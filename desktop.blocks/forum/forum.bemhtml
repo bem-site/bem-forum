@@ -3,8 +3,11 @@ block('forum')(
     // for create/edit issue forms - knowledge is taken
     // from common config website
     js()(function() {
+        var forum = this.ctx.forum;
+
         return {
-            labelsRequired: this.ctx.forum.labelsRequired
+            labelsRequired: forum.labelsRequired,
+            global: forum.global
         };
     })
 );

@@ -3,6 +3,8 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         onSetMod: {
             js: {
                 inited: function() {
+                    if(this.params.global) this._setGlobalParams();
+
                     this._formAdd = this.findBlockInside('add-form', 'forum-form');
 
                     if(this._formAdd) {
@@ -14,6 +16,10 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                     addButton && addButton.on('click', this._toggleFormAdd, this);
                 }
             }
+        },
+
+        _setGlobalParams: function() {
+            window.forum = this.params.global;
         },
 
         _addIssue: function(e, data) {
@@ -43,6 +49,10 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
                 context: this
             }).done(function(json) {
                 this._addLabelsAfter(JSON.parse(json), labels);
+            }).fail(function(xhr) {
+                alert('Не удалось добавить пост');
+                this._formAdd.delMod('processing');
+                window.forum.debug && console.log('issue add fail', xhr);
             });
         },
 
