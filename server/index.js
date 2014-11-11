@@ -28,7 +28,6 @@ app
     .use(cookieParser()) //also is necessary for forum
     .use(bodyParser()) //also is necessary for forum
     .use(session({ secret: 'forum-session', saveUninitialized: true, resave: true }))
-    .use(csrf())
     .use(forum('/', forumOptions)) //forum middleware
     .use(function(req, res) {
         return template.run(_.extend({ block: 'page' }, req.__data), req)
