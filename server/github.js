@@ -7,7 +7,7 @@ var _ = require('lodash'),
 var API_CONFIG = {
         version: "3.0.0",
         protocol: "https",
-        timeout: 5000,
+        timeout: 10000,
         debug: true,
         host: "api.github.com"
     },

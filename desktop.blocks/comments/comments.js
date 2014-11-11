@@ -47,6 +47,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             $.ajax({
                 dataType: 'html',
                 type: 'POST',
+                timeout: 10000,
                 data: data,
                 url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/',
                 context: this

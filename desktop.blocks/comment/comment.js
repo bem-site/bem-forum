@@ -27,6 +27,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
             $.ajax({
                 dataType: 'html',
                 type: 'PUT',
+                timeout: 10000,
                 data: data,
                 url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/?__mode=content',
                 context: this
@@ -157,6 +158,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
             if(window.confirm('Вы уверены?')) {
                 $.ajax({
                     type: 'DELETE',
+                    timeout: 10000,
                     data: { _csrf: this.params.csrf },
                     url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/',
                     context: this

@@ -44,6 +44,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
             $.ajax({
                 dataType: 'html',
                 type: 'POST',
+                timeout: 10000,
                 data: data,
                 url: this._forumUrl + 'issues/?__mode=json',
                 context: this

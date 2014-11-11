@@ -78,6 +78,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 $.ajax({
                     dataType: 'html',
                     type: 'PUT',
+                    timeout: 10000,
                     data: {
                         state: 'closed',
                         number: params.number,
@@ -140,6 +141,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             $.ajax({
                 dataType: 'html',
                 type: 'PUT',
+                timeout: 10000,
                 data: data,
                 url: params.forumUrl + 'issues/' + params.number + '/?__access=owner',
                 context: this
