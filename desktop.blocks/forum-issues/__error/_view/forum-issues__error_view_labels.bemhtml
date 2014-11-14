@@ -1,0 +1,15 @@
+block('forum-issues').elem('error').elemMod('view', 'labels')(
+    content()(function() {
+            return [
+                {
+                    block: 'icon',
+                    mods: { view: 'label', size: '50' },
+                    mix: { block: this.block, elem: 'error-icon' }
+                },
+                {
+                    elem: 'error-text',
+                    content: 'Нет постов с выбранными метками'
+                }
+            ];
+        })
+);

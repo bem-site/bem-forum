@@ -1,5 +1,5 @@
 block('forum-issues')(
-    match(function() { return this.ctx.data; }).content()(function() {
+    match(function() { return this.ctx.data.length; }).content()(function() {
         return this.ctx.data.map(function(issue) {
             return {
                 block: 'issue',
@@ -9,5 +9,12 @@ block('forum-issues')(
                 csrf: req.csrf
             }
         });
+    }),
+
+    match(function() { return !this.ctx.data.length; }).content()(function() {
+        return {
+            elem: 'error',
+            elemMods: { view: 'labels' }
+        };
     })
 );

@@ -11,6 +11,7 @@ modules.define(
                     this._labels = [];
 
                     this._getMenu();
+                    this._setMenuOnLoad();
 
                     channels('filter').on('labels', this._checkedLabelByFilter, this);
                     channels('filter').on('labels:clear', this._clearLabels, this);
@@ -22,6 +23,14 @@ modules.define(
             this._menu.getItems().forEach(function(menuItem) {
                 menuItem.delMod('checked');
             });
+        },
+
+        _setMenuOnLoad: function () {
+            //this._labels = location.getUri().getParams() && location.getUri().getParams().labels && location.getUri().getParams().labels[0].split(',');
+
+            //console.log('labels', this._labels);
+
+            //this._checkedLabels();
         },
 
         _getMenu: function() {
@@ -45,9 +54,7 @@ modules.define(
 
         _checkedLabelByFilter: function(e, data) {
             this._labels = data.labels;
-
             this._checkedLabels();
-
             return this;
         },
 
