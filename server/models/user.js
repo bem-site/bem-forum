@@ -1,7 +1,7 @@
 module.exports = {
 
-    identity: "user",
-    connection: "default",
+    identity: 'user',
+    connection: 'default',
 
     attributes: {
         firstName: 'string',

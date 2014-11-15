@@ -17,6 +17,7 @@ var vow = require('vow'),
 
 var user = require('../models/user');
 var issue = require('../models/issue');
+var comment = require('../models/comment');
 
 var adapters = {
     'disk': require('sails-disk')
@@ -49,10 +50,11 @@ ORM.prototype.init = function(options) {
 };
 
 ORM.prototype.getIssues = function(options) {
-    options.limit = options.per_page;
+    options.page = options.page || DEFAULT.page;
+    options.limit = options.per_page || DEFAULT.limit;
 
     var def = vow.defer();
-    ORM.models.issues.find().paginate(options).exec(function(err, models) {
+    ORM.models.issue.find().paginate(options).exec(function(err, models) {
         err ? def.reject() : def.resolve(models);
     });
     return def.promise();
@@ -60,7 +62,7 @@ ORM.prototype.getIssues = function(options) {
 
 ORM.prototype.getIssue = function(options) {
     var def = vow.defer();
-    ORM.models.issues.find({ number: options.number }).exec(function(err, model) {
+    ORM.models.issue.find({ number: options.number }).exec(function(err, model) {
         err ? def.reject() : def.resolve(model);
     });
     return def.promise();
@@ -68,7 +70,7 @@ ORM.prototype.getIssue = function(options) {
 
 ORM.prototype.createIssue = function(options) {
     var def = vow.defer();
-    ORM.models.issues.create(options, function(err, object) {
+    ORM.models.issue.create(options, function(err, object) {
         err ? def.reject() : def.resolve(object);
     });
     return def.promise();
@@ -76,7 +78,7 @@ ORM.prototype.createIssue = function(options) {
 
 ORM.prototype.editIssue = function(options) {
     var def = vow.defer();
-    ORM.models.issues.update({ number: options.number }, options, function(err, object) {
+    ORM.models.issue.update({ number: options.number }, options, function(err, object) {
         err ? def.reject() : def.resolve(object);
     });
     return def.promise();
