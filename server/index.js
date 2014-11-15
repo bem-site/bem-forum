@@ -11,11 +11,11 @@ var express = require('express'),
     forum = require('./forum'),
     config = require('./config'),
     util = require('./util'),
-    template = require('./template');
+    template = require('./template'),
 
-var app = express();
+    app = express();
 
-if(util.isDev()) {
+if (util.isDev()) {
     app.use(require('enb/lib/server/server-middleware').createMiddleware({
         cdir: process.cwd(),
         noLog: false
@@ -26,22 +26,24 @@ var forumOptions = config.get('forum');
 
 app
     .use(st(process.cwd()))
-    .use(morgan('default')) //todo remove it after development
-    .use(cookieParser()) //also is necessary for forum
-    .use(bodyParser()) //also is necessary for forum
+    .use(morgan('default')) // todo remove it after development
+    .use(cookieParser()) // also is necessary for forum
+    .use(bodyParser()) // also is necessary for forum
     .use(session({ secret: 'forum-session', saveUninitialized: true, resave: true }))
     .use(passport.initialize())
     .use(passport.session())
     .use(flash())
-    .use(forum('/', forumOptions, passport)) //forum middleware
-    .use(function(req, res) {
+    .use(forum('/', forumOptions, passport)) // forum middleware
+    .use(function (req, res) {
         return template.run(_.extend({ block: 'page' }, req.__data), req)
-            .then(function(html) {
+            .then(function (html) {
                 res.end(html);
             })
-            .fail(function(err) {
+            .fail(function (err) {
                 res.end(err);
             });
     });
 
-app.listen(3000, function() { console.log('server started on port 3000'); });
+app.listen(3000, function () {
+    console.log('server started on port 3000');
+});

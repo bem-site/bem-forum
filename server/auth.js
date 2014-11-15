@@ -1,40 +1,40 @@
 var _ = require('lodash'),
 
-    OAuth2 = require("oauth").OAuth2,
+    OAuth2 = require('oauth').OAuth2,
 
     oauth,
     options,
-    getOauth = function(req) {
+    services = require('./services'),
+    getOauth = function (req) {
         return oauth[req.host] || oauth;
     },
-    getRedirectUrl = function(req) {
+    getRedirectUrl = function (req) {
         var c = options.oauth[req.host] || options.oauth;
         return c.redirectUrl;
     };
 
 module.exports = {
 
-    init: function(opts) {
-
+    init: function (opts) {
         options = opts || {};
-        oauth = (function() {
+        oauth = (function () {
             var config = options.oauth,
-                createOauth = function(id, secret) {
+                createOauth = function (id, secret) {
                     return new OAuth2(id, secret,
-                        "https://github.com/",
-                        "login/oauth/authorize",
-                        "login/oauth/access_token");
+                        'https://github.com/',
+                        'login/oauth/authorize',
+                        'login/oauth/access_token');
                 };
 
-            if(!config || !_.isObject(config) || _.isEmpty(config)) {
+            if (!config || !_.isObject(config) || _.isEmpty(config)) {
                 throw new Error('Invalid oauth configuration');
             }
 
-            if(config['clientId'] && config['secret']) {
+            if (config['clientId'] && config['secret']) {
                 return createOauth(config['clientId'], config['secret']);
             }
 
-            return Object.keys(config).reduce(function(prev, key) {
+            return Object.keys(config).reduce(function (prev, key) {
                 prev[key] = createOauth(config[key]['clientId'], config[key]['secret']);
                 return prev;
             }, {});
@@ -46,7 +46,7 @@ module.exports = {
      * @param req - {Object} request object
      * @param res - {Object} response object
      */
-    sendAuthRequest: function(req, res) {
+    sendAuthRequest: function (req, res) {
         res.writeHead(303, {
             Location: getOauth(req).getAuthorizeUrl({
                 redirect_uri: getRedirectUrl(req),
@@ -58,30 +58,31 @@ module.exports = {
 
     /**
      * Send request for retrieve access token
-     * @param req - {Object} request object
-     * @param res - {Object} response object
-     * @param code - {String} secret code as param for token retrieving
+     * @param {Object} req - request object
+     * @param {Object} res - response object
+     * @param {String} code - secret code as param for token retrieving
      */
-    getAccessToken: function(req, res, code) {
+    getAccessToken: function (req, res, code) {
         getOauth(req).getOAuthAccessToken(code, {}, function (err, access_token) {
+            var accesToken = access_token;
             if (err) {
                 res.writeHead(500);
                 res.end(err);
                 return;
             }
 
-            github
-                .addUserAPI(access_token)
-                .getAuthUser(access_token, {})
-                .then(function(data) {
+            services.get()
+                .addUserAPI(accesToken)
+                .getAuthUser(accesToken, {})
+                .then(function (data) {
                     var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
 
-                    res.cookie('forum_token', access_token, { expires: expires });
-                    res.cookie('forum_username', data.login, { expires: expires });
+                    res.cookie('forum_token', accesToken, { expires: expires });
+                    //res.cookie('forum_username', 'andrey', { expires: expires });
 
                     res.writeHead(303, { Location: getRedirectUrl(req) });
                     res.end();
                 });
         });
     }
-}
+};

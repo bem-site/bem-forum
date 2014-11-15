@@ -89,18 +89,18 @@ module.exports = function (pattern, forumOptions, passport) {
         });
 
         // get access token after redirect
-        //if (action === 'index' && query.code) {
-        //    return auth.getAccessToken(req, res, query.code);
-        //}
-        //
-        //// for all non get requests and when forum token cookie is not exists
-        //// send request for user authorization
-        //if ((!isGetRequest || action === 'auth') && (!req.cookies || !req.cookies['forum_token'])) {
-        //    return auth.sendAuthRequest(req, res);
-        //}
-        //
-        //token = req.cookies['forum_token'];
-        //token && services.get().addUserAPI({ token: token });
+        if (action === 'index' && query.code) {
+            return auth.getAccessToken(req, res, query.code);
+        }
+
+        // for all non get requests and when forum token cookie is not exists
+        // send request for user authorization
+        if ((!isGetRequest || action === 'auth') && (!req.cookies || !req.cookies['forum_token'])) {
+            return auth.sendAuthRequest(req, res);
+        }
+
+        token = req.cookies['forum_token'];
+        token && services.get().addUserAPI({ token: token });
 
         if (!action) {
             res.writeHead(500);
@@ -153,7 +153,7 @@ module.exports = function (pattern, forumOptions, passport) {
             }
 
             return vow.all(promises)
-                .then (function(values) {
+                .then (function (values) {
                     req.__data = req.__data || {};
                     req.__data.forum = values;
 

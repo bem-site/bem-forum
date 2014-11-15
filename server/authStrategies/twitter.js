@@ -7,11 +7,11 @@ module.exports = {
             return passport;
         }
 
-        passport.serializeUser(function(user, done) {
+        passport.serializeUser(function (user, done) {
             done(null, user);
         });
 
-        passport.deserializeUser(function(obj, done) {
+        passport.deserializeUser(function (obj, done) {
             done(null, obj);
         });
 
@@ -21,7 +21,7 @@ module.exports = {
                 callbackURL: options.callbackURL
             },
 
-            function(accessToken, refreshToken, profile, done) {
+            function (accessToken, refreshToken, profile, done) {
                 // asynchronous verification, for effect...
                 process.nextTick(function () {
                     return done(null, profile);
@@ -32,4 +32,4 @@ module.exports = {
         passport.use(Strategy);
         return passport;
     }
-}
+};

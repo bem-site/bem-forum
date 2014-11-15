@@ -48,7 +48,7 @@ ORM.prototype.init = function (options) {
     });
 };
 
-ORM.prototype.getIssues = function(options) {
+ORM.prototype.getIssues = function (options) {
     options.page = options.page || DEFAULT.page;
     options.limit = options.per_page || DEFAULT.limit;
 
@@ -61,7 +61,7 @@ ORM.prototype.getIssues = function(options) {
 
 ORM.prototype.getIssue = function (options) {
     var def = vow.defer();
-    ORM.models.issue.find({ number: options.number }).exec(function(err, model) {
+    ORM.models.issue.find({ number: options.number }).exec(function (err, model) {
         err ? def.reject() : def.resolve(model);
     });
     return def.promise();
@@ -77,7 +77,7 @@ ORM.prototype.createIssue = function (options) {
 
 ORM.prototype.editIssue = function (options) {
     var def = vow.defer();
-    ORM.models.issue.update({ number: options.number }, options, function(err, object) {
+    ORM.models.issue.update({ number: options.number }, options, function (err, object) {
         err ? def.reject() : def.resolve(object);
     });
     return def.promise();
@@ -85,7 +85,7 @@ ORM.prototype.editIssue = function (options) {
 
 ORM.prototype.getComments = function (options) {
     var def = vow.defer();
-    ORM.models.comment.find({ number: options.number }).exec(function(err, model) {
+    ORM.models.comment.find({ number: options.number }).exec(function (err, model) {
         err ? def.reject() : def.resolve(model);
     });
     return def.promise();
@@ -93,7 +93,7 @@ ORM.prototype.getComments = function (options) {
 
 ORM.prototype.createComment = function (options) {
     var def = vow.defer();
-    ORM.models.comment.create(options, function(err, object) {
+    ORM.models.comment.create(options, function (err, object) {
         err ? def.reject() : def.resolve(object);
     });
     return def.promise();
@@ -101,15 +101,15 @@ ORM.prototype.createComment = function (options) {
 
 ORM.prototype.editComment = function (options) {
     var def = vow.defer();
-    ORM.models.comment.update({ id: options.id }, options, function(err, object) {
+    ORM.models.comment.update({ id: options.id }, options, function (err, object) {
         err ? def.reject() : def.resolve(object);
     });
     return def.promise();
 };
 
-ORM.prototype.deleteComment = function(options) {
+ORM.prototype.deleteComment = function (options) {
     var def = vow.defer();
-    ORM.models.comment.destroy({ id: options.id }, function(err, object) {
+    ORM.models.comment.destroy({ id: options.id }, function (err, object) {
         err ? def.reject() : def.resolve(object);
     });
     return def.promise();
@@ -127,7 +127,7 @@ ORM.prototype.getLabels = function (options) {
  */
 ORM.prototype.getAuthUser = function (options) {
     var def = vow.defer();
-    ORM.models.user.findOne({ id: options.id }, function(err, model) {
+    ORM.models.user.findOne({ id: options.id }, function (err, model) {
         err ? def.reject(err) : def.resolve(model);
     });
     return def.promise();
@@ -141,7 +141,7 @@ ORM.prototype.getAuthUser = function (options) {
  */
 ORM.prototype.createAuthUser = function (options) {
     var def = vow.defer();
-    ORM.models.user.create(options, function(err, model) {
+    ORM.models.user.create(options, function (err, model) {
         err ? def.reject(err) : def.resolve(model);
     });
     return def.promise();
@@ -153,15 +153,15 @@ ORM.prototype.createAuthUser = function (options) {
  * @param {String} options.token oauth user token
  * @returns {*}
  */
-ORM.prototype.editAuthUser = function(options) {
+ORM.prototype.editAuthUser = function (options) {
     var def = vow.defer();
-    ORM.models.user.update({ token: options.token }, options, function(err, model) {
+    ORM.models.user.update({ token: options.token }, options, function (err, model) {
         err ? def.reject(err) : def.resolve(model);
     });
     return def.promise();
 };
 
-ORM.prototype.getRepoInfo = function(options) {
+ORM.prototype.getRepoInfo = function (options) {
     // TODO It should be implemented
 };
 

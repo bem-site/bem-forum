@@ -165,7 +165,7 @@ Base.prototype = {
      * @param options.token {String} oauth user token
      * @returns {*}
      */
-    editAuthUser: function(options) {
+    editAuthUser: function (options) {
         console.log(options);
         // TODO It should be implemented in nested classes
     },
@@ -185,9 +185,9 @@ Base.prototype = {
 
     getUserAPI: function () {},
 
-    addUserAPI: function () {},
+    addUserAPI: function () { return this; },
 
-    addDefaultAPI: function () {}
+    addDefaultAPI: function () { return this; }
 };
 
 module.exports = Base;
