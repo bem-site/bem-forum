@@ -36,6 +36,7 @@
     "passport-vkontakte": "^0.3.0",
     "sails-disk": "~0.10.4",
     "sails-mongo": "~0.10.4",
+    "sails-postgresql": "0.10.9",
     "serve-static": "~1.1.0",
     "susanin": "~0.1.10",
     "vow": "~0.4.1",
@@ -49,7 +50,9 @@
     "enb-bemxjst": "1.2.0",
     "enb-diverse-js": "0.1.0",
     "enb-modules": "0.1.2",
-    "enb-stylus": "^1.1.4"
+    "enb-stylus": "^1.1.4",
+    "jshint": "2.5.5",
+    "jscs": "1.5.9"
   },
   "scripts": {
     "start": "node server/index.js",

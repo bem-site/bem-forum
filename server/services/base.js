@@ -1,4 +1,4 @@
-var Base = function(options) {
+var Base = function (options) {
     this.init(options);
 };
 
@@ -6,145 +6,157 @@ Base.prototype = {
 
     /**
      * Initialize forum model
-     * @param options - {Object} forum options
+     * @param {Object} options of forum
      * @returns {*}
      */
-    init: function(options) {
-        //TODO It should be implemented in nested classes
+    init: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
      * Returns list of issues
-     * @param options - {Object} with fields:
-     *  - token {String} oauth user token
-     *  - state {String} state of issue (open|closed)
-     *  - labels {String} string of labels separated by comma
-     *  - sort {String} sort criteria (created|updated|comments)
-     *  - direction {String} sort direction (asc|desc)
-     *  - since {Date}: date from (optional) YYYY-MM-DDTHH:MM:SSZ
-     *  - page {Number} number of page for pagination
-     *  - per_page {Number} number of records per one page
+     * @param {Object} options with fields:
+     *  - options.token {String} oauth user token
+     *  - options.state {String} state of issue (open|closed)
+     *  - options.labels {String} string of labels separated by comma
+     *  - options.sort {String} sort criteria (created|updated|comments)
+     *  - options.direction {String} sort direction (asc|desc)
+     *  - options.since {Date}: date from (optional) YYYY-MM-DDTHH:MM:SSZ
+     *  - options.page {Number} number of page for pagination
+     *  - options.per_page {Number} number of records per one page
      * @returns {*}
      */
-    getIssues: function(options) {
-        //TODO It should be implemented in nested classes
+    getIssues: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
      * Returns issue by it number
-     * @param options - {Object} with fields:
-     *  - token {String} oauth user token
-     *  - number {Number} unique number of issue
+     * @param {Object} options with fields:
+     *  - options.token {String} oauth user token (optional)
+     *  - options.number {Number} unique number of issue
      * @returns {*}
      */
-    getIssue: function(options) {
-        //TODO It should be implemented in nested classes
+    getIssue: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
      * Creates new issue
-     * @param options - {Object} with fields:
-     *  - token {String} oauth user token
-     *  - title {String} title of issue (required)
-     *  - body {String} body of issue (optional)
-     *  - labels {Array} array of string label names (required)
+     * @param {Object} options with fields:
+     *  - options.token {String} oauth user token (optional)
+     *  - options.title {String} title of issue (required)
+     *  - options.body {String} body of issue (optional)
+     *  - options.labels {Array} array of string label names (required)
      * @returns {*}
      */
-    createIssue: function(options) {
-        //TODO It should be implemented in nested classes
+    createIssue: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
      * Edit issue
-     * @param options - {Object} with fields:
-     *  - token {String} oauth user token
-     *  - number {Number} number of issue (required)
-     *  - title {String} title of issue (optional)
-     *  - body {String} body of issue (optional)
-     *  - labels {Array} array of string label names (optional)
-     *  - state {String} state of issue (open|closed) (optional)
+     * @param {Object} options with fields:
+     *  - options.token {String} oauth user token (optional)
+     *  - options.number {Number} number of issue (required)
+     *  - options.title {String} title of issue (optional)
+     *  - options.body {String} body of issue (optional)
+     *  - options.labels {Array} array of string label names (optional)
+     *  - options.state {String} state of issue (open|closed) (optional)
      * @returns {*}
      */
-    editIssue: function(options) {
-        //TODO It should be implemented in nested classes
+    editIssue: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
      * Returns list of comments for issue
-     * @param options - {Object} with fields:
-     *  - token {String} oauth user token
-     *  - number {Number} unique number of issue (required)
-     *  - page {Number} number of page for pagination (optional)
-     *  - per_page {Number} number of records on one page (optional)
+     * @param {Object} options with fields:
+     *  - options.token {String} oauth user token (optional)
+     *  - options.number {Number} unique number of issue (required)
+     *  - options.page {Number} number of page for pagination (optional)
+     *  - options.per_page {Number} number of records on one page (optional)
      * @returns {*}
      */
-    getComments: function(options) {
-        //TODO It should be implemented in nested classes
+    getComments: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
      * Create new comment for issue
-     * @param options - {Object} with fields:
-     *  - token {String} oauth user token
-     *  - number {String} unique number of issue (required)
-     *  - body {String} text for comment (required)
+     * @param {Object} options with fields:
+     *  - options.token {String} oauth user token
+     *  - options.number {String} unique number of issue (required)
+     *  - options.body {String} text for comment (required)
      * @returns {*}
      */
-    createComment: function(options) {
-        //TODO It should be implemented in nested classes
+    createComment: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
      * Edit issue comment
-     * @param options - {Object} with fields:
-     *  - token {String} oauth user token
-     *  - id {String} unique id of comment (required)
-     *  - body {String} text of comment (required)
+     * @param {Object} options with fields:
+     *  - options.token {String} oauth user token
+     *  - options.id {String} unique id of comment (required)
+     *  - options.body {String} text of comment (required)
      * @returns {*}
      */
-    editComment: function(options) {
-        //TODO It should be implemented in nested classes
+    editComment: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
      * Removes comment from issue
-     * @param options - {Object} with fields:
-     *  - token {String} oauth user token
-     *  - id {String} unique id of comment (required)
+     * @param {Object} options with fields:
+     *  - options.token {String} oauth user token
+     *  - options.id {String} unique id of comment (required)
      * @returns {*}
      */
-    deleteComment: function(options) {
-        //TODO It should be implemented in nested classes
+    deleteComment: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
      * Returns list of repository labels
-     * @param options - {Object} with fields:
-     *  - token {String} oauth user token
+     * @param {Object} options with fields:
+     *  - options.token {String} oauth user token
      * @returns {*}
      */
-    getLabels: function(options) {
-        //TODO It should be implemented in nested classes
+    getLabels: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
      * Returns authentificated user
-     * @param options - {Object} with fields:
-     * @param options.token {String} oauth user token
+     * @param {Object} options with fields:
+     *  - options.token {String} oauth user token
      * @returns {*}
      */
-    getAuthUser: function(options) {
-        //TODO It should be implemented in nested classes
+    getAuthUser: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
      * Create authentificated user
-     * @param options - {Object} with fields:
-     * @param options.token {String} oauth user token
+     * @param {Object} options with fields:
+     *  - options.token {String} oauth user token
      * @returns {*}
      */
-    createAuthUser: function(options) {
-        //TODO It should be implemented in nested classes
+    createAuthUser: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
@@ -154,7 +166,8 @@ Base.prototype = {
      * @returns {*}
      */
     editAuthUser: function(options) {
-        //TODO It should be implemented in nested classes
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
     /**
@@ -163,17 +176,18 @@ Base.prototype = {
      *  - token {String} oauth user token
      * @returns {*}
      */
-    getRepoInfo: function(options) {
-        //TODO It should be implemented in nested classes
+    getRepoInfo: function (options) {
+        console.log(options);
+        // TODO It should be implemented in nested classes
     },
 
-    getDefaultAPI: function() {},
+    getDefaultAPI: function () {},
 
     getUserAPI: function () {},
 
     addUserAPI: function () {},
 
-    addDefaultAPI: function() {}
+    addDefaultAPI: function () {}
 };
 
 module.exports = Base;

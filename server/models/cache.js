@@ -1,9 +1,8 @@
 var CronJob = require('cron').CronJob,
-    Archive = require('./archive');
-
-var Model = function(options, gh) {
-    this.init(options, gh);
-};
+    Archive = require('./archive'),
+    Model = function (options, gh) {
+        this.init(options, gh);
+    };
 
 Model.prototype = {
     gh: null,
@@ -11,13 +10,13 @@ Model.prototype = {
     labels: [],
     job: null,
 
-    init: function(options, gh) {
+    init: function (options, gh) {
         this.gh = gh;
         this.archive = new Archive(options);
         this.loadLabels();
         this.job = new CronJob({
             cronTime: '0 0 */1 * * *',
-            onTick: (function() { this.loadLabels(); }).bind(this),
+            onTick: (function () { this.loadLabels(); }).bind(this),
             start: false,
             context: this
         });
@@ -28,10 +27,10 @@ Model.prototype = {
      * Loads labels from github and cache them to model
      * @returns {*}
      */
-    loadLabels: function() {
-        return this.gh.getLabels({ per_page: 100, page: 1, token: null }).then(function(labels) {
-            this.labels = (labels || []).sort(function(a, b) {
-                if(a.name === b.name) {
+    loadLabels: function () {
+        return this.gh.getLabels({ per_page: 100, page: 1, token: null }).then(function (labels) {
+            this.labels = (labels || []).sort(function (a, b) {
+                if (a.name === b.name) {
                     return 0;
                 }
                 return a.name > b.name ? 1 : -1;
@@ -43,7 +42,7 @@ Model.prototype = {
      * Returns cached array of labels
      * @returns {Array}
      */
-    getLabels: function() {
+    getLabels: function () {
         return this.labels;
     },
 
@@ -51,7 +50,7 @@ Model.prototype = {
      * Return archive model
      * @returns {Archive}
      */
-    getArchive: function() {
+    getArchive: function () {
         return this.archive;
     },
 
@@ -60,7 +59,7 @@ Model.prototype = {
      * Can be used for check is labels were loaded and cached
      * @returns {Number}
      */
-    areLabelsLoaded: function() {
+    areLabelsLoaded: function () {
         return this.labels.length;
     }
 };

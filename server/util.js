@@ -9,19 +9,18 @@ module.exports = {
      * Returns true if current environment is development
      * @returns {boolean}
      */
-    isDev: function() {
-        return 'development' === config.get('NODE_ENV')
+    isDev: function () {
+        return config.get('NODE_ENV') === 'development';
     },
 
     /**
-     * Compile *.md files & issue.body string with md to html
-     * with marked module
-     * @param content - {String} content of *.md file
-     * @param config - {Object} configuration object
+     * Compile *.md files & issue.body string with md to html with marked module
+     * @param {String} content of *.md file
+     * @param {Object} config object
      * @returns {String} html string
      */
-    mdToHtml: function(content, config) {
-        if(!config) {
+    mdToHtml: function (content, config) {
+        if (!config) {
             config = {};
         }
 
