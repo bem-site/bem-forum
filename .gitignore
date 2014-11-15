@@ -9,3 +9,4 @@ configs/current
 *.bundles/*/*.*
 !*.bundles/*/*.bemdecl.js
 archive.json
+.tmp
