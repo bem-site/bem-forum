@@ -8,23 +8,24 @@ var _ = require('lodash'),
     routes = require('./routes'),
     util = require('./util'),
 
+
     baseUrl = '/forum/';
 
-module.exports = function(pattern, options) {
+module.exports = function(pattern, forumOptions, passport) {
 
     baseUrl = pattern || baseUrl;
 
     routes.init(baseUrl);
-    auth.init(options);
-    template.init(options);
-    model.init(options);
+    auth.init(forumOptions);
+    template.init(forumOptions);
+    model.init(forumOptions);
 
-    var ownerToken = options.owner_token,
+    var ownerToken = forumOptions.owner_token,
         // for check, if user checked at least one label
         // for create/edit issue forms - knowledge is taken
         // from common config website
-        labelsRequired = options.labelsRequired,
-        forumDebug = options.debug;
+        labelsRequired = forumOptions.labelsRequired,
+        forumDebug = forumOptions.debug;
 
     return function(req, res, next) {
         var route = routes.getRoute(req.url, req.method),
@@ -34,7 +35,8 @@ module.exports = function(pattern, options) {
             token,
             options,
             isGetRequest,
-            isDeleteRequest;
+            isDeleteRequest,
+            user;
 
         // fix mime type for block images
         if(!route) {
@@ -53,6 +55,35 @@ module.exports = function(pattern, options) {
 
         isGetRequest = 'GET' === method;
         isDeleteRequest = 'DELETE' === method;
+
+
+        _.forEach(forumOptions.passport.strategies, function (strategy, name) {
+            //console.log("Strategy name: ", name);
+            //console.log("Current action: ", action);
+            switch (action) {
+                case name + "Auth":
+                    //console.log(name + " Auth called. Should auth with facebook.")
+                    passport.authenticate(name)(req, res, next);
+                    break;
+                case name + "AuthCallback":
+                    passport.authenticate('facebook',
+                        {
+                            failureRedirect: '/login',
+                            successRedirect: '/'
+                        }
+                        //,
+                        //function (err, accessToken, user) {
+                        //    console.log("AccessToken: ", accessToken);
+                        //    console.log("User: ", user);
+                        //    req.login(user, function(err) {
+                        //        if (err) { return next(err); }
+                        //        return res.redirect("/");
+                        //    });
+                        //}
+                    )(req, res, next);
+                    break;
+            }
+        });
 
         // get access token after redirect
         if('index' === action && query.code) {
@@ -100,7 +131,7 @@ module.exports = function(pattern, options) {
             // collect all required data for templates
             var promises = {
                 repo: model.getRepoInfo(token, {}),
-                user: model.getAuthUser(token, {}),
+                user: req.user,//model.getAuthUser(token, {}),
                 labels: model.getLabels (token, {})
             };
 
@@ -111,7 +142,7 @@ module.exports = function(pattern, options) {
                     comments: model.getComments(token, options),
                     view: 'issue'
                 });
-            }else {
+            } else {
                 _.extend(promises, {
                     issues: model.getIssues(token, options),
                     view: 'issues'

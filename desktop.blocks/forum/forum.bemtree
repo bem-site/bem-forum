@@ -1,5 +1,6 @@
 block('forum')(
     def()(function() {
+        console.log(this.ctx.forum.user);
         return applyNext({ _forum: this.ctx.forum });
     }),
 

@@ -16,6 +16,17 @@
             "level": "desktop",
             "bundle": "index"
         },
+        "passport": {
+            "enabled": true,
+            "strategies": {
+                "facebook": {
+                    "enabled": true,
+                    "clientID": 318936321624494,
+                    "clientSecret": "fc7776bbbb017301cbb907c450a5daee",
+                    "callbackURL": "http://localhost:3000/auth/facebook/callback"
+                }
+            }
+        },
         "debug": true
     }
 }

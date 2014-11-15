@@ -8,7 +8,7 @@ var API_CONFIG = {
         version: "3.0.0",
         protocol: "https",
         timeout: 10000,
-        debug: true,
+        debug: false,
         host: "api.github.com"
     },
     options,
