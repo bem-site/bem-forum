@@ -66,7 +66,7 @@ module.exports = function(pattern, options) {
         }
 
         token = req.cookies['forum_token'];
-        token && services.get().addUserAPI(token);
+        token && services.get().addUserAPI({ token: token });
 
         if(!action) {
             res.writeHead(500);
@@ -99,21 +99,21 @@ module.exports = function(pattern, options) {
         if(!req.xhr) {
             // collect all required data for templates
             var promises = {
-                repo: services.get().getRepoInfo(token, {}),
-                user: services.get().getAuthUser(token, {}),
-                labels: services.get().getLabels (token, {})
+                repo: services.get().getRepoInfo({ token: token }),
+                user: services.get().getAuthUser({ token: token }),
+                labels: services.get().getLabels ({ token: token })
             };
 
             if(options.number) {
                 // get issue data, that have a number option
                 _.extend(promises, {
-                    issue: services.get().getIssue(token, options),
-                    comments: services.get().getComments(token, options),
+                    issue: services.get().getIssue(_.extend({ token: token }, options)),
+                    comments: services.get().getComments(_.extend({ token: token }, options)),
                     view: 'issue'
                 });
             }else {
                 _.extend(promises, {
-                    issues: services.get().getIssues(token, options),
+                    issues: services.get().getIssues(_.extend({ token: token }, options)),
                     view: 'issues'
                 });
             }
@@ -141,7 +141,7 @@ module.exports = function(pattern, options) {
             // e.g. add labels when user create/edit issue
             if(query.__access === 'owner' && ownerToken) {
                 token = ownerToken;
-                services.get().addUserAPI(token);
+                services.get().addUserAPI({ token: token });
             }
 
             // create issue without checked labels - default behaviors
@@ -152,7 +152,7 @@ module.exports = function(pattern, options) {
             }
 
             // get data by ajax
-            return services.get()[action](token, options)
+            return services.get()[action](_.extend({ token: token }, options))
                 .then(function(data) {
                     if('json' === query.__mode) {
                         res.json(data);
