@@ -1,16 +1,26 @@
-var Base = require('./base'),
+var vow = require('vow'),
+    Base = require('./base'),
     ORM = function(options) {
         this.init(options);
     },
     Waterline = require('waterline'),
-    waterLine = new Waterline();
+    waterLine = new Waterline(),
+
+    DEFAULT = {
+        page: 1,
+        limit: 30,
+        sort: {
+            field: 'updated',
+            direction: 'desc'
+        }
+    };
 
 var user = require('../models/user');
 var issue = require('../models/issue');
 
 var adapters = {
     'disk': require('sails-disk')
-}
+};
 
 ORM.prototype = Object.create(Base.prototype);
 ORM.prototype.init = function(options) {
@@ -39,12 +49,13 @@ ORM.prototype.init = function(options) {
 };
 
 ORM.prototype.getIssues = function(options) {
-    ORM.models.issues.find().exec(function(err, models) {
-        if(err){
-            throw err;
-        }
-        return models;
+    options.limit = options.per_page;
+
+    var def = vow.defer();
+    ORM.models.issues.find().paginate(options).exec(function(err, models) {
+        err ? def.reject() : def.resolve(models);
     });
+    return def.promise();
 };
 
 ORM.prototype.getIssue = function(options) {
