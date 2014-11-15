@@ -1,5 +1,4 @@
 var _ = require('lodash'),
-    github = require('./github'),
 
     OAuth2 = require("oauth").OAuth2,
 

@@ -79,49 +79,8 @@ ORM.prototype.getLabels = function(options) {
     //TODO It should be implemented
 };
 
-/**
- * Returns authentificated user
- * @param options - {Object} with fields:
- * @param options.token {String} oauth user token
- * @returns {*}
- */
 ORM.prototype.getAuthUser = function(options) {
-    ORM.models.user.findOne({ token: options.token }, function(err, model) {
-        if(err) {
-            throw err;
-        }
-        return model;
-    });
-};
-
-/**
- * Create authentificated user
- * @param options - {Object} with fields:
- * @param options.token {String} oauth user token
- * @returns {*}
- */
-ORM.prototype.createAuthUser = function(options) {
-    ORM.models.user.create(options, function(err, model) {
-        if(err) {
-            throw err;
-        }
-        return model;
-    });
-};
-
-/**
- * Edit authentificated user
- * @param options - {Object} with fields:
- * @param options.token {String} oauth user token
- * @returns {*}
- */
-ORM.prototype.editAuthUser = function(options) {
-    ORM.models.user.update({ token: options.token }, options, function(err, model) {
-        if(err) {
-            throw err;
-        }
-        return model;
-    });
+    //TODO It should be implemented
 };
 
 ORM.prototype.getRepoInfo = function(options) {

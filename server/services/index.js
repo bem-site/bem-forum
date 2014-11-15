@@ -1,5 +1,4 @@
 var config = require('../config'),
-    Base = require('./base'),
     Github = require('./github'),
     ORM = require('./orm'),
 

@@ -165,7 +165,15 @@ Base.prototype = {
      */
     getRepoInfo: function(options) {
         //TODO It should be implemented in nested classes
-    }
+    },
+
+    getDefaultAPI: function() {},
+
+    getUserAPI: function () {},
+
+    addUserAPI: function () {},
+
+    addDefaultAPI: function() {}
 };
 
 module.exports = Base;
