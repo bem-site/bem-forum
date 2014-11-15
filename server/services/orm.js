@@ -35,6 +35,7 @@ ORM.prototype.init = function (options) {
 
     waterLine.loadCollection(Waterline.Collection.extend(user));
     waterLine.loadCollection(Waterline.Collection.extend(issue));
+    waterLine.loadCollection(Waterline.Collection.extend(comment));
 
     waterLine.initialize(waterLineConfig, function (err, data) {
         if (err) {
@@ -82,19 +83,35 @@ ORM.prototype.editIssue = function (options) {
 };
 
 ORM.prototype.getComments = function (options) {
-    // TODO It should be implemented
+    var def = vow.defer();
+    ORM.models.comment.find({ number: options.number }).exec(function(err, model) {
+        err ? def.reject() : def.resolve(model);
+    });
+    return def.promise();
 };
 
 ORM.prototype.createComment = function (options) {
-    // TODO It should be implemented
+    var def = vow.defer();
+    ORM.models.comment.create(options, function(err, object) {
+        err ? def.reject() : def.resolve(object);
+    });
+    return def.promise();
 };
 
 ORM.prototype.editComment = function (options) {
-    // TODO It should be implemented
+    var def = vow.defer();
+    ORM.models.comment.update({ id: options.id }, options, function(err, object) {
+        err ? def.reject() : def.resolve(object);
+    });
+    return def.promise();
 };
 
-ORM.prototype.deleteComment = function (options) {
-    // TODO It should be implemented
+ORM.prototype.deleteComment = function(options) {
+    var def = vow.defer();
+    ORM.models.comment.destroy({ id: options.id }, function(err, object) {
+        err ? def.reject() : def.resolve(object);
+    });
+    return def.promise();
 };
 
 ORM.prototype.getLabels = function (options) {
