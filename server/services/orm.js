@@ -1,6 +1,6 @@
 var vow = require('vow'),
     Base = require('./base'),
-    ORM = function(options) {
+    ORM = function (options) {
         this.init(options);
     },
     Waterline = require('waterline'),
@@ -13,21 +13,18 @@ var vow = require('vow'),
             field: 'updated',
             direction: 'desc'
         }
+    },
+    user = require('../models/user'),
+    issue = require('../models/issue'),
+    comment = require('../models/comment'),
+    adapters = {
+        disk: require('sails-disk')
     };
 
-var user = require('../models/user');
-var issue = require('../models/issue');
-var comment = require('../models/comment');
-
-var adapters = {
-    'disk': require('sails-disk')
-};
-
 ORM.prototype = Object.create(Base.prototype);
-ORM.prototype.init = function(options) {
-
-    var adapterName = options.connection.adapter;
-    var waterLineConfig = {
+ORM.prototype.init = function (options) {
+    var adapterName = options.connection.adapter,
+        waterLineConfig = {
         adapters: {},
         connections: {
            'default': options.connection
@@ -39,7 +36,7 @@ ORM.prototype.init = function(options) {
     waterLine.loadCollection(Waterline.Collection.extend(user));
     waterLine.loadCollection(Waterline.Collection.extend(issue));
 
-    waterLine.initialize(waterLineConfig, function(err, data) {
+    waterLine.initialize(waterLineConfig, function (err, data) {
         if (err) {
             console.log(err);
             throw err;
@@ -60,7 +57,7 @@ ORM.prototype.getIssues = function(options) {
     return def.promise();
 };
 
-ORM.prototype.getIssue = function(options) {
+ORM.prototype.getIssue = function (options) {
     var def = vow.defer();
     ORM.models.issue.find({ number: options.number }).exec(function(err, model) {
         err ? def.reject() : def.resolve(model);
@@ -68,15 +65,15 @@ ORM.prototype.getIssue = function(options) {
     return def.promise();
 };
 
-ORM.prototype.createIssue = function(options) {
+ORM.prototype.createIssue = function (options) {
     var def = vow.defer();
-    ORM.models.issue.create(options, function(err, object) {
+    ORM.models.issue.create(options, function (err, object) {
         err ? def.reject() : def.resolve(object);
     });
     return def.promise();
 };
 
-ORM.prototype.editIssue = function(options) {
+ORM.prototype.editIssue = function (options) {
     var def = vow.defer();
     ORM.models.issue.update({ number: options.number }, options, function(err, object) {
         err ? def.reject() : def.resolve(object);
@@ -84,33 +81,33 @@ ORM.prototype.editIssue = function(options) {
     return def.promise();
 };
 
-ORM.prototype.getComments = function(options) {
-    //TODO It should be implemented
+ORM.prototype.getComments = function (options) {
+    // TODO It should be implemented
 };
 
-ORM.prototype.createComment = function(options) {
-    //TODO It should be implemented
+ORM.prototype.createComment = function (options) {
+    // TODO It should be implemented
 };
 
-ORM.prototype.editComment = function(options) {
-    //TODO It should be implemented
+ORM.prototype.editComment = function (options) {
+    // TODO It should be implemented
 };
 
-ORM.prototype.deleteComment = function(options) {
-    //TODO It should be implemented
+ORM.prototype.deleteComment = function (options) {
+    // TODO It should be implemented
 };
 
-ORM.prototype.getLabels = function(options) {
-    //TODO It should be implemented
+ORM.prototype.getLabels = function (options) {
+    // TODO It should be implemented
 };
 
 /**
  * Returns authentificated user
- * @param options - {Object} with fields:
- * @param options.token {String} oauth user token
+ * @param {Object} options  with fields:
+ * @param {String} options.token  oauth user token
  * @returns {*}
  */
-ORM.prototype.getAuthUser = function(options) {
+ORM.prototype.getAuthUser = function (options) {
     var def = vow.defer();
     ORM.models.user.findOne({ id: options.id }, function(err, model) {
         err ? def.reject(err) : def.resolve(model);
@@ -120,11 +117,11 @@ ORM.prototype.getAuthUser = function(options) {
 
 /**
  * Create authentificated user
- * @param options - {Object} with fields:
- * @param options.token {String} oauth user token
+ * @param {Object} options with fields:
+ * @param {String} options.token oauth user token
  * @returns {*}
  */
-ORM.prototype.createAuthUser = function(options) {
+ORM.prototype.createAuthUser = function (options) {
     var def = vow.defer();
     ORM.models.user.create(options, function(err, model) {
         err ? def.reject(err) : def.resolve(model);
@@ -134,8 +131,8 @@ ORM.prototype.createAuthUser = function(options) {
 
 /**
  * Edit authentificated user
- * @param options - {Object} with fields:
- * @param options.token {String} oauth user token
+ * @param {Object} options with fields:
+ * @param {String} options.token oauth user token
  * @returns {*}
  */
 ORM.prototype.editAuthUser = function(options) {
@@ -147,7 +144,7 @@ ORM.prototype.editAuthUser = function(options) {
 };
 
 ORM.prototype.getRepoInfo = function(options) {
-    //TODO It should be implemented
+    // TODO It should be implemented
 };
 
 module.exports = ORM;
