@@ -3,6 +3,7 @@
 
 - elems:
   - add-form
+  - show-more
   - container
 
 - mods: { hidden: true, view: [open, close] }
