@@ -3,11 +3,10 @@ var _ = require('lodash'),
     mime = require('mime-types'),
 
     auth = require('./auth'),
-    model = require('./model'),
+    services = require('./services'),
     template = require('./template'),
     routes = require('./routes'),
     util = require('./util'),
-
 
     baseUrl = '/forum/';
 
@@ -18,7 +17,7 @@ module.exports = function(pattern, forumOptions, passport) {
     routes.init(baseUrl);
     auth.init(forumOptions);
     template.init(forumOptions);
-    model.init(forumOptions);
+    services.get();
 
     var ownerToken = forumOptions.owner_token,
         // for check, if user checked at least one label
@@ -35,8 +34,7 @@ module.exports = function(pattern, forumOptions, passport) {
             token,
             options,
             isGetRequest,
-            isDeleteRequest,
-            user;
+            isDeleteRequest;
 
         // fix mime type for block images
         if(!route) {
@@ -97,7 +95,7 @@ module.exports = function(pattern, forumOptions, passport) {
         }
 
         token = req.cookies['forum_token'];
-        token && model.addUserAPI(token);
+        token && services.get().addUserAPI({ token: token });
 
         if(!action) {
             res.writeHead(500);
@@ -130,21 +128,21 @@ module.exports = function(pattern, forumOptions, passport) {
         if(!req.xhr) {
             // collect all required data for templates
             var promises = {
-                repo: model.getRepoInfo(token, {}),
-                user: req.user,//model.getAuthUser(token, {}),
-                labels: model.getLabels (token, {})
+                repo: services.get().getRepoInfo({ token: token }),
+                user: services.get().getAuthUser({ token: token }),
+                labels: services.get().getLabels ({ token: token })
             };
 
             if(options.number) {
                 // get issue data, that have a number option
                 _.extend(promises, {
-                    issue: model.getIssue(token, options),
-                    comments: model.getComments(token, options),
+                    issue: services.get().getIssue(_.extend({ token: token }, options)),
+                    comments: services.get().getComments(_.extend({ token: token }, options)),
                     view: 'issue'
                 });
             } else {
                 _.extend(promises, {
-                    issues: model.getIssues(token, options),
+                    issues: services.get().getIssues(_.extend({ token: token }, options)),
                     view: 'issues'
                 });
             }
@@ -172,7 +170,7 @@ module.exports = function(pattern, forumOptions, passport) {
             // e.g. add labels when user create/edit issue
             if(query.__access === 'owner' && ownerToken) {
                 token = ownerToken;
-                model.addUserAPI(token);
+                services.get().addUserAPI({ token: token });
             }
 
             // create issue without checked labels - default behaviors
@@ -183,7 +181,7 @@ module.exports = function(pattern, forumOptions, passport) {
             }
 
             // get data by ajax
-            return model[action](token, options)
+            return services.get()[action](_.extend({ token: token }, options))
                 .then(function(data) {
                     if('json' === query.__mode) {
                         res.json(data);

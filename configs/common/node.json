@@ -24,9 +24,48 @@
                     "clientID": 318936321624494,
                     "clientSecret": "fc7776bbbb017301cbb907c450a5daee",
                     "callbackURL": "http://localhost:3000/auth/facebook/callback"
+                },
+                "github": {
+                    "enabled": true,
+                    "clientID": "6e8ceb3d2e8e8c31ffcd",
+                    "clientSecret": "1f67a09822c721bcf0a579fb1bc5a8137e15c8c8",
+                    "callbackURL": "http://localhost:3000/auth/github/callback"
+                },
+                "twitter": {
+                    "enabled": false,
+                    "clientID": "6e8ceb3d2e8e8c31ffcd",
+                    "clientSecret": "1f67a09822c721bcf0a579fb1bc5a8137e15c8c8",
+                    "callbackURL": "http://localhost:3000/auth/twitter/callback"
+                },
+                "vkontakte": {
+                    "enabled": false,
+                    "clientID": "4636103",
+                    "clientSecret": "q2WCQ3YlzCklu9hbF3QV",
+                    "callbackURL": "http://localhost:3000/auth/vkontakte/callback"
+                },
+                "local": {
+                    "enabled": false
+                },
+                "rememberMe": {
+                    "enabled": false,
+                    "key": "_token"
                 }
             }
         },
-        "debug": true
+        "debug": true,
+        "adapters": {
+            "disk": {
+                "adapter": "disk"
+            },
+            "mongo": {
+                "...": "..."
+            },
+            "mysql": {
+                "...": "..."
+            },
+            "mysql": {
+                "...": "..."
+            }
+        }
     }
 }

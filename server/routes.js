@@ -27,7 +27,9 @@ exports.init = function(baseUrl) {
         { name: 'auth',          data: { method: 'GET' },    pattern: url + 'auth' },
         { name: 'getRepoInfo',   data: { method: 'GET' },    pattern: url + 'repo' },
         { name: 'facebookAuth',  data: { method: 'GET' },    pattern: url + 'auth/facebook' },
-        { name: 'facebookAuthCallback',  data: { method: 'GET' },    pattern: url + 'auth/facebook/callback' }
+        { name: 'facebookAuthCallback',  data: { method: 'GET' },    pattern: url + 'auth/facebook/callback' },
+        { name: 'githubAuth',  data: { method: 'GET' },    pattern: url + 'auth/github' },
+        { name: 'githubAuthCallback',  data: { method: 'GET' },    pattern: url + 'auth/github/callback' }
     ].reduce(function(_susanin, route) {
             route.pattern += '(/)';
             _susanin.addRoute(route);

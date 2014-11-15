@@ -1,4 +1,4 @@
-var FacebookStrategy = require('passport-facebook').Strategy,
+var VKontakteStrategy = require('passport-vkontakte').Strategy,
 	Strategy;
 
 module.exports = {
@@ -22,15 +22,16 @@ module.exports = {
 			done(null, obj);
 		});
 
-		// Use the FacebookStrategy within Passport.
+		// Use the VKontakteStrategy within Passport.
 		//   Strategies in Passport require a `verify` function, which accept
 		//   credentials (in this case, an accessToken, refreshToken, and Facebook
 		//   profile), and invoke a callback with a user object.
 
-		Strategy = new FacebookStrategy({
+		Strategy = new VKontakteStrategy({
 				clientID: options.clientID,
 				clientSecret: options.clientSecret,
-				callbackURL: options.callbackURL
+				callbackURL: options.callbackURL,
+				apiVersion: '5.26'
 			},
 
 			function(accessToken, refreshToken, profile, done) {

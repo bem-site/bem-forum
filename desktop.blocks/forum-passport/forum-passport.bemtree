@@ -7,6 +7,12 @@ block('forum-passport')(
                 text : 'Facebook Auth',
                 mods : { theme : 'normal', size : 'm', type : 'link' }
             }
+            , {
+                block : 'button',
+                url : '/auth/github',
+                text : 'Github Auth',
+                mods : { theme : 'normal', size : 'm', type : 'link' }
+            }
         ]
     })
 );

@@ -1,4 +1,4 @@
-var FacebookStrategy = require('passport-facebook').Strategy,
+var TwitterStrategy = require('passport-twitter').Strategy,
 	Strategy;
 
 module.exports = {
@@ -22,14 +22,14 @@ module.exports = {
 			done(null, obj);
 		});
 
-		// Use the FacebookStrategy within Passport.
+		// Use the TwitterStrategy within Passport.
 		//   Strategies in Passport require a `verify` function, which accept
 		//   credentials (in this case, an accessToken, refreshToken, and Facebook
 		//   profile), and invoke a callback with a user object.
 
-		Strategy = new FacebookStrategy({
-				clientID: options.clientID,
-				clientSecret: options.clientSecret,
+		Strategy = new TwitterStrategy({
+				consumerKey: options.clientID,
+				consumerSecret: options.clientSecret,
 				callbackURL: options.callbackURL
 			},
 

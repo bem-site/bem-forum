@@ -1,4 +1,4 @@
-var FacebookStrategy = require('passport-facebook').Strategy,
+var GitHubStrategy = require('passport-github').Strategy,
 	Strategy;
 
 module.exports = {
@@ -22,12 +22,12 @@ module.exports = {
 			done(null, obj);
 		});
 
-		// Use the FacebookStrategy within Passport.
+		// Use the GitHubStrategy within Passport.
 		//   Strategies in Passport require a `verify` function, which accept
 		//   credentials (in this case, an accessToken, refreshToken, and Facebook
 		//   profile), and invoke a callback with a user object.
 
-		Strategy = new FacebookStrategy({
+		Strategy = new GitHubStrategy({
 				clientID: options.clientID,
 				clientSecret: options.clientSecret,
 				callbackURL: options.callbackURL
