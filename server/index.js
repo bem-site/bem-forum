@@ -4,6 +4,8 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
+    flash = require('connect-flash'),
+    passport = require('./passport'),
     csrf = require('csurf'),
     _ = require('lodash'),
     forum = require('./forum'),
@@ -28,7 +30,10 @@ app
     .use(cookieParser()) //also is necessary for forum
     .use(bodyParser()) //also is necessary for forum
     .use(session({ secret: 'forum-session', saveUninitialized: true, resave: true }))
-    .use(forum('/', forumOptions)) //forum middleware
+    .use(passport.initialize())
+    .use(passport.session())
+    .use(flash())
+    .use(forum('/', forumOptions, passport)) //forum middleware
     .use(function(req, res) {
         return template.run(_.extend({ block: 'page' }, req.__data), req)
             .then(function(html) {
@@ -38,5 +43,7 @@ app
                 res.end(err);
             });
     });
+
+//app.get('/auth/facebook', passport.authenticate('facebook'));
 
 app.listen(3000, function() { console.log('server started on port 3000'); });

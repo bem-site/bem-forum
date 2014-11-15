@@ -7,6 +7,9 @@ block('forum-header')(
                 url: req.forumUrl
             },
             {
+                block: 'forum-passport'
+            },
+            {
                 block : 'button',
                 url: req.forumUrl + '?labels=bem-forum',
                 icon : { block : 'icon', mods : { view : 'bug' } },

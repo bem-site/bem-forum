@@ -1,0 +1,18 @@
+block('forum-passport')(
+    content()(function() {
+        return [
+            {
+                block : 'button',
+                url : '/auth/facebook',
+                text : 'Facebook Auth',
+                mods : { theme : 'normal', size : 'm', type : 'link' }
+            }
+            , {
+                block : 'button',
+                url : '/auth/github',
+                text : 'Github Auth',
+                mods : { theme : 'normal', size : 'm', type : 'link' }
+            }
+        ]
+    })
+);

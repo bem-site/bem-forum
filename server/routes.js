@@ -14,7 +14,7 @@ exports.init = function(baseUrl) {
 
     susanin = [
         { name: 'index',         data: { method: 'GET' },    pattern: url },
-        { name: 'getIssues',     data: { method: 'GET' },    pattern: url + 'issues' },
+        { name: 'getIssues',     data: { method: 'GET' },    pattern: url + 'issues'},
         { name: 'getIssue',      data: { method: 'GET' },    pattern: url + 'issues/<number>' },
         { name: 'createIssue',   data: { method: 'POST' },   pattern: url + 'issues' },
         { name: 'editIssue',     data: { method: 'PUT' },    pattern: url + 'issues/<number>' },
@@ -24,8 +24,12 @@ exports.init = function(baseUrl) {
         { name: 'deleteComment', data: { method: 'DELETE' }, pattern: url + 'issues/<number>/comments/<id>' },
         { name: 'getLabels',     data: { method: 'GET' },    pattern: url + 'labels' },
         { name: 'getAuthUser',   data: { method: 'GET' },    pattern: url + 'user' },
-        { name: 'auth',          data: { method: 'GET' },   pattern: url + 'auth' },
-        { name: 'getRepoInfo',   data: { method: 'GET' },   pattern: url + 'repo' }
+        { name: 'auth',          data: { method: 'GET' },    pattern: url + 'auth' },
+        { name: 'getRepoInfo',   data: { method: 'GET' },    pattern: url + 'repo' },
+        { name: 'facebookAuth',  data: { method: 'GET' },    pattern: url + 'auth/facebook' },
+        { name: 'facebookAuthCallback',  data: { method: 'GET' },    pattern: url + 'auth/facebook/callback' },
+        { name: 'githubAuth',  data: { method: 'GET' },    pattern: url + 'auth/github' },
+        { name: 'githubAuthCallback',  data: { method: 'GET' },    pattern: url + 'auth/github/callback' }
     ].reduce(function(_susanin, route) {
             route.pattern += '(/)';
             _susanin.addRoute(route);
