@@ -67,6 +67,7 @@ function getDesktops(config) {
         { path: 'libs/bem-components/desktop.blocks', check: false },
         { path: 'libs/bem-components/design/desktop.blocks', check: false },
         { path: 'libs/bem-history/common.blocks', check: false },
+        { path: 'libs/bem-content/common.blocks', check: false },
         'desktop.blocks',
         'wrapper.blocks'
     ].map(function(level) {
