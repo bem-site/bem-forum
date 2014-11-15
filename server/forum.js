@@ -111,7 +111,7 @@ module.exports = function(pattern, options) {
                     comments: model.getComments(token, options),
                     view: 'issue'
                 });
-            }else {
+            } else {
                 _.extend(promises, {
                     issues: model.getIssues(token, options),
                     view: 'issues'
@@ -119,6 +119,83 @@ module.exports = function(pattern, options) {
             }
 
             return vow.all(promises)
+                .then(function(values) {
+                    var def = vow.defer();
+
+                    if (values.view === 'issues') {
+                        var issues = values.issues;
+
+                        var commentPromises = issues.map(function(issue) {
+                            issue.list = true;
+                            issue.vote_button = true;
+                            if (values.user.login === issue.user.login) {
+                                issue.vote_button = false;
+                            }
+                            return model.getComments(token, { number : issue.number });
+                        });
+
+                        vow.all(commentPromises).then(function(result) {
+                            result.forEach(function(comments, idx) {
+                                var vote = 0,
+                                    votedUser = [],
+                                    isChiter = false;
+
+                                comments.forEach(function(comment) {
+                                    if (values.user.login === comment.user.login && issues[idx].vote_button) {
+                                        issues[idx].vote_button = false;
+                                    }
+                                    if (/\:\+1\:/.test(comment.body)) {
+                                        isChiter = votedUser.some(function(user) {
+                                            return comment.user.login === user;
+                                        });
+                                        if (!isChiter) {
+                                            votedUser.push(comment.user.login);
+                                            vote++;
+                                        }
+                                    }
+                                });
+                                issues[idx].vote = vote;
+                                issues[idx].comments = comments;
+                            });
+                            def.resolve(values);
+                        });
+                    } else {
+                        var issue = values.issue;
+                        issue.list = false;
+                        issue.vote_button = true;
+
+                        model.getComments(token, { number : issue.number }).then(function(comments) {
+                            var vote = 0,
+                                votedUser = [],
+                                isChiter = false;
+
+                            if (values.user.login === issue.user.login) {
+                                issue.vote_button = false;
+                            }
+                            comments.forEach(function(comment) {
+                                if (/\:\+1\:/.test(comment.body)) {
+                                    isChiter = votedUser.some(function(user) {
+                                        return comment.user.login === user;
+                                    });
+                                    if (!isChiter) {
+                                        votedUser.push(comment.user.login);
+                                        vote++;
+                                    }
+                                }
+                                if (values.user.login === comment.user.login) {
+                                    issue.vote_button = false;
+                                }
+                            });
+                            issue.vote = vote;
+                            issue.comments = comments;
+                            def.resolve(values);
+                        }, function(err) {
+                            console.error(err);
+                        })
+                    }
+
+                    return def.promise();
+                })
                 .then(function(values) {
                     req.__data = req.__data || {};
                     req.__data.forum = values;

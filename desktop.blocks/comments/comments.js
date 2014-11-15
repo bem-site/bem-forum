@@ -19,6 +19,14 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             this.on('show', this._showComments);
             this.on('close', this._closeComments);
             this._form && this._form.on('submit', this._addComments, this);
+            this.on('vote', this._setVote, this);
+        },
+
+        _setVote: function() {
+            this._postComment([{
+                name : 'body',
+                value: ':+1:'
+            }]);
         },
 
         /**

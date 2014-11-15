@@ -32,50 +32,31 @@ block('issue')(
                 ]
             },
             {
-                elem: 'comments'
+                block: 'comments',
+                mods: { hidden: issue.list },
+                js: {
+                    issueNumber: issue.number,
+                    comments: issue.comments.length,
+                    forumUrl: req.forumUrl
+                },
+                content : {
+                    elem : 'comments',
+                    content : issue.comments.map(function(comment) {
+                        return {
+                            block: 'comment',
+                            comment: comment,
+                            js: {
+                                issueNumber: issue.number,
+                                id: comment.id,
+                                forumUrl: req.forumUrl,
+                                csrf: req.csrf
+                            }
+                        }
+                    })
+                }
             }
         ]
     }),
-
-    elem('comments')(
-        // show comments on issue page
-        match(function() { return this._forum && this._forum.comments; }).def()(function() {
-            var forum = this._forum,
-                issue = forum.issue,
-                comments = forum.comments;
-
-            return applyCtx([
-                {
-                    block: 'comments',
-                    mods: { view: 'open' },
-                    data: comments,
-                    js: {
-                        issueNumber: issue.number,
-                        comments: issue.comments,
-                        forumUrl: req.forumUrl
-                    }
-                }
-            ]);
-        }),
-
-        // hide comments on list issues page
-        match(function() { return !this._forum || !this._forum.comments; }).def()(function() {
-            var issue = this._issue;
-
-            return applyCtx({
-                block: 'comments',
-                mods: { hidden: true },
-                js: {
-                    issueNumber: issue.number,
-                    comments: issue.comments,
-                    forumUrl: req.forumUrl
-                },
-                content: {
-                    elem: 'container'
-                }
-            });
-        })
-    ),
 
     // user avatar + name
     elem('line').elemMod('level', 'top')(
@@ -371,17 +352,18 @@ block('issue')(
 
     // button 'answer'
     elem('line').elemMod('level', 'bottom')(
-        match(function() { return !this._forum || !this._forum.comments; }).content()(function() {
-            var comments = this._issue.comments;
+        content()(function() {
+            var issue = this._issue;
+            var comments = issue.comments;
 
             if((!req.cookies['forum_username'] || this._isArchive) && comments === 0) {
                 return '';
             }
 
             return [
-                {
+                (this._forum && this._forum.view === 'issues') && {
                     block : 'button',
-                    text : comments === 0 ? 'Ответить' : 'Ответов: ' + comments,
+                    text : issue.comments.length === 0 ? 'Ответить' : 'Ответов: ' + issue.comments.length,
                     mods : { theme : 'normal', size : 'm', togglable : 'check' },
                     mix: { block: this.block, elem: 'comments-switcher' }
                 },
@@ -389,6 +371,23 @@ block('issue')(
                     block: 'spin',
                     mods: { theme: 'normal', size: 'm' },
                     mix: { block: 'issue', elem: 'spin' }
+                },
+                {
+                    elem : 'rate-wrap',
+                    content : [
+                        'Рейтинг: ',
+                        {
+                            elem : 'rate',
+                            js : { count : this._issue.vote },
+                            content :  + this._issue.vote
+                        }
+                    ]
+                },
+                (issue.vote_button) && {
+                    block : 'button',
+                    text : 'Оценить',
+                    mods : { theme : 'normal', size : 'm' },
+                    mix: { block: this.block, elem: 'vote' }
                 }
             ];
         })

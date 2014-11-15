@@ -21,5 +21,6 @@ block('issue')(
             labelsRequired: this.ctx.labelsRequired,
             csrf: this.ctx.csrf
         };
-    })
+    }),
+    elem('rate').tag()('span')
 );

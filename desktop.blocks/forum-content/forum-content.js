@@ -11,6 +11,9 @@ modules.define(
                     this._pager = this.findBlockInside('forum-pager');
                     this._labels = this.findBlockInside({ block: 'forum-labels', modName: 'view', modVal: 'menu' });
                     location.on('change', this._onChangeLocation, this);
+                    BEMDOM.blocks.issue.on('process', function(e, data) {
+                        this._loader.setMod('progress', data.enable);
+                    }, this);
                 }
             },
 

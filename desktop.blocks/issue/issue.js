@@ -22,6 +22,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             this._comments = this.findBlockInside('comments');
             this._switcher = this.findBlockInside('comments-switcher', 'button');
             this._spin = this.findBlockInside('spin', 'spin');
+            this._vote = this.findBlockInside('vote', 'button');
 
             return this;
         },
@@ -29,6 +30,9 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         _setSwitcherCount: function() {
             this._comments.on('comment:add', function(e, data) {
                 this._switcher.setText('Ответов: ' + data.comments);
+                this.emit('process', { enable : false });
+                this.elem('rate').text(this.elemParams('rate').count + 1);
+                this._vote && BEMDOM.destruct(this._vote.domElem);
             }, this);
 
             this._comments.on('comment:delete', function(e, data) {
@@ -52,6 +56,11 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             this._subscribeOwnerActions();
 
             this.bindTo('label', 'click', this._onClickLabel);
+
+            this._vote && this._vote.on('click', function() {
+                this._comments.emit('vote');
+                this.emit('process', { enable : true });
+            }, this);
 
             return this;
         },
