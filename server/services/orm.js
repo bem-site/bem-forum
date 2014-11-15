@@ -1,17 +1,26 @@
-var Base = require('./base'),
+var vow = require('vow'),
+    Base = require('./base'),
     ORM = function(options) {
         this.init(options);
     },
     Waterline = require('waterline'),
     waterLine = new Waterline(),
-    vow = require('vow');
+
+    DEFAULT = {
+        page: 1,
+        limit: 30,
+        sort: {
+            field: 'updated',
+            direction: 'desc'
+        }
+    };
 
 var user = require('../models/user');
 var issue = require('../models/issue');
 
 var adapters = {
     'disk': require('sails-disk')
-}
+};
 
 ORM.prototype = Object.create(Base.prototype);
 ORM.prototype.init = function(options) {
@@ -40,24 +49,37 @@ ORM.prototype.init = function(options) {
 };
 
 ORM.prototype.getIssues = function(options) {
-    ORM.models.issues.find().exec(function(err, models) {
-        if(err){
-            throw err;
-        }
-        return models;
+    options.limit = options.per_page;
+
+    var def = vow.defer();
+    ORM.models.issues.find().paginate(options).exec(function(err, models) {
+        err ? def.reject() : def.resolve(models);
     });
+    return def.promise();
 };
 
 ORM.prototype.getIssue = function(options) {
-    //TODO It should be implemented
+    var def = vow.defer();
+    ORM.models.issues.find({ number: options.number }).exec(function(err, model) {
+        err ? def.reject() : def.resolve(model);
+    });
+    return def.promise();
 };
 
 ORM.prototype.createIssue = function(options) {
-    //TODO It should be implemented
+    var def = vow.defer();
+    ORM.models.issues.create(options, function(err, object) {
+        err ? def.reject() : def.resolve(object);
+    });
+    return def.promise();
 };
 
 ORM.prototype.editIssue = function(options) {
-    //TODO It should be implemented
+    var def = vow.defer();
+    ORM.models.issues.update({ number: options.number }, options, function(err, object) {
+        err ? def.reject() : def.resolve(object);
+    });
+    return def.promise();
 };
 
 ORM.prototype.getComments = function(options) {

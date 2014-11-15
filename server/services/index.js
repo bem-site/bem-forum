@@ -26,7 +26,7 @@ exports.get = function () {
 
     service = new Service({
         connection: adapters[currentAdapterName]
-    })
+    });
 
     return service;
 };
