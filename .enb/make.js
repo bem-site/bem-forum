@@ -12,7 +12,8 @@ module.exports = function(config) {
                  source: '?.pre.js'
              } ],
             [ require('enb-stylus/techs/css-stylus'), { target: '?.noprefix.css' } ],
-            [ require('enb-bemxjst/techs/bemhtml'), { devMode: false } ]
+            [ require('enb-bemxjst/techs/bemhtml'), { devMode: false } ],
+            [ require('enb-borschik/techs/borschik'), { sourceTarget: '?.js', destTarget: '?.borschik.js', minify: false, freeze: false } ]
         ]);
 
         nodeConfig.addTargets([
@@ -38,7 +39,7 @@ module.exports = function(config) {
             nodeConfig.addTechs([
                 [ require('enb/techs/file-copy'), { sourceTarget: '?.css', destTarget: '?.min.css' } ],
                 [ require('enb/techs/file-copy'), { sourceTarget: '?.bemtree.js', destTarget: '?.min.bemtree.js' } ],
-                [ require('enb/techs/file-copy'), { sourceTarget: '?.js', destTarget: '?.min.js' } ],
+                [ require('enb/techs/file-copy'), { sourceTarget: '?.borschik.js', destTarget: '?.min.js' } ],
                 [ require('enb/techs/file-copy'), { sourceTarget: '?.bemhtml.js', destTarget: '?.min.bemhtml.js' } ]
             ]);
         });

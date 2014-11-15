@@ -46,24 +46,63 @@ block('forum').elem('add-form')(
                         attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
                     },
                     {
-                        block: 'input',
-                        mods: {
-                            theme: 'normal',
-                            size: 'l',
-                            type: 'textarea',
-                            'has-clear' : true
-                        },
-                        name: 'body',
-                        placeholder: 'Описание',
-                        mix: [
+                        block : 'forum-create',
+                        js : true,
+                        content : [
                             {
-                                block: 'forum',
-                                elem: 'add-body'
+                                elem : 'header',
+                                content : [
+                                    {
+                                        block : 'radio-group',
+                                        mods : { theme : 'normal', size : 'm', type : 'button' },
+                                        options : [
+                                            { val : 'source', text : 'Markdown', checked : true },
+                                            { val : 'preview', text : 'Preview' }
+                                        ]
+                                    }
+                                ]
                             },
                             {
-                                block: 'forum-form',
-                                elem: 'control',
-                                elemMods: { autoclear: 'yes' }
+                                elem : 'body',
+                                content : [
+                                    {
+                                        block: 'input',
+                                        mods: {
+                                            theme: 'normal',
+                                            size: 'l',
+                                            type: 'textarea',
+                                            'has-clear' : true
+                                        },
+                                        name: 'body',
+                                        placeholder: 'Описание',
+                                        mix: [
+                                            {
+                                                block: 'forum',
+                                                elem: 'add-body'
+                                            },
+                                            {
+                                                block: 'forum-form',
+                                                elem: 'control',
+                                                elemMods: { autoclear: 'yes' }
+                                            },
+                                            {
+                                                block : 'forum-create',
+                                                elem : 'view',
+                                                mods : { type : 'source', visible : true }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        block : 'preview',
+                                        mix : [
+                                            {
+                                                block : 'forum-create',
+                                                elem : 'view',
+                                                mods : { type : 'preview' }
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
                         ]
                     },
