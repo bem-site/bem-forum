@@ -88,13 +88,28 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
 
             $.ajax({
                 dataType: 'html',
-                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/?__mode=content',
+                url: this.params.forumUrl + 'issues/' +
+                    this.params.issueNumber + '/comments/?__mode=content&per_page=' +
+                    this.elemParams('show-more').numComments,
                 context: this
             }).done(function(html) {
                 this._render(html, 'update', 'container');
 
+                this._checkMore(1);
+
                 this._afterShow();
             });
+        },
+
+        /**
+         * Функция проверки и скрытия кнопки "Еще"
+         * @param int page
+         * @private
+         */
+        _checkMore: function(page) {
+            if (page * this.elemParams('show-more').numComments >= this.params.comments) {
+                this.setMod(this.elem('show-more'), 'hidden' ,true);
+            }
         },
 
         /**

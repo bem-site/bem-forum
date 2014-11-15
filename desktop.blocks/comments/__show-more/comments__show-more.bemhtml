@@ -1,0 +1,11 @@
+block('comments').elem('show-more')(
+
+    content()(function () {
+        return {
+            block: 'button',
+            mods : { theme: 'normal', size: 'm' },
+            text: 'Еще'
+        }
+    })
+
+);

@@ -3,6 +3,12 @@ block('comments')(
         return [
             (!this._forum || !this._forum.comments) ? applyNext() : undefined,
             {
+                elem: 'show-more',
+                js: {
+                    numComments: 10
+                }
+            },
+            {
                 elem: 'add-form'
             }
         ]
