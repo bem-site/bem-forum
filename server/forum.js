@@ -17,7 +17,7 @@ module.exports = function(pattern, options) {
     routes.init(baseUrl);
     auth.init(options);
     template.init(options);
-    services.get().init(options);
+    services.get();
 
     var ownerToken = options.owner_token,
         // for check, if user checked at least one label
@@ -180,3 +180,5 @@ module.exports = function(pattern, options) {
         }
     };
 };
+
+

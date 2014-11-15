@@ -17,7 +17,11 @@
             "bundle": "index"
         },
         "debug": true,
+
         "adapters": {
+            "disk": {
+                "adapter": "disk"
+            },
             "mongo": {
                 "...": "..."
             },

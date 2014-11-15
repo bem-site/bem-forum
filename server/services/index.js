@@ -10,18 +10,26 @@ exports.get = function () {
         return service;
     }
 
+    var adapters = config.get('forum:adapters');
+    var currentAdapterName = Object.keys(adapters)[0];
+
     var Service = {
             'github': Github,
             'postgres': ORM,
             'mysql': ORM,
-            'mongo': ORM
-        }[config.get('forum:adapters')];
+            'mongo': ORM,
+            'disk': ORM
+        }[currentAdapterName];
 
     if (!Service) {
         throw new Error('Service can not be recognized');
     }
 
-    return new Service();
+    service = new Service({
+        connection: adapters[currentAdapterName]
+    })
+
+    return service;
 };
 
 

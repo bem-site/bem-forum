@@ -130,10 +130,30 @@ Base.prototype = {
     /**
      * Returns authentificated user
      * @param options - {Object} with fields:
-     *  - token {String} oauth user token
+     * @param options.token {String} oauth user token
      * @returns {*}
      */
     getAuthUser: function(options) {
+        //TODO It should be implemented in nested classes
+    },
+
+    /**
+     * Create authentificated user
+     * @param options - {Object} with fields:
+     * @param options.token {String} oauth user token
+     * @returns {*}
+     */
+    createAuthUser: function(options) {
+        //TODO It should be implemented in nested classes
+    },
+
+    /**
+     * Edit authentificated user
+     * @param options - {Object} with fields:
+     * @param options.token {String} oauth user token
+     * @returns {*}
+     */
+    editAuthUser: function(options) {
         //TODO It should be implemented in nested classes
     },
 
