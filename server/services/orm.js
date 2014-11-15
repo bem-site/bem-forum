@@ -3,7 +3,8 @@ var Base = require('./base'),
         this.init(options);
     },
     Waterline = require('waterline'),
-    waterLine = new Waterline();
+    waterLine = new Waterline(),
+    vow = require('vow');
 
 var user = require('../models/user');
 var issue = require('../models/issue');
@@ -79,8 +80,46 @@ ORM.prototype.getLabels = function(options) {
     //TODO It should be implemented
 };
 
+/**
+ * Returns authentificated user
+ * @param options - {Object} with fields:
+ * @param options.token {String} oauth user token
+ * @returns {*}
+ */
 ORM.prototype.getAuthUser = function(options) {
-    //TODO It should be implemented
+    var def = vow.defer();
+    ORM.models.user.findOne({ id: options.id }, function(err, model) {
+        err ? def.reject(err) : def.resolve(model);
+    });
+    return def.promise();
+};
+
+/**
+ * Create authentificated user
+ * @param options - {Object} with fields:
+ * @param options.token {String} oauth user token
+ * @returns {*}
+ */
+ORM.prototype.createAuthUser = function(options) {
+    var def = vow.defer();
+    ORM.models.user.create(options, function(err, model) {
+        err ? def.reject(err) : def.resolve(model);
+    });
+    return def.promise();
+};
+
+/**
+ * Edit authentificated user
+ * @param options - {Object} with fields:
+ * @param options.token {String} oauth user token
+ * @returns {*}
+ */
+ORM.prototype.editAuthUser = function(options) {
+    var def = vow.defer();
+    ORM.models.user.update({ token: options.token }, options, function(err, model) {
+        err ? def.reject(err) : def.resolve(model);
+    });
+    return def.promise();
 };
 
 ORM.prototype.getRepoInfo = function(options) {
