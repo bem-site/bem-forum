@@ -59,15 +59,27 @@ ORM.prototype.getIssues = function(options) {
 };
 
 ORM.prototype.getIssue = function(options) {
-    //TODO It should be implemented
+    var def = vow.defer();
+    ORM.models.issues.find({ number: options.number }).exec(function(err, model) {
+        err ? def.reject() : def.resolve(model);
+    });
+    return def.promise();
 };
 
 ORM.prototype.createIssue = function(options) {
-    //TODO It should be implemented
+    var def = vow.defer();
+    ORM.models.issues.create(options, function(err, object) {
+        err ? def.reject() : def.resolve(object);
+    });
+    return def.promise();
 };
 
 ORM.prototype.editIssue = function(options) {
-    //TODO It should be implemented
+    var def = vow.defer();
+    ORM.models.issues.update({ number: options.number }, options, function(err, object) {
+        err ? def.reject() : def.resolve(object);
+    });
+    return def.promise();
 };
 
 ORM.prototype.getComments = function(options) {
