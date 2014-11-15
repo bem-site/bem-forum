@@ -9,13 +9,14 @@ var passport = require('passport'),
 * and init it in passport if it is enabled.
 * */
 if (forumOptions.passport.enabled) {
-    _.forEach(forumOptions.passport.strategies, function (options, name) {
-        if (!options.enabled) {
+    var authStr = forumOptions.passport.strategies;
+    Object.keys(authStr).forEach(function (name, index, arr) {
+        if (!authStr[name].enabled) {
             return false;
         }
-        console.log("Init %s passport strategy", name);
-        console.log("Strategies: ", strategies);
-        passport = strategies[name].init(passport, options);
+        console.log('Init %s passport strategy', name);
+        console.log('Strategies: ', strategies);
+        passport = strategies[name].init(passport, authStr[name]);
     });
 }
 

@@ -10,8 +10,7 @@ var _ = require('lodash'),
 
     baseUrl = '/forum/';
 
-module.exports = function(pattern, forumOptions, passport) {
-
+module.exports = function (pattern, forumOptions, passport) {
     baseUrl = pattern || baseUrl;
 
     routes.init(baseUrl);
@@ -26,7 +25,7 @@ module.exports = function(pattern, forumOptions, passport) {
         labelsRequired = forumOptions.labelsRequired,
         forumDebug = forumOptions.debug;
 
-    return function(req, res, next) {
+    return function (req, res, next) {
         var route = routes.getRoute(req.url, req.method),
             query,
             action,
@@ -37,37 +36,42 @@ module.exports = function(pattern, forumOptions, passport) {
             isDeleteRequest;
 
         // fix mime type for block images
-        if(!route) {
+        if (!route) {
             res
                 .type(mime.lookup(req.url))
                 .end();
             return;
         }
 
-        query = route[1]; //params hash
-        route = route[0]; //route object
+        query = route[1]; // params hash
+        route = route[0]; // route object
 
-        //get action that should be called
+        // get action that should be called
         action = route.getName();
         method = route.getData().method;
 
-        isGetRequest = 'GET' === method;
-        isDeleteRequest = 'DELETE' === method;
+        isGetRequest = method === 'GET';
+        isDeleteRequest = method === 'DELETE';
 
-
-        _.forEach(forumOptions.passport.strategies, function (strategy, name) {
-            //console.log("Strategy name: ", name);
-            //console.log("Current action: ", action);
+        Object.keys(forumOptions.passport.strategies).forEach(function (name) {
+            // console.log("Strategy name: ", name);
+            // console.log("Current action: ", action);
             switch (action) {
-                case name + "Auth":
-                    //console.log(name + " Auth called. Should auth with facebook.")
+                case name + 'Auth':
                     passport.authenticate(name)(req, res, next);
                     break;
-                case name + "AuthCallback":
-                    passport.authenticate('facebook',
-                        {
-                            failureRedirect: '/login',
-                            successRedirect: '/'
+                case name + 'AuthCallback':
+                    res.cookie('test', 'test');
+                    passport.authenticate(name, function (err, user, info) {
+                            var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
+                            res.cookie('forum_username', user.username, { expires: expires });
+                            req.logIn(user, function(err) {
+                                    if (err) { return next(err); }
+
+                                    // res.cookie('forum_token', access_token, { expires: expires });
+
+                                    return res.redirect('/');
+                                });
                         }
                         //,
                         //function (err, accessToken, user) {
@@ -84,20 +88,20 @@ module.exports = function(pattern, forumOptions, passport) {
         });
 
         // get access token after redirect
-        if('index' === action && query.code) {
-            return auth.getAccessToken(req, res, query.code);
-        }
+        //if (action === 'index' && query.code) {
+        //    return auth.getAccessToken(req, res, query.code);
+        //}
+        //
+        //// for all non get requests and when forum token cookie is not exists
+        //// send request for user authorization
+        //if ((!isGetRequest || action === 'auth') && (!req.cookies || !req.cookies['forum_token'])) {
+        //    return auth.sendAuthRequest(req, res);
+        //}
+        //
+        //token = req.cookies['forum_token'];
+        //token && services.get().addUserAPI({ token: token });
 
-        // for all non get requests and when forum token cookie is not exists
-        // send request for user authorization
-        if((!isGetRequest || 'auth' === action) && (!req.cookies || !req.cookies['forum_token'])) {
-            return auth.sendAuthRequest(req, res);
-        }
-
-        token = req.cookies['forum_token'];
-        token && services.get().addUserAPI({ token: token });
-
-        if(!action) {
+        if (!action) {
             res.writeHead(500);
             res.end('Action was not found');
             return;
@@ -125,7 +129,7 @@ module.exports = function(pattern, forumOptions, passport) {
         };
 
         // get full page from server on first enter
-        if(!req.xhr) {
+        if (!req.xhr) {
             // collect all required data for templates
             var promises = {
                 repo: services.get().getRepoInfo({ token: token }),
@@ -133,7 +137,7 @@ module.exports = function(pattern, forumOptions, passport) {
                 labels: services.get().getLabels ({ token: token })
             };
 
-            if(options.number) {
+            if (options.number) {
                 // get issue data, that have a number option
                 _.extend(promises, {
                     issue: services.get().getIssue(_.extend({ token: token }, options)),
@@ -148,7 +152,7 @@ module.exports = function(pattern, forumOptions, passport) {
             }
 
             return vow.all(promises)
-                .then(function(values) {
+                .then (function(values) {
                     req.__data = req.__data || {};
                     req.__data.forum = values;
 
@@ -159,7 +163,7 @@ module.exports = function(pattern, forumOptions, passport) {
 
                     return next();
                 })
-                .fail(function(err) {
+                .fail (function(err) {
                     console.err(err);
                 });
         } else {
@@ -168,7 +172,7 @@ module.exports = function(pattern, forumOptions, passport) {
 
             // do something with owner right,
             // e.g. add labels when user create/edit issue
-            if(query.__access === 'owner' && ownerToken) {
+            if (query.__access === 'owner' && ownerToken) {
                 token = ownerToken;
                 services.get().addUserAPI({ token: token });
             }
@@ -176,34 +180,34 @@ module.exports = function(pattern, forumOptions, passport) {
             // create issue without checked labels - default behaviors
             var isIssueAction = (action === 'createIssue' || action === 'editIssue');
 
-            if((isIssueAction && !options.labels) || (isIssueAction && !ownerToken)) {
+            if ((isIssueAction && !options.labels) || (isIssueAction && !ownerToken)) {
                 options.labels = [];
             }
 
             // get data by ajax
             return services.get()[action](_.extend({ token: token }, options))
-                .then(function(data) {
-                    if('json' === query.__mode) {
+                .then(function (data) {
+                    if (query.__mode === 'json') {
                         res.json(data);
                         return;
                     }
 
                     // check if current page is last for paginator
-                    if('getIssues' === action) {
+                    if (action === 'getIssues') {
                         result.isLastPage = (!data.length || data.length < 30)
                     }
 
                     return template.run(_.extend(templateCtx[action] || {}, { data: data }), req);
                 })
-                .then(function(html) {
-                    if(action === 'getIssues') {
+                .then(function (html) {
+                    if (action === 'getIssues') {
                         result.html = html;
                         res.json(result);
                     } else {
                         res.end(html);
                     }
                 })
-                .fail(function(err) {
+                .fail(function (err) {
                     res.end(err);
                 });
         }
