@@ -1,5 +1,4 @@
 module.exports = {
-
     identity: 'comment',
     connection: 'default',
 
@@ -9,8 +8,8 @@ module.exports = {
             login: 'string',
             avatar_url: 'string'
         },
-        "created_at": 'string',
-        "updated_at": 'string',
-        "body": 'string'
+        created_at: 'string',
+        updated_at: 'string',
+        body: 'string'
     }
 };

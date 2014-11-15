@@ -44,6 +44,4 @@ app
             });
     });
 
-//app.get('/auth/facebook', passport.authenticate('facebook'));
-
 app.listen(3000, function() { console.log('server started on port 3000'); });

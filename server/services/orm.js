@@ -18,7 +18,8 @@ var vow = require('vow'),
     issue = require('../models/issue'),
     comment = require('../models/comment'),
     adapters = {
-        disk: require('sails-disk')
+        disk: require('sails-disk'),
+        postgres: require('sails-postgresql')
     };
 
 ORM.prototype = Object.create(Base.prototype);

@@ -3,18 +3,17 @@ var Susanin = require('susanin'),
 
 /**
  * Initialize all inner urls for forum module
- * @param baseUrl - {String} base url
+ * @param {String} baseUrl -  base url
  */
-exports.init = function(baseUrl) {
-
-    //remove trailing slash
-    //var url = baseUrl.replace(/\/$/, '');
+exports.init = function (baseUrl) {
+    // remove trailing slash
+    // var url = baseUrl.replace(/\/$/, '');
 
     var url = baseUrl;
 
     susanin = [
         { name: 'index',         data: { method: 'GET' },    pattern: url },
-        { name: 'getIssues',     data: { method: 'GET' },    pattern: url + 'issues'},
+        { name: 'getIssues',     data: { method: 'GET' },    pattern: url + 'issues' },
         { name: 'getIssue',      data: { method: 'GET' },    pattern: url + 'issues/<number>' },
         { name: 'createIssue',   data: { method: 'POST' },   pattern: url + 'issues' },
         { name: 'editIssue',     data: { method: 'PUT' },    pattern: url + 'issues/<number>' },
@@ -30,7 +29,7 @@ exports.init = function(baseUrl) {
         { name: 'facebookAuthCallback',  data: { method: 'GET' },    pattern: url + 'auth/facebook/callback' },
         { name: 'githubAuth',  data: { method: 'GET' },    pattern: url + 'auth/github' },
         { name: 'githubAuthCallback',  data: { method: 'GET' },    pattern: url + 'auth/github/callback' }
-    ].reduce(function(_susanin, route) {
+    ].reduce(function (_susanin, route) {
             route.pattern += '(/)';
             _susanin.addRoute(route);
             return _susanin;
@@ -40,16 +39,17 @@ exports.init = function(baseUrl) {
 
 /**
  * Return matched route for url
- * @param url - {String} request url
+ * @param {String} url - request url
+ * @param {String} method - request method
  * @returns {*}
  */
-exports.getRoute = function(url, method) {
+exports.getRoute = function (url, method) {
     var result = susanin.find(url, method);
-    if(!result.length) {
+    if (!result.length) {
         return null;
     }
 
-    return result.filter(function(route) {
+    return result.filter(function (route) {
         return method === route[0].getData().method;
     })[0];
 };

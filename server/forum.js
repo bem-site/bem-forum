@@ -11,6 +11,7 @@ var _ = require('lodash'),
     baseUrl = '/forum/';
 
 module.exports = function (pattern, forumOptions, passport) {
+
     baseUrl = pattern || baseUrl;
 
     routes.init(baseUrl);
