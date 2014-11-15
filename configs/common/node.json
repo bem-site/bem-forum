@@ -16,6 +16,17 @@
             "level": "desktop",
             "bundle": "index"
         },
-        "debug": true
+        "debug": true,
+        "adapters": {
+            "mongo": {
+                "...": "..."
+            },
+            "mysql": {
+                "...": "..."
+            },
+            "mysql": {
+                "...": "..."
+            }
+        }
     }
 }
