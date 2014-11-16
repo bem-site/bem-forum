@@ -11,11 +11,11 @@ var express = require('express'),
     forum = require('./forum'),
     config = require('./config'),
     util = require('./util'),
-    template = require('./template');
+    template = require('./template'),
 
-var app = express();
+    app = express();
 
-if(util.isDev()) {
+if (util.isDev()) {
     app.use(require('enb/lib/server/server-middleware').createMiddleware({
         cdir: process.cwd(),
         noLog: false
@@ -54,4 +54,6 @@ app.use(forum('/', forumOptions, passport)) // forum middleware
             });
     });
 
-app.listen(3000, function() { console.log('server started on port 3000'); });
+app.listen(3000, function () {
+    console.log('server started on port 3000');
+});

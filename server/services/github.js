@@ -248,19 +248,19 @@ Github.prototype.getRepoInfo = function(options) {
 
 /*** methods only for gh ***/
 
-Github.prototype.getUserAPI = function(options) {
+Github.prototype.getUserAPI = function (options) {
     return apiHash[options.token];
 };
 
-Github.prototype.getDefaultAPI = function() {
+Github.prototype.getDefaultAPI = function () {
     var tokens = options.auth ? options.auth.tokens : [];
     return apiHash[_.sample(tokens)];
 };
 
-Github.prototype.addDefaultAPI = function() {
+Github.prototype.addDefaultAPI = function (options) {
     var tokens = options.auth ? options.auth.tokens : [];
 
-    apiHash = tokens.reduce(function(prev, token) {
+    apiHash = tokens.reduce(function (prev, token) {
         var api = new Api(API_CONFIG);
         api.authenticate({ type: 'oauth', token: token });
         prev[token] = api;
@@ -271,7 +271,7 @@ Github.prototype.addDefaultAPI = function() {
 };
 
 Github.prototype.addUserAPI = function(token) {
-    if(apiHash[token]) {
+    if (apiHash[token]) {
         return this;
     }
 

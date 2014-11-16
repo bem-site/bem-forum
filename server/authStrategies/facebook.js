@@ -13,7 +13,7 @@ module.exports = {
                 callbackURL: options.callbackURL
             },
 
-            function(accessToken, refreshToken, profile, done) {
+            function (accessToken, refreshToken, profile, done) {
                 // asynchronous verification, for effect...
                 process.nextTick(function () {
                     return done(null, profile);
