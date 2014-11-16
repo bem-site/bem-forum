@@ -1,4 +1,5 @@
-var express = require('express'),
+var u = require('util'),
+    express = require('express'),
     morgan  = require('morgan'),
     st = require('serve-static'),
     bodyParser = require('body-parser'),
@@ -39,16 +40,21 @@ app
     .use(passport.session())
     .use(flash());
 
+
 Object.keys(forumOptions.passport.strategies).forEach(function (strategyName) {
     app.get(u.format('/auth/%s', strategyName), passport.authenticate(strategyName));
-    app.get(u.format('/auth/%s/callback', strategyName), function (err, user, info) {
-        var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
-        res.cookie('forum_username', user.username, { expires: expires });
-        // res.cookie('forum_token', access_token, { expires: expires });
-        return res.redirect('/');
-    })(req, res, next);
+    app.get(u.format('/auth/%s/callback', strategyName), function (req, res, next) {
+        passport.authenticate('github', function (err, user, info) {
+            req.logIn(user, function (err) {
+                if (err) { return next(err); }
+                var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
+                res.cookie('forum_username', user.username, { expires: expires });
+                // res.cookie('forum_token', access_token, { expires: expires });
+                return res.redirect('/');
+            });
+        })(req, res, next);
+    });
 });
-
 
 // handle the callback after facebook has authenticated the user
 app.get('/auth/github/callback',

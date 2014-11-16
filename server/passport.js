@@ -1,7 +1,8 @@
 var passport = require('passport'),
     config = require('./config'),
     forumOptions = config.get('forum'),
-    strategies = require('./authStrategies/index');
+    strategies = require('./authStrategies/index'),
+    services = require('./services');
 
 if (forumOptions.passport.enabled) {
     var authStr = forumOptions.passport.strategies;

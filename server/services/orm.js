@@ -118,7 +118,11 @@ ORM.prototype.deleteComment = function (options) {
 };
 
 ORM.prototype.getLabels = function (options) {
-    // TODO It should be implemented
+    var def = vow.defer();
+    ORM.models.label.find().exec(function (err, model) {
+        err ? def.reject() : def.resolve(model);
+    });
+    return def.promise();
 };
 
 /**
@@ -130,18 +134,31 @@ ORM.prototype.getLabels = function (options) {
 ORM.prototype.getAuthUser = function (options) {
     var def = vow.defer();
     ORM.models.user.findOne({ id: options.id }, function (err, model) {
+        model = {
+            "login": "octocat",
+            "id": 1,
+            "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+            "name": "monalisa octocat",
+            "email": "octocat@github.com",
+        };
         err ? def.reject(err) : def.resolve(model);
     });
     return def.promise();
 };
 
 /**
- * Create authentificated user
+ * Create user
  * @param {Object} options with fields:
  * @param {String} options.token oauth user token
+ * @param {String} options.name
+ * @param {String} options.login
+ * @param {String} options.avatar_url
+ * @param {String} options.uid
+ * @param {String} options.token
+ * @param {String} options.email
  * @returns {*}
  */
-ORM.prototype.createAuthUser = function (options) {
+ORM.prototype.createUser = function (options) {
     var def = vow.defer();
     ORM.models.user.create(options, function (err, model) {
         err ? def.reject(err) : def.resolve(model);
@@ -150,12 +167,12 @@ ORM.prototype.createAuthUser = function (options) {
 };
 
 /**
- * Edit authentificated user
+ * Edit user
  * @param {Object} options with fields:
  * @param {String} options.token oauth user token
  * @returns {*}
  */
-ORM.prototype.editAuthUser = function (options) {
+ORM.prototype.editUser = function (options) {
     var def = vow.defer();
     ORM.models.user.update({ token: options.token }, options, function (err, model) {
         err ? def.reject(err) : def.resolve(model);
@@ -164,7 +181,9 @@ ORM.prototype.editAuthUser = function (options) {
 };
 
 ORM.prototype.getRepoInfo = function (options) {
-    // TODO It should be implemented
+    return this.getIssues(options).then(function (issues) {
+        return { open_issues: issues.length };
+    })
 };
 
 module.exports = ORM;
