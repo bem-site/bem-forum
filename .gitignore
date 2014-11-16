@@ -10,3 +10,4 @@ configs/current
 !*.bundles/*/*.bemdecl.js
 archive.json
 .tmp
+npm-debug.log
