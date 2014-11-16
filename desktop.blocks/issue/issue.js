@@ -21,7 +21,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         _findElems: function() {
             this._comments = this.findBlockInside('comments');
             this._switcher = this.findBlockInside('comments-switcher', 'button');
-            this._spin = this.findBlockInside('spin', 'spin');
+            // this._spin = this.findBlockInside('spin', 'spin');
             this._vote = this.findBlockInside('vote', 'button');
 
             return this;
@@ -182,8 +182,8 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         },
 
         _toggleLoadersUi: function() {
-            this._spin.toggleMod('progress', true, '');
-            this._switcher.toggleMod('disabled', true, '');
+            // this._spin.toggleMod('progress', true, '');
+            // this._switcher.toggleMod('disabled', true, '');
         },
 
         _toggleComments: function() {

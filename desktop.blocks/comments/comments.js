@@ -168,7 +168,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
 
             // подписываемся на удаление добавленного комментария
             this._subscribeDelete(this.findBlocksInside(this.findElem('item'), 'comment').pop());
-
+            console.log('msg');
             this._form.delMod('processing');
         }
     }));

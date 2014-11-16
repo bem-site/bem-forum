@@ -367,11 +367,11 @@ block('issue')(
                     mods : { theme : 'normal', size : 'm', togglable : 'check' },
                     mix: { block: this.block, elem: 'comments-switcher' }
                 },
-                {
-                    block: 'spin',
-                    mods: { theme: 'normal', size: 'm' },
-                    mix: { block: 'issue', elem: 'spin' }
-                },
+                // {
+                //     block: 'spin',
+                //     mods: { theme: 'normal', size: 'm' },
+                //     mix: { block: 'issue', elem: 'spin' }
+                // },
                 {
                     elem : 'rate-wrap',
                     content : [
