@@ -48,7 +48,6 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             console.log(this.params.issueNumber);
 
             $.ajax({
-                // dataType: 'json',
                 type: 'GET',
                 timeout: 10000,
                 url: this.params.forumUrl + 'votes/' + this.params.issueNumber + '/',
@@ -108,25 +107,8 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
          * @private
          */
         _showComments: function() {
-            // if comments is empty - show only add form
-            // if(!this.params.comments) {
-            //     this._toggle();
-            //     return false;
-            // }
-
-            // this.emit('comments:loading');
             this._toggle();
             this._afterShow();
-
-            // $.ajax({
-            //     dataType: 'html',
-            //     url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/?__mode=content',
-            //     context: this
-            // }).done(function(html) {
-            //     this._render(html, 'update', 'container');
-
-            //     this._afterShow();
-            // });
         },
 
         /**

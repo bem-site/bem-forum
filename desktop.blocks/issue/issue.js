@@ -23,19 +23,12 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         _findElems: function() {
             this._comments = this.findBlockInside('comments');
             this._switcher = this.findBlockInside('comments-switcher', 'button');
-            // this._spin = this.findBlockInside('spin', 'spin');
             this._vote = this.findBlockInside('vote', 'button');
 
             return this;
         },
 
         _updateVote: function(e, data) {
-            // if(data.vote === 'up') {
-            //    this._voteCount += 1;
-            // } else {
-            //     this._voteCount -= 1;
-            // }
-            console.log('asdfasdf', data);
             this.elem('rate').text(data.vote);
         },
 
