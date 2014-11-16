@@ -40,7 +40,7 @@ block('issue')(
                     forumUrl: req.forumUrl
                 },
                 content : {
-                    elem : 'comments',
+                    elem : 'container',
                     content : issue.comments.map(function(comment) {
                         return {
                             block: 'comment',

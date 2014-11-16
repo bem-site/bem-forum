@@ -12,7 +12,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             this._findElems();
             this._subscribes();
 
-            if(this._comments && this._switcher) {
+            if(this._comments) {
                 this._setSwitcherCount();
                 this._toggleComments();
             }
@@ -29,7 +29,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
 
         _setSwitcherCount: function() {
             this._comments.on('comment:add', function(e, data) {
-                this._switcher.setText('Ответов: ' + data.comments);
+                this._switcher && this._switcher.setText('Ответов: ' + data.comments);
                 this.emit('process', { enable : false });
                 this.elem('rate').text(this.elemParams('rate').count + 1);
                 this._vote && BEMDOM.destruct(this._vote.domElem);
@@ -43,7 +43,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                     text = 'Ответить'
                 }
 
-                this._switcher.setText(text);
+                this._switcher && this._switcher.setText(text);
             }, this);
         },
 
@@ -187,7 +187,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         },
 
         _toggleComments: function() {
-            this._switcher.on('click', function() {
+            this._switcher && this._switcher.on('click', function() {
                 this._comments.emit(this._switcher.hasMod('checked', true) ? 'show' : 'close');
             }, this);
         }

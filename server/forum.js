@@ -138,17 +138,17 @@ module.exports = function(pattern, options) {
                             result.forEach(function(comments, idx) {
                                 var vote = 0,
                                     votedUser = [],
-                                    isChiter = false;
+                                    isCheater = false;
 
                                 comments.forEach(function(comment) {
                                     if (values.user.login === comment.user.login && issues[idx].vote_button) {
                                         issues[idx].vote_button = false;
                                     }
                                     if (/\:\+1\:/.test(comment.body)) {
-                                        isChiter = votedUser.some(function(user) {
+                                        isCheater = votedUser.some(function(user) {
                                             return comment.user.login === user;
                                         });
-                                        if (!isChiter) {
+                                        if (!isCheater) {
                                             votedUser.push(comment.user.login);
                                             vote++;
                                         }
@@ -167,17 +167,17 @@ module.exports = function(pattern, options) {
                         model.getComments(token, { number : issue.number }).then(function(comments) {
                             var vote = 0,
                                 votedUser = [],
-                                isChiter = false;
+                                isCheater = false;
 
                             if (values.user.login === issue.user.login) {
                                 issue.vote_button = false;
                             }
                             comments.forEach(function(comment) {
                                 if (/\:\+1\:/.test(comment.body)) {
-                                    isChiter = votedUser.some(function(user) {
+                                    isCheater = votedUser.some(function(user) {
                                         return comment.user.login === user;
                                     });
-                                    if (!isChiter) {
+                                    if (!isCheater && (values.user.login !== comment.user.login)) {
                                         votedUser.push(comment.user.login);
                                         vote++;
                                     }

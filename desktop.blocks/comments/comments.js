@@ -60,6 +60,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
                 url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/',
                 context: this
             }).done(function(html) {
+
                 this._render(html, 'append', 'container');
 
                 this._afterAdd();
@@ -86,23 +87,24 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
          */
         _showComments: function() {
             // if comments is empty - show only add form
-            if(!this.params.comments) {
-                this._toggle();
+            // if(!this.params.comments) {
+            //     this._toggle();
+            //     return false;
+            // }
 
-                return false;
-            }
+            // this.emit('comments:loading');
+            this._toggle();
+            this._afterShow();
 
-            this.emit('comments:loading');
+            // $.ajax({
+            //     dataType: 'html',
+            //     url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/?__mode=content',
+            //     context: this
+            // }).done(function(html) {
+            //     this._render(html, 'update', 'container');
 
-            $.ajax({
-                dataType: 'html',
-                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/?__mode=content',
-                context: this
-            }).done(function(html) {
-                this._render(html, 'update', 'container');
-
-                this._afterShow();
-            });
+            //     this._afterShow();
+            // });
         },
 
         /**
@@ -112,9 +114,6 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
          */
         _afterShow: function() {
             this.emit('comments:complete');
-
-            this._toggle();
-
             this._subscribes();
         },
 
