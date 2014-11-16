@@ -3,14 +3,14 @@ block('forum-passport')(
         return [
             {
                 block : 'button',
-                url : '/auth/facebook',
-                text : 'Facebook Auth',
-                mods : { theme : 'normal', size : 'm', type : 'link' }
-            }
-            , {
-                block : 'button',
                 url : '/auth/github',
                 text : 'Github Auth',
+                mods : { theme : 'normal', size : 'm', type : 'link' }
+            },
+            {
+                block : 'button',
+                url : '/auth/logout',
+                text : 'Logout',
                 mods : { theme : 'normal', size : 'm', type : 'link' }
             }
         ]

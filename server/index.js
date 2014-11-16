@@ -56,12 +56,10 @@ Object.keys(forumOptions.passport.strategies).forEach(function (strategyName) {
     });
 });
 
-// handle the callback after facebook has authenticated the user
-app.get('/auth/github/callback',
-    passport.authenticate('github', {
-        successRedirect: '/',
-        failureRedirect: '/'
-    }));
+app.get('/auth/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
+});
 
 app.use(forum('/', forumOptions, passport)) // forum middleware
     .use(function (req, res) {
