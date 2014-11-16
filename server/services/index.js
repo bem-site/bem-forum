@@ -9,15 +9,14 @@ exports.get = function () {
         return service;
     }
 
-    var adapters = config.get('forum:adapters');
-    var currentAdapterName = Object.keys(adapters)[0];
-
-    var Service = {
-            'github': Github,
-            'postgres': ORM,
-            'mysql': ORM,
-            'mongo': ORM,
-            'disk': ORM
+    var adapters = config.get('forum:adapters'),
+        currentAdapterName = Object.keys(adapters)[0 ],
+        Service = {
+            github: Github,
+            postgres: ORM,
+            mysql: ORM,
+            mongo: ORM,
+            disk: ORM
         }[currentAdapterName];
 
     if (!Service) {
@@ -30,6 +29,3 @@ exports.get = function () {
 
     return service;
 };
-
-
-
