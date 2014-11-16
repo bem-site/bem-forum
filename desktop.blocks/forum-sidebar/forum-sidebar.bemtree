@@ -1,5 +1,23 @@
 block('forum-sidebar')(
     content()(function() {
+        var options = [
+            { val : 0, text : 'Новые' },
+            { val : 1, text : 'Старые' },
+            { val : 2, text : 'Наиболее комментируемые' },
+            { val : 3, text : 'Наименее комментируемые' },
+            { val : 4, text : 'Последние обновленные' },
+            { val : 5, text : 'Давно обновленные' }
+        ],
+        sortVal = req.cookies.forum_sorting;
+
+        if (sortVal) {
+            options.forEach(function(item) {
+                 if (+sortVal === item.val) {
+                    item.checked = true;
+                 }
+            });
+        }
+
         return [
             {
                 block: 'forum-sorting',
@@ -14,14 +32,7 @@ block('forum-sidebar')(
                         block: 'select',
                         mods : { mode : 'radio', theme : 'normal', size : 'm', width : 'available' },
                         name : 'sorting',
-                        options : [
-                            { val : 0, text : 'Новые' },
-                            { val : 1, text : 'Старые' },
-                            { val : 2, text : 'Наиболее комментируемые' },
-                            { val : 3, text : 'Наименее комментируемые' },
-                            { val : 4, text : 'Последние обновленные', checked : true },
-                            { val : 5, text : 'Давно обновленные' }
-                        ]
+                        options : options
                     }
                 ]
             },

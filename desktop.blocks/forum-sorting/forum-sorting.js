@@ -1,7 +1,7 @@
 modules.define(
     'forum-sorting',
-    ['i-bem__dom', 'location'],
-    function(provide, BEMDOM, location) {
+    ['i-bem__dom', 'location', 'cookie'],
+    function(provide, BEMDOM, location, cookie) {
 
     provide(BEMDOM.decl(this.name, {
         onSetMod: {
@@ -18,6 +18,8 @@ modules.define(
                 dir = (val % 2) ? 'asc' : 'desc',
                 sortNum = Math.floor(val / 2),
                 sort = (sortNum === 0 ? 'created' : (sortNum === 1 ? 'comments' : 'updated') );
+
+            cookie.set('forum_sorting', val, {expires: new Date(Date.now() + 60 * 60 * 1000)})
 
             location.change({ params: { sort: sort, direction: dir }, forceParams: true});
         }

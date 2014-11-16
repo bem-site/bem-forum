@@ -104,6 +104,14 @@ module.exports = function(pattern, options) {
                 labels: model.getLabels (token, {})
             };
 
+            // Добавляем сортировку
+            var sortVal = req.cookies && req.cookies.forum_sorting;
+
+            if (sortVal) {
+                options.direction = (sortVal % 2) ? 'asc' : 'desc';
+                options.sort = (Math.floor(sortVal / 2) === 0 ? 'created' : (Math.floor(sortVal / 2) === 1 ? 'comments' : 'updated') );
+            }
+
             if(options.number) {
                 // get issue data, that have a number option
                 _.extend(promises, {
