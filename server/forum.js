@@ -114,6 +114,23 @@ module.exports = function(pattern, options) {
                     req.__data = req.__data || {};
                     req.__data.forum = values;
 
+                    // i18 object for page title
+                    // TODO: refactor this
+                    var i18n = {
+                            ru: {
+                                title: 'Форум / БЭМ'
+                            },
+                            en: {
+                                title: 'Forum / BEM'
+                            }
+                        },
+                        lang = req.headers['accept-language'].substr(0,2),
+                        data = req.__data,
+                        forum = data.forum,
+                        issue = forum.issue;
+
+                    data.title = (forum.view === 'issue' ? '#' + issue.number + ' ' + issue.title + ' / ' : '' ) + i18n[lang].title;
+
                     // set global params window.forum.{params}
                     req.__data.forum.global = {
                         debug: (forumDebug && options.debug === 'true')
