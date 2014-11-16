@@ -1,5 +1,6 @@
 var vow = require('vow'),
     Base = require('./base'),
+    generator = require('../generator'),
     ORM = function (options) {
         this.init(options);
     },
@@ -47,6 +48,12 @@ ORM.prototype.init = function (options) {
         }
         ORM.models = data.collections;
         ORM.connections = data.connections;
+
+        // stub data
+        (new generator.LabelsGenerator(ORM)).generate();
+        (new generator.UsersGenerator(ORM)).generate();
+        (new generator.IssuesGenerator(ORM)).generate();
+        (new generator.CommentsGenerator(ORM)).generate();
     });
 };
 
@@ -63,7 +70,7 @@ ORM.prototype.getIssues = function (options) {
 
 ORM.prototype.getIssue = function (options) {
     var def = vow.defer();
-    ORM.models.issue.find({ number: options.number }).exec(function (err, model) {
+    ORM.models.issue.find({ id: options.number }).exec(function (err, model) {
         err ? def.reject() : def.resolve(model);
     });
     return def.promise();
@@ -79,7 +86,7 @@ ORM.prototype.createIssue = function (options) {
 
 ORM.prototype.editIssue = function (options) {
     var def = vow.defer();
-    ORM.models.issue.update({ number: options.number }, options, function (err, object) {
+    ORM.models.issue.update({ id: options.number }, options, function (err, object) {
         err ? def.reject() : def.resolve(object);
     });
     return def.promise();
@@ -94,7 +101,10 @@ ORM.prototype.getComments = function (options) {
 };
 
 ORM.prototype.createComment = function (options) {
+    console.log('create comment %s', JSON.stringify(options));
+
     var def = vow.defer();
+    options['updated_at'] = options['created_at'] = new Date();
     ORM.models.comment.create(options, function (err, object) {
         err ? def.reject() : def.resolve(object);
     });
@@ -103,6 +113,7 @@ ORM.prototype.createComment = function (options) {
 
 ORM.prototype.editComment = function (options) {
     var def = vow.defer();
+    options['updated_at'] = new Date();
     ORM.models.comment.update({ id: options.id }, options, function (err, object) {
         err ? def.reject() : def.resolve(object);
     });
@@ -183,7 +194,7 @@ ORM.prototype.editUser = function (options) {
 ORM.prototype.getRepoInfo = function (options) {
     return this.getIssues(options).then(function (issues) {
         return { open_issues: issues.length };
-    })
+    });
 };
 
 module.exports = ORM;

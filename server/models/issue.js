@@ -6,7 +6,7 @@ module.exports = {
     attributes: {
         number: 'integer',
         title: 'string',
-        owner:{
+        user:{
             model:'user'
         },
         labels: {
@@ -18,5 +18,9 @@ module.exports = {
         created_at: 'string',
         updated_at: 'string',
         body: 'string'
-    }
+    }//,
+
+    //afterCreate: function (record, cb) {
+    //    console.log('record');
+    //}
 };
