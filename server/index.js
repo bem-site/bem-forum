@@ -1,4 +1,5 @@
-var express = require('express'),
+var u = require('util'),
+    express = require('express'),
     morgan  = require('morgan'),
     st = require('serve-static'),
     bodyParser = require('body-parser'),
@@ -29,27 +30,32 @@ app
     .use(morgan('default')) // todo remove it after development
     .use(cookieParser()) // also is necessary for forum
     .use(bodyParser()) // also is necessary for forum
-    .use(session({ secret: 'forum-session', saveUninitialized: true, resave: true, cookie: {maxAge: 24*60*60*1000}  }))
+    //.use(session({
+    //    secret: 'forum-session',
+    //    saveUninitialized: true,
+    //    resave: true,
+    //    cookie: { maxAge: 24 * 60 * 60 * 1000 }
+    //}))
     .use(passport.initialize())
     .use(passport.session())
     .use(flash());
 
-app.get('/auth/github', passport.authenticate('github'));
-
-// handle the callback after facebook has authenticated the user
-app.get('/auth/github/callback',
-    passport.authenticate('github', {
-        successRedirect: '/',
-        failureRedirect: '/'
-    }));
+Object.keys(forumOptions.passport.strategies).forEach(function (strategyName) {
+    app.get(u.format('/auth/%s', strategyName), passport.authenticate(strategyName));
+    app.get(u.format('/auth/%s/callback', strategyName),
+        passport.authenticate(strategyName, {
+            successRedirect: '/',
+            failureRedirect: '/'
+        }));
+});
 
 app.use(forum('/', forumOptions, passport)) // forum middleware
-    .use(function(req, res) {
+    .use(function (req, res) {
         return template.run(_.extend({ block: 'page' }, req.__data), req)
-            .then(function(html) {
+            .then(function (html) {
                 res.end(html);
             })
-            .fail(function(err) {
+            .fail(function (err) {
                 res.end(err);
             });
     });

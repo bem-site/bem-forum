@@ -78,7 +78,7 @@ module.exports = {
                     var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
 
                     res.cookie('forum_token', accesToken, { expires: expires });
-                    //res.cookie('forum_username', 'andrey', { expires: expires });
+                    res.cookie('forum_username', 'andrey', { expires: expires });
 
                     res.writeHead(303, { Location: getRedirectUrl(req) });
                     res.end();

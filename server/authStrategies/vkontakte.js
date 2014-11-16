@@ -15,7 +15,6 @@ module.exports = {
             },
 
             function (accessToken, refreshToken, profile, done) {
-                // asynchronous verification, for effect...
                 process.nextTick(function () {
                     return done(null, profile);
                 });

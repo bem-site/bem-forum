@@ -6,9 +6,13 @@ module.exports = {
     attributes: {
         number: 'integer',
         title: 'string',
-        user: {
-            login: 'string',
-            avatar_url: 'string'
+        owner:{
+            model:'user'
+        },
+        labels: {
+            collection: 'label',
+            via: 'issues',
+            dominant: true
         },
         comments: 'integer',
         created_at: 'string',
@@ -16,5 +20,3 @@ module.exports = {
         body: 'string'
     }
 };
-
-

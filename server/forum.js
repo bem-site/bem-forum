@@ -54,34 +54,16 @@ module.exports = function (pattern, forumOptions, passport) {
         isGetRequest = method === 'GET';
         isDeleteRequest = method === 'DELETE';
 
-        //Object.keys(forumOptions.passport.strategies).forEach(function (name) {
-        //    // console.log("Strategy name: ", name);
-        //    // console.log("Current action: ", action);
-        //    switch (action) {
-        //        case name + 'Auth':
-        //            passport.authenticate(name)(req, res, next);
-        //            break;
-        //        case name + 'AuthCallback':
-        //            passport.authenticate(name,
-        //                {
-        //                    successRedirect: '/',
-        //                    failureRedirect: '/login'
-        //                }
-        //            )(req, res, next);
-        //            break;
-        //    }
-        //});
-
-        // get access token after redirect
-        if (action === 'index' && query.code) {
-            return auth.getAccessToken(req, res, query.code);
-        }
-
-        // for all non get requests and when forum token cookie is not exists
-        // send request for user authorization
-        if ((!isGetRequest || action === 'auth') && (!req.cookies || !req.cookies['forum_token'])) {
-            return auth.sendAuthRequest(req, res);
-        }
+        //// get access token after redirect
+        //if (action === 'index' && query.code) {
+        //    return auth.getAccessToken(req, res, query.code);
+        //}
+        //
+        //// for all non get requests and when forum token cookie is not exists
+        //// send request for user authorization
+        //if ((!isGetRequest || action === 'auth') && (!req.cookies || !req.cookies['forum_token'])) {
+        //    return auth.sendAuthRequest(req, res);
+        //}
 
         token = req.cookies['forum_token'];
         token && services.get().addUserAPI({ token: token });
@@ -148,7 +130,7 @@ module.exports = function (pattern, forumOptions, passport) {
 
                     return next();
                 })
-                .fail (function(err) {
+                .fail (function (err) {
                     console.err(err);
                 });
         } else {

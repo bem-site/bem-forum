@@ -61,7 +61,7 @@ exports.run = function (ctx, req) {
                     _: _
                 });
 
-            return vfs.read(p).then(function (content) {
+            return vfs.read(p, 'utf-8').then(function (content) {
                 vm.runInNewContext(content, context);
                 return context;
             });
