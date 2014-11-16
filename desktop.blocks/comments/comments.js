@@ -19,7 +19,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             this.on('show', this._showComments);
             this.on('close', this._closeComments);
             this._form && this._form.on('submit', this._addComments, this);
-            this.on('vote', this._setVote, this);
+            this.on('vote:click', this._setVote, this);
         },
 
         _setVote: function() {
@@ -43,7 +43,25 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
 
             this._postComment(data);
         },
+        _getVotes : function() {
 
+            console.log(this.params.issueNumber);
+
+            $.ajax({
+                // dataType: 'json',
+                type: 'GET',
+                timeout: 10000,
+                url: this.params.forumUrl + 'votes/' + this.params.issueNumber + '/',
+                context: this
+            }).done(function(json) {
+                this.emit('vote:comments', { vote : json.vote })
+                console.log('json', json);
+            }).fail(function(xhr) {
+                alert('JSON');
+            }).always(function() {
+
+            });
+        },
         /**
          * Отправляем комментарий
          * @param data
@@ -61,7 +79,11 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
                 context: this
             }).done(function(html) {
 
+                this._getVotes();
                 this._render(html, 'append', 'container');
+                if (/\:\+1\:/.test(data[0].value)) {
+                    // this.emit('vote:comment', { vote : 'up' });
+                }
 
                 this._afterAdd();
             }).fail(function(xhr) {

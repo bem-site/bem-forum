@@ -12,6 +12,8 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             this._findElems();
             this._subscribes();
 
+            this._voteCount = this.elemParams('rate').count || 0;
+
             if(this._comments) {
                 this._setSwitcherCount();
                 this._toggleComments();
@@ -27,11 +29,20 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             return this;
         },
 
+        _updateVote: function(e, data) {
+            // if(data.vote === 'up') {
+            //    this._voteCount += 1;
+            // } else {
+            //     this._voteCount -= 1;
+            // }
+            console.log('asdfasdf', data);
+            this.elem('rate').text(data.vote);
+        },
+
         _setSwitcherCount: function() {
             this._comments.on('comment:add', function(e, data) {
                 this._switcher && this._switcher.setText('Ответов: ' + data.comments);
                 this.emit('process', { enable : false });
-                this.elem('rate').text(this.elemParams('rate').count + 1);
                 this._vote && BEMDOM.destruct(this._vote.domElem);
             }, this);
 
@@ -51,6 +62,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             if(this._comments) {
                 this._comments.on('comments:loading', this._toggleLoadersUi, this);
                 this._comments.on('comments:complete', this._toggleLoadersUi, this);
+                this._comments.on('vote:comments', this._updateVote, this);
             }
 
             this._subscribeOwnerActions();
@@ -58,7 +70,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             this.bindTo('label', 'click', this._onClickLabel);
 
             this._vote && this._vote.on('click', function() {
-                this._comments.emit('vote');
+                this._comments.emit('vote:click');
                 this.emit('process', { enable : true });
             }, this);
 

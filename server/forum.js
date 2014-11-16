@@ -95,6 +95,79 @@ module.exports = function(pattern, options) {
             getLabels:     { block: 'forum-labels', mods: { view: options.view } }
         };
 
+        function checkVotes(number) {
+            console.log('number', number);
+
+            var def = vow.defer(),
+                isCheater = null,
+                votedUser = [],
+                newParams = {
+                    vote_button: true,
+                    vote: 0
+                },
+                username = req.cookies && req.cookies.forum_username;
+
+            console.log('username', username);
+
+            model.getComments(token, { number : number }).then(function(comments) {
+                comments.forEach(function(comment) {
+                    if ((username === comment.user.login) && newParams.vote_button) {
+                        newParams.vote_button = false;
+                    }
+
+                    if (/\:\+1\:/.test(comment.body)) {
+                        isCheater = votedUser.some(function(user) {
+                            return comment.user.login === user;
+                        });
+
+                        if (!isCheater) {
+                            console.log('no chiter');
+                            votedUser.push(comment.user.login);
+                            newParams.vote = newParams.vote + 1;
+                        } else {
+                            console.log('chiter stop!');
+                        }
+                    }
+                });
+
+                return def.resolve(newParams);
+
+            }, function(err) {
+                def.reject(err);
+            });
+
+            return def.promise();
+        }
+
+        function vote(data, comments, issue) {
+            issue.isList = data.view === 'issues';
+            // show-hide button vote
+            issue.vote_button = (data.user.login === issue.user.login);
+
+            var vote = 0,
+                isCheater = false,
+                votedUser = [];
+
+            comments.forEach(function(comment) {
+                if (data.user.login === comment.user.login && issue.vote_button) {
+                    issue.vote_button = false;
+                }
+
+                if (/\:\+1\:/.test(comment.body)) {
+                    isCheater = votedUser.some(function(user) {
+                        return comment.user.login === user;
+                    });
+                    if (!isCheater && (data.user !== comment.user.login)) {
+                        votedUser.push(comment.user.login);
+                        vote++;
+                    }
+                }
+            });
+
+            issue.vote = vote;
+            issue.comments = comments;
+        }
+
         // get full page from server on first enter
         if(!req.xhr) {
             // collect all required data for templates
@@ -126,68 +199,20 @@ module.exports = function(pattern, options) {
                         var issues = values.issues;
 
                         var commentPromises = issues.map(function(issue) {
-                            issue.list = true;
-                            issue.vote_button = true;
-                            if (values.user.login === issue.user.login) {
-                                issue.vote_button = false;
-                            }
                             return model.getComments(token, { number : issue.number });
                         });
 
                         vow.all(commentPromises).then(function(result) {
                             result.forEach(function(comments, idx) {
-                                var vote = 0,
-                                    votedUser = [],
-                                    isCheater = false;
-
-                                comments.forEach(function(comment) {
-                                    if (values.user.login === comment.user.login && issues[idx].vote_button) {
-                                        issues[idx].vote_button = false;
-                                    }
-                                    if (/\:\+1\:/.test(comment.body)) {
-                                        isCheater = votedUser.some(function(user) {
-                                            return comment.user.login === user;
-                                        });
-                                        if (!isCheater) {
-                                            votedUser.push(comment.user.login);
-                                            vote++;
-                                        }
-                                    }
-                                });
-                                issues[idx].vote = vote;
-                                issues[idx].comments = comments;
+                                vote(values, comments, issues[idx]);
                             });
                             def.resolve(values);
                         });
                     } else {
                         var issue = values.issue;
-                        issue.list = false;
-                        issue.vote_button = true;
 
                         model.getComments(token, { number : issue.number }).then(function(comments) {
-                            var vote = 0,
-                                votedUser = [],
-                                isCheater = false;
-
-                            if (values.user.login === issue.user.login) {
-                                issue.vote_button = false;
-                            }
-                            comments.forEach(function(comment) {
-                                if (/\:\+1\:/.test(comment.body)) {
-                                    isCheater = votedUser.some(function(user) {
-                                        return comment.user.login === user;
-                                    });
-                                    if (!isCheater && (values.user.login !== comment.user.login)) {
-                                        votedUser.push(comment.user.login);
-                                        vote++;
-                                    }
-                                }
-                                if (values.user.login === comment.user.login) {
-                                    issue.vote_button = false;
-                                }
-                            });
-                            issue.vote = vote;
-                            issue.comments = comments;
+                            vote(values, comments, issue);
                             def.resolve(values);
                         }, function(err) {
                             console.error(err);
@@ -211,6 +236,16 @@ module.exports = function(pattern, options) {
                     console.err(err);
                 });
         } else {
+            if(action === 'getVotes') {
+                checkVotes(options.number).then(function(params) {
+                    res.json(params);
+                }).fail(function(err) {
+                    console.error('err', err);
+                });
+
+                return;
+            }
+
             // ajax requests
             var result = {};
 

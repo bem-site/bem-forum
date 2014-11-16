@@ -13,7 +13,6 @@ block('issue')(
 
     match(function() { return this._issue; }).content()(function() {
         var issue = this._issue;
-
         return [
             {
                 block: 'issue',
@@ -33,7 +32,7 @@ block('issue')(
             },
             {
                 block: 'comments',
-                mods: { hidden: issue.list },
+                mods: { hidden: issue.isList },
                 js: {
                     issueNumber: issue.number,
                     comments: issue.comments.length,

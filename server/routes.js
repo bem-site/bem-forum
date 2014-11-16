@@ -12,6 +12,7 @@ exports.init = function(baseUrl) {
 
     var url = baseUrl;
 
+
     susanin = [
         { name: 'index',         data: { method: 'GET' },    pattern: url },
         { name: 'getIssues',     data: { method: 'GET' },    pattern: url + 'issues' },
@@ -25,7 +26,8 @@ exports.init = function(baseUrl) {
         { name: 'getLabels',     data: { method: 'GET' },    pattern: url + 'labels' },
         { name: 'getAuthUser',   data: { method: 'GET' },    pattern: url + 'user' },
         { name: 'auth',          data: { method: 'GET' },   pattern: url + 'auth' },
-        { name: 'getRepoInfo',   data: { method: 'GET' },   pattern: url + 'repo' }
+        { name: 'getRepoInfo',   data: { method: 'GET' },   pattern: url + 'repo' },
+        { name: 'getVotes',      data: { method: 'GET' },   pattern: url + 'votes/<number>' }
     ].reduce(function(_susanin, route) {
             route.pattern += '(/)';
             _susanin.addRoute(route);
