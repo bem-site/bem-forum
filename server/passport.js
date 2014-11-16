@@ -40,8 +40,13 @@ passport.serializeUser(function (user, done) {
     }
 });
 
-passport.deserializeUser(function (obj, done) {
-    done(null, obj);
+passport.deserializeUser(function (id, done) {
+    services.get().getUser({ uid: id })
+        .then(function (userModel) {
+            done(null, userModel);
+        }).fail(function (err) {
+            throw err;
+        });
 });
 
 module.exports = passport;
