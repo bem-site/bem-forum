@@ -25,7 +25,7 @@ passport.serializeUser(function (user, done) {
                         avatar_url: user._json.avatar_url,
                         name: user.displayName,
                         email: user.emails[0] !== 'undefined' ? user.emails[0].value : '',
-                        token: ''
+                        auth_token: user.token ? user.token : ''
                     }).then(function (userModel) {
                         done(null, user.id);
                     }).fail(function (err) {

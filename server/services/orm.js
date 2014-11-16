@@ -140,6 +140,7 @@ ORM.prototype.getUser = function (options) {
         //    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
         //    "name": "monalisa octocat",
         //    "email": "octocat@github.com",
+        //    "token": ""
         //};
         err ? def.reject(err) : def.resolve(model);
     });

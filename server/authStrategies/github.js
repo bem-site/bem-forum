@@ -15,6 +15,7 @@ module.exports = {
 
             function (accessToken, refreshToken, profile, done) {
                 process.nextTick(function () {
+                    profile.token = accessToken;
                     return done(null, profile);
                 });
             }

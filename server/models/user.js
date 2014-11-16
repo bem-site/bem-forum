@@ -7,7 +7,7 @@ module.exports = {
         name: 'string',
         login: 'string',
         avatar_url: 'string',
-        uid: 'string',
+        uid: 'integer',
         token: 'string',
         email: 'string'
     }
