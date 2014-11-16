@@ -7,18 +7,6 @@ module.exports = {
             return passport;
         }
 
-        //passport.serializeUser(function(user, next) {
-        //	next(null, user.id);
-        //});
-        //
-        //passport.deserializeUser(function(id, next) {
-        //	User
-        //		.findOne(id)
-        //		.done(function(error, user) {
-        //			next(error, user);
-        //		});
-        //});
-
         Strategy = new LocalStrategy({
                 usernameField: 'username',
                 passwordField: 'password'

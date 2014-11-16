@@ -26,14 +26,24 @@ var forumOptions = config.get('forum');
 
 app
     .use(st(process.cwd()))
-    .use(morgan('default')) //todo remove it after development
-    .use(cookieParser()) //also is necessary for forum
-    .use(bodyParser()) //also is necessary for forum
-    .use(session({ secret: 'forum-session', saveUninitialized: true, resave: true }))
+    .use(morgan('default')) // todo remove it after development
+    .use(cookieParser()) // also is necessary for forum
+    .use(bodyParser()) // also is necessary for forum
+    .use(session({ secret: 'forum-session', saveUninitialized: true, resave: true, cookie: {maxAge: 24*60*60*1000}  }))
     .use(passport.initialize())
     .use(passport.session())
-    .use(flash())
-    .use(forum('/', forumOptions, passport)) //forum middleware
+    .use(flash());
+
+app.get('/auth/github', passport.authenticate('github'));
+
+// handle the callback after facebook has authenticated the user
+app.get('/auth/github/callback',
+    passport.authenticate('github', {
+        successRedirect: '/',
+        failureRedirect: '/'
+    }));
+
+app.use(forum('/', forumOptions, passport)) // forum middleware
     .use(function(req, res) {
         return template.run(_.extend({ block: 'page' }, req.__data), req)
             .then(function(html) {

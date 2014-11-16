@@ -54,39 +54,23 @@ module.exports = function (pattern, forumOptions, passport) {
         isGetRequest = method === 'GET';
         isDeleteRequest = method === 'DELETE';
 
-        Object.keys(forumOptions.passport.strategies).forEach(function (name) {
-            // console.log("Strategy name: ", name);
-            // console.log("Current action: ", action);
-            switch (action) {
-                case name + 'Auth':
-                    passport.authenticate(name)(req, res, next);
-                    break;
-                case name + 'AuthCallback':
-                    res.cookie('test', 'test');
-                    passport.authenticate(name, function (err, user, info) {
-                            var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
-                            res.cookie('forum_username', user.username, { expires: expires });
-                            req.logIn(user, function(err) {
-                                    if (err) { return next(err); }
-
-                                    // res.cookie('forum_token', access_token, { expires: expires });
-
-                                    return res.redirect('/');
-                                });
-                        }
-                        //,
-                        //function (err, accessToken, user) {
-                        //    console.log("AccessToken: ", accessToken);
-                        //    console.log("User: ", user);
-                        //    req.login(user, function(err) {
-                        //        if (err) { return next(err); }
-                        //        return res.redirect("/");
-                        //    });
-                        //}
-                    )(req, res, next);
-                    break;
-            }
-        });
+        //Object.keys(forumOptions.passport.strategies).forEach(function (name) {
+        //    // console.log("Strategy name: ", name);
+        //    // console.log("Current action: ", action);
+        //    switch (action) {
+        //        case name + 'Auth':
+        //            passport.authenticate(name)(req, res, next);
+        //            break;
+        //        case name + 'AuthCallback':
+        //            passport.authenticate(name,
+        //                {
+        //                    successRedirect: '/',
+        //                    failureRedirect: '/login'
+        //                }
+        //            )(req, res, next);
+        //            break;
+        //    }
+        //});
 
         // get access token after redirect
         //if (action === 'index' && query.code) {
