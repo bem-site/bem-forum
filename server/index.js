@@ -64,7 +64,12 @@ app.get('/auth/github/callback',
     }));
 
 app.use(forum('/', forumOptions, passport)) // forum middleware
-    .use(function(req, res) {
+    .use(function (req, res) {
+        if (!req.user && req.cookies['forum_username']) {
+            res.clearCookie('forum_username');
+            return res.redirect('/');
+        }
+
         return template.run(_.extend({ block: 'page' }, req.__data), req)
             .then(function (html) {
                 res.end(html);

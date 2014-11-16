@@ -100,7 +100,7 @@ module.exports = function (pattern, forumOptions, passport) {
             // collect all required data for templates
             var promises = {
                 repo: services.get().getRepoInfo({ token: token }),
-                user: services.get().getAuthUser({ token: token }),
+                user: services.get().getUser({ token: token }),
                 labels: services.get().getLabels ({ token: token })
             };
 
@@ -122,7 +122,6 @@ module.exports = function (pattern, forumOptions, passport) {
                 .then (function (values) {
                     req.__data = req.__data || {};
                     req.__data.forum = values;
-
                     // set global params window.forum.{params}
                     req.__data.forum.global = {
                         debug: (forumDebug && options.debug === 'true')

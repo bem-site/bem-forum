@@ -15,7 +15,29 @@ if (forumOptions.passport.enabled) {
 }
 
 passport.serializeUser(function (user, done) {
-    done(null, user.id);
+    if (user) {
+        services.get().getUser({uid: user.id})
+            .then(function (userModel) {
+                if (!userModel) {
+                    services.get().createUser({
+                        login: user.username,
+                        uid: user.id,
+                        avatar_url: user._json.avatar_url,
+                        name: user.displayName,
+                        email: user.emails[0] !== 'undefined' ? user.emails[0].value : '',
+                        token: ''
+                    }).then(function (userModel) {
+                        done(null, user.id);
+                    }).fail(function (err) {
+                        throw err;
+                    });
+                } else {
+                    done(null, user.id);
+                }
+            }).fail(function (err) {
+                throw err;
+            });
+    }
 });
 
 passport.deserializeUser(function (obj, done) {

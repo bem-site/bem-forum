@@ -126,21 +126,21 @@ ORM.prototype.getLabels = function (options) {
 };
 
 /**
- * Returns authentificated user
+ * Returns user by criteria
  * @param {Object} options  with fields:
  * @param {String} options.token  oauth user token
  * @returns {*}
  */
-ORM.prototype.getAuthUser = function (options) {
+ORM.prototype.getUser = function (options) {
     var def = vow.defer();
-    ORM.models.user.findOne({ id: options.id }, function (err, model) {
-        model = {
-            "login": "octocat",
-            "id": 1,
-            "avatar_url": "https://github.com/images/error/octocat_happy.gif",
-            "name": "monalisa octocat",
-            "email": "octocat@github.com",
-        };
+    ORM.models.user.findOne(options, function (err, model) {
+        //model = {
+        //    "login": "octocat",
+        //    "id": 1,
+        //    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+        //    "name": "monalisa octocat",
+        //    "email": "octocat@github.com",
+        //};
         err ? def.reject(err) : def.resolve(model);
     });
     return def.promise();
