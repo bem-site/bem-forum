@@ -17,6 +17,7 @@ var vow = require('vow'),
     user = require('../models/user'),
     issue = require('../models/issue'),
     comment = require('../models/comment'),
+    label = require('../models/label'),
     adapters = {
         disk: require('sails-disk'),
         postgres: require('sails-postgresql')
@@ -35,6 +36,7 @@ ORM.prototype.init = function (options) {
     waterLineConfig.adapters[adapterName] = adapters[adapterName];
 
     waterLine.loadCollection(Waterline.Collection.extend(user));
+    waterLine.loadCollection(Waterline.Collection.extend(label));
     waterLine.loadCollection(Waterline.Collection.extend(issue));
     waterLine.loadCollection(Waterline.Collection.extend(comment));
 

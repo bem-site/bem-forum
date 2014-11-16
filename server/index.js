@@ -29,15 +29,19 @@ app
     .use(morgan('default')) // todo remove it after development
     .use(cookieParser()) // also is necessary for forum
     .use(bodyParser()) // also is necessary for forum
-    .use(session({ secret: 'forum-session', saveUninitialized: true, resave: true }))
+    .use(session({
+        secret: 'forum-session',
+        saveUninitialized: true,
+        resave: true,
+        cookie: { maxAge: 24 * 60 * 60 * 1000 }
+    }))
     .use(passport.initialize())
     .use(passport.session())
     .use(flash());
 
-app.get('/auth/github', passport.authenticate('github'));
-
-app.get('/auth/github/callback', function(req, res, next){
-    passport.authenticate('github', function (err, user, info) {
+Object.keys(forumOptions.passport.strategies).forEach(function (strategyName) {
+    app.get(u.format('/auth/%s', strategyName), passport.authenticate(strategyName));
+    app.get(u.format('/auth/%s/callback', strategyName), function (err, user, info) {
         var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
         res.cookie('forum_username', user.username, { expires: expires });
         // res.cookie('forum_token', access_token, { expires: expires });
@@ -45,14 +49,21 @@ app.get('/auth/github/callback', function(req, res, next){
     })(req, res, next);
 });
 
+
+// handle the callback after facebook has authenticated the user
+app.get('/auth/github/callback',
+    passport.authenticate('github', {
+        successRedirect: '/',
+        failureRedirect: '/'
+    }));
+
 app.use(forum('/', forumOptions, passport)) // forum middleware
     .use(function(req, res) {
-        req.__data.forum = false;
         return template.run(_.extend({ block: 'page' }, req.__data), req)
-            .then(function(html) {
+            .then(function (html) {
                 res.end(html);
             })
-            .fail(function(err) {
+            .fail(function (err) {
                 res.end(err);
             });
     });

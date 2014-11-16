@@ -4,9 +4,8 @@ module.exports = {
 
     attributes: {
         number: 'integer',
-        user: {
-            login: 'string',
-            avatar_url: 'string'
+        owner:{
+            model:'user'
         },
         created_at: 'string',
         updated_at: 'string',
