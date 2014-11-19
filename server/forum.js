@@ -111,11 +111,13 @@ module.exports = function(pattern, options) {
 
             model.getComments(token, { number : number }).then(function(comments) {
                 comments.forEach(function(comment) {
-                    if ((username === comment.user.login) && newParams.vote_button) {
-                        newParams.vote_button = false;
-                    }
 
                     if (/\:\+1\:/.test(comment.body)) {
+                        // TODO: Создатель ишью не должен за себя голосовать
+                        if ((username === comment.user.login) && newParams.vote_button) {
+                            newParams.vote_button = false;
+                        }
+
                         isCheater = votedUser.some(function(user) {
                             return comment.user.login === user;
                         });
@@ -139,25 +141,31 @@ module.exports = function(pattern, options) {
             return def.promise();
         }
 
+        //TODO: Переписать vote и checkVote в одну ф-цию
         function vote(data, comments, issue) {
             issue.isList = data.view === 'issues';
             // show-hide button vote
-            issue.vote_button = (data.user.login === issue.user.login);
+            issue.vote_button = true;
+
+            if (data.user.login === issue.user.login) {
+                issue.vote_button = false;
+            }
 
             var vote = 0,
                 isCheater = false,
                 votedUser = [];
 
             comments.forEach(function(comment) {
-                if (data.user.login === comment.user.login && issue.vote_button) {
-                    issue.vote_button = false;
-                }
 
                 if (/\:\+1\:/.test(comment.body)) {
+                    if ((data.user.login === comment.user.login) && issue.vote_button) {
+                        issue.vote_button = false;
+                    }
+
                     isCheater = votedUser.some(function(user) {
                         return comment.user.login === user;
                     });
-                    if (!isCheater && (data.user !== comment.user.login)) {
+                    if (!isCheater) {
                         votedUser.push(comment.user.login);
                         vote++;
                     }

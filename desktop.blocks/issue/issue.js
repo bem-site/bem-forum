@@ -29,14 +29,16 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         },
 
         _updateVote: function(e, data) {
-            this.elem('rate').text(data.vote);
+            this._vote.setMod('disabled', !data.vote_button);
+            this.params.vote = data.vote;
+            this.elem('rate').text(this.params.vote);
+            // this._vote && BEMDOM.destruct(this._vote.domElem);
         },
 
         _setSwitcherCount: function() {
             this._comments.on('comment:add', function(e, data) {
                 this._switcher && this._switcher.setText('Ответов: ' + data.comments);
                 this.emit('process', { enable : false });
-                this._vote && BEMDOM.destruct(this._vote.domElem);
             }, this);
 
             this._comments.on('comment:delete', function(e, data) {
@@ -83,6 +85,8 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
 
         _onClickRemove: function(e) {
             e.preventDefault();
+
+            console.log('msg')
 
             var params = this.params;
 

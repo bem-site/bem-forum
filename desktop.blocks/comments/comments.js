@@ -44,19 +44,15 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
             this._postComment(data);
         },
         _getVotes : function() {
-
-            console.log(this.params.issueNumber);
-
             $.ajax({
                 type: 'GET',
                 timeout: 10000,
                 url: this.params.forumUrl + 'votes/' + this.params.issueNumber + '/',
                 context: this
             }).done(function(json) {
-                this.emit('vote:comments', { vote : json.vote })
-                console.log('json', json);
+                this.emit('vote:comments', json);
             }).fail(function(xhr) {
-                alert('JSON');
+                alert('err');
             }).always(function() {
 
             });
@@ -80,9 +76,6 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
 
                 this._getVotes();
                 this._render(html, 'append', 'container');
-                if (/\:\+1\:/.test(data[0].value)) {
-                    // this.emit('vote:comment', { vote : 'up' });
-                }
 
                 this._afterAdd();
             }).fail(function(xhr) {
@@ -135,6 +128,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
          */
         _subscribeDelete: function(comment) {
             comment.on('comment:delete', function() {
+                this._getVotes();
                 this.params.comments -= 1;
                 this.emit('comment:delete', { comments: this.params.comments });
             }, this);
@@ -172,7 +166,6 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
 
             // подписываемся на удаление добавленного комментария
             this._subscribeDelete(this.findBlocksInside(this.findElem('item'), 'comment').pop());
-            console.log('msg');
             this._form.delMod('processing');
         }
     }));

@@ -7,7 +7,6 @@ block('issue')(
         labels.forEach(function(label) {
             labelsName.push(label.name);
         });
-
         return {
             number: issue.number,
             labels: labelsName,
@@ -19,7 +18,8 @@ block('issue')(
             // for create/edit issue forms - knowledge is taken
             // from common config website
             labelsRequired: this.ctx.labelsRequired,
-            csrf: this.ctx.csrf
+            csrf: this.ctx.csrf,
+            vote : issue.vote
         };
     }),
     elem('rate').tag()('span')
