@@ -83,7 +83,7 @@ block('issue')(
         content()(function() {
             var issue = this._issue,
                 user = issue.user,
-                date = issue.updated_at;
+                date = issue.created_at;
 
             return [
                 {
