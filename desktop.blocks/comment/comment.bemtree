@@ -78,7 +78,7 @@ block('comment')(
                 },
                 {
                     elem: 'date',
-                    date: comment.updated_at
+                    date: comment.created_at
                 }
             ]
         }),
