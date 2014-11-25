@@ -1,5 +1,4 @@
 block('issue')(
-
     match(function() { return this.ctx.data; }).def()(function() {
         var issue = this.ctx.data,
             login = issue.user.login,
@@ -150,7 +149,24 @@ block('issue')(
         }),
 
         match(function() { return this._isOwner; }).content()(function() {
+            var isClosed = 'closed' === this._issue.state;
+
             return [
+                {
+                    block: 'link',
+                    mix: {
+                        block: this.block,
+                        elem: 'solve',
+                        js: true
+                    },
+                    mods: { pseudo : true },
+                    title: isClosed ? 'Открыть' : 'Закрыть',
+                    content: {
+                        block: 'icon',
+                        mods: { action: isClosed ? 'un-solve' : 'solve', size: '18', hover: 'opacity' },
+                        mix: { block: this.block, elem: 'solve-icon' }
+                    }
+                },
                 {
                     elem: 'edit'
                 },
@@ -181,6 +197,11 @@ block('issue')(
                             elem: 'line',
                             elemMods: { level: 'titles' },
                             content: [
+                                {
+                                    block: 'issue',
+                                    elem: 'solve-badge',
+                                    elemMods: { show: 'closed' === issue.state }
+                                },
                                 {
                                     block: 'issue',
                                     elem: 'number',

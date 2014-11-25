@@ -1,5 +1,6 @@
 {
     "forum": {
+        "port": 3000,
         "auth": {
             "tokens": [
                 "7a2fb4d7a380f8a20562f5fc910f35d3b1605341"
@@ -11,7 +12,7 @@
             "user": "tavriaforever",
             "repo": "bem-forum-tests"
         },
-        "archive": "archive-example.json",
+        "archive": "archive.json",
         "template": {
             "level": "desktop",
             "bundle": "index"

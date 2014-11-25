@@ -3,6 +3,7 @@ block('forum-issues')(
         return this.ctx.data.map(function(issue) {
             return {
                 block: 'issue',
+                mods: { solved: 'closed' === issue.state },
                 data: issue,
                 forumUrl: req.forumUrl,
                 labelsRequired: req.labelsRequired,

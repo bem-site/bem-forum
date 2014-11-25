@@ -11,6 +11,10 @@ modules.define(
                     this._pager = this.findBlockInside('forum-pager');
                     this._labels = this.findBlockInside({ block: 'forum-labels', modName: 'view', modVal: 'menu' });
                     location.on('change', this._onChangeLocation, this);
+
+                    BEMDOM.blocks.issue.on('process', function(e, data) {
+                        this._loader.setMod('progress', data.enable);
+                    }, this);
                 }
             },
 
@@ -41,7 +45,9 @@ modules.define(
                 currentPage = state.params.page && state.params.page[0] || 1,
                 options = {};
 
-            if(prevPage < currentPage) options.type = 'append';
+            if(+prevPage < +currentPage) {
+                options.type = 'append';
+            }
 
             this._loadIssues(options);
         },

@@ -1,6 +1,5 @@
 var _ = require('lodash'),
     vow = require('vow'),
-    mime = require('mime-types'),
 
     auth = require('./auth'),
     model = require('./model'),
@@ -35,14 +34,6 @@ module.exports = function(pattern, options) {
             options,
             isGetRequest,
             isDeleteRequest;
-
-        // fix mime type for block images
-        if(!route) {
-            res
-                .type(mime.lookup(req.url))
-                .end();
-            return;
-        }
 
         query = route[1]; //params hash
         route = route[0]; //route object
@@ -99,7 +90,6 @@ module.exports = function(pattern, options) {
         if(!req.xhr) {
             // collect all required data for templates
             var promises = {
-                repo: model.getRepoInfo(token, {}),
                 user: model.getAuthUser(token, {}),
                 labels: model.getLabels (token, {})
             };
@@ -111,7 +101,7 @@ module.exports = function(pattern, options) {
                     comments: model.getComments(token, options),
                     view: 'issue'
                 });
-            }else {
+            } else {
                 _.extend(promises, {
                     issues: model.getIssues(token, options),
                     view: 'issues'
@@ -120,6 +110,7 @@ module.exports = function(pattern, options) {
 
             return vow.all(promises)
                 .then(function(values) {
+
                     req.__data = req.__data || {};
                     req.__data.forum = values;
 
@@ -161,7 +152,7 @@ module.exports = function(pattern, options) {
 
                     // check if current page is last for paginator
                     if('getIssues' === action) {
-                        result.isLastPage = (!data.length || data.length < 30)
+                        result.isLastPage = (!data.length || data.length < 10)
                     }
 
                     return template.run(_.extend(templateCtx[action] || {}, { data: data }), req);

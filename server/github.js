@@ -8,7 +8,7 @@ var API_CONFIG = {
         version: "3.0.0",
         protocol: "https",
         timeout: 10000,
-        debug: true,
+        debug: false,
         host: "api.github.com"
     },
     options,
@@ -144,7 +144,7 @@ module.exports = {
      * @returns {*}
      */
     getIssues: function(token, options) {
-        return apiCall(token, 'issues', 'repoIssues', options);
+        return apiCall(token, 'issues', 'repoIssues', _.extend(options, { state: 'all', sort: 'updated' }));
     },
 
     /**

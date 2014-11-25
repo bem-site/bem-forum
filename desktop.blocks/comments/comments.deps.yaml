@@ -2,6 +2,7 @@
 - block: forum-flex
 
 - elems:
+  - actions
   - add-form
   - container
 

@@ -40,7 +40,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
         _onSubmit: function(e) {
             e.preventDefault();
 
-            this.emit('submit', this._getSerialize());
+            this.emit('submit', this.getSerialize());
 
             return this;
         },
@@ -102,9 +102,9 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
         /**
          * Получает значения контролов формы, http://api.jquery.com/serializeArray/
          * @returns {*}
-         * @private
+         * @public
          */
-        _getSerialize: function() {
+        getSerialize: function() {
             return this.domElem.serializeArray();
         },
 
