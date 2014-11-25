@@ -3,7 +3,7 @@ block('issue').elem('edit')(
         return applyCtx({
             block: 'link',
             url: '#',
-            title: 'Редактировать пост',
+            title: 'Редактировать',
             content: {
                 block: 'icon',
                 mods: { action: 'edit', size: '18', hover: 'opacity' }

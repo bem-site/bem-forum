@@ -1,17 +1,20 @@
 var express = require('express'),
-    morgan  = require('morgan'),
     st = require('serve-static'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
     csrf = require('csurf'),
+    favicon = require('serve-favicon'),
     _ = require('lodash'),
-    forum = require('./forum'),
-    config = require('./config'),
-    util = require('./util'),
-    template = require('./template');
 
-var app = express();
+    // forum modules
+    forum = require('./forum'),
+    config = require('./config').get('forum'),
+    util = require('./util'),
+    template = require('./template'),
+
+    // app
+    app = express();
 
 if(util.isDev()) {
     app.use(require('enb/lib/server/server-middleware').createMiddleware({
@@ -20,15 +23,15 @@ if(util.isDev()) {
     }));
 }
 
-var forumOptions = config.get('forum');
+app.set('port', process.env.PORT || config.port);
 
 app
     .use(st(process.cwd()))
-    .use(morgan('default')) //todo remove it after development
+    .use(favicon(process.cwd() + '/public/favicon.ico'))
     .use(cookieParser()) //also is necessary for forum
     .use(bodyParser()) //also is necessary for forum
     .use(session({ secret: 'forum-session', saveUninitialized: true, resave: true }))
-    .use(forum('/', forumOptions)) //forum middleware
+    .use(forum('/', config)) //forum middleware
     .use(function(req, res) {
         return template.run(_.extend({ block: 'page' }, req.__data), req)
             .then(function(html) {
@@ -39,4 +42,6 @@ app
             });
     });
 
-app.listen(3000, function() { console.log('server started on port 3000'); });
+app.listen(app.get('port'), function() {
+    console.log('app forum running on port:', app.get('port'));
+});

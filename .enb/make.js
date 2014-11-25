@@ -8,9 +8,9 @@ module.exports = function(config) {
             [ require('enb-bemxjst/techs/bemtree'), { devMode: false }  ],
             [ require('enb-diverse-js/techs/browser-js'), { target: '?.pre.js' } ],
             [ require('enb-modules/techs/prepend-modules'), {
-                 target: '?.js',
-                 source: '?.pre.js'
-             } ],
+                target: '?.js',
+                source: '?.pre.js'
+            } ],
             [ require('enb-stylus/techs/css-stylus'), { target: '?.noprefix.css' } ],
             [ require('enb-bemxjst/techs/bemhtml'), { devMode: false } ]
         ]);
@@ -69,6 +69,6 @@ function getDesktops(config) {
         'desktop.blocks',
         'wrapper.blocks'
     ].map(function(level) {
-        return config.resolvePath(level);
-    });
+            return config.resolvePath(level);
+        });
 }

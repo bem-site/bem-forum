@@ -1,5 +1,7 @@
 block('comments').elem('add-form')(
     content()(function() {
+        var isClosed = 'closed' === this._issue.state;
+
         return [
             {
                 block: 'forum-column',
@@ -37,12 +39,18 @@ block('comments').elem('add-form')(
                         attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
                     },
                     {
+                        block: this.block,
+                        elem: 'actions',
                         content: [
                             {
-                                block: 'button',
-                                mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
-                                text: 'Ответить',
-                                mix: [{ block: 'forum-form', elem: 'submit' }]
+                                block: this.block,
+                                elem: 'add-button',
+                                elemMods: { 'make-open': isClosed },
+                                js: { text: {
+                                    default: 'Написать',
+                                    open: 'Открыть и написать'
+                                }},
+                                text: isClosed ? 'Открыть и написать' : 'Написать'
                             },
                             {
                                 block: 'spin',

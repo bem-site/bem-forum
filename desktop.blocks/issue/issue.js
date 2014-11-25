@@ -1,4 +1,4 @@
-modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(provide, BEMDOM, $, channels) {
+modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'next-tick'], function(provide, BEMDOM, $, channels, dom, nextTick) {
     provide(BEMDOM.decl(this.name, {
         onSetMod: {
             js: {
@@ -49,7 +49,9 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
                 this._comments.on('comments:complete', this._toggleLoadersUi, this);
             }
 
-            this._subscribeOwnerActions();
+            if(dom.contains(this.domElem, this.elem('owner-action'))) {
+                this._subscribeOwnerActions();
+            }
 
             this.bindTo('label', 'click', this._onClickLabel);
 
@@ -57,8 +59,8 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         },
 
         _subscribeOwnerActions: function() {
-            this.bindTo(this.findElem('edit'), 'click', this._onClickEdit);
-            this.bindTo(this.findElem('remove'), 'click', this._onClickRemove);
+            this.bindTo(this.elem('edit'), 'click', this._onClickEdit);
+            this.bindTo(this.elem('remove'), 'click', this._onClickRemove);
         },
 
         _onClickLabel: function(e) {
@@ -70,32 +72,37 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
         _onClickRemove: function(e) {
             e.preventDefault();
 
-            var params = this.params;
-
-            this.setMod('animate-remove', true);
-
             if(window.confirm('Вы уверены?')) {
+                var data = this.findBlockInside('edit-form', 'forum-form').getSerialize(),
+                    params = this.params;
+
+                this.emit('process', { enable: true });
+
+                data.push(
+                    { name: 'labels[]', value: 'removed' },
+                    { name: 'number', value: params.number }
+                );
+
                 $.ajax({
                     dataType: 'html',
                     type: 'PUT',
                     timeout: 10000,
-                    data: {
-                        state: 'closed',
-                        number: params.number,
-                        _csrf: params.csrf
-                    },
-                    url: params.forumUrl + 'issues/' + params.id + '/?__mode=json',
+                    data: data,
+                    url: params.forumUrl + 'issues/' + params.number + '/?__access=owner&__mode=json',
                     context: this
                 }).done(function() {
-                    BEMDOM.destruct(this.domElem);
+                    var self = this;
+                    // small hack, do desctruct in next tick,
+                    // because always callback happens early
+                    nextTick(function() {
+                        BEMDOM.destruct(self.domElem);
+                    });
                 }).fail(function(xhr) {
                     alert('Не удалось удалить пост');
                     window.forum.debug && console.log('issue remove fail', xhr);
                 }).always(function() {
-                    this.delMod('animate-remove');
+                    this.emit('process', { enable: false });
                 });
-            } else {
-                this.delMod('animate-remove');
             }
         },
 
@@ -109,10 +116,9 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels'], function(p
             e.preventDefault();
 
             this._formEdit = this.findBlockInside('edit-form', 'forum-form');
-            this._editLabels = this.findBlockInside('edit-labels', 'forum-labels');
 
-            if(this._editLabels) {
-                this._editLabels.getLabels(this.params.labels);
+            if(this.params.labelsRequired) {
+                this.findBlockInside('edit-labels', 'forum-labels').getLabels(this.params.labels);
             }
 
             var body = this.findElem('body');

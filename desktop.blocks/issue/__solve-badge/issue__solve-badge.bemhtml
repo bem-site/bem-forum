@@ -1,0 +1,7 @@
+block('issue').elem('solve-badge')(
+    content()({
+        block: 'icon',
+        mods: { action: 'solve', size: '22' },
+        attrs: { title: 'Закрыт' }
+    })
+);

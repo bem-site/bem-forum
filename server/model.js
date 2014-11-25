@@ -7,10 +7,10 @@ var path = require('path'),
 
     github = require('./github');
 
-var MAX_LIMIT = 100,
-    DEFAULT = {
+var DEFAULT = {
         page: 1,
-        limit: 30,
+        perPage: 100,
+        limit: 10,
         sort: {
             field: 'updated',
             direction: 'desc'
@@ -108,12 +108,17 @@ Model.prototype = {
      * @returns {*}
      */
     loadLabels: function() {
-        return github.getLabels.call(github, null, { per_page: 100, page: 1 }).then(function(labels) {
-            this.labels = (labels || []).sort(function(a, b) {
-                if(a.name === b.name) return 0;
-                return a.name > b.name ? 1 : -1;
-            });
-        }, this);
+        return github.getLabels.call(github, null, { page: DEFAULT.page, per_page: DEFAULT.perPage })
+            .then(function(labels) {
+                this.labels = (labels || [])
+                    .filter(function(label) {
+                        return label.name !== 'removed';
+                    })
+                    .sort(function(a, b) {
+                        if(a.name === b.name) return 0;
+                        return a.name > b.name ? 1 : -1;
+                    });
+            }, this);
     },
 
     /**
@@ -147,33 +152,35 @@ Model.prototype = {
  * @returns {Promise}
  */
 function loadAllGithubIssues(token) {
-    return github.getRepoInfo(token, {})
-        .then(function(res) {
-            var count = res['open_issues'],
-                promises = [],
-                pages;
+    var def = vow.defer(),
+        issues = [],
+        page = DEFAULT.page;
 
-            //check for existed issues count for current repository
-            if(!count) {
-                return vow.resolve([]);
-            }
+    (function getIssues() {
+        return github.getIssues(token, { page: page, per_page: DEFAULT.perPage })
+            .then(function(result) {
+                ++page;
+                issues = issues.concat(result);
 
-            //calculate number of pages
-            pages = ~~(count/MAX_LIMIT) + (count % MAX_LIMIT > 0 ? 1 : 0);
+                if(!_.isArray(issues)) {
+                    def.reject();
+                }
 
-            //create promises for load all issues by pages
-            for(var i = 1; i<= pages; i++) {
-                promises.push(github.getIssues(token, { page: i, per_page: MAX_LIMIT }));
-            }
+                if(DEFAULT.perPage === issues.length) {
+                    getIssues();
+                }
 
-            //after all load processes we should unite results and return common array of issues
-            return vow.all(promises).then(function(res) {
-                return res.reduce(function(prev, item) {
-                    prev = prev.concat(item);
-                    return prev;
-                }, []);
+                return def.resolve(issues.filter(function(issue) {
+                    var labels = issue.labels;
+
+                    return labels.length ? labels.some(function(label) {
+                        return label.name !== 'removed';
+                    }) : true;
+                }));
             });
-        });
+    })();
+
+    return def.promise();
 }
 
 module.exports = {
@@ -211,11 +218,6 @@ module.exports = {
                 order,
                 page,
                 limit;
-
-            //show only open issues and issues from archive
-            result = result.filter(function(item) {
-                return 'closed' !== item.state;
-            });
 
             //filter by issue labels
             if(filterLabels) {
@@ -270,6 +272,8 @@ module.exports = {
             });
 
             return vow.resolve(result);
+        }, function(err) {
+            console.err('Model.js -> loadAllGithubIssues', err);
         });
     },
 

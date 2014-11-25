@@ -3,7 +3,7 @@ block('issue').elem('remove')(
         return applyCtx({
             block: 'link',
             url: '#',
-            title: 'Удалить пост',
+            title: 'Удалить',
             content: {
                 block: 'icon',
                 mods: { action: 'remove', size: '18', hover: 'opacity' }
