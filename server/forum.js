@@ -120,7 +120,7 @@ module.exports = function(pattern, options) {
                                 title: 'Форум / БЭМ. Блок, Элемент, Модификатор'
                             },
                             en: {
-                                title: 'BEM. Block, Element, Modifier'
+                                title: 'Forum / BEM. Block, Element, Modifier'
                             }
                         },
                         lang = req.headers['accept-language'].substr(0,2),
