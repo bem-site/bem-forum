@@ -28,6 +28,16 @@ block('issue')(
                         elem: 'line',
                         elemMods: { level: 'middle' },
                         mix: { block: 'forum-line', mods: { valign: 'middle' }}
+                    },
+                    {
+                        elem : 'line',
+                        mix: [
+                            { block: 'forum-line', mods: { valign: 'middle' }},
+                            { block: 'share' }
+                        ],
+                        content : [
+
+                        ]
                     }
                 ]
             },
@@ -265,25 +275,35 @@ block('issue')(
                         attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
                     },
                     {
-                        block: 'input',
-                        mods: {
-                            theme: 'normal',
-                            type: 'textarea',
-                            size: 'l',
-                            'has-clear' : true
-                        },
-                        name: 'body',
-                        val: _.escape(issue.body),
-                        placeholder: 'Описание',
-                        mix: [
+                        block : 'forum-create',
+                        content : [
                             {
-                                block: 'issue',
-                                elem: 'edit-textarea'
-                            },
-                            {
-                                block: 'forum-form',
-                                elem: 'control',
-                                elemMods: { autoclear: 'yes' }
+                                block: 'input',
+                                mods: {
+                                    theme: 'normal',
+                                    type: 'textarea',
+                                    size: 'l',
+                                    'has-clear' : true
+                                },
+                                name: 'body',
+                                val: _.escape(issue.body),
+                                placeholder: 'Описание',
+                                mix: [
+                                    {
+                                        block: 'issue',
+                                        elem: 'edit-textarea'
+                                    },
+                                    {
+                                        block: 'forum-form',
+                                        elem: 'control',
+                                        elemMods: { autoclear: 'yes' }
+                                    },
+                                    {
+                                        block : 'forum-create',
+                                        elem : 'view',
+                                        mods : { type : 'source', visible : true }
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -372,7 +392,8 @@ block('issue')(
     // button 'answer'
     elem('line').elemMod('level', 'bottom')(
         match(function() { return !this._forum || !this._forum.comments; }).content()(function() {
-            var comments = this._issue.comments;
+            var issue    = this._issue;
+            var comments = issue.comments;
 
             if((!req.cookies['forum_username'] || this._isArchive) && comments === 0) {
                 return '';

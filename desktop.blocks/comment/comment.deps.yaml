@@ -1,6 +1,7 @@
 - block: forum-user
 - block: forum-date
 - block: forum-flex
+- block: forum-create
 
 - elems:
   - avatar

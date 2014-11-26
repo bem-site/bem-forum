@@ -6,7 +6,7 @@
             ]
         },
         "owner_token": "",
-        "labelsRequired": false,
+        "labelsRequired": true,
         "storage": {
             "user": "tavriaforever",
             "repo": "bem-forum-tests"

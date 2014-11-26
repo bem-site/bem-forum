@@ -23,6 +23,8 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         },
 
         _addIssue: function(e, data) {
+
+
             if(this._formAdd.isEmptyInput('title', 'Заголовок не может быть пустым')) {
                 return false;
             }

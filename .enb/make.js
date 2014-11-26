@@ -38,7 +38,8 @@ module.exports = function(config) {
             nodeConfig.addTechs([
                 [ require('enb/techs/file-copy'), { sourceTarget: '?.css', destTarget: '?.min.css' } ],
                 [ require('enb/techs/file-copy'), { sourceTarget: '?.bemtree.js', destTarget: '?.min.bemtree.js' } ],
-                [ require('enb/techs/file-copy'), { sourceTarget: '?.js', destTarget: '?.min.js' } ],
+                [ require('enb-borschik/techs/borschik'), { sourceTarget: '?.js', destTarget: '?.borschik.js', minify: false, freeze: false } ],
+                [ require('enb/techs/file-copy'), { sourceTarget: '?.borschik.js', destTarget: '?.min.js' } ],
                 [ require('enb/techs/file-copy'), { sourceTarget: '?.bemhtml.js', destTarget: '?.min.bemhtml.js' } ]
             ]);
         });
@@ -66,6 +67,7 @@ function getDesktops(config) {
         { path: 'libs/bem-components/desktop.blocks', check: false },
         { path: 'libs/bem-components/design/desktop.blocks', check: false },
         { path: 'libs/bem-history/common.blocks', check: false },
+        { path: 'libs/bem-content/common.blocks', check: false },
         'desktop.blocks',
         'wrapper.blocks'
     ].map(function(level) {

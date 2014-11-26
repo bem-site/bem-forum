@@ -4,6 +4,8 @@
 - block: forum-form
   mods: { visibility: 'hidden' }
 
+- block: forum-create
+
 - block: forum-labels
   mods: { inline: true, view: checkbox }
 
