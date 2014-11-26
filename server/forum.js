@@ -115,13 +115,12 @@ module.exports = function(pattern, options) {
                     req.__data.forum = values;
 
                     // i18 object for page title
-                    // TODO: refactor this
                     var i18n = {
                             ru: {
-                                title: 'Форум / БЭМ'
+                                title: 'Форум / БЭМ. Блок, Элемент, Модификатор'
                             },
                             en: {
-                                title: 'Forum / BEM'
+                                title: 'BEM. Block, Element, Modifier'
                             }
                         },
                         lang = req.headers['accept-language'].substr(0,2),
