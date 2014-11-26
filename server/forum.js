@@ -9,6 +9,29 @@ var _ = require('lodash'),
 
     baseUrl = '/forum/';
 
+function setPageTitle(req) {
+    // i18 object for page title
+    var i18n = {
+            ru: {
+                title: 'Форум / БЭМ. Блок, Элемент, Модификатор'
+            },
+            en: {
+                title: 'Forum / BEM. Block, Element, Modifier'
+            }
+        },
+        headersLang = req.headers && req.headers['accept-language'],
+        lang = headersLang ? headersLang.substr(0,2) : '',
+        isLangSupport = lang ? ['ru', 'en'].some(function(supportLang) {
+            return supportLang === lang;
+        }) : false,
+        baseTitle = isLangSupport ? i18n[lang].title : '',
+        data = req.__data,
+        forum = data.forum,
+        issue = forum.issue;
+
+    data.title = (forum.view === 'issue' ? '#' + issue.number + ' ' + issue.title + ' / ' : '' ) + baseTitle;
+}
+
 module.exports = function(pattern, options) {
 
     baseUrl = pattern || baseUrl;
@@ -113,6 +136,8 @@ module.exports = function(pattern, options) {
 
                     req.__data = req.__data || {};
                     req.__data.forum = values;
+
+                    setPageTitle(req);
 
                     // set global params window.forum.{params}
                     req.__data.forum.global = {
