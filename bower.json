@@ -24,9 +24,12 @@
   "dependencies": {
     "bem-core": "git://github.com/bem/bem-core.git#ff5efbef8adc1f38b730c2d0e5f405e0b0d3e3d9",
     "bem-components": "git://github.com/bem/bem-components.git#b2e0a63522f0636da40996eb6d4042c09f48e1ff",
-    "bem-history": "git://github.com/bem/bem-history.git#v2"
+    "bem-history": "git://github.com/bem/bem-history.git#v2",
+    "bem-content": "git://github.com/verybigman/bem-content.git#a27b1bde2c0f0d6b712b48c7242346e4427a1946"
   },
   "resolutions": {
-    "bem-core": "ff5efbef8adc1f38b730c2d0e5f405e0b0d3e3d9"
+    "bem-core": "v2.4.0",
+    "bem-components": "b2e0a63522f0636da40996eb6d4042c09f48e1ff",
+    "bem-social": "~0.3.0"
   }
 }

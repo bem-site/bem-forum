@@ -1,0 +1,43 @@
+block('forum-create')(
+    js()(true),
+    content()(function() {
+        return [
+            {
+                elem : 'header',
+                content : [
+                    {
+                        block : 'radio-group',
+                        mods : { theme : 'normal', size : 's', type : 'button' },
+                        options : [
+                            {
+                                val : 'source',
+                                icon: { block: 'icon', mods: { view: 'markdown', size: 24 }, title: 'Маркдаун' },
+                                checked : true
+                            },
+                            {
+                                val : 'preview',
+                                icon: { block: 'icon', mods: { view: 'preview', size: 24 }, title: 'Превью' }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                elem: 'body',
+                content: [
+                    this.ctx.content,
+                    {
+                        block : 'preview',
+                        mix : [
+                            {
+                                block : 'forum-create',
+                                elem : 'view',
+                                mods : { type : 'preview' }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    })
+);

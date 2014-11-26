@@ -190,7 +190,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * @returns {*}
          */
         toggle: function() {
-            this.toggleMod('visibility', 'hidden', '');
+            this.toggleMod('visibility', 'hidden');
 
             this.emit('toggle');
 

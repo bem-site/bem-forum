@@ -99,7 +99,6 @@ module.exports = function(pattern, options) {
         if(!req.xhr) {
             // collect all required data for templates
             var promises = {
-                repo: model.getRepoInfo(token, {}),
                 user: model.getAuthUser(token, {}),
                 labels: model.getLabels (token, {})
             };
