@@ -155,28 +155,38 @@ block('comment')(
                     },
                     content: [
                         {
-                            block: 'input',
-                            mods: {
-                                theme: 'normal',
-                                type: 'textarea',
-                                size: 'l',
-                                'has-clear' : true
-                            },
-                            name: 'body',
-                            val: this.ctx.body,
-                            mix: [
+                            block : 'forum-create',
+                            content : [
                                 {
-                                    block: 'comment',
-                                    elem: 'edit-textarea'
-                                },
-                                {
-                                    block: 'comments',
-                                    elem: 'edit-textarea'
-                                },
-                                {
-                                    block: 'forum-form',
-                                    elem: 'control',
-                                    elemMods: { autoclear: 'yes' }
+                                    block: 'input',
+                                    mods: {
+                                        theme: 'normal',
+                                        type: 'textarea',
+                                        size: 'l',
+                                        'has-clear' : true
+                                    },
+                                    name: 'body',
+                                    val: this.ctx.body,
+                                    mix: [
+                                        {
+                                            block: 'comment',
+                                            elem: 'edit-textarea'
+                                        },
+                                        {
+                                            block: 'comments',
+                                            elem: 'edit-textarea'
+                                        },
+                                        {
+                                            block: 'forum-form',
+                                            elem: 'control',
+                                            elemMods: { autoclear: 'yes' }
+                                        },
+                                        {
+                                            block : 'forum-create',
+                                            elem : 'view',
+                                            mods : { type : 'source', visible : true }
+                                        }
+                                    ]
                                 }
                             ]
                         },

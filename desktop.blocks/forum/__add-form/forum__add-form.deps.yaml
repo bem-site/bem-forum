@@ -1,5 +1,11 @@
+- block: radio-group
+  mods: { theme : 'islands', size : 'm', type : 'button' }
+
+- block: forum-create
+
 - block: input
   mods: { theme: 'normal', type: 'textarea', 'has-clear': true }
+  required: true
 
 - block: forum-form
   mods: { visibility: 'hidden' }
