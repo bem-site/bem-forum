@@ -173,7 +173,7 @@ function loadAllGithubIssues(token) {
                 return def.resolve(issues.filter(function(issue) {
                     var labels = issue.labels;
 
-                    return labels.length ? labels.some(function(label) {
+                    return labels.length ? labels.every(function(label) {
                         return label.name !== 'removed';
                     }) : true;
                 }));
