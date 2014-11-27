@@ -12,25 +12,35 @@ block('comments').elem('add-form')(
                 mods: { side: 'right', gap: true },
                 content: [
                     {
-                        block: 'input',
-                        mods: {
-                            theme: 'normal',
-                            type: 'textarea',
-                            size: 'l',
-                            'has-clear' : true
-                        },
-                        name: 'body',
-                        placeholder: 'Ответ',
-                        attrs: { rows: 5 },
-                        mix: [
+                        block : 'forum-create',
+                        content : [
                             {
-                                block: 'comments',
-                                elem: 'add-textarea'
-                            },
-                            {
-                                block: 'forum-form',
-                                elem: 'control',
-                                elemMods: { autoclear: 'yes' }
+                                block: 'input',
+                                mods: {
+                                    theme: 'normal',
+                                    type: 'textarea',
+                                    size: 'l',
+                                    'has-clear' : true
+                                },
+                                name: 'body',
+                                placeholder: 'Ответ',
+                                attrs: { rows: 5 },
+                                mix: [
+                                    {
+                                        block: 'comments',
+                                        elem: 'add-textarea'
+                                    },
+                                    {
+                                        block: 'forum-form',
+                                        elem: 'control',
+                                        elemMods: { autoclear: 'yes' }
+                                    },
+                                    {
+                                        block : 'forum-create',
+                                        elem : 'view',
+                                        mods : { type : 'source', visible : true }
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -39,7 +49,7 @@ block('comments').elem('add-form')(
                         attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
                     },
                     {
-                        block: this.block,
+                        block: 'forum-form',
                         elem: 'actions',
                         content: [
                             {
