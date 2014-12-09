@@ -94,7 +94,7 @@ module.exports = function(pattern, options) {
             forumUrl: baseUrl,
             labelsRequired: labelsRequired,
             util: util,
-            csrf: 'csrf'
+            csrf: req.csrfToken()
         });
 
         var templateCtx = {

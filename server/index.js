@@ -29,9 +29,10 @@ app.set('port', process.env.PORT || config.port);
 app
     .use(st(process.cwd()))
     .use(favicon(process.cwd() + '/public/favicon.ico'))
-    .use(cookieParser()) //also is necessary for forum
-    .use(bodyParser()) //also is necessary for forum
-    .use(session({ secret: 'forum-session', saveUninitialized: true, resave: true }))
+    .use(cookieParser())
+    .use(bodyParser())
+    .use(session({ secret: 'beminfoforum', saveUninitialized: false, resave: false }))
+    .use(csrf())
     .use(locale(config.defaultLanguage))
     .use(forum('/', config)) //forum middleware
     .use(function(req, res) {
