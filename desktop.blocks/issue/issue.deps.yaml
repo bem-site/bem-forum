@@ -10,9 +10,9 @@
 - block: forum-user
 - block: comments
 - block: button
-  mods: { theme: normal }
+  mods: { theme: islands }
 - block: spin
-  mods: { theme: 'normal' }
+  mods: { theme: islands }
 - block: forum-labels
 
 - elems:

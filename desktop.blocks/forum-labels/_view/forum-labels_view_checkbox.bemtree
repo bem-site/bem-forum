@@ -6,7 +6,7 @@ block('forum-labels').mod('view', 'checkbox')(
             return {
                 block: 'checkbox',
                 mods: {
-                    theme : 'normal',
+                    theme : 'islands',
                     size : 'm'
                 },
                 name: 'labels[]',

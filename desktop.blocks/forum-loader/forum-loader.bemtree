@@ -2,7 +2,7 @@ block('forum-loader')(
     content()(function() {
         return {
             block: 'spin',
-            mods: { theme: 'normal', size: 'xl' }
+            mods: { theme: 'islands', size: 'xl' }
         }
     })
 );

@@ -5,7 +5,7 @@ block('forum-pager')(
             content: [
                 {
                     block : 'button',
-                    mods : { theme : 'normal', size : 'xl' },
+                    mods : { theme : 'islands', size : 'xl' },
                     mix: { block: 'forum-pager', elem: 'button' },
                     text: BEM.I18N('forum-pager', 'text'),
                     icon:  {
@@ -15,7 +15,7 @@ block('forum-pager')(
                 },
                 {
                     block: 'spin',
-                    mods: { theme: 'normal', size: 'xl' },
+                    mods: { theme: 'islands', size: 'xl' },
                     mix: { block: 'forum-pager', elem: 'spin' }
                 }
             ]

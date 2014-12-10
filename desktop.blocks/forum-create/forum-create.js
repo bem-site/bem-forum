@@ -9,7 +9,7 @@ modules.define(
                 js : {
                     inited : function () {
                         this._switcher = this.findBlockInside('radio-group');
-                        this._source   = this.findBlockInside('input');
+                        this._source   = this.findBlockInside('textarea');
                         this._preview  = this.findBlockInside('preview');
 
                         this._switcher.on('change', this._switch, this);

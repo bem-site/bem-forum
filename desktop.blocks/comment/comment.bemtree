@@ -160,7 +160,7 @@ block('comment')(
                                 {
                                     block: 'input',
                                     mods: {
-                                        theme: 'normal',
+                                        theme: 'islands',
                                         type: 'textarea',
                                         size: 'l',
                                         'has-clear' : true
@@ -200,7 +200,7 @@ block('comment')(
                             content: [
                                 {
                                     block: 'button',
-                                    mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
+                                    mods: { theme: 'islands', size : 'm', type: 'submit', view: 'action' },
                                     text: BEM.I18N('comment', 'edit-form-save'),
                                     mix: [
                                         { block: 'comment', elem: 'edit-button' },
@@ -209,11 +209,11 @@ block('comment')(
                                 },
                                 {
                                     block: 'spin',
-                                    mods: { theme: 'normal', size: 'm' }
+                                    mods: { theme: 'islands', size: 'm' }
                                 },
                                 {
                                     block: 'button',
-                                    mods: { theme: 'normal', size : 'm' },
+                                    mods: { theme: 'islands', size : 'm' },
                                     text: BEM.I18N('comment', 'edit-form-cancel'),
                                     mix: [
                                         { block: 'comment', elem: 'edit-cancel' },

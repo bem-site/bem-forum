@@ -7,12 +7,12 @@ block('forum-create')(
                 content: [
                     {
                         block: 'radio-group',
-                        mods: { theme: 'normal', size: 's', type: 'button' },
+                        mods: { theme: 'islands', size: 's', type: 'button' },
+                        val: 'source',
                         options: [
                             {
                                 val: 'source',
-                                icon: { block: 'icon', mods: { view: 'markdown', size: 24 }, title: 'Маркдаун' },
-                                checked: true
+                                icon: { block: 'icon', mods: { view: 'markdown', size: 24 }, title: 'Маркдаун' }
                             },
                             {
                                 val: 'preview',

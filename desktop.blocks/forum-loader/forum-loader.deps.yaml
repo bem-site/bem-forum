@@ -2,7 +2,7 @@
   required: true
 
 - block: spin
-  mods: { theme: normal }
+  mods: { theme: islands }
   required: true
 
 - mods: { progress: true }

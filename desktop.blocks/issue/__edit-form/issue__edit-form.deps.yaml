@@ -1,5 +1,5 @@
 - block: input
-  mods: { theme: 'normal', type: 'textarea', 'has-clear': true }
+  mods: { theme: 'islands', type: 'textarea', 'has-clear': true }
 
 - block: forum-form
   mods: { visibility: 'hidden' }

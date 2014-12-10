@@ -26,7 +26,7 @@ block('forum').elem('add-form')(
                     {
                         block: 'input',
                         mods: {
-                            theme: 'normal',
+                            theme: 'islands',
                             size: 'l',
                             'has-clear' : true
                         },
@@ -40,7 +40,7 @@ block('forum').elem('add-form')(
                             {
                                 block: 'forum-form',
                                 elem: 'control',
-                                elemMods: { autoclear: 'yes' }
+                                elemMods: { autoclear: 'yes', type: 'input' }
                             }
                         ]
                     },
@@ -49,36 +49,29 @@ block('forum').elem('add-form')(
                         attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
                     },
                     {
-                        block : 'forum-create',
-                        content : [
-                            {
-                                block: 'input',
-                                mods: {
-                                    theme: 'normal',
-                                    size: 'l',
-                                    type: 'textarea',
-                                    'has-clear' : true
+                        block: 'forum-create',
+                        content: {
+                            block: 'textarea',
+                            mods: { theme: 'islands', size: 'l', width: 'available' },
+                            name: 'body',
+                            placeholder: BEM.I18N('forum', 'body-placeholder'),
+                            mix: [
+                                {
+                                    block: 'forum',
+                                    elem: 'add-body'
                                 },
-                                name: 'body',
-                                placeholder: BEM.I18N('forum', 'body-placeholder'),
-                                mix: [
-                                    {
-                                        block: 'forum',
-                                        elem: 'add-body'
-                                    },
-                                    {
-                                        block: 'forum-form',
-                                        elem: 'control',
-                                        elemMods: { autoclear: 'yes' }
-                                    },
-                                    {
-                                        block : 'forum-create',
-                                        elem : 'view',
-                                        mods : { type : 'source', visible : true }
-                                    }
-                                ]
-                            }
-                        ]
+                                {
+                                    block: 'forum-form',
+                                    elem: 'control',
+                                    elemMods: { autoclear: 'yes', type: 'textarea' }
+                                },
+                                {
+                                    block: 'forum-create',
+                                    elem: 'view',
+                                    mods: { type: 'source', visible: true }
+                                }
+                            ]
+                        }
                     },
                     req.labelsRequired ? {
                         block: 'forum-labels',
@@ -92,7 +85,7 @@ block('forum').elem('add-form')(
                             },
                             {
                                 block: 'spin',
-                                mods: { theme: 'normal', size: 'l', progress: true },
+                                mods: { theme: 'islands', size: 'l', progress: true },
                                 mix: [
                                     { block: 'forum-labels', elem: 'spin' },
                                     { block: 'forum', elem: 'labels-spin' }
@@ -109,18 +102,18 @@ block('forum').elem('add-form')(
                         content: [
                             {
                                 block: 'button',
-                                mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
+                                mods: { theme: 'islands', size : 'm', type: 'submit', view: 'action' },
                                 text: BEM.I18N('forum', 'add-post'),
                                 mix: [{ block: 'forum-form', elem: 'submit' }]
                             },
                             {
                                 block: 'spin',
                                 mix: { block: 'forum-form', elem: 'spin' },
-                                mods: { theme: 'normal', size: 'm' }
+                                mods: { theme: 'islands', size: 'm' }
                             },
                             {
                                 block: 'button',
-                                mods: { theme: 'normal', size : 'm' },
+                                mods: { theme: 'islands', size : 'm' },
                                 text: BEM.I18N('forum', 'cancel-post'),
                                 mix: [{ block: 'forum-form', elem: 'cancel' }]
                             }

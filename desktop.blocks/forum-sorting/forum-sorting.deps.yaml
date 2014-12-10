@@ -1,2 +1,2 @@
 - block: select
-  mods: { theme: normal, mode: radio }
+  mods: { theme: islands, mode: radio }

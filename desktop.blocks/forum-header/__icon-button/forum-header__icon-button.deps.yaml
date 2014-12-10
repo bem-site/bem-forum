@@ -1,3 +1,3 @@
 - block: button
-  mods: { theme: 'normal', type: 'link' }
+  mods: { theme: 'islands', type: 'link' }
   required: true
