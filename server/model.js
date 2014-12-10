@@ -1,10 +1,4 @@
-var path = require('path'),
-
-    _ = require('lodash'),
-    vow = require('vow'),
-    vowFs = require('vow-fs'),
-    CronJob = require('cron').CronJob,
-
+var CronJob = require('cron').CronJob,
     github = require('./github');
 
 var DEFAULT = {
@@ -18,85 +12,23 @@ var DEFAULT = {
     },
     model;
 
-/**
- * Archive module
- * @returns {{init: init, getIssues: getIssues, getComments: getComments}}
- */
-var Archive = function(options) {
-    this.init(options);
-};
-
-Archive.prototype = {
-    model: {
-        issues: [],
-        comments: []
-    },
-
-    /**
-     * Initializing archive
-     * @param options
-     * @returns {Object}
-     */
-    init: function(options) {
-        return vowFs.read(path.join(process.cwd(), options.archive), 'utf-8')
-            .then(function(data) {
-                data = JSON.parse(data);
-                this.model = Object.keys(data).reduce(function(prev, key) {
-                    prev[key] = data[key];
-                    return prev;
-                }, {});
-                return vow.resolve(this.model);
-            }, this);
-    },
-
-    /**
-     * Returns issues array from archive
-     * @returns {Array}
-     */
-    getIssues: function() {
-        return this.model.issues;
-    },
-
-    getIssue: function(number) {
-        return this.getIssues().filter(function(item) {
-            return item.number == number;
-        })[0];
-    },
-
-    /**
-     * Returns comments array for issue with id
-     * @param issueId - {Number} id of issue
-     * @returns {Array}
-     */
-    getComments: function(issueId) {
-        return this.model.comments
-            .filter(function(item) {
-                return item.number == issueId;
-            })
-            .sort(function(a, b) {
-                var da = new Date(a['created_at']),
-                    db = new Date(b['created_at']);
-
-                return db.getTime() - da.getTime();
-            });
-    }
-};
-
 var Model = function(options) {
     this.init(options);
 };
 
 Model.prototype = {
-    archive: null,
     labels: [],
-    job: null,
+    job: undefined,
 
-    init: function(options) {
-        this.archive = new Archive(options);
+    init: function() {
+        function onTick() {
+            this.loadLabels();
+        }
+
         this.loadLabels();
         this.job = new CronJob({
             cronTime: '0 0 */1 * * *',
-            onTick: function() { this.loadLabels(); },
+            onTick: onTick.bind(this),
             start: false,
             context: this
         });
@@ -115,7 +47,9 @@ Model.prototype = {
                         return label.name !== 'removed';
                     })
                     .sort(function(a, b) {
-                        if(a.name === b.name) return 0;
+                        if(a.name === b.name) {
+                            return 0;
+                        }
                         return a.name > b.name ? 1 : -1;
                     });
             }, this);
@@ -130,14 +64,6 @@ Model.prototype = {
     },
 
     /**
-     * Return archive model
-     * @returns {Archive}
-     */
-    getArchive: function() {
-        return this.archive;
-    },
-
-    /**
      * Returns length of labels array.
      * Can be used for check is labels were loaded and cached
      * @returns {Number}
@@ -146,42 +72,6 @@ Model.prototype = {
         return this.labels.length;
     }
 };
-
-/**
- * Loads all issues for configured github repository and returns them
- * @returns {Promise}
- */
-function loadAllGithubIssues(token) {
-    var def = vow.defer(),
-        issues = [],
-        page = DEFAULT.page;
-
-    (function getIssues() {
-        return github.getIssues(token, { page: page, per_page: DEFAULT.perPage })
-            .then(function(result) {
-                ++page;
-                issues = issues.concat(result);
-
-                if(!_.isArray(issues)) {
-                    def.reject();
-                }
-
-                if(DEFAULT.perPage === issues.length) {
-                    getIssues();
-                }
-
-                return def.resolve(issues.filter(function(issue) {
-                    var labels = issue.labels;
-
-                    return labels.length ? labels.every(function(label) {
-                        return label.name !== 'removed';
-                    }) : true;
-                }));
-            });
-    })();
-
-    return def.promise();
-}
 
 module.exports = {
 
@@ -209,72 +99,15 @@ module.exports = {
      * @returns {*}
      */
     getIssues: function(token, options) {
-        return loadAllGithubIssues(token).then(function(issues) {
-            var result = issues.concat(model.getArchive().getIssues()),
-                filterLabels = options.labels,
-                filterSince = options.since,
-                sortField,
-                sortDirection,
-                order,
-                page,
-                limit;
+        options.labels = options.labels ? options.labels.join(',') : '';
+        options.sort = (options.sort && /^(created|updated|comments)$/.test(options.sort)) ?
+            options.sort : DEFAULT.sort.field;
+        options.direction = (options.direction && /^(asc|desc)$/.test(options.direction)) ?
+            options.direction : DEFAULT.sort.direction;
+        options.page = options.page || DEFAULT.page;
+        options.per_page = options.per_page || DEFAULT.limit;
 
-            //filter by issue labels
-            if(filterLabels) {
-                filterLabels = filterLabels.split(',');
-
-                result = result.filter(function(issueItem) {
-                    var issueLabels = issueItem.labels.map(function(labelItem) {
-                        return labelItem.name || labelItem;
-                    });
-                    return filterLabels.every(function(filterLabel) {
-                        return issueLabels.indexOf(filterLabel) > -1;
-                    });
-                });
-            }
-
-            //filter by updated date
-            if(filterSince && _.isDate(filterSince)) {
-                result = result.filter(function(item) {
-                    return (new Date(item.created_at)).getTime() >= filterSince.getTime();
-                });
-            }
-
-            //sort results
-            sortField = (options.sort && /^(created|updated|comments)$/.test(options.sort))
-                ? options.sort : DEFAULT.sort.field;
-            sortDirection = (options.direction && /^(asc|desc)$/.test(options.direction))
-                ? options.direction : DEFAULT.sort.direction;
-            order = DEFAULT.sort.direction === sortDirection ? -1 : 1;
-
-            result = result.sort(function(a, b) {
-                var an = +a.number,
-                    bn = +b.number;
-
-                //separate gh and archive issues
-                if(an*bn < 0) {
-                    return bn - an;
-                }
-
-                if('comments' === sortField) {
-                    return order*(+a[sortField] - +b[sortField]);
-                }
-
-                return order*((new Date(a[sortField + '_at'])).getTime() -
-                    (new Date(b[sortField + '_at'])).getTime());
-            });
-
-            page = options.page || DEFAULT.page;
-            limit = options.per_page || DEFAULT.limit;
-
-            result = result.filter(function(item, index) {
-                return index >= limit * (page - 1) && index < limit * page
-            });
-
-            return vow.resolve(result);
-        }, function(err) {
-            console.err('Model.js -> loadAllGithubIssues', err);
-        });
+        return github.getIssues(token, options);
     },
 
     /**
@@ -285,19 +118,7 @@ module.exports = {
      * @returns {*}
      */
     getIssue: function(token, options) {
-        var issueNumber = options.number;
-
-        if(!issueNumber) {
-            return null;
-        }
-
-        //load issue from archive
-        if(issueNumber < 0) {
-            return vow.resolve(model.getArchive().getIssue(issueNumber));
-        }
-
-        //load gh issue
-        return github.getIssue.call(github, token, options);
+        return options.number ? github.getIssue.call(github, token, options) : null;
     },
 
     /**
@@ -338,17 +159,7 @@ module.exports = {
      * @returns {*}
      */
     getComments: function(token, options) {
-        if(!options.number) {
-            return vow.resolve([]);
-        }
-
-        //load archive comments
-        if(options.number < 0) {
-            return vow.resolve(model.getArchive().getComments(options.number));
-        }
-
-        //load gh comments
-        return github.getComments.call(github, token, options);
+        return options.number ? github.getComments.call(github, token, options) : [];
     },
 
     /**
@@ -393,8 +204,8 @@ module.exports = {
      * @returns {*}
      */
     getLabels: function(token, options) {
-        return model.areLabelsLoaded() ? vow.resolve(model.getLabels()) :
-            github.getLabels.call(github, token, options);
+        return model.areLabelsLoaded() ?
+            model.getLabels() : github.getLabels.call(github, token, options);
     },
 
     /**

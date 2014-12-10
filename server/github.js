@@ -1,8 +1,6 @@
 var _ = require('lodash'),
     vow = require('vow'),
-    Api = require('github'),
-
-    config = require('./config');
+    Api = require('github');
 
 var API_CONFIG = {
         version: "3.0.0",
@@ -59,7 +57,7 @@ var getFnName = function(fn) {
     var _this = module.exports;
 
     return Object.keys(module.exports).filter(function(key) {
-        return _this[key] == fn;
+        return _this[key] === fn;
     })[0];
 };
 
