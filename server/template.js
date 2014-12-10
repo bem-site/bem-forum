@@ -55,7 +55,15 @@ exports.run = function(ctx, req) {
                         bemjson = bemjson.content;
                     }
 
-                    return template.BEMHTML.apply(bemjson);
+                    var html,
+                        BEMHTML = require(path.join(process.cwd(), targets.bemhtml)).BEMHTML;
+
+                    try {
+                        html = BEMHTML.apply(bemjson);
+                    } catch (e) {
+                        throw new Error(e);
+                    }
+                    return html;
                 });
         });
 };
