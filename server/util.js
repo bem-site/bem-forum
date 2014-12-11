@@ -26,6 +26,7 @@ module.exports = {
         }
 
         return md(content, _.extend({
+            breaks: true,
             sanitize: true,
             highlight: function (content) {
               return hljs.highlightAuto(content).value;
