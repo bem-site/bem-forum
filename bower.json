@@ -25,7 +25,7 @@
     "bem-core": "git://github.com/bem/bem-core.git#v2.5.0",
     "bem-components": "git://github.com/bem/bem-components.git#b2e0a63522f0636da40996eb6d4042c09f48e1ff",
     "bem-history": "git://github.com/bem/bem-history.git#v2",
-    "bem-content": "git://github.com/verybigman/bem-content.git#a27b1bde2c0f0d6b712b48c7242346e4427a1946"
+    "bem-content": "git://github.com/tavriaforever/bem-content.git#747cae3c15a15a56a6d8eaedbee4674b6ddec21c"
   },
   "resolutions": {
     "bem-core": "v2.5.0",
