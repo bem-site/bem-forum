@@ -2,7 +2,7 @@ block('comment').elem('remove')(
     def()(function() {
         return applyCtx({
             block: 'link',
-            title: 'Удалить',
+            title: BEM.I18N('comment', 'remove'),
             mods: { pseudo: true },
             js: { action: 'Remove' },
             content: {

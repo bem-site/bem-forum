@@ -3,8 +3,9 @@ block('forum-header')(
         return [
             {
                 elem: 'title',
-                content: 'Форум',
-                url: req.forumUrl
+                content: BEM.I18N('forum-header', 'logo'),
+                url: req.forumUrl,
+                status: BEM.I18N('forum-header', 'status')
             },
             {
                 block : 'button',
@@ -15,7 +16,7 @@ block('forum-header')(
                     { block: this.block, elem: 'bug-button' },
                     { block: this.block, elem: 'icon-button' }
                 ],
-                attrs: { title: 'Репорт багов' }
+                attrs: { title: BEM.I18N('forum-header', 'bug-button-title') }
             },
             {
                 block : 'button',
@@ -26,7 +27,7 @@ block('forum-header')(
                     { block: this.block, elem: 'github-button' },
                     { block: this.block, elem: 'icon-button' }
                 ],
-                attrs: { title: 'Репозиторий форума' }
+                attrs: { title: BEM.I18N('forum-header', 'github-button-title') }
             }
         ]
     })

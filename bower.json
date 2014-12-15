@@ -1,7 +1,7 @@
 {
   "name": "bem-forum",
   "description": "The forum built on BEM methodology and uses github issues as storage.",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "authors": [
     {
       "name": "bemer",
@@ -29,6 +29,7 @@
   },
   "resolutions": {
     "bem-core": "v2.5.0",
-    "bem-components": "b2e0a63522f0636da40996eb6d4042c09f48e1ff"
+    "bem-components": "b2e0a63522f0636da40996eb6d4042c09f48e1ff",
+    "bem-social": "94e93a02d34196dd4c7121059a70517c4d2be562"
   }
 }

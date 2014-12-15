@@ -19,7 +19,8 @@ block('issue')(
             // for create/edit issue forms - knowledge is taken
             // from common config website
             labelsRequired: this.ctx.labelsRequired,
-            csrf: this.ctx.csrf
+            csrf: this.ctx.csrf,
+            i18n: { 'remove-message': BEM.I18N('issue', 'remove-message') }
         };
     })
 );

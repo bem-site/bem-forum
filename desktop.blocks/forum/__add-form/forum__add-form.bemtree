@@ -9,7 +9,10 @@ block('forum').elem('add-form')(
 
         return {
             block: 'forum-form',
-            js: { forumUrl: req.forumUrl },
+            js: {
+                forumUrl: req.forumUrl,
+                labelsRequired: req.labelsRequired
+            },
             mods: { visibility: 'hidden' },
             mix: {
                 block: 'forum',
@@ -28,7 +31,7 @@ block('forum').elem('add-form')(
                             'has-clear' : true
                         },
                         name: 'title',
-                        placeholder: 'Заголовок',
+                        placeholder: BEM.I18N('forum', 'title-placeholder'),
                         mix: [
                             {
                                 block: 'forum',
@@ -57,7 +60,7 @@ block('forum').elem('add-form')(
                                     'has-clear' : true
                                 },
                                 name: 'body',
-                                placeholder: 'Описание',
+                                placeholder: BEM.I18N('forum', 'body-placeholder'),
                                 mix: [
                                     {
                                         block: 'forum',
@@ -85,7 +88,7 @@ block('forum').elem('add-form')(
                         content: [
                             {
                                 elem: 'title',
-                                content: 'Добавьте метки'
+                                content: BEM.I18N('forum', 'title-labels')
                             },
                             {
                                 block: 'spin',
@@ -107,7 +110,7 @@ block('forum').elem('add-form')(
                             {
                                 block: 'button',
                                 mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
-                                text: 'Добавить',
+                                text: BEM.I18N('forum', 'add-post'),
                                 mix: [{ block: 'forum-form', elem: 'submit' }]
                             },
                             {
@@ -118,7 +121,7 @@ block('forum').elem('add-form')(
                             {
                                 block: 'button',
                                 mods: { theme: 'normal', size : 'm' },
-                                text: 'Отменить',
+                                text: BEM.I18N('forum', 'cancel-post'),
                                 mix: [{ block: 'forum-form', elem: 'cancel' }]
                             }
                         ]

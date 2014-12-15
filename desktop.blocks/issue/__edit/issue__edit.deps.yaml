@@ -2,5 +2,6 @@
   mods: { action: edit, hover: opacity, size: 18 }
 
 - block: link
+  mods: { pseudo: true }
 
-- elems: [edit-form]
+- elem: edit-form

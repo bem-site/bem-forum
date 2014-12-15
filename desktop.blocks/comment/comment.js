@@ -18,7 +18,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * @private
          */
         _onSubmitEdit: function(e, data) {
-            if(this._getFormEdit().isEmptyInput('body')) return false;
+            if(this._getFormEdit().isEmptyInput('comment')) return false;
 
             this.setMod('progress', true);
 

@@ -8,21 +8,11 @@ var u = require('util'),
     stringify = require('json-stringify-safe'),
     util = require('./util');
 
-var targets;
-
 exports.init = function(options) {
     var t = options.template;
-    targets = {
-        bemtree: u.format('%s.bundles/%s/%s.bemtree.js', t.level, t.bundle, t.bundle),
-        bemhtml: u.format('%s.bundles/%s/%s.bemhtml.js', t.level, t.bundle, t.bundle)
-    };
+    target = u.format('%s.bundles/%s/%s.min.template.i18n.js', t.level, t.bundle, t.bundle);
 
-    if(t.prefix) {
-        targets = Object.keys(targets).reduce(function(prev, item) {
-            prev[item] = path.join(t.prefix, targets[item]);
-            return prev;
-        }, {})
-    }
+    if(t.prefix) target = path.join(t.prefix, target);
 };
 
 /**
@@ -36,33 +26,36 @@ exports.run = function(ctx, req) {
     var builder = util.isDev() ?
         require('./builder') : { build: function() { return vow.resolve(); }};
 
-    return builder.build(_.values(targets))
+    return builder
+        .build([target])
         .then(function() {
-            var p = path.join(process.cwd(), targets.bemtree),
-                context = vm.createContext({
-                    console: console,
-                    Vow: vow,
-                    req: req,
-                    _: _
-                });
+            var context = {
+                console: console,
+                Vow: vow,
+                req: req,
+                _: _
+            };
 
-            return vfs.read(p).then(function(content) {
-                vm.runInNewContext(content, context);
+            return vfs.read(path.join(process.cwd(), target)).then(function(bundleFile) {
+                vm.runInNewContext(bundleFile, context);
                 return context;
             });
         })
         .then(function(template) {
+            // set lang
+            template.BEM.I18N.lang(req.lang);
+
             return template.BEMTREE.apply(ctx)
                 .then(function(bemjson) {
                     if (req.query.__mode === 'bemjson') {
                         return stringify(bemjson, null, 2);
                     }
 
-                    if(req.query.__mode === 'content') {
+                    if (req.query.__mode === 'content') {
                         bemjson = bemjson.content;
                     }
 
-                    return require(path.join(process.cwd(), targets.bemhtml)).BEMHTML.apply(bemjson);
+                    return template.BEMHTML.apply(bemjson);
                 });
         });
 };

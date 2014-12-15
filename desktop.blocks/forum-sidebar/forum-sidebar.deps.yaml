@@ -3,8 +3,5 @@
 
 - block: forum-sorting
 
-- block: select
-  mods: { theme: normal, mode: radio }
-
 - elems:
   - title

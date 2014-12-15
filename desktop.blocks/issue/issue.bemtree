@@ -149,23 +149,17 @@ block('issue')(
         }),
 
         match(function() { return this._isOwner; }).content()(function() {
-            var isClosed = 'closed' === this._issue.state;
-
             return [
                 {
-                    block: 'link',
-                    mix: {
-                        block: this.block,
-                        elem: 'solve',
-                        js: true
+                    elem: 'solve',
+                    js: {
+                        i18n: {
+                            'open-message': BEM.I18N('issue', 'open-message'),
+                            'close-message': BEM.I18N('issue', 'close-message'),
+                            post: BEM.I18N('issue', 'post')
+                        }
                     },
-                    mods: { pseudo : true },
-                    title: isClosed ? 'Открыть' : 'Закрыть',
-                    content: {
-                        block: 'icon',
-                        mods: { action: isClosed ? 'un-solve' : 'solve', size: '18', hover: 'opacity' },
-                        mix: { block: this.block, elem: 'solve-icon' }
-                    }
+                    isClosed: 'closed' === this._issue.state
                 },
                 {
                     elem: 'edit'
@@ -253,6 +247,7 @@ block('issue')(
 
             return {
                 block: 'forum-form',
+                js: { labelsRequired: req.labelsRequired },
                 mods: { visibility: 'hidden' },
                 mix: {
                     block: 'issue',
@@ -268,7 +263,7 @@ block('issue')(
                         },
                         name: 'title',
                         val: issue.title,
-                        placeholder: 'Заголовок',
+                        placeholder: BEM.I18N('issue', 'edit-form-title-placeholder'),
                         mix: [
                             {
                                 block: 'issue',
@@ -298,7 +293,7 @@ block('issue')(
                                 },
                                 name: 'body',
                                 val: _.escape(issue.body),
-                                placeholder: 'Описание',
+                                placeholder: BEM.I18N('issue', 'edit-form-desc-placeholder'),
                                 mix: [
                                     {
                                         block: 'issue',
@@ -326,7 +321,7 @@ block('issue')(
                         content: [
                             {
                                 elem: 'title',
-                                content: 'Изменить метки'
+                                content: BEM.I18N('issue', 'edit-form-labels-title')
                             },
                             {
                                 block: 'spin',
@@ -348,7 +343,7 @@ block('issue')(
                             {
                                 block: 'button',
                                 mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
-                                text: 'Сохранить',
+                                text: BEM.I18N('issue', 'edit-form-button-save'),
                                 mix: [
                                     { block: 'issue', elem: 'edit-button' },
                                     { block: 'forum-form', elem: 'submit' }
@@ -362,7 +357,7 @@ block('issue')(
                             {
                                 block: 'button',
                                 mods: { theme: 'normal', size : 'm' },
-                                text: 'Отменить',
+                                text: BEM.I18N('issue', 'edit-form-button-cancel'),
                                 mix: [
                                     { block: 'issue', elem: 'edit-cancel' },
                                     { block: 'forum-form', elem: 'cancel' }
@@ -413,7 +408,7 @@ block('issue')(
             return [
                 {
                     block : 'button',
-                    text : comments === 0 ? 'Ответить' : 'Ответов: ' + comments,
+                    text : comments === 0 ? BEM.I18N('issue', 'reply') : BEM.I18N('issue', 'comments') + ': ' + comments,
                     mods : { theme : 'normal', size : 'm', togglable : 'check' },
                     mix: { block: this.block, elem: 'comments-switcher' }
                 },

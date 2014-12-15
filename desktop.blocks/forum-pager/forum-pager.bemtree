@@ -7,7 +7,7 @@ block('forum-pager')(
                     block : 'button',
                     mods : { theme : 'normal', size : 'xl' },
                     mix: { block: 'forum-pager', elem: 'button' },
-                    text: 'Показать еще',
+                    text: BEM.I18N('forum-pager', 'text'),
                     icon:  {
                         block : 'icon',
                         mods : { view : 'more', size: 16 }

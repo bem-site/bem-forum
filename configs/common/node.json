@@ -1,6 +1,7 @@
 {
     "forum": {
         "port": 3000,
+        "defaultLanguage": "ru",
         "auth": {
             "tokens": [
                 "7a2fb4d7a380f8a20562f5fc910f35d3b1605341"
@@ -12,7 +13,7 @@
             "user": "tavriaforever",
             "repo": "bem-forum-tests"
         },
-        "archive": "archive.json",
+        "archive": "archive-example.json",
         "template": {
             "level": "desktop",
             "bundle": "index"

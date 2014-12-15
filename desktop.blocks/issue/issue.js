@@ -72,7 +72,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
         _onClickRemove: function(e) {
             e.preventDefault();
 
-            if(window.confirm('Вы уверены?')) {
+            if(window.confirm(this.params.i18n['remove-message'])) {
                 var data = this.findBlockInside('edit-form', 'forum-form').getSerialize(),
                     params = this.params;
 
@@ -130,15 +130,9 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
         },
 
         _onSubmitEdit: function(e, data) {
+            if(this._formEdit.isEmptyRequiredField('title', 'labels[]')) return false;
+
             var params = this.params;
-
-            if(this._formEdit.isEmptyInput('title', 'Заголовок не может быть пустым')) {
-                return false;
-            }
-
-            if (params.labelsRequired && this._formEdit.isEmptyCheckbox('labels[]', 'Выберете один из лейблов')) {
-                return false;
-            }
 
             this._formEdit.setMod('processing', 'yes');
 

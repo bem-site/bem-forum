@@ -1,76 +1,82 @@
 block('comments').elem('add-form')(
     content()(function() {
-        var isClosed = 'closed' === this._issue.state;
+        var isClosed = 'closed' === this._issue.state,
+            submitDefaultText = BEM.I18N('comments', 'add-form-submit'),
+            submitOpenText = BEM.I18N('comments', 'add-form-open-submit');
 
-        return [
-            {
-                block: 'forum-column',
-                mods: { side: 'left' }
-            },
-            {
-                block: 'forum-column',
-                mods: { side: 'right', gap: true },
-                content: [
-                    {
-                        block : 'forum-create',
-                        content : [
-                            {
-                                block: 'input',
-                                mods: {
-                                    theme: 'normal',
-                                    type: 'textarea',
-                                    size: 'l',
-                                    'has-clear' : true
+        return {
+            block: 'forum-form',
+            mix: { block: 'forum-flex' },
+            content:  [
+                {
+                    block: 'forum-column',
+                    mods: { side: 'left' }
+                },
+                {
+                    block: 'forum-column',
+                    mods: { side: 'right', gap: true },
+                    content: [
+                        {
+                            block : 'forum-create',
+                            content : [
+                                {
+                                    block: 'input',
+                                    mods: {
+                                        theme: 'normal',
+                                        type: 'textarea',
+                                        size: 'l',
+                                        'has-clear' : true
+                                    },
+                                    name: 'body',
+                                    placeholder: BEM.I18N('comments', 'add-form-placeholder'),
+                                    attrs: { rows: 5 },
+                                    mix: [
+                                        {
+                                            block: 'comments',
+                                            elem: 'add-textarea'
+                                        },
+                                        {
+                                            block: 'forum-form',
+                                            elem: 'control',
+                                            elemMods: { autoclear: 'yes' }
+                                        },
+                                        {
+                                            block : 'forum-create',
+                                            elem : 'view',
+                                            mods : { type : 'source', visible : true }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            tag: 'input',
+                            attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
+                        },
+                        {
+                            block: 'forum-form',
+                            elem: 'actions',
+                            content: [
+                                {
+                                    block: this.block,
+                                    elem: 'add-button',
+                                    elemMods: { 'make-open': isClosed },
+                                    js: { text: {
+                                        default: submitDefaultText,
+                                        open: submitOpenText
+                                    }},
+                                    text: isClosed ? submitOpenText : submitDefaultText
                                 },
-                                name: 'body',
-                                placeholder: 'Ответ',
-                                attrs: { rows: 5 },
-                                mix: [
-                                    {
-                                        block: 'comments',
-                                        elem: 'add-textarea'
-                                    },
-                                    {
-                                        block: 'forum-form',
-                                        elem: 'control',
-                                        elemMods: { autoclear: 'yes' }
-                                    },
-                                    {
-                                        block : 'forum-create',
-                                        elem : 'view',
-                                        mods : { type : 'source', visible : true }
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        tag: 'input',
-                        attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
-                    },
-                    {
-                        block: 'forum-form',
-                        elem: 'actions',
-                        content: [
-                            {
-                                block: this.block,
-                                elem: 'add-button',
-                                elemMods: { 'make-open': isClosed },
-                                js: { text: {
-                                    default: 'Написать',
-                                    open: 'Открыть и написать'
-                                }},
-                                text: isClosed ? 'Открыть и написать' : 'Написать'
-                            },
-                            {
-                                block: 'spin',
-                                mods: { theme: 'normal', size: 'm' },
-                                mix: [{ block: 'forum-form', elem: 'spin' }]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
+                                {
+                                    block: 'spin',
+                                    mods: { theme: 'normal', size: 'm' },
+                                    mix: [{ block: 'forum-form', elem: 'spin' }]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
     })
 );

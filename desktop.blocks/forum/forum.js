@@ -23,15 +23,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
         },
 
         _addIssue: function(e, data) {
-
-
-            if(this._formAdd.isEmptyInput('title', 'Заголовок не может быть пустым')) {
-                return false;
-            }
-
-            if (this.params.labelsRequired && this._formAdd.isEmptyCheckbox('labels[]', 'Выберете один из лейблов')) {
-                return false;
-            }
+            if(this._formAdd.isEmptyRequiredField('title', 'labels[]')) return false;
 
             this._formAdd.setMod('processing', 'yes');
 

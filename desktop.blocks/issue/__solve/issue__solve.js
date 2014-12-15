@@ -36,9 +36,11 @@ modules.define('issue', ['jquery'], function(provide, $, Issue) {
          * @private
          */
         _onClickSolve: function() {
-            var isSolved = this.hasMod('solved');
+            var isSolved = this.hasMod('solved'),
+                i18n = this.elemParams('solve').i18n,
+                message = [i18n[isSolved ? 'open-message' : 'close-message'], i18n.post.toLowerCase()].join(' ') + '?';
 
-            window.confirm((isSolved ? 'Переоткрыть' : 'Закрыть') + ' пост?') &&  this._changeState(isSolved);
+            window.confirm(message) && this._changeState(isSolved);
         },
 
         /**
