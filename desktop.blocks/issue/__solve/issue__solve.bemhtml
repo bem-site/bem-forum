@@ -1,0 +1,22 @@
+block('issue').elem('solve')(
+
+    js()(true),
+
+    content()(function() {
+        var ctx = this.ctx;
+
+        return {
+            block: 'link',
+            mods: { pseudo : true },
+            title: BEM.I18N('issue', ctx.isClosed ? 'state-set-open' : 'state-set-close'),
+            content: {
+                block: 'icon',
+                mods: { action: ctx.isClosed ? 'un-solve' : 'solve', size: '18', hover: 'opacity' },
+                mix: {
+                    block: this.block,
+                    elem: 'solve-icon'
+                }
+            }
+        };
+    })
+);

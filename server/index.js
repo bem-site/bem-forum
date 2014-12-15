@@ -9,6 +9,7 @@ var express = require('express'),
 
     // forum modules
     forum = require('./forum'),
+    locale = require('./locale'),
     config = require('./config').get('forum'),
     util = require('./util'),
     template = require('./template'),
@@ -31,6 +32,7 @@ app
     .use(cookieParser()) //also is necessary for forum
     .use(bodyParser()) //also is necessary for forum
     .use(session({ secret: 'forum-session', saveUninitialized: true, resave: true }))
+    .use(locale(config.defaultLanguage))
     .use(forum('/', config)) //forum middleware
     .use(function(req, res) {
         return template.run(_.extend({ block: 'page' }, req.__data), req)

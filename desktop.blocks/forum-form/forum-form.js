@@ -1,4 +1,4 @@
-modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
+modules.define('forum-form', ['i-bem__dom'], function(provide, BEMDOM) {
     provide(BEMDOM.decl(this.name, {
 
         /**
@@ -67,18 +67,11 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
 
         /**
          * Показывает ошибку в нативном модальном окне
-         * @param type - тип ошибки
          * @param errorText - текст ошибки
          * @private
          */
-        _showError: function(type, errorText) {
-            switch(type) {
-                case 'empty' :
-                    window.alert(errorText || 'Это поле не может быть пустым');
-                    break;
-                case 'notChecked' :
-                    window.alert(errorText || 'Нужно выбрать один вариантов');
-            }
+        _showError: function(errorText) {
+            window.alert(errorText);
         },
 
         /**
@@ -142,18 +135,21 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * Проверяем, введены ли данные в контрол, если нет возвращаем true
          * и показываем попап с ошибкой
          * @param name - значение атрибута name контрола
-         * @param errorText - можно задать кастомный текст для ошибки
          * @returns {boolean}
          */
-        isEmptyInput: function(name, errorText) {
+        isEmptyInput: function(name) {
             var inputs = this.findBlocksInside(this.elem('control'), 'input'),
                 input = inputs.filter(function(item) {
-                    return item.elem('control').attr('name') === name;
-                });
+                    return item.elem('control').attr('name') === (name === 'comment' ? 'body' : name);
+                }),
+                i18n = this.params.i18n,
+                errors = {
+                    title: i18n['empty-title'],
+                    comment: i18n['empty-comment']
+                };
 
             if(input[0].getVal() === '') {
-                this._showError('empty', errorText ? errorText : false);
-
+                this._showError(errors[name]);
                 return true;
             }
 
@@ -164,22 +160,22 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * Проверяем, отмечен ли хоть один из чекбоксов, если нет возвращаем true
          * и показываем попап с ошибкой
          * @param name - значение атрибута name чекбокса
-         * @param errorText - можно задать кастомный текст для ошибки
          * @returns {boolean}
          */
-        isEmptyCheckbox: function(name, errorText) {
-            var checked = this.findBlocksInside(this.elem('control'), 'checkbox')
-                .filter(function(checkbox) {
-                    return checkbox.elem('control').attr('name') === name;
-                })
-                .every(function(checkboxByName) {
-                    return (!checkboxByName.hasMod('checked', true));
-                });
+        isEmptyCheckbox: function(name) {
+            if(this.params.labelsRequired) {
+                var checked = this.findBlocksInside(this.elem('control'), 'checkbox')
+                    .filter(function(checkbox) {
+                        return checkbox.elem('control').attr('name') === name;
+                    })
+                    .every(function(checkboxByName) {
+                        return (!checkboxByName.hasMod('checked', true));
+                    });
 
-            if(checked) {
-                this._showError('notChecked', errorText ? errorText : false);
-
-                return true;
+                if(checked) {
+                    this._showError(this.params.i18n['empty-labels']);
+                    return true;
+                }
             }
 
             return false;
@@ -191,10 +187,25 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          */
         toggle: function() {
             this.toggleMod('visibility', 'hidden');
-
             this.emit('toggle');
-
             return this;
+        },
+
+        /**
+         * Check if one of passed fields is empty
+         * @returns {boolean}
+         */
+        isEmptyRequiredField: function() {
+            var names = [].slice.call(arguments, 0),
+                methods = {
+                    title: this.isEmptyInput.bind(this),
+                    comment: this.isEmptyInput.bind(this),
+                    'labels[]': this.isEmptyCheckbox.bind(this)
+                };
+
+            return names.some(function(name) {
+                return methods[name](name);
+            });
         }
 
     }));

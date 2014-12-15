@@ -2,10 +2,6 @@ block('forum-labels').mod('view', 'menu')(
     match(function() { return this._forum.labels; }).content()(function() {
         return [
             {
-                elem: 'title',
-                content: this.ctx.title
-            },
-            {
                 block: 'spin',
                 mods: { theme: 'normal', size: 'l' },
                 mix: { block: 'forum-labels', elem: 'spin' }

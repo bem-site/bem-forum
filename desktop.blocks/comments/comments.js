@@ -29,7 +29,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $
          * @private
          */
         _addComments: function(e, data) {
-            if(this._form.isEmptyInput('body')) return false;
+            if(this._form.isEmptyInput('comment')) return false;
 
             this._form.setMod('processing', 'yes');
 

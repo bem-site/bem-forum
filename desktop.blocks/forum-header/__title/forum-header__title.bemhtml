@@ -1,8 +1,10 @@
-block('forum-header').elem('title')(
-    def()(function() {
-        return applyCtx({
+block('forum-header').elem('title')
+    .content()(function() {
+        var ctx = this.ctx;
+
+        return {
             block: 'link',
-            url: this.ctx.url,
+            url: ctx.url,
             content: [
                 {
                     block: 'icon',
@@ -14,11 +16,10 @@ block('forum-header').elem('title')(
                 },
                 {
                     tag: 'h1',
-                    content: this.ctx.content
+                    content: ctx.content
                 }
             ],
             mix: { block: 'forum-header', elem: 'title' },
-            attrs: { 'data-status': 'Бета' }
-        })
-    })
-);
+            attrs: { 'data-status': ctx.status }
+        };
+    });

@@ -1,4 +1,5 @@
 module.exports = function(config) {
+    config.setLanguages(['ru', 'en']);
 
     config.nodes('*.bundles/*', function(nodeConfig) {
         nodeConfig.addTechs([
@@ -12,14 +13,28 @@ module.exports = function(config) {
                 source: '?.pre.js'
             } ],
             [ require('enb-stylus/techs/css-stylus'), { target: '?.noprefix.css' } ],
-            [ require('enb-bemxjst/techs/bemhtml'), { devMode: false } ]
+            [ require('enb-bemxjst/techs/bemhtml'), { devMode: false } ],
+            [ require('enb-bem-i18n/techs/i18n-lang-js'), { lang: 'all' } ],
+            [ require('enb-bem-i18n/techs/i18n-lang-js'), { lang: '{lang}' } ],
+            [ require('enb-bem-i18n/techs/i18n-merge-keysets'), { lang: 'all' } ],
+            [ require('enb-bem-i18n/techs/i18n-merge-keysets'), { lang: '{lang}' } ],
+            [ require('enb/techs/file-merge'), {
+                target : '?.template.js',
+                sources: ['?.bemtree.js', '?.bemhtml.js']
+            }],
+            [ require('./techs/template-i18n'), {
+                target: '?.template.i18n.js',
+                sourceTarget: '?.template.js',
+                langTargets: ['all'].concat(config.getLanguages()).map(function (lang) {
+                    return '?.lang.' + lang + '.js';
+                })
+            } ]
         ]);
 
         nodeConfig.addTargets([
             '?.min.css',
-            '?.min.bemtree.js',
             '?.min.js',
-            '?.min.bemhtml.js'
+            '?.min.template.i18n.js'
         ]);
     });
 
@@ -37,8 +52,7 @@ module.exports = function(config) {
        config.nodes('*.bundles/*', function(nodeConfig) {
            nodeConfig.addTechs([
                [ require('enb/techs/file-copy'), { sourceTarget: '?.css', destTarget: '?.min.css' } ],
-               [ require('enb/techs/file-copy'), { sourceTarget: '?.bemtree.js', destTarget: '?.min.bemtree.js' } ],
-               [ require('enb/techs/file-copy'), { sourceTarget: '?.bemhtml.js', destTarget: '?.min.bemhtml.js' } ],
+               [ require('enb/techs/file-copy'), { sourceTarget: '?.template.i18n.js', destTarget: '?.min.template.i18n.js' } ],
                [ require('enb-borschik/techs/borschik'), { sourceTarget: '?.js', destTarget: '?.borschik.js', minify: false } ],
                [ require('enb/techs/file-copy'), { sourceTarget: '?.borschik.js', destTarget: '?.min.js' } ]
            ]);
@@ -49,9 +63,8 @@ module.exports = function(config) {
         config.nodes('*.bundles/*', function(nodeConfig) {
             nodeConfig.addTechs([
                 [ require('enb-borschik/techs/borschik'), { sourceTarget: '?.css', destTarget: '?.min.css', tech: 'cleancss', freeze: true } ],
-                [ require('enb-borschik/techs/borschik'), { sourceTarget: '?.bemtree.js', destTarget: '?.min.bemtree.js' } ],
-                [ require('enb-borschik/techs/borschik'), { sourceTarget: '?.js', destTarget: '?.min.js' } ],
-                [ require('enb-borschik/techs/borschik'), { sourceTarget: '?.bemhtml.js', destTarget: '?.min.bemhtml.js' } ]
+                [ require('enb-borschik/techs/borschik'), { sourceTarget: '?.template.i18n.js', destTarget: '?.min.template.i18n.js' } ],
+                [ require('enb-borschik/techs/borschik'), { sourceTarget: '?.js', destTarget: '?.min.js' } ]
             ]);
         });
     });

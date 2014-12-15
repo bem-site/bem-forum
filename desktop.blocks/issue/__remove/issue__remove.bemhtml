@@ -1,14 +1,13 @@
 block('issue').elem('remove')(
-    def()(function() {
-        return applyCtx({
+    content()(function() {
+        return {
             block: 'link',
-            url: '#',
-            title: 'Удалить',
+            mods: { pseudo: true },
+            title: BEM.I18N('issue', 'remove'),
             content: {
                 block: 'icon',
                 mods: { action: 'remove', size: '18', hover: 'opacity' }
-            },
-            mix: { block: 'issue', elem: 'remove' }
-        });
+            }
+        };
     })
 );

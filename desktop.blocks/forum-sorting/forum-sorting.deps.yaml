@@ -1,0 +1,2 @@
+- block: select
+  mods: { theme: normal, mode: radio }

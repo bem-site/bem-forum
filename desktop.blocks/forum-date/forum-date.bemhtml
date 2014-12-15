@@ -1,22 +1,24 @@
 block('forum-date')(
+    match(function() { return !this.ctx.date; }).def()(false),
+
     match(function() { return this.ctx.date; }).content()(function() {
         var date = new Date(this.ctx.date),
-            month = {
-                "0": "января",
-                "1": "февраля",
-                "2": "марта",
-                "3": "апреля",
-                "4": "мая",
-                "5": "июня",
-                "6": "июля",
-                "7": "августа",
-                "8": "сентября",
-                "9": "октября",
-                "10": "ноября",
-               "11": "декабря"
-            },
-            dateStr = date.getDate() + ' ' + month[date.getMonth()] + ' ' + date.getFullYear();
+            i18n = BEM.I18N,
+            month = [
+                i18n('forum-date', 'jan'),
+                i18n('forum-date', 'feb'),
+                i18n('forum-date', 'mar'),
+                i18n('forum-date', 'apr'),
+                i18n('forum-date', 'may'),
+                i18n('forum-date', 'jun'),
+                i18n('forum-date', 'jul'),
+                i18n('forum-date', 'aug'),
+                i18n('forum-date', 'sep'),
+                i18n('forum-date', 'oct'),
+                i18n('forum-date', 'nov'),
+                i18n('forum-date', 'dec')
+            ];
 
-        return dateStr;
+        return date.getDate() + ' ' + month[date.getMonth()] + ' ' + date.getFullYear();
      })
 );

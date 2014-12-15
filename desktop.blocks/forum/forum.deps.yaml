@@ -1,3 +1,7 @@
+- block: i-bem
+  required: true
+  elem: i18n
+
 - block: forum-variables
   required: true
 

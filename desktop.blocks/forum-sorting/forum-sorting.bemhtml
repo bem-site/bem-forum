@@ -1,0 +1,1 @@
+block('forum-sorting').js()(true);

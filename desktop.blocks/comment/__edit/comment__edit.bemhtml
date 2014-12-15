@@ -2,7 +2,7 @@ block('comment').elem('edit')(
     def()(function() {
         return applyCtx({
             block: 'link',
-            title: 'Редактировать',
+            title: BEM.I18N('comment', 'edit'),
             mods: { pseudo: true },
             js: { action: 'Edit' },
             content: {

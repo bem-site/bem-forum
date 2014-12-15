@@ -201,7 +201,7 @@ block('comment')(
                                 {
                                     block: 'button',
                                     mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
-                                    text: 'Сохранить',
+                                    text: BEM.I18N('comment', 'edit-form-save'),
                                     mix: [
                                         { block: 'comment', elem: 'edit-button' },
                                         { block: 'forum-form', elem: 'submit' }
@@ -214,7 +214,7 @@ block('comment')(
                                 {
                                     block: 'button',
                                     mods: { theme: 'normal', size : 'm' },
-                                    text: 'Отменить',
+                                    text: BEM.I18N('comment', 'edit-form-cancel'),
                                     mix: [
                                         { block: 'comment', elem: 'edit-cancel' },
                                         { block: 'forum-form', elem: 'cancel' }

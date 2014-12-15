@@ -19,8 +19,7 @@ function setPageTitle(req) {
                 title: 'Forum / BEM. Block, Element, Modifier'
             }
         },
-        headersLang = req.headers && req.headers['accept-language'],
-        lang = headersLang ? headersLang.substr(0,2) : '',
+        lang = req.lang,
         isLangSupport = lang ? ['ru', 'en'].some(function(supportLang) {
             return supportLang === lang;
         }) : false,
