@@ -11,6 +11,6 @@ module.exports = {
         "sep": "September",
         "oct": "October",
         "nov": "November",
-        "deс": "December"
+        "dec": "December"
     }
 };
