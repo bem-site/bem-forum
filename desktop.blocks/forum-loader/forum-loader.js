@@ -7,7 +7,7 @@ modules.define('forum-loader', ['i-bem__dom'], function(provide, BEMDOM) {
                 }
 
                 // TODO: Исследовать, почему мод. progress выставляется раньше чем inited
-                this._spin.setMod('progress', modVal);
+                this._spin.setMod('visible', modVal);
             }
         }
     }));

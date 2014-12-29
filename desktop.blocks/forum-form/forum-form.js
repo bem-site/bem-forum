@@ -109,7 +109,7 @@ modules.define('forum-form', ['i-bem__dom'], function(provide, BEMDOM) {
          */
         _toggleProcessingUi: function() {
             this.findBlockInside(this.elem('submit'), 'button').toggleMod('disabled', true, '');
-            this.findBlockInside(this.elem('spin'), 'spin').toggleMod('progress', true, '');
+            this.findBlockInside(this.elem('spin'), 'spin').toggleMod('visible', true, '');
 
             return this;
         },

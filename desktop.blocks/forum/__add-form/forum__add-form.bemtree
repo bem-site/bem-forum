@@ -85,7 +85,7 @@ block('forum').elem('add-form')(
                             },
                             {
                                 block: 'spin',
-                                mods: { theme: 'islands', size: 'l', progress: true },
+                                mods: { theme: 'islands', size: 'l', visible: true },
                                 mix: [
                                     { block: 'forum-labels', elem: 'spin' },
                                     { block: 'forum', elem: 'labels-spin' }
