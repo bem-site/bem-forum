@@ -3,7 +3,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
-    csrf = require('csurf'),
+    //csrf = require('csurf'),
     favicon = require('serve-favicon'),
     _ = require('lodash'),
 
@@ -32,7 +32,7 @@ app
     .use(cookieParser())
     .use(bodyParser())
     .use(session({ secret: 'beminfoforum', saveUninitialized: false, resave: false }))
-    .use(csrf())
+    //.use(csrf())
     .use(locale(config.defaultLanguage))
     .use(forum('/', config)) //forum middleware
     .use(function(req, res) {
