@@ -1,4 +1,4 @@
-modules.define('forum-form', ['i-bem__dom'], function(provide, BEMDOM) {
+modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
     provide(BEMDOM.decl(this.name, {
 
         /**
