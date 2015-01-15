@@ -143,19 +143,23 @@ modules.define('forum-form', ['i-bem__dom'], function(provide, BEMDOM) {
                     title: i18n['empty-title'],
                     comment: i18n['empty-comment']
                 },
-                goal;
+                blocksOnControl;
 
             $controls.each(function(idx, control) {
-                goal = self.findBlocksInside(self.getMod($(control), 'type'));
+                blocksOnControl = self.findBlocksInside(self.getMod($(control), 'type'));
 
-                if(goal.length) {
-                    goal = goal.filter(function (control) {
+                if(blocksOnControl.length) {
+                    // check if goal have the pass name value
+                    blocksOnControl = blocksOnControl.filter(function (control) {
                         return control.elem('control').attr('name') === (name === 'comment' ? 'body' : name);
-                    })[0];
+                    });
 
-                    if(goal.getVal() === '') {
+                    if(blocksOnControl.length && blocksOnControl[0].getVal() === '') {
                         self._showError(errors[name]);
                         resultCheck = true;
+
+                        // after find goal elem - exit from $.each()
+                        return false;
                     }
                 }
             });
