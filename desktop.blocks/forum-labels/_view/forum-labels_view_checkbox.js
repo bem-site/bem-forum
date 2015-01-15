@@ -13,7 +13,7 @@ modules.define('forum-labels', ['jquery'], function(provide, $, Labels) {
             }).done(function(html) {
                 Labels.update(_this.elem('wrap'), html);
 
-                _this.findBlockInside('spin', 'spin').delMod('progress');
+                _this.findBlockInside('spin', 'spin').delMod('visible');
 
                 if(labels) {
                     _this._checkedLabels(labels);

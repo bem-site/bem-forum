@@ -135,6 +135,7 @@ module.exports = function(pattern, options) {
 
                     req.__data = req.__data || {};
                     req.__data.forum = values;
+                    req.__data.forum.labelsRequired = labelsRequired;
 
                     setPageTitle(req);
 
