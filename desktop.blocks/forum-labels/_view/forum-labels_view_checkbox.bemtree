@@ -15,7 +15,7 @@ block('forum-labels').mod('view', 'checkbox')(
                 color: label.color,
                 mix: [
                     { block: 'forum-labels', elem: 'label' },
-                    { block: 'forum-form', elem: 'control' }
+                    { block: 'forum-form', elem: 'control', mods: { type: 'checkbox' } }
                 ]
             }
         });

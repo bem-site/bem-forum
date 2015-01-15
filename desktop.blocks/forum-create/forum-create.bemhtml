@@ -11,10 +11,12 @@ block('forum-create')(
                         val: 'source',
                         options: [
                             {
+                                type: 'button',
                                 val: 'source',
                                 icon: { block: 'icon', mods: { view: 'markdown', size: 24 }, title: 'Маркдаун' }
                             },
                             {
+                                type: 'button',
                                 val: 'preview',
                                 icon: { block: 'icon', mods: { view: 'preview', size: 24 }, title: 'Превью' }
                             }

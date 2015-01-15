@@ -155,40 +155,34 @@ block('comment')(
                     },
                     content: [
                         {
-                            block : 'forum-create',
-                            content : [
-                                {
-                                    block: 'input',
-                                    mods: {
-                                        theme: 'islands',
-                                        type: 'textarea',
-                                        size: 'l',
-                                        'has-clear' : true
+                            block: 'forum-create',
+                            content: {
+                                block: 'textarea',
+                                mods: { theme: 'islands', size: 'l', width: 'available' },
+                                name: 'body',
+                                val: this.ctx.body,
+                                placeholder: 'Ответ',
+                                mix: [
+                                    {
+                                        block: 'comment',
+                                        elem: 'edit-textarea'
                                     },
-                                    name: 'body',
-                                    val: this.ctx.body,
-                                    mix: [
-                                        {
-                                            block: 'comment',
-                                            elem: 'edit-textarea'
-                                        },
-                                        {
-                                            block: 'comments',
-                                            elem: 'edit-textarea'
-                                        },
-                                        {
-                                            block: 'forum-form',
-                                            elem: 'control',
-                                            elemMods: { autoclear: 'yes' }
-                                        },
-                                        {
-                                            block : 'forum-create',
-                                            elem : 'view',
-                                            mods : { type : 'source', visible : true }
-                                        }
-                                    ]
-                                }
-                            ]
+                                    {
+                                        block: 'comments',
+                                        elem: 'edit-textarea'
+                                    },
+                                    {
+                                        block: 'forum-form',
+                                        elem: 'control',
+                                        elemMods: { autoclear: 'yes', type: 'textarea' }
+                                    },
+                                    {
+                                        block: 'forum-create',
+                                        elem: 'view',
+                                        mods: { type: 'source', visible: true }
+                                    }
+                                ]
+                            }
                         },
                         {
                             tag: 'input',

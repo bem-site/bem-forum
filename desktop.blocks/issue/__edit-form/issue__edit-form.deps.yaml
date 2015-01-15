@@ -1,6 +1,10 @@
 - block: input
   mods: { theme: 'islands', type: 'textarea', 'has-clear': true }
 
+- block: textarea
+  mods: { theme: 'islands', size: 'l', width: 'available' }
+  required: true
+
 - block: forum-form
   mods: { visibility: 'hidden' }
 
