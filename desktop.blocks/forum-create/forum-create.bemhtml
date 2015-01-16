@@ -13,12 +13,12 @@ block('forum-create')(
                             {
                                 type: 'button',
                                 val: 'source',
-                                icon: { block: 'icon', mods: { view: 'markdown', size: 24 }, title: 'Маркдаун' }
+                                icon: { block: 'icon', mods: { view: 'markdown', size: 24 }, title: BEM.I18N('forum-create', 'markdown') }
                             },
                             {
                                 type: 'button',
                                 val: 'preview',
-                                icon: { block: 'icon', mods: { view: 'preview', size: 24 }, title: 'Превью' }
+                                icon: { block: 'icon', mods: { view: 'preview', size: 24 }, title: BEM.I18N('forum-create', 'preview') }
                             }
                         ]
                     }

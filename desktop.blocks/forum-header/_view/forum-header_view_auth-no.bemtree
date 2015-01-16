@@ -8,8 +8,8 @@ block('forum-header').mod('view', 'auth-no')(
             {
                 block: 'button',
                 url: req.forumUrl + 'auth/',
-                text : BEM.I18N('forum-header', 'login') + ' (github.com)',
-                mods : { theme : 'islands', size : 'm', view : 'action', type: 'link' },
+                text: BEM.I18N('forum-header', 'login') + ' (github.com)',
+                mods: { theme: 'islands', size: 'm', view: 'action', type: 'link' },
                 mix: { block: 'forum-header', elem: 'auth-button' }
             },
             header[1],

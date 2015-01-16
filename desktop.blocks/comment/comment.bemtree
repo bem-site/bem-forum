@@ -161,7 +161,7 @@ block('comment')(
                                 mods: { theme: 'islands', size: 'l', width: 'available' },
                                 name: 'body',
                                 val: this.ctx.body,
-                                placeholder: 'Ответ',
+                                placeholder: BEM.I18N('comment', 'add-form-placeholder'),
                                 mix: [
                                     {
                                         block: 'comment',
