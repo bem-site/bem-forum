@@ -1,14 +1,15 @@
 block('forum-sorting')
     .content()({
         block: 'select',
-        mods: { mode: 'radio', theme: 'normal', size: 'm', width: 'available' },
+        mods: { mode: 'radio', theme: 'islands', size: 'm', width: 'available' },
         name: 'sorting',
+        val: 4,
         options: [
             { val: 0, text: BEM.I18N('forum-sorting', 'sort-newest') },
             { val: 1, text: BEM.I18N('forum-sorting', 'sort-oldest') },
             { val: 2, text: BEM.I18N('forum-sorting', 'sort-most-commented') },
             { val: 3, text: BEM.I18N('forum-sorting', 'sort-least-commented') },
-            { val: 4, text: BEM.I18N('forum-sorting', 'sort-updated'), checked: true },
+            { val: 4, text: BEM.I18N('forum-sorting', 'sort-updated') },
             { val: 5, text: BEM.I18N('forum-sorting', 'sort-least-updated') }
         ]
     });

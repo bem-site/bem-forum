@@ -173,7 +173,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
         },
 
         _toggleLoadersUi: function() {
-            this._spin.toggleMod('progress', true, '');
+            this._spin.toggleMod('visible', true, '');
             this._switcher.toggleMod('disabled', true, '');
         },
 

@@ -1,10 +1,10 @@
 - mods: { visibility: hidden }
 
 - block: input
-  mods: { theme: 'normal', type: 'textarea' }
+  mods: { theme: 'islands', type: 'textarea' }
 
 - block: button
-  mods: { theme: 'normal', type: 'submit' }
+  mods: { theme: 'islands', type: 'submit' }
 
 - block: forum-form
   mods: { visibility: 'hidden' }

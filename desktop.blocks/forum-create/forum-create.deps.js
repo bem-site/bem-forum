@@ -1,7 +1,7 @@
 [{
     mustDeps: [
         { block: 'input', mods: {
-            theme: 'normal',
+            theme: 'islands',
             type: 'textarea',
             'has-clear': true
         }}

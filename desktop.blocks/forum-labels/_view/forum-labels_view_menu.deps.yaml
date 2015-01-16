@@ -1,5 +1,5 @@
 - block: menu
-  mods: { theme: normal, select: check }
+  mods: { theme: islands, select: check }
   required: true
 
 - block: objects

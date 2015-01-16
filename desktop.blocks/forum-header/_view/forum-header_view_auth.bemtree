@@ -46,7 +46,7 @@ block('forum-header').mod('view', 'auth')(
             return {
                 block: 'button',
                 text: BEM.I18N('forum-header', 'add-post-button'),
-                mods: { theme: 'normal', size: 'm', view: 'action' },
+                mods: { theme: 'islands', size: 'm', view: 'action' },
                 mix: [
                     { block: 'forum-header', elem: 'add-button' },
                     { block: 'forum', elem: 'add' }

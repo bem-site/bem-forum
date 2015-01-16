@@ -11,7 +11,7 @@ block('forum-header')(
                 block : 'button',
                 url: req.forumUrl + '?labels=bem-forum',
                 icon : { block : 'icon', mods : { view : 'bug' } },
-                mods : { theme : 'normal', size : 'm', type: 'link' },
+                mods : { theme : 'islands', size : 'm', type: 'link' },
                 mix: [
                     { block: this.block, elem: 'bug-button' },
                     { block: this.block, elem: 'icon-button' }
@@ -22,7 +22,7 @@ block('forum-header')(
                 block : 'button',
                 url: '//github.com/bem/bem-forum',
                 icon : { block : 'icon', mods : { view : 'github-logo' } },
-                mods : { theme : 'normal', size : 'm', type: 'link' },
+                mods : { theme : 'islands', size : 'm', type: 'link' },
                 mix: [
                     { block: this.block, elem: 'github-button' },
                     { block: this.block, elem: 'icon-button' }

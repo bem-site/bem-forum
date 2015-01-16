@@ -7,16 +7,18 @@ block('forum-create')(
                 content: [
                     {
                         block: 'radio-group',
-                        mods: { theme: 'normal', size: 's', type: 'button' },
+                        mods: { theme: 'islands', size: 's', type: 'button' },
+                        val: 'source',
                         options: [
                             {
+                                type: 'button',
                                 val: 'source',
-                                icon: { block: 'icon', mods: { view: 'markdown', size: 24 }, title: 'Маркдаун' },
-                                checked: true
+                                icon: { block: 'icon', mods: { view: 'markdown', size: 24 }, title: BEM.I18N('forum-create', 'markdown') }
                             },
                             {
+                                type: 'button',
                                 val: 'preview',
-                                icon: { block: 'icon', mods: { view: 'preview', size: 24 }, title: 'Превью' }
+                                icon: { block: 'icon', mods: { view: 'preview', size: 24 }, title: BEM.I18N('forum-create', 'preview') }
                             }
                         ]
                     }

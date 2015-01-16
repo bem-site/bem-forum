@@ -257,7 +257,7 @@ block('issue')(
                     {
                         block: 'input',
                         mods: {
-                            theme: 'normal',
+                            theme: 'islands',
                             size: 'l',
                             'has-clear' : true
                         },
@@ -272,7 +272,7 @@ block('issue')(
                             {
                                 block: 'forum-form',
                                 elem: 'control',
-                                elemMods: { autoclear: 'yes' }
+                                elemMods: { autoclear: 'yes', type: 'input' }
                             }
                         ]
                     },
@@ -281,37 +281,30 @@ block('issue')(
                         attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
                     },
                     {
-                        block : 'forum-create',
-                        content : [
-                            {
-                                block: 'input',
-                                mods: {
-                                    theme: 'normal',
-                                    type: 'textarea',
-                                    size: 'l',
-                                    'has-clear' : true
+                        block: 'forum-create',
+                        content: {
+                            block: 'textarea',
+                            mods: { theme: 'islands', size: 'l', width: 'available' },
+                            name: 'body',
+                            val: _.escape(issue.body),
+                            placeholder: BEM.I18N('issue', 'edit-form-desc-placeholder'),
+                            mix: [
+                                {
+                                    block: 'issue',
+                                    elem: 'edit-textarea'
                                 },
-                                name: 'body',
-                                val: _.escape(issue.body),
-                                placeholder: BEM.I18N('issue', 'edit-form-desc-placeholder'),
-                                mix: [
-                                    {
-                                        block: 'issue',
-                                        elem: 'edit-textarea'
-                                    },
-                                    {
-                                        block: 'forum-form',
-                                        elem: 'control',
-                                        elemMods: { autoclear: 'yes' }
-                                    },
-                                    {
-                                        block : 'forum-create',
-                                        elem : 'view',
-                                        mods : { type : 'source', visible : true }
-                                    }
-                                ]
-                            }
-                        ]
+                                {
+                                    block: 'forum-form',
+                                    elem: 'control',
+                                    elemMods: { autoclear: 'yes', type: 'textarea' }
+                                },
+                                {
+                                    block: 'forum-create',
+                                    elem: 'view',
+                                    mods: { type: 'source', visible: true }
+                                }
+                            ]
+                        }
                     },
                     req.labelsRequired ? {
                         block: 'forum-labels',
@@ -325,7 +318,7 @@ block('issue')(
                             },
                             {
                                 block: 'spin',
-                                mods: { theme: 'normal', size: 'l', progress: true },
+                                mods: { theme: 'islands', size: 'l', visible: true },
                                 mix: [
                                     { block: 'forum-labels', elem: 'spin' },
                                     { block: 'issue', elem: 'edit-labels-spin' }
@@ -342,7 +335,7 @@ block('issue')(
                         content: [
                             {
                                 block: 'button',
-                                mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
+                                mods: { theme: 'islands', size : 'm', type: 'submit', view: 'action' },
                                 text: BEM.I18N('issue', 'edit-form-button-save'),
                                 mix: [
                                     { block: 'issue', elem: 'edit-button' },
@@ -351,12 +344,12 @@ block('issue')(
                             },
                             {
                                 block: 'spin',
-                                mods: { theme: 'normal', size: 'm' },
+                                mods: { theme: 'islands', size: 'm' },
                                 mix: { block: 'forum-form', elem: 'spin' }
                             },
                             {
                                 block: 'button',
-                                mods: { theme: 'normal', size : 'm' },
+                                mods: { theme: 'islands', size : 'm' },
                                 text: BEM.I18N('issue', 'edit-form-button-cancel'),
                                 mix: [
                                     { block: 'issue', elem: 'edit-cancel' },
@@ -409,12 +402,12 @@ block('issue')(
                 {
                     block : 'button',
                     text : comments === 0 ? BEM.I18N('issue', 'reply') : BEM.I18N('issue', 'comments') + ': ' + comments,
-                    mods : { theme : 'normal', size : 'm', togglable : 'check' },
+                    mods : { theme : 'islands', size : 'm', togglable : 'check' },
                     mix: { block: this.block, elem: 'comments-switcher' }
                 },
                 {
                     block: 'spin',
-                    mods: { theme: 'normal', size: 'm' },
+                    mods: { theme: 'islands', size: 'm' },
                     mix: { block: 'issue', elem: 'spin' }
                 }
             ];

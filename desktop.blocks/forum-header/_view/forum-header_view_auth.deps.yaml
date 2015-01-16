@@ -1,4 +1,4 @@
 - block: forum-user
 
 - block: button
-  mods: { theme: 'normal' }
+  mods: { theme: 'islands' }

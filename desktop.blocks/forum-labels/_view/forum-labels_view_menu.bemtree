@@ -3,7 +3,7 @@ block('forum-labels').mod('view', 'menu')(
         return [
             {
                 block: 'spin',
-                mods: { theme: 'normal', size: 'l' },
+                mods: { theme: 'islands', size: 'l' },
                 mix: { block: 'forum-labels', elem: 'spin' }
             },
             {
@@ -21,7 +21,7 @@ block('forum-labels').mod('view', 'menu')(
                     block: 'menu',
                     mix: { block: 'forum-labels', elem: 'labels' },
                     mods: {
-                        theme: 'normal',
+                        theme: 'islands',
                         size: 'm',
                         mode: 'check'
                     },

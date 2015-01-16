@@ -5,7 +5,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
                 this._spin || (this._spin = this.findBlockInside('spin'));
                 this._editButton || (this._editButton = this.findBlockInside('edit-button', 'button'));
 
-                this._spin.setMod('progress', modVal);
+                this._spin.setMod('visible', modVal);
                 this._editButton.setMod('disabled', modVal);
             }
         },
@@ -103,7 +103,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
             var spin = this.findBlockInside('spin'),
                 button =  this._getEditButton();
 
-            spin.setMod('progress', progress);
+            spin.setMod('visible', progress);
             button.setMod('disabled', progress);
         },
 

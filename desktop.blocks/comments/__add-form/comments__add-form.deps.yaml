@@ -1,5 +1,5 @@
 - block: input
-  mods: { theme: 'normal', type: 'textarea' }
+  mods: { theme: 'islands', type: 'textarea' }
 
 - elem: add-textarea
 - elem: add-button

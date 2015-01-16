@@ -1,4 +1,4 @@
-modules.define('forum-form', ['i-bem__dom'], function(provide, BEMDOM) {
+modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
     provide(BEMDOM.decl(this.name, {
 
         /**
@@ -79,15 +79,12 @@ modules.define('forum-form', ['i-bem__dom'], function(provide, BEMDOM) {
          * @private
          */
         _clearForm: function() {
-            var input = this.findBlocksInside(this.elem('control', 'autoclear', 'yes'), 'input');
+            var self = this,
+                $controls = this.elem('control', 'autoclear', 'yes');
 
-            if(input.length > 1) {
-                input.forEach(function(item) {
-                    item.setVal('');
-                });
-            } else {
-                input[0].setVal('');
-            }
+            $controls.each(function(idx, control) {
+                self.findBlockInside(self.getMod($(control), 'type')).setVal('');
+            });
 
             return this;
         },
@@ -109,7 +106,7 @@ modules.define('forum-form', ['i-bem__dom'], function(provide, BEMDOM) {
          */
         _toggleProcessingUi: function() {
             this.findBlockInside(this.elem('submit'), 'button').toggleMod('disabled', true, '');
-            this.findBlockInside(this.elem('spin'), 'spin').toggleMod('progress', true, '');
+            this.findBlockInside(this.elem('spin'), 'spin').toggleMod('visible', true, '');
 
             return this;
         },
@@ -134,26 +131,40 @@ modules.define('forum-form', ['i-bem__dom'], function(provide, BEMDOM) {
         /**
          * Проверяем, введены ли данные в контрол, если нет возвращаем true
          * и показываем попап с ошибкой
-         * @param name - значение атрибута name контрола
+         * @param name {String} - значение атрибута name контрола
          * @returns {boolean}
          */
         isEmptyInput: function(name) {
-            var inputs = this.findBlocksInside(this.elem('control'), 'input'),
-                input = inputs.filter(function(item) {
-                    return item.elem('control').attr('name') === (name === 'comment' ? 'body' : name);
-                }),
+            var self = this,
+                $controls = this.elem('control'),
+                resultCheck = false,
                 i18n = this.params.i18n,
                 errors = {
                     title: i18n['empty-title'],
                     comment: i18n['empty-comment']
-                };
+                },
+                blocksOnControl;
 
-            if(input[0].getVal() === '') {
-                this._showError(errors[name]);
-                return true;
-            }
+            $controls.each(function(idx, control) {
+                blocksOnControl = self.findBlocksInside(self.getMod($(control), 'type'));
 
-            return false;
+                if(blocksOnControl.length) {
+                    // check if goal have the pass name value
+                    blocksOnControl = blocksOnControl.filter(function (control) {
+                        return control.elem('control').attr('name') === (name === 'comment' ? 'body' : name);
+                    });
+
+                    if(blocksOnControl.length && blocksOnControl[0].getVal() === '') {
+                        self._showError(errors[name]);
+                        resultCheck = true;
+
+                        // after find goal elem - exit from $.each()
+                        return false;
+                    }
+                }
+            });
+
+            return resultCheck;
         },
 
         /**

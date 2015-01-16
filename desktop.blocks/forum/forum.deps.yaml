@@ -12,7 +12,7 @@
   elem: channels
 
 - block: spin
-  mods: { theme: 'normal' }
+  mods: { theme: 'islands' }
 - block: jquery
 - block: forum-highlightjs
 - block: forum-content

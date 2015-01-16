@@ -19,7 +19,7 @@ exports.init = function(options) {
  * Recompile bemtree and bemhtml templates (only for development environment)
  * throw context and applies bemtree and bemhtml templates
  * @param ctx  - {Object} context for templates
- * @param mode - {String} mode for output format
+ * @param req - {Object} expressjs request object
  * @returns {*}
  */
 exports.run = function(ctx, req) {
@@ -55,7 +55,14 @@ exports.run = function(ctx, req) {
                         bemjson = bemjson.content;
                     }
 
-                    return template.BEMHTML.apply(bemjson);
+                    var html;
+
+                    try {
+                        html = template.BEMHTML.apply(bemjson);
+                    } catch (e) {
+                        throw new Error(e);
+                    }
+                    return html;
                 });
         });
 };

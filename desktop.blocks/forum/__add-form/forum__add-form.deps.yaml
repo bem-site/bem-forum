@@ -4,7 +4,11 @@
 - block: forum-create
 
 - block: input
-  mods: { theme: 'normal', type: 'textarea', 'has-clear': true }
+  mods: { theme: 'islands', type: 'textarea', 'has-clear': true }
+  required: true
+
+- block: textarea
+  mods: { theme: 'islands', size: 'l', width: 'available' }
   required: true
 
 - block: forum-form

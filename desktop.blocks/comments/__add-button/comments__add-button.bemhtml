@@ -1,7 +1,7 @@
 block('comments').elem('add-button').content()(function() {
     return {
         block: 'button',
-        mods: { theme: 'normal', size : 'm', type: 'submit', view: 'action' },
+        mods: { theme: 'islands', size : 'm', type: 'submit', view: 'action' },
         text: this.ctx.text,
         mix: { block: 'forum-form', elem: 'submit' }
     };
