@@ -1,6 +1,6 @@
 block('comments').elem('add-form')(
-    content()(function() {
-        var isClosed = 'closed' === this._issue.state,
+    content()(function () {
+        var isClosed = this._issue.state === 'closed',
             submitDefaultText = BEM.I18N('comments', 'add-form-submit'),
             submitOpenText = BEM.I18N('comments', 'add-form-open-submit');
 
@@ -56,7 +56,7 @@ block('comments').elem('add-form')(
                                     js: { text: {
                                         default: submitDefaultText,
                                         open: submitOpenText
-                                    }},
+                                    } },
                                     text: isClosed ? submitOpenText : submitDefaultText
                                 },
                                 {

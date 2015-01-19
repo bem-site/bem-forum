@@ -1,9 +1,9 @@
 block('comments').elem('container')(
-    content()(function() {
+    content()(function () {
         var comments = this._forum.comments || this.ctx.data,
             issueNumber = this._forum.issue.number || this.ctx.issueNumber;
 
-        return comments.map(function(comment) {
+        return comments.map(function (comment) {
             return {
                 block: 'comment',
                 comment: comment,

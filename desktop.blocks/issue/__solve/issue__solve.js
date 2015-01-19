@@ -1,7 +1,7 @@
-modules.define('issue', ['jquery'], function(provide, $, Issue) {
+modules.define('issue', ['jquery'], function (provide, $, Issue) {
     provide(Issue.decl({ block: this.name, elem: 'solve' }, {
         onSetMod: {
-            solved: function(modName, modVal) {
+            solved: function (modName, modVal) {
                 this.setMod(this.elem('solve-badge'), 'show', modVal);
                 this.findBlockInside('solve-icon', 'icon').setMod('action', modVal ? 'un-solve' : 'solve');
                 this._comments && this._comments.setMod(this._comments.elem('add-button'), 'make-open', modVal);
@@ -13,10 +13,10 @@ modules.define('issue', ['jquery'], function(provide, $, Issue) {
          * after it create or changes
          * @private
          */
-        _reinit: function() {
+        _reinit: function () {
             this.__base.apply(this, arguments);
 
-            this._comments.on('comment:add', function() {
+            this._comments.on('comment:add', function () {
                 this.hasMod('solved') && this._changeState(true);
             }, this);
         },
@@ -25,7 +25,7 @@ modules.define('issue', ['jquery'], function(provide, $, Issue) {
          * Subscribe to owner actions blocks events
          * @private
          */
-        _subscribeOwnerActions: function() {
+        _subscribeOwnerActions: function () {
             this.__base.apply(this, arguments);
 
             this.findBlockInside('solve', 'link').on('click', this._onClickSolve, this);
@@ -35,7 +35,7 @@ modules.define('issue', ['jquery'], function(provide, $, Issue) {
          * Handler to click on solved button
          * @private
          */
-        _onClickSolve: function() {
+        _onClickSolve: function () {
             var isSolved = this.hasMod('solved'),
                 i18n = this.elemParams('solve').i18n,
                 message = [i18n[isSolved ? 'open-message' : 'close-message'], i18n.post.toLowerCase()].join(' ') + '?';
@@ -48,7 +48,7 @@ modules.define('issue', ['jquery'], function(provide, $, Issue) {
          * @param isSolved (boolean)
          * @private
          */
-        _changeState: function(isSolved) {
+        _changeState: function (isSolved) {
             var params = this.params;
 
             this.emit('process', { enable: true });
@@ -64,12 +64,12 @@ modules.define('issue', ['jquery'], function(provide, $, Issue) {
                 },
                 url: params.forumUrl + 'issues/' + params.id + '/?__mode=json',
                 context: this
-            }).done(function() {
+            }).done(function () {
                 this.setMod('solved', !isSolved);
-            }).fail(function(xhr) {
+            }).fail(function (xhr) {
                 alert('Не удалось ' + (isSolved ? 'Переоткрыть' : 'закрыть') + ' пост');
                 window.forum.debug && console.log('issue closed fail', xhr);
-            }).always(function() {
+            }).always(function () {
                 this.emit('process', { enable: false });
             });
         }

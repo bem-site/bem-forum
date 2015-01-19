@@ -1,5 +1,5 @@
 block('issue').elem('label')(
-    def()(function() {
+    def()(function () {
         return applyCtx({
             block: 'link',
             mix: { block: this.block, elem: this.elem },

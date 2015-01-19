@@ -1,9 +1,9 @@
 block('forum-issues')(
-    match(function() { return this.ctx.data; }).content()(function() {
-        return this.ctx.data.map(function(issue) {
+    match(function () { return this.ctx.data; }).content()(function () {
+        return this.ctx.data.map(function (issue) {
             return {
                 block: 'issue',
-                mods: { solved: 'closed' === issue.state },
+                mods: { solved: issue.state === 'closed' },
                 data: issue,
                 forumUrl: req.forumUrl,
                 labelsRequired: req.labelsRequired,

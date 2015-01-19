@@ -6,10 +6,10 @@ var path = require('path'),
     }),
     dropRequireCache = require('enb/lib/fs/drop-require-cache');
 
-exports.build = function(targets) {
+exports.build = function (targets) {
     return vow.all(
         targets.map(function (target) {
-            return enbBuilder(target).then(function() {
+            return enbBuilder(target).then(function () {
                 dropRequireCache(require, target);
                 return target;
             });

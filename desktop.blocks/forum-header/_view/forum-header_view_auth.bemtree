@@ -1,6 +1,6 @@
 block('forum-header').mod('view', 'auth')(
 
-    match(function() { return req.cookies['forum_username']; }).content()(function() {
+    match(function () { return req.cookies['forum_username']; }).content()(function () {
         var header = applyNext();
 
         return [
@@ -18,7 +18,7 @@ block('forum-header').mod('view', 'auth')(
     }),
 
     elem('user-wrapper')(
-        content()(function() {
+        content()(function () {
             var user = this._forum.user;
 
             return [
@@ -42,7 +42,7 @@ block('forum-header').mod('view', 'auth')(
     ),
 
     elem('add-button')(
-        def()(function() {
+        def()(function () {
             return {
                 block: 'button',
                 text: BEM.I18N('forum-header', 'add-post-button'),

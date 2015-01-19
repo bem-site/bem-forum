@@ -1,10 +1,10 @@
 block('issue')(
-    match(function() { return this.ctx.data }).js()(function() {
+    match(function () { return this.ctx.data }).js()(function () {
         var issue = this.ctx.data,
             labels = issue.labels,
             labelsName = [];
 
-        labels.forEach(function(label) {
+        labels.forEach(function (label) {
             labelsName.push(label.name);
         });
 
@@ -12,7 +12,7 @@ block('issue')(
             number: issue.number,
             labels: labelsName,
             forumUrl: this.ctx.forumUrl,
-            isArchive: labels.some(function(label) {
+            isArchive: labels.some(function (label) {
                 return label.name === 'archive';
             }),
             // for check, if user checked at least one label

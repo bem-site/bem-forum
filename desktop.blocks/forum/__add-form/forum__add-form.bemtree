@@ -1,9 +1,9 @@
 block('forum').elem('add-form')(
-    def()(function() {
+    def()(function () {
         var forum = this._forum,
             labels = [];
 
-        forum.labels.forEach(function(label) {
+        forum.labels.forEach(function (label) {
             return labels.push(label.name);
         });
 
@@ -28,7 +28,7 @@ block('forum').elem('add-form')(
                         mods: {
                             theme: 'islands',
                             size: 'l',
-                            'has-clear' : true
+                            'has-clear': true
                         },
                         name: 'title',
                         placeholder: BEM.I18N('forum', 'title-placeholder'),
@@ -102,7 +102,7 @@ block('forum').elem('add-form')(
                         content: [
                             {
                                 block: 'button',
-                                mods: { theme: 'islands', size : 'm', type: 'submit', view: 'action' },
+                                mods: { theme: 'islands', size: 'm', type: 'submit', view: 'action' },
                                 text: BEM.I18N('forum', 'add-post'),
                                 mix: [{ block: 'forum-form', elem: 'submit' }]
                             },
@@ -113,7 +113,7 @@ block('forum').elem('add-form')(
                             },
                             {
                                 block: 'button',
-                                mods: { theme: 'islands', size : 'm' },
+                                mods: { theme: 'islands', size: 'm' },
                                 text: BEM.I18N('forum', 'cancel-post'),
                                 mix: [{ block: 'forum-form', elem: 'cancel' }]
                             }

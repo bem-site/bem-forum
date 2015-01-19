@@ -23,7 +23,7 @@ var API_CONFIG = {
  * different set of key depending on command
  * @returns {*}
  */
-var apiCall = function(token, group, name, opts) {
+var apiCall = function (token, group, name, opts) {
     var def = vow.defer(),
         api = token ?
             module.exports.getUserAPI(token) :
@@ -33,12 +33,12 @@ var apiCall = function(token, group, name, opts) {
 
     console.log('apiCall ', token, group, name, opts);
 
-    if(!api) {
+    if (!api) {
         return vow.reject('no api was found');
     }
 
-    api[group][name].call(null, opts, function(err, res) {
-        if(err || !res) {
+    api[group][name].call(null, opts, function (err, res) {
+        if (err || !res) {
             console.error('api[%s][%s]: %s', group, name, err);
             def.reject(err);
         } else {
@@ -55,17 +55,17 @@ var apiCall = function(token, group, name, opts) {
  * @returns {*}
  * @private
  */
-var getFnName = function(fn) {
+var getFnName = function (fn) {
     var _this = module.exports;
 
-    return Object.keys(module.exports).filter(function(key) {
+    return Object.keys(module.exports).filter(function (key) {
         return _this[key] == fn;
     })[0];
 };
 
 module.exports = {
 
-    init: function(opts) {
+    init: function (opts) {
         options = opts || {};
         return this;
     },
@@ -75,7 +75,7 @@ module.exports = {
      * @param token - {String} github oauth access token
      * @returns {*}
      */
-    getUserAPI: function(token) {
+    getUserAPI: function (token) {
         return apiHash[token];
     },
 
@@ -83,7 +83,7 @@ module.exports = {
      * Returns random api for one of configured tokens for non auth users
      * @returns {*}
      */
-    getDefaultAPI: function() {
+    getDefaultAPI: function () {
         var tokens = options.auth ? options.auth.tokens : [];
         return apiHash[_.sample(tokens)];
     },
@@ -92,10 +92,10 @@ module.exports = {
      * Create github api for each configured token
      * @returns {exports}
      */
-    addDefaultAPI: function() {
+    addDefaultAPI: function () {
         var tokens = options.auth ? options.auth.tokens : [];
 
-        apiHash = tokens.reduce(function(prev, token) {
+        apiHash = tokens.reduce(function (prev, token) {
             var api = new Api(API_CONFIG);
             api.authenticate({
                 type: 'oauth',
@@ -115,8 +115,8 @@ module.exports = {
      * @param token - {String} github oauth access token
      * @returns {}
      */
-    addUserAPI: function(token) {
-        if(apiHash[token]) {
+    addUserAPI: function (token) {
+        if (apiHash[token]) {
             return this;
         }
 
@@ -143,7 +143,7 @@ module.exports = {
      *  - per_page {Number} number of records per one page
      * @returns {*}
      */
-    getIssues: function(token, options) {
+    getIssues: function (token, options) {
         return apiCall(token, 'issues', 'repoIssues', _.extend(options, { state: 'all', sort: 'updated' }));
     },
 
@@ -154,7 +154,7 @@ module.exports = {
      *  - number {Number} unique number of issue
      * @returns {*}
      */
-    getIssue: function(token, options) {
+    getIssue: function (token, options) {
         return apiCall(token, 'issues', 'getRepoIssue', options);
     },
 
@@ -167,7 +167,7 @@ module.exports = {
      *  - labels {Array} array of string label names (required)
      * @returns {*}
      */
-    createIssue: function(token, options) {
+    createIssue: function (token, options) {
         return apiCall(token, 'issues', 'create', options);
     },
 
@@ -182,7 +182,7 @@ module.exports = {
      *  - state {String} state of issue (open|closed) (optional)
      * @returns {*}
      */
-    editIssue: function(token, options) {
+    editIssue: function (token, options) {
         return apiCall(token, 'issues', 'edit', options);
     },
 
@@ -195,7 +195,7 @@ module.exports = {
      *  - per_page {Number} number of records on one page (optional)
      * @returns {*}
      */
-    getComments: function(token, options) {
+    getComments: function (token, options) {
         return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
@@ -207,7 +207,7 @@ module.exports = {
      *  - body {String} text for comment (required)
      * @returns {*}
      */
-    createComment: function(token, options) {
+    createComment: function (token, options) {
         return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
@@ -219,7 +219,7 @@ module.exports = {
      *  - body {String} text of comment (required)
      * @returns {*}
      */
-    editComment: function(token, options) {
+    editComment: function (token, options) {
         return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
@@ -230,7 +230,7 @@ module.exports = {
      *  - id {String} unique id of comment (required)
      * @returns {*}
      */
-    deleteComment: function(token, options) {
+    deleteComment: function (token, options) {
         return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
@@ -240,7 +240,7 @@ module.exports = {
      * @param options - {Object} empty object literal
      * @returns {*}
      */
-    getLabels: function(token, options) {
+    getLabels: function (token, options) {
         return apiCall(token, 'issues', getFnName(arguments.callee), options);
     },
 
@@ -250,7 +250,7 @@ module.exports = {
      * @param options - {Object} empty object
      * @returns {*}
      */
-    getAuthUser: function(token, options) {
+    getAuthUser: function (token, options) {
         return apiCall(token, 'user', 'get', options);
     },
 
@@ -260,7 +260,7 @@ module.exports = {
      * @param options - {Object} empty object
      * @returns {*}
      */
-    getRepoInfo: function(token, options) {
+    getRepoInfo: function (token, options) {
         return apiCall(token, 'repos', 'get', options)
     }
 };

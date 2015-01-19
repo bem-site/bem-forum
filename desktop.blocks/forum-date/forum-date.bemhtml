@@ -1,7 +1,7 @@
 block('forum-date')(
-    match(function() { return !this.ctx.date; }).def()(false),
+    match(function () { return !this.ctx.date; }).def()(false),
 
-    match(function() { return this.ctx.date; }).content()(function() {
+    match(function () { return this.ctx.date; }).content()(function () {
         var date = new Date(this.ctx.date),
             i18n = BEM.I18N,
             month = [

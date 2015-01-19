@@ -1,6 +1,6 @@
 block('comment')(
     js()(true),
-    match(function() { return this.ctx.issueNumber; }).js()(function() {
+    match(function () { return this.ctx.issueNumber; }).js()(function () {
         return {
             issueNumber: this.ctx.issueNumber,
             id: this.ctx.data.id,

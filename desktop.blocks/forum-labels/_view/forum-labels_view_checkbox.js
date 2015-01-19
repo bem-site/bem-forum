@@ -1,8 +1,8 @@
-modules.define('forum-labels', ['jquery'], function(provide, $, Labels) {
+modules.define('forum-labels', ['jquery'], function (provide, $, Labels) {
 
     provide(Labels.decl({ modName: 'view', modVal: 'checkbox' }, {
 
-        getLabels: function(labels) {
+        getLabels: function (labels) {
             var _this = this,
                 forumUrl = this.params['forumUrl'] || '/';
 
@@ -10,12 +10,12 @@ modules.define('forum-labels', ['jquery'], function(provide, $, Labels) {
                 dataType: 'html',
                 url: forumUrl + 'labels/?__mode=content&view=checkbox',
                 type: 'GET'
-            }).done(function(html) {
+            }).done(function (html) {
                 Labels.update(_this.elem('wrap'), html);
 
                 _this.findBlockInside('spin', 'spin').delMod('visible');
 
-                if(labels) {
+                if (labels) {
                     _this._checkedLabels(labels);
                 }
             });
@@ -23,10 +23,10 @@ modules.define('forum-labels', ['jquery'], function(provide, $, Labels) {
             return this;
         },
 
-        _checkedLabels: function(labels) {
-            this.findBlocksInside('label', 'checkbox').forEach(function(checkbox) {
-                labels.forEach(function(label) {
-                    if(label === checkbox.elem('control').val()) {
+        _checkedLabels: function (labels) {
+            this.findBlocksInside('label', 'checkbox').forEach(function (checkbox) {
+                labels.forEach(function (label) {
+                    if (label === checkbox.elem('control').val()) {
                         checkbox.setMod('checked', true);
                     }
                 });

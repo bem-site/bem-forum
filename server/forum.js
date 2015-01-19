@@ -20,7 +20,7 @@ function setPageTitle(req) {
             }
         },
         lang = req.lang,
-        isLangSupport = lang ? ['ru', 'en'].some(function(supportLang) {
+        isLangSupport = lang ? ['ru', 'en'].some(function (supportLang) {
             return supportLang === lang;
         }) : false,
         baseTitle = isLangSupport ? i18n[lang].title : '',
@@ -28,10 +28,10 @@ function setPageTitle(req) {
         forum = data.forum,
         issue = forum.issue;
 
-    data.title = (forum.view === 'issue' ? '#' + issue.number + ' ' + issue.title + ' / ' : '' ) + baseTitle;
+    data.title = (forum.view === 'issue' ? '#' + issue.number + ' ' + issue.title + ' / ' : '') + baseTitle;
 }
 
-module.exports = function(pattern, options) {
+module.exports = function (pattern, options) {
 
     baseUrl = pattern || baseUrl;
 
@@ -47,7 +47,7 @@ module.exports = function(pattern, options) {
         labelsRequired = options.labelsRequired,
         forumDebug = options.debug;
 
-    return function(req, res, next) {
+    return function (req, res, next) {
         var route = routes.getRoute(req.url, req.method),
             query,
             action,
@@ -57,31 +57,31 @@ module.exports = function(pattern, options) {
             isGetRequest,
             isDeleteRequest;
 
-        query = route[1]; //params hash
-        route = route[0]; //route object
+        query = route[1]; // params hash
+        route = route[0]; // route object
 
-        //get action that should be called
+        // get action that should be called
         action = route.getName();
         method = route.getData().method;
 
-        isGetRequest = 'GET' === method;
-        isDeleteRequest = 'DELETE' === method;
+        isGetRequest = method === 'GET';
+        isDeleteRequest = method === 'DELETE';
 
         // get access token after redirect
-        if('index' === action && query.code) {
+        if (action === 'index' && query.code) {
             return auth.getAccessToken(req, res, query.code);
         }
 
         // for all non get requests and when forum token cookie is not exists
         // send request for user authorization
-        if((!isGetRequest || 'auth' === action) && (!req.cookies || !req.cookies['forum_token'])) {
+        if ((!isGetRequest || action === 'auth') && (!req.cookies || !req.cookies['forum_token'])) {
             return auth.sendAuthRequest(req, res);
         }
 
         token = req.cookies['forum_token'];
         token && model.addUserAPI(token);
 
-        if(!action) {
+        if (!action) {
             res.writeHead(500);
             res.end('Action was not found');
             return;
@@ -109,14 +109,14 @@ module.exports = function(pattern, options) {
         };
 
         // get full page from server on first enter
-        if(!req.xhr) {
+        if (!req.xhr) {
             // collect all required data for templates
             var promises = {
                 user: model.getAuthUser(token, {}),
-                labels: model.getLabels (token, {})
+                labels: model.getLabels(token, {})
             };
 
-            if(options.number) {
+            if (options.number) {
                 // get issue data, that have a number option
                 _.extend(promises, {
                     issue: model.getIssue(token, options),
@@ -131,7 +131,7 @@ module.exports = function(pattern, options) {
             }
 
             return vow.all(promises)
-                .then(function(values) {
+                .then(function (values) {
 
                     req.__data = req.__data || {};
                     req.__data.forum = values;
@@ -146,7 +146,7 @@ module.exports = function(pattern, options) {
 
                     return next();
                 })
-                .fail(function(err) {
+                .fail(function (err) {
                     console.err(err);
                 });
         } else {
@@ -155,7 +155,7 @@ module.exports = function(pattern, options) {
 
             // do something with owner right,
             // e.g. add labels when user create/edit issue
-            if(query.__access === 'owner' && ownerToken) {
+            if (query.__access === 'owner' && ownerToken) {
                 token = ownerToken;
                 model.addUserAPI(token);
             }
@@ -163,34 +163,34 @@ module.exports = function(pattern, options) {
             // create issue without checked labels - default behaviors
             var isIssueAction = (action === 'createIssue' || action === 'editIssue');
 
-            if((isIssueAction && !options.labels) || (isIssueAction && !ownerToken)) {
+            if ((isIssueAction && !options.labels) || (isIssueAction && !ownerToken)) {
                 options.labels = [];
             }
 
             // get data by ajax
             return model[action](token, options)
-                .then(function(data) {
-                    if('json' === query.__mode) {
+                .then(function (data) {
+                    if (query.__mode === 'json') {
                         res.json(data);
                         return;
                     }
 
                     // check if current page is last for paginator
-                    if('getIssues' === action) {
+                    if (action === 'getIssues') {
                         result.isLastPage = (!data.length || data.length < 10)
                     }
 
                     return template.run(_.extend(templateCtx[action] || {}, { data: data }), req);
                 })
-                .then(function(html) {
-                    if(action === 'getIssues') {
+                .then(function (html) {
+                    if (action === 'getIssues') {
                         result.html = html;
                         res.json(result);
                     } else {
                         res.end(html);
                     }
                 })
-                .fail(function(err) {
+                .fail(function (err) {
                     res.end(err);
                 });
         }

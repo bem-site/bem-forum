@@ -5,10 +5,10 @@ var Susanin = require('susanin'),
  * Initialize all inner urls for forum module
  * @param baseUrl - {String} base url
  */
-exports.init = function(baseUrl) {
+exports.init = function (baseUrl) {
 
-    //remove trailing slash
-    //var url = baseUrl.replace(/\/$/, '');
+    // remove trailing slash
+    // var url = baseUrl.replace(/\/$/, '');
 
     var url = baseUrl;
 
@@ -26,7 +26,7 @@ exports.init = function(baseUrl) {
         { name: 'getAuthUser',   data: { method: 'GET' },    pattern: url + 'user' },
         { name: 'auth',          data: { method: 'GET' },   pattern: url + 'auth' },
         { name: 'getRepoInfo',   data: { method: 'GET' },   pattern: url + 'repo' }
-    ].reduce(function(_susanin, route) {
+    ].reduce(function (_susanin, route) {
             route.pattern += '(/)';
             _susanin.addRoute(route);
             return _susanin;
@@ -39,13 +39,13 @@ exports.init = function(baseUrl) {
  * @param url - {String} request url
  * @returns {*}
  */
-exports.getRoute = function(url, method) {
+exports.getRoute = function (url, method) {
     var result = susanin.find(url, method);
-    if(!result.length) {
+    if (!result.length) {
         return null;
     }
 
-    return result.filter(function(route) {
+    return result.filter(function (route) {
         return method === route[0].getData().method;
     })[0];
 };

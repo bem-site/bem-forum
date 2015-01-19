@@ -1,5 +1,5 @@
 block('forum-sidebar')(
-    content()(function() {
+    content()(function () {
         return [
             {
                 elem: 'sorting',

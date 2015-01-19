@@ -1,5 +1,5 @@
 block('issue').elem('read-only')(
-    content()(function() {
+    content()(function () {
         return [
             {
                 block: 'icon',

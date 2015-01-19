@@ -1,4 +1,4 @@
-block('forum-user').elem('name').def()(function() {
+block('forum-user').elem('name').def()(function () {
     var mix = this.ctx.mix || [];
 
     return applyCtx({
@@ -7,7 +7,7 @@ block('forum-user').elem('name').def()(function() {
         title: this.ctx.title,
         target: this.ctx.target || undefined,
         content: this.ctx.content,
-        mix: (function() {
+        mix: (function () {
             mix.push({ block: 'forum-user', elem: 'name' });
 
             return mix;

@@ -1,5 +1,5 @@
 block('forum-header')(
-    content()(function() {
+    content()(function () {
         return [
             {
                 elem: 'title',
@@ -8,10 +8,10 @@ block('forum-header')(
                 status: BEM.I18N('forum-header', 'status')
             },
             {
-                block : 'button',
+                block: 'button',
                 url: req.forumUrl + '?labels=bem-forum',
-                icon : { block : 'icon', mods : { view : 'bug' } },
-                mods : { theme : 'islands', size : 'm', type: 'link' },
+                icon: { block: 'icon', mods: { view: 'bug' } },
+                mods: { theme: 'islands', size: 'm', type: 'link' },
                 mix: [
                     { block: this.block, elem: 'bug-button' },
                     { block: this.block, elem: 'icon-button' }
@@ -19,10 +19,10 @@ block('forum-header')(
                 attrs: { title: BEM.I18N('forum-header', 'bug-button-title') }
             },
             {
-                block : 'button',
+                block: 'button',
                 url: '//github.com/bem/bem-forum',
-                icon : { block : 'icon', mods : { view : 'github-logo' } },
-                mods : { theme : 'islands', size : 'm', type: 'link' },
+                icon: { block: 'icon', mods: { view: 'github-logo' } },
+                mods: { theme: 'islands', size: 'm', type: 'link' },
                 mix: [
                     { block: this.block, elem: 'github-button' },
                     { block: this.block, elem: 'icon-button' }

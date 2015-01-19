@@ -17,7 +17,7 @@ var express = require('express'),
     // app
     app = express();
 
-if(util.isDev()) {
+if (util.isDev()) {
     app.use(require('enb/lib/server/server-middleware').createMiddleware({
         cdir: process.cwd(),
         noLog: false
@@ -34,17 +34,17 @@ app
     .use(session({ secret: 'beminfoforum', saveUninitialized: false, resave: false }))
     .use(csrf())
     .use(locale(config.defaultLanguage))
-    .use(forum('/', config)) //forum middleware
-    .use(function(req, res) {
+    .use(forum('/', config)) // forum middleware
+    .use(function (req, res) {
         return template.run(_.extend({ block: 'page' }, req.__data), req)
-            .then(function(html) {
+            .then(function (html) {
                 res.end(html);
             })
-            .fail(function(err) {
+            .fail(function (err) {
                 res.end(err);
             });
     });
 
-app.listen(app.get('port'), function() {
+app.listen(app.get('port'), function () {
     console.log('app forum running on port:', app.get('port'));
 });
