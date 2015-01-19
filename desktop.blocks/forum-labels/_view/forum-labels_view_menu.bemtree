@@ -1,5 +1,5 @@
 block('forum-labels').mod('view', 'menu')(
-    match(function() { return this._forum.labels; }).content()(function() {
+    match(function () { return this._forum.labels; }).content()(function () {
         return [
             {
                 block: 'spin',
@@ -13,7 +13,7 @@ block('forum-labels').mod('view', 'menu')(
     }),
 
     elem('wrap')(
-        content()(function() {
+        content()(function () {
             var labels = this._forum.labels;
 
             return [
@@ -25,7 +25,7 @@ block('forum-labels').mod('view', 'menu')(
                         size: 'm',
                         mode: 'check'
                     },
-                    content: labels.map(function(label) {
+                    content: labels.map(function (label) {
                         return {
                             block: 'menu-item',
                             name: 'labels[]',

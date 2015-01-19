@@ -1,24 +1,24 @@
-modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'next-tick'], function(provide, BEMDOM, $, channels, dom, nextTick) {
+modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'next-tick'], function (provide, BEMDOM, $, channels, dom, nextTick) {
     provide(BEMDOM.decl(this.name, {
         onSetMod: {
             js: {
-                inited: function() {
+                inited: function () {
                     this._reinit();
                 }
             }
         },
 
-        _reinit: function() {
+        _reinit: function () {
             this._findElems();
             this._subscribes();
 
-            if(this._comments && this._switcher) {
+            if (this._comments && this._switcher) {
                 this._setSwitcherCount();
                 this._toggleComments();
             }
         },
 
-        _findElems: function() {
+        _findElems: function () {
             this._comments = this.findBlockInside('comments');
             this._switcher = this.findBlockInside('comments-switcher', 'button');
             this._spin = this.findBlockInside('spin', 'spin');
@@ -26,16 +26,16 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
             return this;
         },
 
-        _setSwitcherCount: function() {
-            this._comments.on('comment:add', function(e, data) {
+        _setSwitcherCount: function () {
+            this._comments.on('comment:add', function (e, data) {
                 this._switcher.setText('Ответов: ' + data.comments);
             }, this);
 
-            this._comments.on('comment:delete', function(e, data) {
+            this._comments.on('comment:delete', function (e, data) {
                 var count = data.comments,
                     text = 'Ответов: ' + count;
 
-                if(count < 1) {
+                if (count < 1) {
                     text = 'Ответить'
                 }
 
@@ -43,13 +43,13 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
             }, this);
         },
 
-        _subscribes: function() {
-            if(this._comments) {
+        _subscribes: function () {
+            if (this._comments) {
                 this._comments.on('comments:loading', this._toggleLoadersUi, this);
                 this._comments.on('comments:complete', this._toggleLoadersUi, this);
             }
 
-            if(dom.contains(this.domElem, this.elem('owner-action'))) {
+            if (dom.contains(this.domElem, this.elem('owner-action'))) {
                 this._subscribeOwnerActions();
             }
 
@@ -58,21 +58,21 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
             return this;
         },
 
-        _subscribeOwnerActions: function() {
+        _subscribeOwnerActions: function () {
             this.bindTo(this.elem('edit'), 'click', this._onClickEdit);
             this.bindTo(this.elem('remove'), 'click', this._onClickRemove);
         },
 
-        _onClickLabel: function(e) {
+        _onClickLabel: function (e) {
             e.preventDefault();
 
             channels('filter').emit('labels', { labels: [$(e.target).text()] });
         },
 
-        _onClickRemove: function(e) {
+        _onClickRemove: function (e) {
             e.preventDefault();
 
-            if(window.confirm(this.params.i18n['remove-message'])) {
+            if (window.confirm(this.params.i18n['remove-message'])) {
                 var data = this.findBlockInside('edit-form', 'forum-form').getSerialize(),
                     params = this.params;
 
@@ -90,34 +90,34 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
                     data: data,
                     url: params.forumUrl + 'issues/' + params.number + '/?__access=owner&__mode=json',
                     context: this
-                }).done(function() {
-                    var self = this;
+                }).done(function () {
+                    var _this = this;
                     // small hack, do desctruct in next tick,
                     // because always callback happens early
-                    nextTick(function() {
-                        BEMDOM.destruct(self.domElem);
+                    nextTick(function () {
+                        BEMDOM.destruct(_this.domElem);
                     });
-                }).fail(function(xhr) {
+                }).fail(function (xhr) {
                     alert('Не удалось удалить пост');
                     window.forum.debug && console.log('issue remove fail', xhr);
-                }).always(function() {
+                }).always(function () {
                     this.emit('process', { enable: false });
                 });
             }
         },
 
-        _toggleEditBody: function(body) {
-            this._formEdit.on('toggle', function() {
+        _toggleEditBody: function (body) {
+            this._formEdit.on('toggle', function () {
                 this.toggleMod(body, 'visibility', 'hidden', '', !this._formEdit.hasMod('visibility', 'hidden'));
             }, this);
         },
 
-        _onClickEdit: function(e) {
+        _onClickEdit: function (e) {
             e.preventDefault();
 
             this._formEdit = this.findBlockInside('edit-form', 'forum-form');
 
-            if(this.params.labelsRequired) {
+            if (this.params.labelsRequired) {
                 this.findBlockInside('edit-labels', 'forum-labels').getLabels(this.params.labels);
             }
 
@@ -129,8 +129,8 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
             this._formEdit.on('submit', this._onSubmitEdit, this);
         },
 
-        _onSubmitEdit: function(e, data) {
-            if(this._formEdit.isEmptyRequiredField('title', 'labels[]')) return false;
+        _onSubmitEdit: function (e, data) {
+            if (this._formEdit.isEmptyRequiredField('title', 'labels[]')) return false;
 
             var params = this.params;
 
@@ -145,40 +145,40 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
                 data: data,
                 url: params.forumUrl + 'issues/' + params.number + '/?__access=owner',
                 context: this
-            }).done(function(html) {
+            }).done(function (html) {
                 this._render(html);
                 this._afterEdit();
-            }).fail(function(xhr) {
+            }).fail(function (xhr) {
                 alert('Не удалось отредактировать пост');
                 window.forum.debug && console.log('issue add fail', xhr);
-            }).always(function() {
+            }).always(function () {
                 this._formEdit.delMod('processing');
             });
         },
 
-        _render: function(html) {
+        _render: function (html) {
             BEMDOM.replace(this.domElem, html);
         },
 
-        _afterEdit: function() {
+        _afterEdit: function () {
             this._formEdit.toggle();
 
             this._reinit();
         },
 
-        _setFormEditHeight: function() {
+        _setFormEditHeight: function () {
             var height = this.findElem('body').outerHeight();
 
             this.findElem('edit-textarea').height(height);
         },
 
-        _toggleLoadersUi: function() {
+        _toggleLoadersUi: function () {
             this._spin.toggleMod('visible', true, '');
             this._switcher.toggleMod('disabled', true, '');
         },
 
-        _toggleComments: function() {
-            this._switcher.on('click', function() {
+        _toggleComments: function () {
+            this._switcher.on('click', function () {
                 this._comments.emit(this._switcher.hasMod('checked', true) ? 'show' : 'close');
             }, this);
         }

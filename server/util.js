@@ -9,8 +9,8 @@ module.exports = {
      * Returns true if current environment is development
      * @returns {boolean}
      */
-    isDev: function() {
-        return 'development' === config.get('NODE_ENV')
+    isDev: function () {
+        return config.get('NODE_ENV') === 'development';
     },
 
     /**
@@ -20,8 +20,8 @@ module.exports = {
      * @param config - {Object} configuration object
      * @returns {String} html string
      */
-    mdToHtml: function(content, config) {
-        if(!config) {
+    mdToHtml: function (content, config) {
+        if (!config) {
             config = {};
         }
 

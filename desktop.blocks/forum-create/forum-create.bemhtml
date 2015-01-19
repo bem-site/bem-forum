@@ -1,6 +1,6 @@
 block('forum-create')(
     js()(true),
-    content()(function() {
+    content()(function () {
         return [
             {
                 elem: 'header',
@@ -13,12 +13,20 @@ block('forum-create')(
                             {
                                 type: 'button',
                                 val: 'source',
-                                icon: { block: 'icon', mods: { view: 'markdown', size: 24 }, title: BEM.I18N('forum-create', 'markdown') }
+                                icon: {
+                                    block: 'icon',
+                                    mods: { view: 'markdown', size: 24 },
+                                    title: BEM.I18N('forum-create', 'markdown')
+                                }
                             },
                             {
                                 type: 'button',
                                 val: 'preview',
-                                icon: { block: 'icon', mods: { view: 'preview', size: 24 }, title: BEM.I18N('forum-create', 'preview') }
+                                icon: {
+                                    block: 'icon',
+                                    mods: { view: 'preview', size: 24 },
+                                    title: BEM.I18N('forum-create', 'preview')
+                                }
                             }
                         ]
                     }

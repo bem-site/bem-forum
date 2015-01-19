@@ -1,6 +1,6 @@
 block('comments').mod('view', 'open')(
 
-    content()(function() {
+    content()(function () {
         return [
             { elem: 'container' },
             applyNext()
@@ -8,12 +8,12 @@ block('comments').mod('view', 'open')(
     }),
 
     elem('container')(
-        content()(function() {
+        content()(function () {
             var forum = this._forum,
                 comments = forum.comments,
                 issueNumber = forum.issue.number;
 
-            return comments.map(function(comment) {
+            return comments.map(function (comment) {
                 return {
                     block: 'comment',
                     comment: comment,

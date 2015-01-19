@@ -1,13 +1,13 @@
 block('forum-labels').mod('view', 'checkbox')(
-    match(function() { return this.ctx.data; }).content()(function() {
+    match(function () { return this.ctx.data; }).content()(function () {
         var labels = this.ctx.data;
 
-        return labels.map(function(label) {
+        return labels.map(function (label) {
             return {
                 block: 'checkbox',
                 mods: {
-                    theme : 'islands',
-                    size : 'm'
+                    theme: 'islands',
+                    size: 'm'
                 },
                 name: 'labels[]',
                 val: label.name,

@@ -1,5 +1,5 @@
 block('forum-content').mod('view', 'issues')(
-    content()(function() {
+    content()(function () {
         return [
             {
                 elem: 'wrap',

@@ -1,5 +1,5 @@
 block('page')(
-    match(function() { return !this._myGuard; }).def()(function () {
+    match(function () { return !this._myGuard; }).def()(function () {
         this._myGuard = true;
 
         !this.ctx.head && (this.ctx.head = []);
@@ -8,7 +8,7 @@ block('page')(
         return applyNext();
     }),
 
-    match(function() { return this.ctx.forum }).content()(function() {
+    match(function () { return this.ctx.forum }).content()(function () {
         return [
             {
                 block: 'forum',
@@ -18,7 +18,7 @@ block('page')(
         ];
     }),
 
-    match(function() { return !this.ctx.forum }).content()(function() {
+    match(function () { return !this.ctx.forum }).content()(function () {
         return 'Forum data is empty';
     })
 );

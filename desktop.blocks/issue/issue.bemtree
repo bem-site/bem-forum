@@ -1,8 +1,8 @@
 block('issue')(
-    match(function() { return this.ctx.data; }).def()(function() {
+    match(function () { return this.ctx.data; }).def()(function () {
         var issue = this.ctx.data,
             login = issue.user.login,
-            isArchive = issue.labels.some(function(label) {
+            isArchive = issue.labels.some(function (label) {
                 return label.name === 'archive';
             }),
             isOwner = isArchive ? false : req.cookies['forum_username'] === login;
@@ -10,7 +10,7 @@ block('issue')(
         return applyNext({ _issue: issue, _isOwner: isOwner, _isArchive: isArchive });
     }),
 
-    match(function() { return this._issue; }).content()(function() {
+    match(function () { return this._issue; }).content()(function () {
         var issue = this._issue;
 
         return [
@@ -21,12 +21,12 @@ block('issue')(
                     {
                         elem: 'line',
                         elemMods: { level: 'top' },
-                        mix: { block: 'forum-line', mods: { valign: 'middle' }}
+                        mix: { block: 'forum-line', mods: { valign: 'middle' } }
                     },
                     {
                         elem: 'line',
                         elemMods: { level: 'middle' },
-                        mix: { block: 'forum-line', mods: { valign: 'middle' }}
+                        mix: { block: 'forum-line', mods: { valign: 'middle' } }
                     }
                 ]
             },
@@ -38,7 +38,7 @@ block('issue')(
 
     elem('comments')(
         // show comments on issue page
-        match(function() { return this._forum && this._forum.comments; }).def()(function() {
+        match(function () { return this._forum && this._forum.comments; }).def()(function () {
             var forum = this._forum,
                 issue = forum.issue,
                 comments = forum.comments;
@@ -58,7 +58,7 @@ block('issue')(
         }),
 
         // hide comments on list issues page
-        match(function() { return !this._forum || !this._forum.comments; }).def()(function() {
+        match(function () { return !this._forum || !this._forum.comments; }).def()(function () {
             var issue = this._issue;
 
             return applyCtx({
@@ -79,7 +79,7 @@ block('issue')(
     // user avatar + name
     elem('line').elemMod('level', 'top')(
 
-        content()(function() {
+        content()(function () {
             var issue = this._issue,
                 user = issue.user,
                 date = issue.created_at;
@@ -134,21 +134,21 @@ block('issue')(
     ),
 
     elem('read-only')(
-        match(function() { return !this._isArchive }).def()(function() {
+        match(function () { return !this._isArchive }).def()(function () {
             return false;
         }),
 
-        match(function() { return this._isArchive }).content()(function() {
+        match(function () { return this._isArchive }).content()(function () {
             return 'Read-only';
         })
     ),
 
     elem('owner-action')(
-        match(function() { return !this._isOwner; }).def()(function() {
+        match(function () { return !this._isOwner; }).def()(function () {
             return '';
         }),
 
-        match(function() { return this._isOwner; }).content()(function() {
+        match(function () { return this._isOwner; }).content()(function () {
             return [
                 {
                     elem: 'solve',
@@ -159,7 +159,7 @@ block('issue')(
                             post: BEM.I18N('issue', 'post')
                         }
                     },
-                    isClosed: 'closed' === this._issue.state
+                    isClosed: this._issue.state === 'closed'
                 },
                 {
                     elem: 'edit'
@@ -174,7 +174,7 @@ block('issue')(
     // body content + edit,delete buttons + labels + date
     elem('line').elemMod('level', 'middle')(
 
-        content()(function() {
+        content()(function () {
             var issue = this._issue;
 
             return [
@@ -194,7 +194,7 @@ block('issue')(
                                 {
                                     block: 'issue',
                                     elem: 'solve-badge',
-                                    elemMods: { show: 'closed' === issue.state }
+                                    elemMods: { show: issue.state === 'closed' }
                                 },
                                 {
                                     block: 'issue',
@@ -227,7 +227,7 @@ block('issue')(
                             block: 'issue',
                             elem: 'line',
                             elemMods: { level: 'bottom' },
-                            mix: { block: 'forum-line', mods: { valign: 'stretch' }}
+                            mix: { block: 'forum-line', mods: { valign: 'stretch' } }
                         }
                     ]
                 }
@@ -237,11 +237,11 @@ block('issue')(
     ),
 
     elem('edit-form')(
-        def()(function() {
+        def()(function () {
             return '';
         }),
 
-        match(function() { return this._isOwner; }).def()(function() {
+        match(function () { return this._isOwner; }).def()(function () {
 
             var issue = this._issue;
 
@@ -259,7 +259,7 @@ block('issue')(
                         mods: {
                             theme: 'islands',
                             size: 'l',
-                            'has-clear' : true
+                            'has-clear': true
                         },
                         name: 'title',
                         val: issue.title,
@@ -335,7 +335,7 @@ block('issue')(
                         content: [
                             {
                                 block: 'button',
-                                mods: { theme: 'islands', size : 'm', type: 'submit', view: 'action' },
+                                mods: { theme: 'islands', size: 'm', type: 'submit', view: 'action' },
                                 text: BEM.I18N('issue', 'edit-form-button-save'),
                                 mix: [
                                     { block: 'issue', elem: 'edit-button' },
@@ -349,7 +349,7 @@ block('issue')(
                             },
                             {
                                 block: 'button',
-                                mods: { theme: 'islands', size : 'm' },
+                                mods: { theme: 'islands', size: 'm' },
                                 text: BEM.I18N('issue', 'edit-form-button-cancel'),
                                 mix: [
                                     { block: 'issue', elem: 'edit-cancel' },
@@ -365,11 +365,11 @@ block('issue')(
 
     // labels
     elem('labels')(
-        match(function() { return this._issue.labels.length; }).def()(function() {
+        match(function () { return this._issue.labels.length; }).def()(function () {
 
             var labels = this._issue.labels;
 
-            return labels.map(function(label) {
+            return labels.map(function (label) {
                 return {
                     elem: 'label',
                     color: label.color,
@@ -381,7 +381,7 @@ block('issue')(
 
     // body content
     elem('body')(
-        content()(function() {
+        content()(function () {
             var text = this._issue.body;
 
             return this._isArchive ? text : req.util.mdToHtml(text);
@@ -390,19 +390,19 @@ block('issue')(
 
     // button 'answer'
     elem('line').elemMod('level', 'bottom')(
-        match(function() { return !this._forum || !this._forum.comments; }).content()(function() {
+        match(function () { return !this._forum || !this._forum.comments; }).content()(function () {
             var issue = this._issue,
                 comments = issue.comments;
 
-            if((!req.cookies['forum_username'] || this._isArchive) && comments === 0) {
+            if ((!req.cookies['forum_username'] || this._isArchive) && comments === 0) {
                 return '';
             }
 
             return [
                 {
-                    block : 'button',
-                    text : comments === 0 ? BEM.I18N('issue', 'reply') : BEM.I18N('issue', 'comments') + ': ' + comments,
-                    mods : { theme : 'islands', size : 'm', togglable : 'check' },
+                    block: 'button',
+                    text: comments === 0 ? BEM.I18N('issue', 'reply') : BEM.I18N('issue', 'comments') + ': ' + comments,
+                    mods: { theme: 'islands', size: 'm', togglable: 'check' },
                     mix: { block: this.block, elem: 'comments-switcher' }
                 },
                 {

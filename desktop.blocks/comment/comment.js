@@ -1,7 +1,7 @@
-modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
+modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) {
     provide(BEMDOM.decl(this.name, {
         onSetMod: {
-            progress: function(modName, modVal) {
+            progress: function (modName, modVal) {
                 this._spin || (this._spin = this.findBlockInside('spin'));
                 this._editButton || (this._editButton = this.findBlockInside('edit-button', 'button'));
 
@@ -17,8 +17,8 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * @returns {boolean}
          * @private
          */
-        _onSubmitEdit: function(e, data) {
-            if(this._getFormEdit().isEmptyInput('comment')) return false;
+        _onSubmitEdit: function (e, data) {
+            if (this._getFormEdit().isEmptyInput('comment')) return false;
 
             this.setMod('progress', true);
 
@@ -31,13 +31,13 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
                 data: data,
                 url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/?__mode=content',
                 context: this
-            }).done(function(html) {
+            }).done(function (html) {
                 BEMDOM.update(this.domElem, html);
                 this._dropCached();
-            }).fail(function(xhr) {
+            }).fail(function (xhr) {
                 alert('Не удалось отредактировать комментарий');
                 window.forum.debug && console.log('comment edit fail', xhr);
-            }).always(function() {
+            }).always(function () {
                 this.delMod('progress');
             });
         },
@@ -52,7 +52,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * @returns {BEMDOM}
          * @private
          */
-        _getFormEdit: function() {
+        _getFormEdit: function () {
             return this._formEdit || (this._formEdit = this.findBlockInside('edit-form', 'forum-form'));
         },
 
@@ -66,7 +66,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * @returns {BEMDOM}
          * @private
          */
-        _getCancelButton: function() {
+        _getCancelButton: function () {
             return this._cancelButton || (this._cancelButton = this.findBlockInside('edit-cancel', 'button'));
         },
 
@@ -80,7 +80,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * @returns {BEMDOM}
          * @private
          */
-        _getEditButton: function() {
+        _getEditButton: function () {
             return this._editButton || (this._editButton = this.findBlockInside('edit-button', 'button'));
         },
 
@@ -88,7 +88,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * Сбрасываем закешированные инстансы после обновления контента
          * @private
          */
-        _dropCached: function() {
+        _dropCached: function () {
             this._formEdit = null;
             this._editButton = null;
             this._cancelButton = null;
@@ -99,7 +99,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * @param progress
          * @private
          */
-        _submitProgress: function(progress) {
+        _submitProgress: function (progress) {
             var spin = this.findBlockInside('spin'),
                 button =  this._getEditButton();
 
@@ -111,7 +111,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * Показываем / скрываем форму редактирования
          * @private
          */
-        _toggleFormEdit: function() {
+        _toggleFormEdit: function () {
             var body = this.findElem('body'),
                 formEdit = this._getFormEdit();
 
@@ -123,7 +123,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * Обработчик клика по кнопке отмены редактирования
          * @private
          */
-        _onClickEditCancel: function() {
+        _onClickEditCancel: function () {
             this._toggleFormEdit();
             this._getFormEdit().un('submit', this._onSubmitEdit, this);
         },
@@ -132,7 +132,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * Задаем высоту формы редактирования
          * @private
          */
-        _setFormEditHeight: function() {
+        _setFormEditHeight: function () {
             var height = this.findElem('body').outerHeight();
 
             this.findElem('edit-textarea').height(height);
@@ -142,7 +142,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * Обработчик клика по иконке редактирования
          * @private
          */
-        _onClickEdit: function() {
+        _onClickEdit: function () {
             this._setFormEditHeight();
             this._toggleFormEdit();
 
@@ -154,15 +154,15 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
          * Обработчик клика по иконке удаления
          * @private
          */
-        _onClickRemove: function() {
-            if(window.confirm('Вы уверены?')) {
+        _onClickRemove: function () {
+            if (window.confirm('Вы уверены?')) {
                 $.ajax({
                     type: 'DELETE',
                     timeout: 10000,
                     data: { _csrf: this.params.csrf },
                     url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/',
                     context: this
-                }).done(function() {
+                }).done(function () {
                     this.emit('comment:delete');
 
                     BEMDOM.destruct(this.domElem);
@@ -170,8 +170,8 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $)
             }
         }
     }, {
-        live: function() {
-            this.liveInitOnBlockInsideEvent('click', 'link', function(e) {
+        live: function () {
+            this.liveInitOnBlockInsideEvent('click', 'link', function (e) {
                 // Задаем необходимый обработчик для клика по кнопкам Удалить/редактировать
                 this['_onClick' + e.target.params.action]();
             });

@@ -1,5 +1,5 @@
 block('forum-user').elem('avatar')(
-    match(function() { return this.ctx.url; }).def()(function() {
+    match(function () { return this.ctx.url; }).def()(function () {
         var mix = this.ctx.mix || [];
 
         return applyCtx({
@@ -10,7 +10,7 @@ block('forum-user').elem('avatar')(
                 block: 'image',
                 url: this.ctx.url,
                 alt: this.ctx.alt,
-                mix: (function() {
+                mix: (function () {
                     mix.push({ block: 'forum-user', elem: 'avatar' });
 
                     return mix;
@@ -19,12 +19,12 @@ block('forum-user').elem('avatar')(
         });
     }),
 
-    match(function() { return !this.ctx.url; }).def()(function() {
+    match(function () { return !this.ctx.url; }).def()(function () {
         this.ctx.mods = { icon: true };
         return applyNext();
     }),
 
-    match(function() { return !this.ctx.url; }).content()(function() {
+    match(function () { return !this.ctx.url; }).content()(function () {
         return {
             block: 'icon',
             mods: { view: 'avatar-default' }

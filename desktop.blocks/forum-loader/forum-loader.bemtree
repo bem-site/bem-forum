@@ -1,5 +1,5 @@
 block('forum-loader')(
-    content()(function() {
+    content()(function () {
         return {
             block: 'spin',
             mods: { theme: 'islands', size: 'xl' }

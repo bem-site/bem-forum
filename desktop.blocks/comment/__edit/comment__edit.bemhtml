@@ -1,5 +1,5 @@
 block('comment').elem('edit')(
-    def()(function() {
+    def()(function () {
         return applyCtx({
             block: 'link',
             title: BEM.I18N('comment', 'edit'),

@@ -1,10 +1,10 @@
 block('comments').mod('view', 'close')(
-    content()(function() {
+    content()(function () {
         var ctx = this.ctx,
             comments = ctx.data,
             issueNumber = ctx.issueNumber;
 
-        return comments.map(function(comment) {
+        return comments.map(function (comment) {
             return {
                 block: 'comment',
                 comment: comment,

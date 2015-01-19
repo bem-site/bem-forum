@@ -8,11 +8,11 @@ var u = require('util'),
     stringify = require('json-stringify-safe'),
     util = require('./util');
 
-exports.init = function(options) {
+exports.init = function (options) {
     var t = options.template;
     target = u.format('%s.bundles/%s/%s.min.template.i18n.js', t.level, t.bundle, t.bundle);
 
-    if(t.prefix) target = path.join(t.prefix, target);
+    if (t.prefix) target = path.join(t.prefix, target);
 };
 
 /**
@@ -22,13 +22,13 @@ exports.init = function(options) {
  * @param req - {Object} expressjs request object
  * @returns {*}
  */
-exports.run = function(ctx, req) {
+exports.run = function (ctx, req) {
     var builder = util.isDev() ?
-        require('./builder') : { build: function() { return vow.resolve(); }};
+        require('./builder') : { build: function () { return vow.resolve(); } };
 
     return builder
         .build([target])
-        .then(function() {
+        .then(function () {
             var context = {
                 console: console,
                 Vow: vow,
@@ -36,17 +36,17 @@ exports.run = function(ctx, req) {
                 _: _
             };
 
-            return vfs.read(path.join(process.cwd(), target)).then(function(bundleFile) {
+            return vfs.read(path.join(process.cwd(), target)).then(function (bundleFile) {
                 vm.runInNewContext(bundleFile, context);
                 return context;
             });
         })
-        .then(function(template) {
+        .then(function (template) {
             // set lang
             template.BEM.I18N.lang(req.lang);
 
             return template.BEMTREE.apply(ctx)
-                .then(function(bemjson) {
+                .then(function (bemjson) {
                     if (req.query.__mode === 'bemjson') {
                         return stringify(bemjson, null, 2);
                     }

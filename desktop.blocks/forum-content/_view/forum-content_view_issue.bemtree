@@ -1,5 +1,5 @@
 block('forum-content').mod('view', 'issue')(
-    content()(function() {
+    content()(function () {
         return {
             block: 'issue',
             data: this._forum.issue,

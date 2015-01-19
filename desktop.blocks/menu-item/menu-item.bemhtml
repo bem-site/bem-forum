@@ -1,5 +1,5 @@
 block('menu-item')(
-    match(function() { return this.ctx.color; }).content()(function() {
+    match(function () { return this.ctx.color; }).content()(function () {
         return applyCtx([
             {
                 elem: 'color',

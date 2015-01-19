@@ -1,16 +1,16 @@
 block('forum-pager')(
-    content()(function() {
+    content()(function () {
         return {
             elem: 'wrap',
             content: [
                 {
-                    block : 'button',
-                    mods : { theme : 'islands', size : 'xl' },
+                    block: 'button',
+                    mods: { theme: 'islands', size: 'xl' },
                     mix: { block: 'forum-pager', elem: 'button' },
                     text: BEM.I18N('forum-pager', 'text'),
                     icon:  {
-                        block : 'icon',
-                        mods : { view : 'more', size: 16 }
+                        block: 'icon',
+                        mods: { view: 'more', size: 16 }
                     }
                 },
                 {

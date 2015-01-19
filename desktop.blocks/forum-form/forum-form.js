@@ -1,4 +1,4 @@
-modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM, $) {
+modules.define('forum-form', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) {
     provide(BEMDOM.decl(this.name, {
 
         /**
@@ -12,7 +12,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
 
         onSetMod: {
             js: {
-                inited: function() {
+                inited: function () {
                     this.bindTo('submit', this._onSubmit);
 
                     this._subscribes();
@@ -20,11 +20,11 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
             },
 
             processing: {
-                yes: function() {
+                yes: function () {
                     this._toggleProcessingUi();
                 },
 
-                '': function() {
+                '': function () {
                     this
                         ._toggleProcessingUi()
                         ._clearForm();
@@ -37,7 +37,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * триггерим BEM событие submit
          * @private
          */
-        _onSubmit: function(e) {
+        _onSubmit: function (e) {
             e.preventDefault();
 
             this.emit('submit', this.getSerialize());
@@ -49,7 +49,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * Подписываем на события внутри блока
          * @private
          */
-        _subscribes: function() {
+        _subscribes: function () {
             this._listenCancel();
 
             return this;
@@ -59,7 +59,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * Слушаем клик на элементе cancel, клик по которому закрывает форму
          * @private
          */
-        _listenCancel: function() {
+        _listenCancel: function () {
             this._cancel = this.findBlockInside(this.elem('cancel'), 'button');
 
             this._cancel && this._cancel.on('click', this.toggle, this);
@@ -70,7 +70,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * @param errorText - текст ошибки
          * @private
          */
-        _showError: function(errorText) {
+        _showError: function (errorText) {
             window.alert(errorText);
         },
 
@@ -78,12 +78,12 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * Очищает поля всех контролов формы
          * @private
          */
-        _clearForm: function() {
-            var self = this,
+        _clearForm: function () {
+            var _this = this,
                 $controls = this.elem('control', 'autoclear', 'yes');
 
-            $controls.each(function(idx, control) {
-                self.findBlockInside(self.getMod($(control), 'type')).setVal('');
+            $controls.each(function (idx, control) {
+                _this.findBlockInside(_this.getMod($(control), 'type')).setVal('');
             });
 
             return this;
@@ -94,7 +94,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * @returns {*}
          * @public
          */
-        getSerialize: function() {
+        getSerialize: function () {
             return this.domElem.serializeArray();
         },
 
@@ -104,7 +104,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * @returns {*}
          * @private
          */
-        _toggleProcessingUi: function() {
+        _toggleProcessingUi: function () {
             this.findBlockInside(this.elem('submit'), 'button').toggleMod('disabled', true, '');
             this.findBlockInside(this.elem('spin'), 'spin').toggleMod('visible', true, '');
 
@@ -117,9 +117,9 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * @param value - задаваемое значение
          * @returns {*}
          */
-        setVal: function(name, value) {
+        setVal: function (name, value) {
             var inputs = this.findBlocksInside(this.elem('control'), 'input'),
-                input = inputs.filter(function(item) {
+                input = inputs.filter(function (item) {
                     return item.elem('control').attr('name') === name;
                 });
 
@@ -134,8 +134,8 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * @param name {String} - значение атрибута name контрола
          * @returns {boolean}
          */
-        isEmptyInput: function(name) {
-            var self = this,
+        isEmptyInput: function (name) {
+            var _this = this,
                 $controls = this.elem('control'),
                 resultCheck = false,
                 i18n = this.params.i18n,
@@ -145,17 +145,17 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
                 },
                 blocksOnControl;
 
-            $controls.each(function(idx, control) {
-                blocksOnControl = self.findBlocksInside(self.getMod($(control), 'type'));
+            $controls.each(function (idx, control) {
+                blocksOnControl = _this.findBlocksInside(_this.getMod($(control), 'type'));
 
-                if(blocksOnControl.length) {
+                if (blocksOnControl.length) {
                     // check if goal have the pass name value
                     blocksOnControl = blocksOnControl.filter(function (control) {
                         return control.elem('control').attr('name') === (name === 'comment' ? 'body' : name);
                     });
 
-                    if(blocksOnControl.length && blocksOnControl[0].getVal() === '') {
-                        self._showError(errors[name]);
+                    if (blocksOnControl.length && blocksOnControl[0].getVal() === '') {
+                        _this._showError(errors[name]);
                         resultCheck = true;
 
                         // after find goal elem - exit from $.each()
@@ -173,17 +173,17 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * @param name - значение атрибута name чекбокса
          * @returns {boolean}
          */
-        isEmptyCheckbox: function(name) {
-            if(this.params.labelsRequired) {
+        isEmptyCheckbox: function (name) {
+            if (this.params.labelsRequired) {
                 var checked = this.findBlocksInside(this.elem('control'), 'checkbox')
-                    .filter(function(checkbox) {
+                    .filter(function (checkbox) {
                         return checkbox.elem('control').attr('name') === name;
                     })
-                    .every(function(checkboxByName) {
+                    .every(function (checkboxByName) {
                         return (!checkboxByName.hasMod('checked', true));
                     });
 
-                if(checked) {
+                if (checked) {
                     this._showError(this.params.i18n['empty-labels']);
                     return true;
                 }
@@ -196,7 +196,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * Показываем/скрываем форму
          * @returns {*}
          */
-        toggle: function() {
+        toggle: function () {
             this.toggleMod('visibility', 'hidden');
             this.emit('toggle');
             return this;
@@ -206,7 +206,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
          * Check if one of passed fields is empty
          * @returns {boolean}
          */
-        isEmptyRequiredField: function() {
+        isEmptyRequiredField: function () {
             var names = [].slice.call(arguments, 0),
                 methods = {
                     title: this.isEmptyInput.bind(this),
@@ -214,7 +214,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function(provide, BEMDOM,
                     'labels[]': this.isEmptyCheckbox.bind(this)
                 };
 
-            return names.some(function(name) {
+            return names.some(function (name) {
                 return methods[name](name);
             });
         }

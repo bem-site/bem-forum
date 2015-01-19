@@ -1,5 +1,5 @@
 block('issue').elem('remove')(
-    content()(function() {
+    content()(function () {
         return {
             block: 'link',
             mods: { pseudo: true },

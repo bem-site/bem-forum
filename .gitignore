@@ -10,3 +10,7 @@ configs/current
 !*.bundles/*/*.bemdecl.js
 archive.json
 npm-debug.log
+
+.githooks
+.jshint-groups.js
+.jscsrc

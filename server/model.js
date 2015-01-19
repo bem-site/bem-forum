@@ -22,7 +22,7 @@ var DEFAULT = {
  * Archive module
  * @returns {{init: init, getIssues: getIssues, getComments: getComments}}
  */
-var Archive = function(options) {
+var Archive = function (options) {
     this.init(options);
 };
 
@@ -37,11 +37,11 @@ Archive.prototype = {
      * @param options
      * @returns {Object}
      */
-    init: function(options) {
+    init: function (options) {
         return vowFs.read(path.join(process.cwd(), options.archive), 'utf-8')
-            .then(function(data) {
+            .then(function (data) {
                 data = JSON.parse(data);
-                this.model = Object.keys(data).reduce(function(prev, key) {
+                this.model = Object.keys(data).reduce(function (prev, key) {
                     prev[key] = data[key];
                     return prev;
                 }, {});
@@ -53,12 +53,12 @@ Archive.prototype = {
      * Returns issues array from archive
      * @returns {Array}
      */
-    getIssues: function() {
+    getIssues: function () {
         return this.model.issues;
     },
 
-    getIssue: function(number) {
-        return this.getIssues().filter(function(item) {
+    getIssue: function (number) {
+        return this.getIssues().filter(function (item) {
             return item.number == number;
         })[0];
     },
@@ -68,12 +68,12 @@ Archive.prototype = {
      * @param issueId - {Number} id of issue
      * @returns {Array}
      */
-    getComments: function(issueId) {
+    getComments: function (issueId) {
         return this.model.comments
-            .filter(function(item) {
+            .filter(function (item) {
                 return item.number == issueId;
             })
-            .sort(function(a, b) {
+            .sort(function (a, b) {
                 var da = new Date(a['created_at']),
                     db = new Date(b['created_at']);
 
@@ -82,7 +82,7 @@ Archive.prototype = {
     }
 };
 
-var Model = function(options) {
+var Model = function (options) {
     this.init(options);
 };
 
@@ -91,12 +91,12 @@ Model.prototype = {
     labels: [],
     job: null,
 
-    init: function(options) {
+    init: function (options) {
         this.archive = new Archive(options);
         this.loadLabels();
         this.job = new CronJob({
             cronTime: '0 0 */1 * * *',
-            onTick: function() { this.loadLabels(); },
+            onTick: function () { this.loadLabels(); },
             start: false,
             context: this
         });
@@ -107,15 +107,15 @@ Model.prototype = {
      * Loads labels from github and cache them to model
      * @returns {*}
      */
-    loadLabels: function() {
+    loadLabels: function () {
         return github.getLabels.call(github, null, { page: DEFAULT.page, per_page: DEFAULT.perPage })
-            .then(function(labels) {
+            .then(function (labels) {
                 this.labels = (labels || [])
-                    .filter(function(label) {
+                    .filter(function (label) {
                         return label.name !== 'removed';
                     })
-                    .sort(function(a, b) {
-                        if(a.name === b.name) return 0;
+                    .sort(function (a, b) {
+                        if (a.name === b.name) return 0;
                         return a.name > b.name ? 1 : -1;
                     });
             }, this);
@@ -125,7 +125,7 @@ Model.prototype = {
      * Returns cached array of labels
      * @returns {Array}
      */
-    getLabels: function() {
+    getLabels: function () {
         return this.labels;
     },
 
@@ -133,7 +133,7 @@ Model.prototype = {
      * Return archive model
      * @returns {Archive}
      */
-    getArchive: function() {
+    getArchive: function () {
         return this.archive;
     },
 
@@ -142,7 +142,7 @@ Model.prototype = {
      * Can be used for check is labels were loaded and cached
      * @returns {Number}
      */
-    areLabelsLoaded: function() {
+    areLabelsLoaded: function () {
         return this.labels.length;
     }
 };
@@ -158,22 +158,22 @@ function loadAllGithubIssues(token) {
 
     (function getIssues() {
         return github.getIssues(token, { page: page, per_page: DEFAULT.perPage })
-            .then(function(result) {
+            .then(function (result) {
                 ++page;
                 issues = issues.concat(result);
 
-                if(!_.isArray(issues)) {
+                if (!_.isArray(issues)) {
                     def.reject();
                 }
 
-                if(DEFAULT.perPage === issues.length) {
+                if (DEFAULT.perPage === issues.length) {
                     getIssues();
                 }
 
-                return def.resolve(issues.filter(function(issue) {
+                return def.resolve(issues.filter(function (issue) {
                     var labels = issue.labels;
 
-                    return labels.length ? labels.every(function(label) {
+                    return labels.length ? labels.every(function (label) {
                         return label.name !== 'removed';
                     }) : true;
                 }));
@@ -190,7 +190,7 @@ module.exports = {
      * @param options - {Object} forum options
      * @returns {*}
      */
-    init: function(options) {
+    init: function (options) {
         github.init(options).addDefaultAPI();
         model = new Model(options);
     },
@@ -208,8 +208,8 @@ module.exports = {
      *  - per_page {Number} number of records per one page
      * @returns {*}
      */
-    getIssues: function(token, options) {
-        return loadAllGithubIssues(token).then(function(issues) {
+    getIssues: function (token, options) {
+        return loadAllGithubIssues(token).then(function (issues) {
             var result = issues.concat(model.getArchive().getIssues()),
                 filterLabels = options.labels,
                 filterSince = options.since,
@@ -219,60 +219,60 @@ module.exports = {
                 page,
                 limit;
 
-            //filter by issue labels
-            if(filterLabels) {
+            // filter by issue labels
+            if (filterLabels) {
                 filterLabels = filterLabels.split(',');
 
-                result = result.filter(function(issueItem) {
-                    var issueLabels = issueItem.labels.map(function(labelItem) {
+                result = result.filter(function (issueItem) {
+                    var issueLabels = issueItem.labels.map(function (labelItem) {
                         return labelItem.name || labelItem;
                     });
-                    return filterLabels.every(function(filterLabel) {
+                    return filterLabels.every(function (filterLabel) {
                         return issueLabels.indexOf(filterLabel) > -1;
                     });
                 });
             }
 
-            //filter by updated date
-            if(filterSince && _.isDate(filterSince)) {
-                result = result.filter(function(item) {
+            // filter by updated date
+            if (filterSince && _.isDate(filterSince)) {
+                result = result.filter(function (item) {
                     return (new Date(item.created_at)).getTime() >= filterSince.getTime();
                 });
             }
 
-            //sort results
-            sortField = (options.sort && /^(created|updated|comments)$/.test(options.sort))
-                ? options.sort : DEFAULT.sort.field;
-            sortDirection = (options.direction && /^(asc|desc)$/.test(options.direction))
-                ? options.direction : DEFAULT.sort.direction;
+            // sort results
+            sortField = (options.sort && /^(created|updated|comments)$/.test(options.sort)) ?
+                options.sort : DEFAULT.sort.field;
+            sortDirection = (options.direction && /^(asc|desc)$/.test(options.direction)) ?
+                options.direction : DEFAULT.sort.direction;
             order = DEFAULT.sort.direction === sortDirection ? -1 : 1;
 
-            result = result.sort(function(a, b) {
+            result = result.sort(function (a, b) {
                 var an = +a.number,
                     bn = +b.number;
 
-                //separate gh and archive issues
-                if(an*bn < 0) {
+                // separate gh and archive issues
+                if (an * bn < 0) {
                     return bn - an;
                 }
 
-                if('comments' === sortField) {
-                    return order*(+a[sortField] - +b[sortField]);
+                if (sortField === 'comments') {
+                    return order * (+a[sortField] - +b[sortField]);
                 }
 
-                return order*((new Date(a[sortField + '_at'])).getTime() -
+                return order * ((new Date(a[sortField + '_at'])).getTime() -
                     (new Date(b[sortField + '_at'])).getTime());
             });
 
             page = options.page || DEFAULT.page;
             limit = options.per_page || DEFAULT.limit;
 
-            result = result.filter(function(item, index) {
+            result = result.filter(function (item, index) {
                 return index >= limit * (page - 1) && index < limit * page
             });
 
             return vow.resolve(result);
-        }, function(err) {
+        }, function (err) {
             console.err('Model.js -> loadAllGithubIssues', err);
         });
     },
@@ -284,19 +284,19 @@ module.exports = {
      *  - number {Number} unique number of issue
      * @returns {*}
      */
-    getIssue: function(token, options) {
+    getIssue: function (token, options) {
         var issueNumber = options.number;
 
-        if(!issueNumber) {
+        if (!issueNumber) {
             return null;
         }
 
-        //load issue from archive
-        if(issueNumber < 0) {
+        // load issue from archive
+        if (issueNumber < 0) {
             return vow.resolve(model.getArchive().getIssue(issueNumber));
         }
 
-        //load gh issue
+        // load gh issue
         return github.getIssue.call(github, token, options);
     },
 
@@ -309,7 +309,7 @@ module.exports = {
      *  - labels {Array} array of string label names (required)
      * @returns {*}
      */
-    createIssue: function(token, options) {
+    createIssue: function (token, options) {
         return github.createIssue.call(github, token, options);
     },
 
@@ -324,7 +324,7 @@ module.exports = {
      *  - state {String} state of issue (open|closed) (optional)
      * @returns {*}
      */
-    editIssue: function(token, options) {
+    editIssue: function (token, options) {
         return github.editIssue.call(github, token, options);
     },
 
@@ -337,17 +337,17 @@ module.exports = {
      *  - per_page {Number} number of records on one page (optional)
      * @returns {*}
      */
-    getComments: function(token, options) {
-        if(!options.number) {
+    getComments: function (token, options) {
+        if (!options.number) {
             return vow.resolve([]);
         }
 
-        //load archive comments
-        if(options.number < 0) {
+        // load archive comments
+        if (options.number < 0) {
             return vow.resolve(model.getArchive().getComments(options.number));
         }
 
-        //load gh comments
+        // load gh comments
         return github.getComments.call(github, token, options);
     },
 
@@ -359,7 +359,7 @@ module.exports = {
      *  - body {String} text for comment (required)
      * @returns {*}
      */
-    createComment: function(token, options) {
+    createComment: function (token, options) {
         return github.createComment.call(github, token, options);
     },
 
@@ -371,7 +371,7 @@ module.exports = {
      *  - body {String} text of comment (required)
      * @returns {*}
      */
-    editComment: function(token, options) {
+    editComment: function (token, options) {
         return github.editComment.call(github, token, options);
     },
 
@@ -382,7 +382,7 @@ module.exports = {
      *  - id {String} unique id of comment (required)
      * @returns {*}
      */
-    deleteComment: function(token, options) {
+    deleteComment: function (token, options) {
         return github.deleteComment.call(github, token, options);
     },
 
@@ -392,7 +392,7 @@ module.exports = {
      * @param options - {Object} empty object literal
      * @returns {*}
      */
-    getLabels: function(token, options) {
+    getLabels: function (token, options) {
         return model.areLabelsLoaded() ? vow.resolve(model.getLabels()) :
             github.getLabels.call(github, token, options);
     },
@@ -403,7 +403,7 @@ module.exports = {
      * @param options - {Object} empty object
      * @returns {*}
      */
-    getAuthUser: function(token, options) {
+    getAuthUser: function (token, options) {
         return github.getAuthUser.call(github, token, options);
     },
 
@@ -413,11 +413,11 @@ module.exports = {
      * @param options - {Object} empty object
      * @returns {*}
      */
-    getRepoInfo: function(token, options) {
+    getRepoInfo: function (token, options) {
         return github.getRepoInfo.call(github, token, options);
     },
 
-    addUserAPI: function(token) {
+    addUserAPI: function (token) {
         return github.addUserAPI.call(github, token);
     }
 };

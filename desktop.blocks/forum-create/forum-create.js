@@ -5,9 +5,9 @@ modules.define(
 
         provide(BEMDOM.decl(this.name, {
 
-            onSetMod : {
-                js : {
-                    inited : function () {
+            onSetMod: {
+                js: {
+                    inited: function () {
                         this._switcher = this.findBlockInside('radio-group');
                         this._source   = this.findBlockInside('textarea');
                         this._preview  = this.findBlockInside('preview');
@@ -17,13 +17,13 @@ modules.define(
                 }
             },
 
-            _switch : function() {
+            _switch: function () {
                 var view = this._switcher.getVal();
 
                 this.delMod(this.elem('view'), 'visible');
                 this.setMod(this.elem('view', 'type', view), 'visible');
 
-                if(view === 'preview') {
+                if (view === 'preview') {
                     this._preview.domElem.html(markdown.render(this._source.getVal()));
                 }
             }
