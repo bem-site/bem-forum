@@ -338,6 +338,8 @@ module.exports = {
      * @returns {*}
      */
     getComments: function (token, options) {
+        options.per_page = 100;
+
         if (!options.number) {
             return vow.resolve([]);
         }
