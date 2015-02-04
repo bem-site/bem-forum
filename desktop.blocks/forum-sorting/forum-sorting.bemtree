@@ -1,5 +1,5 @@
-block('forum-sorting')
-    .content()({
+block('forum-sorting').content()(function () {
+    return {
         block: 'select',
         mods: { mode: 'radio', theme: 'islands', size: 'm', width: 'available' },
         name: 'sorting',
@@ -12,4 +12,5 @@ block('forum-sorting')
             { val: 4, text: BEM.I18N('forum-sorting', 'sort-updated') },
             { val: 5, text: BEM.I18N('forum-sorting', 'sort-least-updated') }
         ]
-    });
+    };
+});
