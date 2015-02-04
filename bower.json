@@ -22,13 +22,13 @@
     "libs"
   ],
   "dependencies": {
-    "bem-components": "git://github.com/bem/bem-components.git#d559759ab99a6321b833d0d6ab369ddea4ab96db",
+    "bem-components": "git://github.com/bem/bem-components.git#v2.0.0",
     "bem-history": "git://github.com/bem/bem-history.git#v2",
     "bem-content": "git://github.com/tavriaforever/bem-content.git#747cae3c15a15a56a6d8eaedbee4674b6ddec21c"
   },
   "resolutions": {
     "bem-social": "94e93a02d34196dd4c7121059a70517c4d2be562",
-    "bem-components": "d559759ab99a6321b833d0d6ab369ddea4ab96db",
+    "bem-components": "v2.0.0",
     "bem-core": "2.5.0"
   }
 }
