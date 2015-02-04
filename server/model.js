@@ -22,8 +22,9 @@ var DEFAULT = {
  * Archive module
  * @returns {{init: init, getIssues: getIssues, getComments: getComments}}
  */
-var Archive = function (options) {
-    this.init(options);
+var Archive = function (options, lang) {
+    this._options = options;
+    this._lang = lang;
 };
 
 Archive.prototype = {
@@ -34,11 +35,10 @@ Archive.prototype = {
 
     /**
      * Initializing archive
-     * @param options
      * @returns {Object}
      */
-    init: function (options) {
-        return vowFs.read(path.join(process.cwd(), options.archive), 'utf-8')
+    init: function () {
+        return vowFs.read(path.join(process.cwd(), this._options.archive[this._lang]), 'utf-8')
             .then(function (data) {
                 data = JSON.parse(data);
                 this.model = Object.keys(data).reduce(function (prev, key) {
@@ -87,30 +87,55 @@ var Model = function (options) {
 };
 
 Model.prototype = {
-    archive: null,
-    labels: [],
+    archive: {},
+    labels: {},
     job: null,
 
     init: function (options) {
-        this.archive = new Archive(options);
-        this.loadLabels();
+        var languages = options.languages;
+
+        this.initArchives(options);
+        this.loadLabels(languages);
         this.job = new CronJob({
             cronTime: '0 0 */1 * * *',
-            onTick: function () { this.loadLabels(); },
+            onTick: function () { this.loadLabels(languages); },
             start: false,
             context: this
         });
         this.job.start();
     },
 
+    initArchives: function (options) {
+        var _this = this;
+
+        return vow.all(options.languages
+            .filter(function (lang) {
+                return options.archive[lang];
+            })
+            .map(function (lang) {
+                var archive = new Archive(options, lang);
+
+                _this.archive[lang] = archive;
+                return archive.init();
+            }));
+    },
+
     /**
      * Loads labels from github and cache them to model
+     * @param languages - {Array} forum languages
      * @returns {*}
      */
-    loadLabels: function () {
-        return github.getLabels.call(github, null, { page: DEFAULT.page, per_page: DEFAULT.perPage })
-            .then(function (labels) {
-                this.labels = (labels || [])
+    loadLabels: function (languages) {
+        var self = this,
+            promises;
+
+        promises = languages.map(function (lang) {
+            return github.getLabels.call(github, null, {
+                lang: lang,
+                page: DEFAULT.page,
+                'per_page': DEFAULT.perPage
+            }).then(function (labels) {
+                self.labels[lang] = (labels || [])
                     .filter(function (label) {
                         return label.name !== 'removed';
                     })
@@ -118,23 +143,26 @@ Model.prototype = {
                         if (a.name === b.name) return 0;
                         return a.name > b.name ? 1 : -1;
                     });
-            }, this);
+            });
+        });
+
+        return vow.all(promises);
     },
 
     /**
      * Returns cached array of labels
      * @returns {Array}
      */
-    getLabels: function () {
-        return this.labels;
+    getLabels: function (lang) {
+        return this.labels[lang];
     },
 
     /**
      * Return archive model
      * @returns {Archive}
      */
-    getArchive: function () {
-        return this.archive;
+    getArchive: function (lang) {
+        return _.isObject(this.archive) && this.archive[lang];
     },
 
     /**
@@ -142,8 +170,8 @@ Model.prototype = {
      * Can be used for check is labels were loaded and cached
      * @returns {Number}
      */
-    areLabelsLoaded: function () {
-        return this.labels.length;
+    areLabelsLoaded: function (lang) {
+        return this.labels[lang] && this.labels[lang].length;
     }
 };
 
@@ -151,13 +179,13 @@ Model.prototype = {
  * Loads all issues for configured github repository and returns them
  * @returns {Promise}
  */
-function loadAllGithubIssues(token) {
+function loadAllGithubIssues(token, options) {
     var def = vow.defer(),
         issues = [],
         page = DEFAULT.page;
 
     (function getIssues() {
-        return github.getIssues(token, { page: page, per_page: DEFAULT.perPage })
+        return github.getIssues(token, { page: page, 'per_page': DEFAULT.perPage, lang: options.lang })
             .then(function (result) {
                 ++page;
                 issues = issues.concat(result);
@@ -209,8 +237,9 @@ module.exports = {
      * @returns {*}
      */
     getIssues: function (token, options) {
-        return loadAllGithubIssues(token).then(function (issues) {
-            var result = issues.concat(model.getArchive().getIssues()),
+        return loadAllGithubIssues(token, options).then(function (issues) {
+            var archive = model.getArchive(options.lang),
+                result = issues.concat(archive ? archive.getIssues() : []),
                 filterLabels = options.labels,
                 filterSince = options.since,
                 sortField,
@@ -236,7 +265,9 @@ module.exports = {
             // filter by updated date
             if (filterSince && _.isDate(filterSince)) {
                 result = result.filter(function (item) {
+                    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
                     return (new Date(item.created_at)).getTime() >= filterSince.getTime();
+                    // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
                 });
             }
 
@@ -265,7 +296,9 @@ module.exports = {
             });
 
             page = options.page || DEFAULT.page;
+            // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
             limit = options.per_page || DEFAULT.limit;
+            // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
 
             result = result.filter(function (item, index) {
                 return index >= limit * (page - 1) && index < limit * page
@@ -395,7 +428,9 @@ module.exports = {
      * @returns {*}
      */
     getLabels: function (token, options) {
-        return model.areLabelsLoaded() ? vow.resolve(model.getLabels()) :
+        var lang = options.lang;
+
+        return model.areLabelsLoaded(lang) ? vow.resolve(model.getLabels(lang)) :
             github.getLabels.call(github, token, options);
     },
 

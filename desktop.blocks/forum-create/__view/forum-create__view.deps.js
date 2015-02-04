@@ -1,5 +1,5 @@
 ({
     shouldDeps: [
-        { mods: { type: 'preview', visible: true } }
+        { mods: { type: ['preview', 'source'], visible: true } }
     ]
 })

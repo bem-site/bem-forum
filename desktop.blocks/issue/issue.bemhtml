@@ -20,7 +20,11 @@ block('issue')(
             // from common config website
             labelsRequired: this.ctx.labelsRequired,
             csrf: this.ctx.csrf,
-            i18n: { 'remove-message': BEM.I18N('issue', 'remove-message') }
+            i18n: {
+                'remove-message': BEM.I18N('issue', 'remove-message'),
+                reply: BEM.I18N('issue', 'reply'),
+                comments: BEM.I18N('issue', 'comments')
+            }
         };
     })
 );

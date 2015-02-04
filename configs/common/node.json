@@ -2,6 +2,20 @@
     "forum": {
         "port": 3000,
         "defaultLanguage": "ru",
+        "languages": ["en", "ru"],
+        "storage": {
+          "en": {
+            "user": "tavriaforever",
+            "repo": "bem-forum-tests-en"
+          },
+          "ru": {
+            "user": "tavriaforever",
+            "repo": "bem-forum-tests"
+          }
+        },
+        "archive": {
+          "ru": "archive-example_ru.json"
+        },
         "auth": {
             "tokens": [
                 "7fbbbe1159620f0a973058fd4d2a5d01751d5351",
@@ -14,11 +28,6 @@
         },
         "owner_token": "",
         "labelsRequired": false,
-        "storage": {
-            "user": "tavriaforever",
-            "repo": "bem-forum-tests"
-        },
-        "archive": "archive-example.json",
         "template": {
             "level": "desktop",
             "bundle": "index"

@@ -1,9 +1,13 @@
 block('forum-content').mod('view', 'issues')(
     content()(function () {
+        var forum = this._forum,
+            issues = forum.issues,
+            postPerPage = forum.postPerPage;
+
         return [
             {
                 elem: 'wrap',
-                mix: { block: 'forum-flex', mods: { align: 'start' } },
+                mix: { block: 'forum-flex', mods: { align: 'stretch' } },
                 content: [
                     {
                         elem: 'left',
@@ -15,7 +19,7 @@ block('forum-content').mod('view', 'issues')(
                                 elem: 'container',
                                 content: {
                                     block: 'forum-issues',
-                                    data: this._forum.issues
+                                    data: issues
                                 }
                             }
                         ]
@@ -28,7 +32,10 @@ block('forum-content').mod('view', 'issues')(
                     }
                 ]
             },
-            { block: 'forum-pager' }
+            {
+                block: 'forum-pager',
+                mods: { disabled: issues.length <= postPerPage }
+            }
         ]
     })
 );

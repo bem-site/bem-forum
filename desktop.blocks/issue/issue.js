@@ -27,17 +27,15 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
         },
 
         _setSwitcherCount: function () {
+            var i18n = this.params.i18n;
+
             this._comments.on('comment:add', function (e, data) {
-                this._switcher.setText('Ответов: ' + data.comments);
+                this._switcher.setText(i18n.comments + ': ' + data.comments);
             }, this);
 
             this._comments.on('comment:delete', function (e, data) {
                 var count = data.comments,
-                    text = 'Ответов: ' + count;
-
-                if (count < 1) {
-                    text = 'Ответить'
-                }
+                    text = !count ? i18n.reply : i18n.comments + ': ' + count;
 
                 this._switcher.setText(text);
             }, this);
