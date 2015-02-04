@@ -32,7 +32,7 @@ app
     .use(cookieParser())
     .use(bodyParser())
     .use(session({ secret: 'beminfoforum', saveUninitialized: false, resave: false }))
-    .use(csrf())
+    // .use(csrf())
     .use(locale(config.defaultLanguage))
     .use(forum('/', config)) // forum middleware
     .use(function (req, res) {
