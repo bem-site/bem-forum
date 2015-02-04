@@ -29,7 +29,7 @@ var apiCall = function (token, group, name, opts) {
             module.exports.getUserAPI(token) :
             module.exports.getDefaultAPI();
 
-    opts = _.extend({}, options.storage, opts);
+    opts = _.extend({}, options.storage[opts.lang], opts);
 
     console.log('apiCall ', token, group, name, opts);
 

@@ -1,39 +1,11 @@
-$icon-size-16 = 16px;
-$icon-size-18 = 18px;
-$icon-size-22 = 22px;
-$icon-size-24 = 24px;
-
-.icon_size
+$sizes = (16 18 22 24 50)
+for size, i in $sizes
 {
-    &_16
+    .icon_size_{size}
     {
-        width: $icon-size-16;
-        height: $icon-size-16;
+        width: (size)px;
+        height: (size)px;
 
-        background-size: $icon-size-16;
-    }
-
-    &_18
-    {
-        width: $icon-size-18;
-        height: $icon-size-18;
-
-        background-size: $icon-size-18;
-    }
-
-    &_22
-    {
-        width: $icon-size-22;
-        height: $icon-size-22;
-
-        background-size: $icon-size-22;
-    }
-
-    &_24
-    {
-        width: $icon-size-24;
-        height: $icon-size-24;
-
-        background-size: $icon-size-24;
+        background-size: (size)px;
     }
 }

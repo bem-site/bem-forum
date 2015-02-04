@@ -40,7 +40,10 @@ module.exports = function (pattern, options) {
     template.init(options);
     model.init(options);
 
+    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
     var ownerToken = options.owner_token,
+    // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
+
         // for check, if user checked at least one label
         // for create/edit issue forms - knowledge is taken
         // from common config website
@@ -89,13 +92,16 @@ module.exports = function (pattern, options) {
 
         options = (isGetRequest || isDeleteRequest ? query : req.body) || {};
 
+        // set forum lang
+        options.lang = req.lang;
+
         // for access in templates
         req = _.extend(req, {
             forumUrl: baseUrl,
             labelsRequired: labelsRequired,
             util: util,
             csrf: ''
-            //csrf: req.csrfToken()
+            // csrf: req.csrfToken()
         });
 
         var templateCtx = {
@@ -113,8 +119,8 @@ module.exports = function (pattern, options) {
         if (!req.xhr) {
             // collect all required data for templates
             var promises = {
-                user: model.getAuthUser(token, {}),
-                labels: model.getLabels(token, {})
+                user: model.getAuthUser(token, options),
+                labels: model.getLabels(token, options)
             };
 
             if (options.number) {
@@ -133,10 +139,10 @@ module.exports = function (pattern, options) {
 
             return vow.all(promises)
                 .then(function (values) {
-
                     req.__data = req.__data || {};
                     req.__data.forum = values;
                     req.__data.forum.labelsRequired = labelsRequired;
+                    req.__data.forum.postPerPage = 10;
 
                     setPageTitle(req);
 

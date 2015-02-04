@@ -9,9 +9,7 @@ modules.define(
             js: {
                 inited: function () {
                     this._labels = [];
-
                     this._getMenu();
-
                     channels('filter').on('labels', this._checkedLabelByFilter, this);
                     channels('filter').on('labels:clear', this._clearLabels, this);
                 }
@@ -45,9 +43,7 @@ modules.define(
 
         _checkedLabelByFilter: function (e, data) {
             this._labels = data.labels;
-
             this._checkedLabels();
-
             return this;
         },
 
