@@ -124,7 +124,6 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $
          * @private
          */
         _onClickEditCancel: function () {
-            this._toggleFormEdit();
             this._getFormEdit().un('submit', this._onSubmitEdit, this);
         },
 
