@@ -124,6 +124,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $
          * @private
          */
         _onClickEditCancel: function () {
+            this.toggleMod(this.findElem('body'), 'visibility', 'hidden', '');
             this._getFormEdit().un('submit', this._onSubmitEdit, this);
         },
 
