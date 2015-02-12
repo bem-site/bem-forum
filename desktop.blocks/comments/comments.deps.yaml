@@ -1,5 +1,6 @@
 - block: comment
 - block: forum-flex
+- block: preview
 
 - elems:
   - actions
