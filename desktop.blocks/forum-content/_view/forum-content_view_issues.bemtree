@@ -34,7 +34,7 @@ block('forum-content').mod('view', 'issues')(
             },
             {
                 block: 'forum-pager',
-                mods: { disabled: issues.length <= postPerPage }
+                mods: { disabled: issues.length < postPerPage }
             }
         ]
     })
