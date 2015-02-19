@@ -100,8 +100,7 @@ module.exports = function (pattern, options) {
             forumUrl: baseUrl,
             labelsRequired: labelsRequired,
             util: util,
-            csrf: ''
-            // csrf: req.csrfToken()
+            csrf: req.csrfToken()
         });
 
         var templateCtx = {
