@@ -93,7 +93,12 @@ module.exports = {
      * @returns {exports}
      */
     addDefaultAPI: function () {
-        var tokens = options.auth ? options.auth.tokens : [];
+        var auth = options.auth,
+            tokens = auth && auth.tokens;
+
+        if (!tokens || !tokens.length) {
+            return console.error('github:addDefaultAPI: Add github access token(s) to forum config');
+        }
 
         apiHash = tokens.reduce(function (prev, token) {
             var api = new Api(API_CONFIG);

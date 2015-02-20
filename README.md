@@ -15,6 +15,7 @@ Forum could be used in two capacities:
 * Clone a repository `git clone git@github.com:bem/bem-forum.git`
 * Go to downloaded project `cd bem-forum`
 * Install dependencies `npm run deps`
+* Generate [access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) (choose scope – public_repo) и add it to config `configs/common/node.json`
 * Launch the project `npm start`
 
 In the browser go to `http://localhost:3000`.

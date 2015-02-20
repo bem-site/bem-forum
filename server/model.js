@@ -126,7 +126,7 @@ Model.prototype = {
      * @returns {*}
      */
     loadLabels: function (languages) {
-        var self = this,
+        var _this = this,
             promises;
 
         promises = languages.map(function (lang) {
@@ -135,7 +135,7 @@ Model.prototype = {
                 page: DEFAULT.page,
                 'per_page': DEFAULT.perPage
             }).then(function (labels) {
-                self.labels[lang] = (labels || [])
+                _this.labels[lang] = (labels || [])
                     .filter(function (label) {
                         return label.name !== 'removed';
                     })
@@ -146,7 +146,9 @@ Model.prototype = {
             });
         });
 
-        return vow.all(promises);
+        return vow.all(promises).fail(function (err) {
+            console.error('model:loadLabels', err);
+        });
     },
 
     /**
