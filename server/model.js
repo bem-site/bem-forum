@@ -328,7 +328,7 @@ module.exports = {
 
         // load issue from archive
         if (issueNumber < 0) {
-            return vow.resolve(model.getArchive().getIssue(issueNumber));
+            return vow.resolve(model.getArchive(options.lang).getIssue(issueNumber));
         }
 
         // load gh issue
@@ -381,7 +381,7 @@ module.exports = {
 
         // load archive comments
         if (options.number < 0) {
-            return vow.resolve(model.getArchive().getComments(options.number));
+            return vow.resolve(model.getArchive(options.lang).getComments(options.number));
         }
 
         // load gh comments
