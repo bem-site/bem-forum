@@ -123,7 +123,6 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
             this.setMod(body, 'visibility', 'hidden') && this._toggleEditBody(body);
 
             this._formEdit.toggle();
-            this._setFormEditHeight();
             this._formEdit.on('submit', this._onSubmitEdit, this);
         },
 
@@ -162,12 +161,6 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
             this._formEdit.toggle();
 
             this._reinit();
-        },
-
-        _setFormEditHeight: function () {
-            var height = this.findElem('body').outerHeight();
-
-            this.findElem('edit-textarea').height(height);
         },
 
         _toggleLoadersUi: function () {
