@@ -11,8 +11,13 @@ modules.define(
                         this._switcher = this.findBlockInside('radio-group');
                         this._source   = this.findBlockInside('textarea');
                         this._preview  = this.findBlockInside('preview');
+                        this._radioPreview = this._switcher.getRadioByVal('preview');
 
                         this._switcher.on('change', this._switch, this);
+                        this._source.on('change', this._checkSource, this);
+
+                        // Run first check (for edit mode)
+                        this._checkSource();
                     }
                 }
             },
@@ -26,6 +31,10 @@ modules.define(
                 if (view === 'preview') {
                     this._preview.domElem.html(markdown.render(this._source.getVal()));
                 }
+            },
+
+            _checkSource: function () {
+                this._radioPreview.setMod('disabled', !this._source.getVal());
             }
 
         }));
