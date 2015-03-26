@@ -1,8 +1,5 @@
 - block: spin
 
-- block: input
-  mods: { theme: 'islands', type: 'textarea' }
-
 - block: button
   mods: { theme: 'islands', type: 'submit' }
 
