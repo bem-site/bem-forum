@@ -1,6 +1,3 @@
-- block: input
-  mods: { theme: 'islands', type: 'textarea' }
-
 - elem: add-textarea
 - elem: add-button
   mods: { type: [default, open] }

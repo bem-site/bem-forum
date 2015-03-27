@@ -1,3 +1,0 @@
-- block: input
-  mods: { theme: islands, type: textarea, has-clear: true }
-  required: true
