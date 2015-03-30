@@ -5,7 +5,6 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
                 inited: function () {
                     // Форма добавления комментария
                     this._form = this.findBlockInside('add-form', 'forum-form');
-
                     this._binds();
                 }
             }
@@ -31,8 +30,6 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
         _addComments: function (e, data) {
             if (this._form.isEmptyInput('comment')) return false;
 
-            this._form.setMod('processing', 'yes');
-
             this._postComment(data);
         },
 
@@ -42,6 +39,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
          * @private
          */
         _postComment: function (data) {
+            this._form.showProcessing();
             data.push({ name: 'number', value: this.params.issueNumber });
 
             $.ajax({
@@ -53,13 +51,12 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
                 context: this
             }).done(function (html) {
                 this._render(html, 'append', 'container');
-
                 this._afterAdd();
+                this._form.hideProcessing();
             }).fail(function (xhr) {
                 alert('Не удалось добавить комментарий');
+                this._form.hideProcessing(true);
                 window.forum.debug && console.log('comment edit fail', xhr);
-            }).always(function () {
-                this._form.delMod('processing');
             });
         },
 
@@ -80,7 +77,6 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
             // if comments is empty - show only add form
             if (!this.params.comments) {
                 this._toggle();
-
                 return false;
             }
 
@@ -92,7 +88,6 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
                 context: this
             }).done(function (html) {
                 this._render(html, 'update', 'container');
-
                 this._afterShow();
             });
         },
@@ -104,9 +99,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
          */
         _afterShow: function () {
             this.emit('comments:complete');
-
             this._toggle();
-
             this._subscribes();
         },
 
@@ -156,14 +149,10 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
          */
         _afterAdd: function () {
             this.params.comments += 1;
-
             this.emit('comment:add', { comments: this.params.comments });
-
             // подписываемся на удаление добавленного комментария
             this._subscribeDelete(this.findBlocksInside(this.findElem('item'), 'comment').pop());
-
             this._form.findBlockInside('preview').clear();
-            this._form.delMod('processing');
         }
     }));
 });

@@ -129,27 +129,27 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
         _onSubmitEdit: function (e, data) {
             if (this._formEdit.isEmptyRequiredField('title', 'labels[]')) return false;
 
-            var params = this.params;
+            var params = this.params,
+                number = params.number;
 
-            this._formEdit.setMod('processing', 'yes');
-
-            data.push({ name: 'number', value: params.number });
+            this._formEdit.showProcessing();
+            data.push({ name: 'number', value: number });
 
             $.ajax({
                 dataType: 'html',
                 type: 'PUT',
                 timeout: 10000,
                 data: data,
-                url: params.forumUrl + 'issues/' + params.number + '/?__access=owner',
+                url: params.forumUrl + 'issues/' + number + '/?__access=owner',
                 context: this
             }).done(function (html) {
                 this._render(html);
                 this._afterEdit();
+                this._formEdit.hideProcessing();
             }).fail(function (xhr) {
                 alert('Не удалось отредактировать пост');
+                this._formEdit.hideProcessing(true);
                 window.forum.debug && console.log('issue add fail', xhr);
-            }).always(function () {
-                this._formEdit.delMod('processing');
             });
         },
 
