@@ -14,7 +14,6 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function (provide, BEMDOM
             js: {
                 inited: function () {
                     this.bindTo('submit', this._onSubmit);
-
                     this._subscribes();
                 }
             },
@@ -25,9 +24,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function (provide, BEMDOM
                 },
 
                 '': function () {
-                    this
-                        ._toggleProcessingUi()
-                        ._clearForm();
+                    this._toggleProcessingUi();
                 }
             }
         },
@@ -217,6 +214,26 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function (provide, BEMDOM
             return names.some(function (name) {
                 return methods[name](name);
             });
+        },
+
+        /**
+         * Show form`s processing
+         * @returns {Object} - this block
+         */
+        showProcessing: function () {
+            return this.setMod('processing', 'yes');
+        },
+
+        /**
+         * Hide form`s processing,
+         * if stop processing call after error,
+         * form will not cleared
+         * @param isError
+         * @returns {Object} - this block
+         */
+        hideProcessing: function (isError) {
+            !isError && this._clearForm();
+            return this.delMod('processing');
         }
 
     }));

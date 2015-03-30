@@ -203,6 +203,7 @@ block('comment')(
                                 },
                                 {
                                     block: 'spin',
+                                    mix: { block: 'forum-form', elem: 'spin' },
                                     mods: { theme: 'islands', size: 'm' }
                                 },
                                 {

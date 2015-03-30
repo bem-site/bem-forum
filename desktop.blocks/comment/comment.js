@@ -1,15 +1,5 @@
 modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) {
     provide(BEMDOM.decl(this.name, {
-        onSetMod: {
-            progress: function (modName, modVal) {
-                this._spin || (this._spin = this.findBlockInside('spin'));
-                this._editButton || (this._editButton = this.findBlockInside('edit-button', 'button'));
-
-                this._spin.setMod('visible', modVal);
-                this._editButton.setMod('disabled', modVal);
-            }
-        },
-
         /**
          * Обработчик на сабмит формы редактирования
          * @param e
@@ -20,8 +10,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $
         _onSubmitEdit: function (e, data) {
             if (this._getFormEdit().isEmptyInput('comment')) return false;
 
-            this.setMod('progress', true);
-
+            this._getFormEdit().showProcessing();
             data.push({ name: 'id', value: this.params.id });
 
             $.ajax({
@@ -33,12 +22,12 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $
                 context: this
             }).done(function (html) {
                 BEMDOM.update(this.domElem, html);
+                this._getFormEdit().hideProcessing();
                 this._dropCached();
             }).fail(function (xhr) {
                 alert('Не удалось отредактировать комментарий');
+                this._getFormEdit().hideProcessing(true);
                 window.forum.debug && console.log('comment edit fail', xhr);
-            }).always(function () {
-                this.delMod('progress');
             });
         },
 
@@ -71,40 +60,12 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $
         },
 
         /**
-         * Кешируем инстанс кнопки редактирования
-         */
-        _editButton: null,
-
-        /**
-         * Возвращает инстанс кнопки редактирования
-         * @returns {BEMDOM}
-         * @private
-         */
-        _getEditButton: function () {
-            return this._editButton || (this._editButton = this.findBlockInside('edit-button', 'button'));
-        },
-
-        /**
          * Сбрасываем закешированные инстансы после обновления контента
          * @private
          */
         _dropCached: function () {
             this._formEdit = null;
-            this._editButton = null;
             this._cancelButton = null;
-        },
-
-        /**
-         * Прогресс сохранения отредактированного комментария
-         * @param progress
-         * @private
-         */
-        _submitProgress: function (progress) {
-            var spin = this.findBlockInside('spin'),
-                button =  this._getEditButton();
-
-            spin.setMod('visible', progress);
-            button.setMod('disabled', progress);
         },
 
         /**
@@ -164,8 +125,9 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $
                     context: this
                 }).done(function () {
                     this.emit('comment:delete');
-
                     BEMDOM.destruct(this.domElem);
+                }).fail(function () {
+                    alert('Не удалось удалить комментарий');
                 });
             }
         }

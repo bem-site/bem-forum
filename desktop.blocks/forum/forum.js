@@ -25,7 +25,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) 
         _addIssue: function (e, data) {
             if (this._formAdd.isEmptyRequiredField('title', 'labels[]')) return false;
 
-            this._formAdd.setMod('processing', 'yes');
+            this._formAdd.showProcessing();
 
             var labels = data
                 .filter(function (item) {
@@ -46,7 +46,7 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) 
                 this._addLabelsAfter(JSON.parse(json), labels);
             }).fail(function (xhr) {
                 alert('Не удалось добавить пост');
-                this._formAdd.delMod('processing');
+                this._formAdd.hideProcessing(true);
                 window.forum.debug && console.log('issue add fail', xhr);
             });
         },
@@ -68,14 +68,13 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) 
                 context: this
             }).done(function (html) {
                 this._render(html, 'prepend');
-
                 this._afterAdd();
             });
         },
 
         _afterAdd: function () {
             this._formAdd
-                .delMod('processing')
+                .hideProcessing()
                 .toggle();
         },
 
