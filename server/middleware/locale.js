@@ -1,5 +1,5 @@
 /**
- * Middleware for set lang from config
+ * Middleware for set default lang from config
  * @returns {Function}
  */
 

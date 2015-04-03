@@ -5,9 +5,15 @@ node_modules/
 .project
 .svn
 .enb/tmp
+
+configs/common/credentials.json
+configs/development/credentials.json
+configs/production/credentials.json
 configs/current
+
 *.bundles/*/*.*
 !*.bundles/*/*.bemdecl.js
+
 archive.json
 npm-debug.log
 

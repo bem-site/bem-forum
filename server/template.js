@@ -47,11 +47,11 @@ exports.run = function (ctx, req) {
 
             return template.BEMTREE.apply(ctx)
                 .then(function (bemjson) {
-                    if (req.query.__mode === 'bemjson') {
+                    if (req.query._mode === 'bemjson') {
                         return stringify(bemjson, null, 2);
                     }
 
-                    if (req.query.__mode === 'content') {
+                    if (req.query._mode === 'content') {
                         bemjson = bemjson.content;
                     }
 
