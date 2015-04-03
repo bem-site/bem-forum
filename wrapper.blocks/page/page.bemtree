@@ -4,16 +4,14 @@ block('page')(
 
         !this.ctx.head && (this.ctx.head = []);
         this.ctx.head.push({ elem: 'css', url: '/desktop.bundles/index/index.min.css' });
+        this.ctx.attrs = { style: 'white-space:pre-wrap;font-size:12px;font-family:Consolas;line-height:1.5;' };
 
         return applyNext();
     }),
 
     match(function () { return this.ctx.forum }).content()(function () {
         return [
-            {
-                block: 'forum',
-                forum: this.ctx.forum
-            },
+            JSON.stringify(this.ctx.forum, null, 4),
             { elem: 'js' }
         ];
     }),

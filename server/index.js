@@ -5,6 +5,8 @@ var express = require('express'),
     session = require('express-session'),
     csrf = require('csurf'),
     favicon = require('serve-favicon'),
+    morgan = require('morgan'),
+
     _ = require('lodash'),
 
     // forum modules
@@ -14,19 +16,20 @@ var express = require('express'),
     util = require('./util'),
     template = require('./template'),
 
-    // app
     app = express();
 
-if (util.isDev()) {
-    app.use(require('enb/lib/server/server-middleware').createMiddleware({
-        cdir: process.cwd(),
-        noLog: false
-    }));
+if (app.get('env') === 'development') {
+    // Rebuild bundle on request
+    app
+        .use(morgan('dev'))
+        .use(require('enb/lib/server/server-middleware').createMiddleware({
+            cdir: process.cwd(),
+            noLog: false
+        }));
 }
 
-app.set('port', process.env.PORT || config.port);
-
 app
+    .set('port', process.env.PORT || config.port)
     .use(st(process.cwd()))
     .use(favicon(process.cwd() + '/public/favicon.ico'))
     .use(cookieParser())
@@ -34,7 +37,7 @@ app
     .use(session({ secret: 'beminfoforum', saveUninitialized: false, resave: false }))
     .use(csrf())
     .use(locale(config.defaultLanguage))
-    .use(forum('/', config)) // forum middleware
+    .use(forum(app, config)) // forum middleware
     .use(function (req, res) {
         return template.run(_.extend({ block: 'page' }, req.__data), req)
             .then(function (html) {

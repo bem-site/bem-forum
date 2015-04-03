@@ -42,7 +42,8 @@
     "enb-borschik": "^1.4.0",
     "enb-diverse-js": "0.1.0",
     "enb-modules": "0.1.2",
-    "enb-stylus": "^1.1.4"
+    "enb-stylus": "^1.1.4",
+    "morgan": "^1.5.2"
   },
   "scripts": {
     "start": "node server/index.js",

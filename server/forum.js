@@ -1,62 +1,85 @@
 var _ = require('lodash'),
     vow = require('vow'),
-
+    express = require('express'),
     auth = require('./auth'),
     model = require('./model'),
     template = require('./template'),
     routes = require('./routes'),
     util = require('./util'),
+    getBaseData = require('./controllers/baseData.js');
 
-    baseUrl = '/forum/';
+module.exports = function (app, config) {
 
-function setPageTitle(req) {
-    // i18 object for page title
-    var i18n = {
-            ru: {
-                title: 'Форум / БЭМ. Блок, Элемент, Модификатор'
-            },
-            en: {
-                title: 'Forum / BEM. Block, Element, Modifier'
-            }
-        },
-        lang = req.lang,
-        isLangSupport = lang ? ['ru', 'en'].some(function (supportLang) {
-            return supportLang === lang;
-        }) : false,
-        baseTitle = isLangSupport ? i18n[lang].title : '',
-        data = req.__data,
-        forum = data.forum,
-        issue = forum.issue;
+    var forumPath = config.rootPath,
+        router = require('./routes/forum.js')(config),
+        apiRouter = require('./routes/api.js')();
 
-    data.title = (forum.view === 'issue' ? '#' + issue.number + ' ' + issue.title + ' / ' : '') + baseTitle;
-}
+    return github.init(config)
+        .then(function () {
+            return controllers.collectBaseData();
+        })
+        .then(function () {
+            app.use(forumPath, router);
+        });
 
-module.exports = function (pattern, options) {
 
-    baseUrl = pattern || baseUrl;
 
-    routes.init(baseUrl);
-    auth.init(options);
-    template.init(options);
-    model.init(options);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //auth.init(config);
+    //template.init(config);
+    //model.init(config);
 
     // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-    var ownerToken = options.owner_token,
+    //var ownerToken = config.owner_token,
     // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
 
         // for check, if user checked at least one label
         // for create/edit issue forms - knowledge is taken
         // from common config website
-        labelsRequired = options.labelsRequired,
-        forumDebug = options.debug;
+        //labelsRequired = config.labelsRequired,
+        //forumDebug = config.debug;
 
     return function (req, res, next) {
+        return next();
+
         var route = routes.getRoute(req.url, req.method),
             query,
             action,
             method,
             token,
-            options,
+            config,
             isGetRequest,
             isDeleteRequest;
 
@@ -90,14 +113,14 @@ module.exports = function (pattern, options) {
             return;
         }
 
-        options = (isGetRequest || isDeleteRequest ? query : req.body) || {};
+        config = (isGetRequest || isDeleteRequest ? query : req.body) || {};
 
         // set forum lang
-        options.lang = req.lang;
+        config.lang = req.lang;
 
         // for access in templates
         req = _.extend(req, {
-            forumUrl: baseUrl,
+            forumUrl: forumPath,
             labelsRequired: labelsRequired,
             util: util,
             csrf: req.csrfToken()
@@ -108,30 +131,30 @@ module.exports = function (pattern, options) {
             getIssue:      { block: 'issue' },
             createIssue:   { block: 'issue', forumUrl: req.forumUrl, labelsRequired: req.labelsRequired, csrf: req.csrf },
             editIssue:     { block: 'issue', forumUrl: req.forumUrl, labelsRequired: req.labelsRequired, csrf: req.csrf },
-            getComments:   { block: 'comments', mods: { view: 'close' }, issueNumber: options.number, forumUrl: req.forumUrl },
-            createComment: { block: 'comment', issueNumber: options.number, forumUrl: req.forumUrl, csrf: req.csrf },
-            editComment:   { block: 'comment', issueNumber: options.number, forumUrl: req.forumUrl, csrf: req.csrf },
-            getLabels:     { block: 'forum-labels', mods: { view: options.view } }
+            getComments:   { block: 'comments', mods: { view: 'close' }, issueNumber: config.number, forumUrl: req.forumUrl },
+            createComment: { block: 'comment', issueNumber: config.number, forumUrl: req.forumUrl, csrf: req.csrf },
+            editComment:   { block: 'comment', issueNumber: config.number, forumUrl: req.forumUrl, csrf: req.csrf },
+            getLabels:     { block: 'forum-labels', mods: { view: config.view } }
         };
 
         // get full page from server on first enter
         if (!req.xhr) {
             // collect all required data for templates
             var promises = {
-                user: model.getAuthUser(token, options),
-                labels: model.getLabels(token, options)
+                user: model.getAuthUser(token, config),
+                labels: model.getLabels(token, config)
             };
 
-            if (options.number) {
+            if (config.number) {
                 // get issue data, that have a number option
                 _.extend(promises, {
-                    issue: model.getIssue(token, options),
-                    comments: model.getComments(token, options),
+                    issue: model.getIssue(token, config),
+                    comments: model.getComments(token, config),
                     view: 'issue'
                 });
             } else {
                 _.extend(promises, {
-                    issues: model.getIssues(token, options),
+                    issues: model.getIssues(token, config),
                     view: 'issues'
                 });
             }
@@ -147,7 +170,7 @@ module.exports = function (pattern, options) {
 
                     // set global params window.forum.{params}
                     req.__data.forum.global = {
-                        debug: (forumDebug && options.debug === 'true')
+                        debug: (forumDebug && config.debug === 'true')
                     };
 
                     return next();
@@ -169,12 +192,12 @@ module.exports = function (pattern, options) {
             // create issue without checked labels - default behaviors
             var isIssueAction = (action === 'createIssue' || action === 'editIssue');
 
-            if ((isIssueAction && !options.labels) || (isIssueAction && !ownerToken)) {
-                options.labels = [];
+            if ((isIssueAction && !config.labels) || (isIssueAction && !ownerToken)) {
+                config.labels = [];
             }
 
             // get data by ajax
-            return model[action](token, options)
+            return model[action](token, config)
                 .then(function (data) {
                     if (query.__mode === 'json') {
                         res.json(data);
@@ -202,3 +225,25 @@ module.exports = function (pattern, options) {
         }
     };
 };
+
+function setPageTitle(req) {
+    // i18 object for page title
+    var i18n = {
+            ru: {
+                title: 'Форум / БЭМ. Блок, Элемент, Модификатор'
+            },
+            en: {
+                title: 'Forum / BEM. Block, Element, Modifier'
+            }
+        },
+        lang = req.lang,
+        isLangSupport = lang ? ['ru', 'en'].some(function (supportLang) {
+            return supportLang === lang;
+        }) : false,
+        baseTitle = isLangSupport ? i18n[lang].title : '',
+        data = req.__data,
+        forum = data.forum,
+        issue = forum.issue;
+
+    data.title = (forum.view === 'issue' ? '#' + issue.number + ' ' + issue.title + ' / ' : '') + baseTitle;
+}
