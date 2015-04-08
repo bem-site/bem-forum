@@ -1,41 +1,38 @@
-var express = require('express'),
+var vow = require('vow'),
+    express = require('express'),
     router = express.Router(),
-    contollers = require('/server/controllers/index.js');
+    contollers = require('server/controllers/index.js');
+    model = require('server/model.js');
 
 module.exports = function (config) {
-    var isMiddlewareIntergate = (config.integrate === 'middleware');
+    var model = new Model(config);
 
     /**
      * Handler for every request match on this router
      * Collect baseData (Labels)
      */
-    router.use(function (req, res, next) {
-        console.log('router every request');
-        next();
+    router.get('*', function (req, res, next) {
+        return model.getAuthUser(req.cookies['forum_token'], {}).then(function (user) {
+
+            // collect user data
+            req.locals.data.user = user;
+
+            return next();
+        });
     });
 
     /**
      * INDEX PAGE ROUTE
      */
     router.get('/', function (req, res, next) {
-
-        if (isMiddlewareIntergate) {
-            return next();
-        }
-
-        res.end('Index');
+        return next();
     });
 
     /**
      * ISSUE`s page
      */
     router.get('/issues/:issue_id', function (req, res, next) {
-
-        if (isMiddlewareIntergate) {
-            return next();
-        }
-
-        res.end('Issue page with id: ' + (req.params && req.params.issue_id));
+        return next();
     });
 
     return router;

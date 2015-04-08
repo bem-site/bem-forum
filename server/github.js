@@ -67,6 +67,7 @@ module.exports = {
 
     init: function (opts) {
         options = opts || {};
+
         return this;
     },
 

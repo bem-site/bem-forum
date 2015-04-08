@@ -51,7 +51,7 @@ module.exports = function () {
             res.end('get comments');
         });
 
-    router.route('/issues/:issue_id/comments/:comment_id')
+    router.route('api/issues/:issue_id/comments/:comment_id')
         .put(function (req, res, next) {
             console.log('EDIT COMMENTs>>>>>>>>>>>>>');
             next();

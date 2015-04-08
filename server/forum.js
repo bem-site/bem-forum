@@ -4,28 +4,42 @@ var _ = require('lodash'),
     auth = require('./auth'),
     model = require('./model'),
     template = require('./template'),
-    routes = require('./routes'),
-    util = require('./util'),
-    getBaseData = require('./controllers/baseData.js');
+    util = require('./util');
 
 module.exports = function (app, config) {
 
-    var forumPath = config.rootPath,
-        router = require('./routes/forum.js')(config),
-        apiRouter = require('./routes/api.js')();
+    var url = config.url,
+        router = express.Router(),
+        apiRouter = require('./routes/api.js')(),
 
-    return github.init(config)
-        .then(function () {
-            return controllers.collectBaseData();
-        })
-        .then(function () {
-            app.use(forumPath, router);
-        });
+        Controller = require('server/controller.js');
 
+    /**
+     * INIT SECTION
+     */
+    var controller = new Controller(config);
 
+    /**
+     * Handler for every request match on this router
+     * Collect baseData (Labels)
+     */
+    router.get('*', controller.base);
 
+    /**
+     * INDEX PAGE ROUTE
+     */
+    router.get('/', controller.index);
 
+    /**
+     * ISSUE`s page
+     */
+    router.get('/issues/:issue_id', controller.issue);
 
+    /**
+     * Routers use
+     */
+    app.use(url, router);
+    app.use(url, apiRouter);
 
 
 
