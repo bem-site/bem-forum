@@ -16,7 +16,9 @@ var express = require('express'),
     util = require('./util'),
     template = require('./template'),
 
-    app = express();
+    app = express(),
+
+    logger = require('bem-site-logger').setOptions(config['logger']).createLogger(module);
 
 if (app.get('env') === 'development') {
     // Rebuild bundle on request
@@ -40,6 +42,8 @@ app
     .use(forum(app, config)) // forum middleware
     .use(function (req, res) {
 
+        console.log('end!!!!!!!!!!!!');
+
         /**
          * get data`s json without templating
          */
@@ -61,5 +65,5 @@ app
     });
 
 app.listen(app.get('port'), function () {
-    console.log('app forum running on port:', app.get('port'));
+    logger.info('Forum running, visit http://localhost:%s', app.get('port'));
 });

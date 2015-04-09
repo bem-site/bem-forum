@@ -30,16 +30,14 @@ Model.prototype = {
             labels = this._labels,
             etag = this._etag,
             options = {
-                headers: etag ? { 'If-None-Match': etag } : '',
+                headers: etag ? { 'If-None-Match': etag } : {},
                 lang: lang,
                 per_page: 100,
                 page: 1
             };
 
-        github.getLabels(token, options)
+        this._github.getLabels(token, options)
             .then(function (result) {
-                console.log('result', result.meta);
-
                 labels[lang] = result;
 
                 def.resolve(labels[lang]);

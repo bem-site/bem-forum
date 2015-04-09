@@ -4,11 +4,8 @@ module.exports = function (app, config) {
 
     var url = config.url,
         router = express.Router(),
-        //apiRouter = require('../routes/api.js')(express),
-
+        apiRouter = require('../routes/api.js')(express),
         Controller = require('../controller.js');
-
-    console.log('router', router);
 
     /**
      * INIT SECTION
@@ -19,21 +16,25 @@ module.exports = function (app, config) {
      * Handler for every request match on this router
      * Collect baseData (Labels)
      */
-    //router.get('*', controller.base);
+    router.get('*', controller.base.bind(controller));
 
     /**
      * INDEX PAGE ROUTE
      */
-    router.get('/', controller.index);
+    router.get('/', controller.index.bind(controller));
 
     /**
      * ISSUE`s page
      */
-    //router.get('/issues/:issue_id', controller.issue);
+    router.get('/issues/:issue_id', controller.issue.bind(controller));
 
     /**
      * Routers use
      */
-    app.use('/', router);
+    app.use(url, router);
     //app.use(url, apiRouter);
+
+    return function (req, res, next) {
+        next();
+    }
 };

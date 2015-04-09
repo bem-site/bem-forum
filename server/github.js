@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+    vow = require('vow'),
     GitHubApi = require('github'),
     Logger = require('bem-site-logger');
 
@@ -24,11 +25,12 @@ Github.prototype = {
         // select github storage by lang
         options = this._setStorage(options);
 
-        this._logger.info('name: %s, token: %s, options: %s', name, group, token);
+        console.log('github', github[group][name]);
+
+        this._logger.info('name: %s, token: %s, options: %s', name, token, JSON.stringify(options));
 
         // see docs http://mikedeboer.github.io/node-github/
         github[group][name].call(null, options, function (err, result) {
-
             if (err || !result) {
                 _this._logger.error('name: %s, token: %s, options: %s', name, group, token);
 
@@ -37,6 +39,8 @@ Github.prototype = {
                 def.resolve(result);
             }
         });
+
+        return def.promise();
     },
 
     _setStorage: function (options) {
@@ -118,7 +122,10 @@ Github.prototype = {
     },
 
     _getDefaultAPI: function () {
-        return this._authReadyApi[_.sample(this._config.auth.tokens)];
+        if (_.isEmpty(this._authReadyApi)) {
+            this._addDefaultAPI();
+        }
+        return this._authReadyApi[_.sample(this._config.auth['api-tokens'])];
     },
 
     /**

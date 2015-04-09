@@ -2,11 +2,15 @@ var Model = require('./models/model.js'),
     vow = require('vow');
 
 function Controller(config) {
-    this.model = new Model(config);
-    this.config = config;
+    this._init(config);
 }
 
 Controller.prototype = {
+
+    _init: function (config) {
+        this.model = new Model(config);
+        this.config = config;
+    },
 
     /**
      * Base controller, use on every request,
@@ -19,16 +23,17 @@ Controller.prototype = {
      * @returns {*}
      */
     base: function (req, res, next) {
-
         return vow.all({
-            labels: this.model.getLabels(token, lang)
+            labels: this.model.getLabels(null, req.lang)
             // user: this.model.getAuthUser(req.cookies['forum_token'], {})
         }).then(function (data) {
-
             // collect user data
             _.extend(this._getData(req), data);
 
             return next();
+        }).fail(function (err) {
+            console.log('err', err);
+            return next(err);
         });
     },
 
