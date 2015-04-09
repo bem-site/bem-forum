@@ -21,12 +21,6 @@
         "archive": {
           "ru": "archive-example_ru.json"
         },
-        "auth": {
-            "tokens": [
-                "cd971c0e6796d8d3867c1e68aaefbd7232e71c47"
-            ]
-        },
-        "owner_token": "",
         "labelsRequired": false,
         "template": {
             "level": "desktop",

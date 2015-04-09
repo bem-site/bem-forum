@@ -3,7 +3,7 @@ var _ = require('lodash'),
     Logger = require('bem-site-logger');
 
 function Github (config) {
-    this.init(config);
+    this._init(config);
 }
 
 Github.prototype = {
@@ -12,7 +12,7 @@ Github.prototype = {
 
     _init: function (config) {
         this._config = config;
-        this._logger = Logger.setOptions(this.config['logger']).createLogger(module);
+        this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
         this._addDefaultAPI();
     },
 
@@ -73,7 +73,7 @@ Github.prototype = {
     _addDefaultAPI: function () {
         var _this = this,
             auth = this._config.auth,
-            tokens = auth && auth.tokens;
+            tokens = auth && auth['api-tokens'];
 
         if (!tokens || !tokens.length) {
             this._logger.error('Add github access token(s) to forum config');
@@ -124,10 +124,12 @@ Github.prototype = {
     /**
      * Returns list of repository labels
      * @param token - {String} oauth user token
-     * @param etag - {Number} empty object literal
+     * @param options - {Object} options { per_page, page, headers: {}, lang: ...}
      * @returns {*}
      */
-    getLabels: function (token, etag) {
-        return this._callGithubApi(token, 'issues', 'getLabels', { headers: { 'If-None-Match': etag } });
+    getLabels: function (token, options) {
+        return this._callGithubApi(token, 'issues', 'getLabels', options);
     }
 };
+
+module.exports = Github;

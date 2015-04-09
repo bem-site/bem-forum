@@ -1,7 +1,7 @@
-var express = require('express'),
-    apiRouter = express.Router();
+module.exports = function (express) {
 
-module.exports = function () {
+    var apiRouter = express.Router();
+
     /**
      * API BASE ROUTE
      */
@@ -12,7 +12,7 @@ module.exports = function () {
     /**
      * API ISSUES
      */
-    router.route('/api/issues')
+    apiRouter.route('/api/issues')
         // create new issue
         .post(function (req, res, next) {
             res.end('create new issue')
@@ -23,7 +23,7 @@ module.exports = function () {
             res.end('get issues');
         });
 
-    router.route('/api/issues/:issue_id')
+    apiRouter.route('/api/issues/:issue_id')
         // get the issue with that id
         .get(function (req, res, next) {
             res.end('issue id: ' + (req.params && req.params.issue_id));
@@ -42,7 +42,7 @@ module.exports = function () {
     /**
      * API COMMENTS
      */
-    router.route('/api/issues/:issue_id/comments')
+    apiRouter.route('/api/issues/:issue_id/comments')
         .post(function (req, res, next) {
             res.end('create new comment');
         })
@@ -51,7 +51,7 @@ module.exports = function () {
             res.end('get comments');
         });
 
-    router.route('api/issues/:issue_id/comments/:comment_id')
+    apiRouter.route('api/issues/:issue_id/comments/:comment_id')
         .put(function (req, res, next) {
             console.log('EDIT COMMENTs>>>>>>>>>>>>>');
             next();
@@ -61,5 +61,5 @@ module.exports = function () {
             next();
         });
 
-    return router;
+    return apiRouter;
 };

@@ -1,45 +1,55 @@
 var _ = require('lodash'),
     vow = require('vow'),
-    Github = require('server/github.js');
+    Github = require('../github.js');
 
 function Model (config) {
-    this.config = config;
-    this.github = new Github(config);
+    this._init(config);
 }
 
 Model.prototype = {
 
-    labels: {},
-    users: [],
-    issues: [],
-    comments: [],
+    _etag: null,
+    _labels: {},
+    _users: [],
+    _issues: [],
+    _comments: [],
 
+    _init: function (config) {
+        this._config = config;
+        this._github = new Github(config);
+    },
+
+    /**
+     * Check result.meta -> status, etag, x-ratelimit-remaining
+     * @param token
+     * @param lang
+     * @returns {*}
+     */
     getLabels: function (token, lang) {
         var def = vow.defer(),
-            labels = this.labels;
+            labels = this._labels,
+            etag = this._etag,
+            options = {
+                headers: etag ? { 'If-None-Match': etag } : '',
+                lang: lang,
+                per_page: 100,
+                page: 1
+            };
 
-        if (!_.isEmpty(labels) && !_.isEmpty(this.labels[lang])) {
+        github.getLabels(token, options)
+            .then(function (result) {
+                console.log('result', result.meta);
 
-            github.getLabels(token, { lang: lang })
+                labels[lang] = result;
 
-            def.resolve(this.labels[lang]);
-
-        } else {
-
-            var _this = this;
-
-            return github.getLabels(token, { lang: lang })
-                .then(function (data) {
-                    _this.labels[lang] = data;
-
-                    return def.resolve(data);
-                })
-                .fail(function (err) {
-                    return def.reject(err);
-                });
-
-        }
+                def.resolve(labels[lang]);
+            })
+            .fail(function (err) {
+                return def.reject(err);
+            });
 
         return def.promise();
     }
 };
+
+module.exports = Model;

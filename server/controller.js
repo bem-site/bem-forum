@@ -1,4 +1,4 @@
-var Model = require('server/model.js'),
+var Model = require('./models/model.js'),
     vow = require('vow');
 
 function Controller(config) {
@@ -21,8 +21,8 @@ Controller.prototype = {
     base: function (req, res, next) {
 
         return vow.all({
-            labels: this.model.getLabels(token, lang),
-            user: this.model.getAuthUser(req.cookies['forum_token'], {})
+            labels: this.model.getLabels(token, lang)
+            // user: this.model.getAuthUser(req.cookies['forum_token'], {})
         }).then(function (data) {
 
             // collect user data
@@ -43,20 +43,22 @@ Controller.prototype = {
      * @returns {*}
      */
     index: function (req, res, next) {
-        var token = req.cookies['forum_token'],
+        var token = req.cookies && req.cookies['forum_token'],
             lang = req.lang;
 
-        return vow.all({
-            title: this.model.getTitle(lang),
-            issues: this.model.getIssues(token, this.config, lang)
+        return next();
 
-        }).then(function (data) {
-
-            // collect final data
-            _.extend(this._getData(req), data, { view: 'issues' });
-
-            return next();
-        });
+        //return vow.all({
+        //    //title: this.model.getTitle(lang),
+        //    issues: this.model.getIssues(token, this.config, lang)
+        //
+        //}).then(function (data) {
+        //
+        //    // collect final data
+        //    _.extend(this._getData(req), data, { view: 'issues' });
+        //
+        //    return next();
+        //});
     },
 
     /**
