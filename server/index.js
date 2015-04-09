@@ -10,8 +10,8 @@ var express = require('express'),
     _ = require('lodash'),
 
     // forum modules
-    forum = require('./forum'),
-    locale = require('./locale'),
+    forum = require('./middleware/forum'),
+    locale = require('./middleware/locale'),
     config = require('./config').get('forum'),
     util = require('./util'),
     template = require('./template'),
@@ -39,7 +39,19 @@ app
     .use(locale(config.defaultLanguage))
     .use(forum(app, config)) // forum middleware
     .use(function (req, res) {
-        return template.run(_.extend({ block: 'page' }, req.__data), req)
+
+        /**
+         * get data`s json without templating
+         */
+        if (req.query._mode === 'json') {
+            return res.json(req.locals);
+        }
+
+        /**
+         * The generated html page using the bemhtml + bemhtml
+         * and data obtained in middleware `forum`
+         */
+        return template.run(_.extend({ block: 'page' }, req.locals), req)
             .then(function (html) {
                 res.end(html);
             })

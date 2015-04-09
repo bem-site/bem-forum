@@ -2,6 +2,9 @@
     "forum": {
         "integrate": "default",
         "url": "/",
+        "logger": {
+          "level": "debug"
+        },
         "port": 3000,
         "defaultLanguage": "ru",
         "languages": ["en", "ru"],

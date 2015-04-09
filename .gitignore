@@ -5,6 +5,7 @@ node_modules/
 .project
 .svn
 .enb/tmp
+configs/common/_auth.json
 configs/current
 *.bundles/*/*.*
 !*.bundles/*/*.bemdecl.js

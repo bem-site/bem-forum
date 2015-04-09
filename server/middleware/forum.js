@@ -10,7 +10,7 @@ module.exports = function (app, config) {
 
     var url = config.url,
         router = express.Router(),
-        apiRouter = require('./routes/api.js')(),
+        apiRouter = require('routes/api.js')(),
 
         Controller = require('server/controller.js');
 
