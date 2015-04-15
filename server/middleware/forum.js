@@ -26,11 +26,12 @@ module.exports = function (app, config) {
         /**
          * Post page
          */
-        router.get('/:issue_id', controller.issue.bind(controller));
+        router.get(':issue_id', controller.issue.bind(controller, site));
 
         /**
          * Router use by site url
          */
+
         app.use(site.url, router);
     });
 

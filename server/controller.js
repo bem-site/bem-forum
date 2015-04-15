@@ -18,6 +18,7 @@ Controller.prototype = {
      * that match default`s forum router.
      * 1. Get from model labels by lang and user info by token from req.cookies
      * 2. Extend req.locals.forum with labels and users data
+     * @param {Object} site - current site config
      * @param {Object} req - express js request
      * @returns {*}
      */
@@ -27,7 +28,7 @@ Controller.prototype = {
             lang = req.lang;
 
         vow.all({
-            labels: this.model.getLabels(null, 'forum', lang)
+            labels: this.model.getLabels(null, site, lang)
             //user: this.model.getAuthUser(req.cookies['forum_token'], {})
         }).then(function (data) {
 
@@ -49,7 +50,7 @@ Controller.prototype = {
      * 1. Get from model page title and issues list
      * 2. Extend req.locals.forum with data got in 1 item
      * 3. Set for template view type -> 'issues'
-     * @param {Object} site - current site (forum || blog || etc)
+     * @param {Object} site - current site config
      * @param {Object} req - express js request
      * @param {Object} res - express js response
      * @param {Function} next - express js call next middleware
@@ -91,7 +92,7 @@ Controller.prototype = {
      * @returns {*}
      */
     issue: function (req, res, next) {
-        var token = req.cookies['forum_token'],
+        var token = req.cookies && req.cookies['forum_token'],
             lang = req.lang,
             id = req.params.issue_id;
 

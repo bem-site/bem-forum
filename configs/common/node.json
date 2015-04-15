@@ -11,13 +11,14 @@
         },
         "debug": true,
 
-        "sites": {
+        "sites": [
 
 
-          "forum": {
+          {
+            "name": "forum",
             "url": "/",
             "mode": "forum",
-            "languages": ["en", "ru"],
+            "langs": ["en", "ru"],
             "storage": {
               "en": {
                 "user": "tavriaforever",
@@ -35,10 +36,11 @@
           },
 
 
-          "blog": {
+          {
+            "name": "blog",
             "url": "/blog",
             "mode": "blog",
-            "languages": ["en", "ru"],
+            "langs": ["en", "ru"],
             "storage": {
               "en": {
                 "user": "tavriaforever",
@@ -51,6 +53,6 @@
             }
           }
 
-        }
+        ]
     }
 }

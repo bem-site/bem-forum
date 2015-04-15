@@ -22,19 +22,21 @@ Model.prototype = {
         var config = this._config,
             sites = config.sites;
 
-        if (!sites) {
+        if (!sites || !sites.length) {
             this._logger.error('sites info not found in config');
             process.exit();
         }
 
         // Fill the storage keys for the site name (forum, blog, etc)
-        _.keys(sites).forEach(function (site) {
-            this._storage[site] = {};
+        _.forEach(sites, function (site) {
+            var siteName = site.name;
+
+            this._storage[siteName] = {};
 
             // Added to the storage site's default values divided by language
             // this._storage.blog.ru = { ... }
-            _.forEach(sites[site].languages, function (lang) {
-                this._storage[site][lang] = {
+            _.forEach(site.langs, function (lang) {
+                this._storage[siteName][lang] = {
                     labels: {
                         etag: "",
                         data: []
@@ -66,19 +68,29 @@ Model.prototype = {
     },
 
     _getStorage: function (arg) {
-        return this._storage[arg.site][arg.lang][arg.type].data;
+        var siteName = arg.siteName,
+            lang = arg.lang,
+            type = arg.type;
+
+        this._logger.debug('Get %s from storage for %s %s', type, lang, siteName);
+        return this._storage[siteName][lang][type].data;
     },
 
     _setStorage: function (arg, data) {
-        this._storage[arg.site][arg.lang][arg.type].data = data;
+        var siteName = arg.siteName,
+            lang = arg.lang,
+            type = arg.type;
+
+        this._logger.debug('Set %s in storage for %s %s', type, lang, siteName);
+        this._storage[siteName][lang][type].data = data;
     },
 
     _getEtag: function (arg) {
-        return this._storage[arg.site][arg.lang][arg.type].etag;
+        return this._storage[arg.siteName][arg.lang][arg.type].etag;
     },
 
     _setEtag: function (arg, etag) {
-        this._storage[arg.site][arg.lang][arg.type].etag = etag;
+        this._storage[arg.siteName][arg.lang][arg.type].etag = etag;
     },
 
     /**
@@ -93,7 +105,7 @@ Model.prototype = {
             def = vow.defer(),
 
             arg = {
-                site: site,
+                siteName: site.name,
                 type: 'labels',
                 lang: lang
             },
@@ -107,7 +119,7 @@ Model.prototype = {
                 page: 1
             };
 
-        this._github.getLabels(token, options)
+        this._github.getLabels(site, token, options)
             .then(function (result) {
 
                 var meta = result.meta;
@@ -115,12 +127,16 @@ Model.prototype = {
                 // save etag in memory
                 _this._setEtag(arg, meta.etag);
 
-                // If labels were not changed, get from memory
-                if (labels && _this._isNotChangedData(meta.status)) {
+                /**
+                 * If the labels are in memory
+                 * and we spent all requests to github API
+                 * or date hasn`t changed, then take the data from the memory
+                 */
+                if (labels && meta['x-ratelimit-remaining'] === 0 || _this._isNotChangedData(meta.status)) {
                     return def.resolve(labels);
                 }
 
-                // Save labels in memory
+                // Else save labels in memory
                 _this._setStorage(arg, result);
 
                 return def.resolve(result);
