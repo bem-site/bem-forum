@@ -66,7 +66,7 @@ Github.prototype = {
         });
 
         if (!github) {
-            this._logger.warn('_getGithubAuthInstance: Can`t get github API auth by this token: %s', token);
+            this._logger.warn('Not able to authenticate on github under this token: %s', token);
         }
 
         return github;
@@ -74,11 +74,10 @@ Github.prototype = {
 
     _addDefaultAPI: function () {
         var _this = this,
-            auth = this._config.auth,
-            tokens = auth && auth['api-tokens'];
+            tokens = this._config['api-tokens'];
 
         if (!tokens || !tokens.length) {
-            this._logger.error('Add github access token(s) to forum config');
+            this._logger.error('Filler in the config field "api tokens" to access the Github API');
 
             // Stop app if github access tokens not added
             process.exit(1);
@@ -123,7 +122,7 @@ Github.prototype = {
         if (_.isEmpty(this._authReadyApi)) {
             this._addDefaultAPI();
         }
-        return this._authReadyApi[_.sample(this._config.auth['api-tokens'])];
+        return this._authReadyApi[_.sample(this._config['api-tokens'])];
     },
 
     /**

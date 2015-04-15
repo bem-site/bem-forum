@@ -51,7 +51,11 @@ app
             return res.json(res.locals);
         }
 
-        return res.end(res.locals || req.url || 'empty');
+        if (req.cookies && req.cookies['forum_token']) {
+            return res.end('TOKEN NA BASE)');
+        }
+
+        return res.end(JSON.stringify(res.locals, null, 4) || req.url || 'empty');
 
         /**
          * The generated html page using the bemhtml + bemhtml

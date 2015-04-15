@@ -30,16 +30,14 @@ module.exports = function (app, config) {
          */
         router.get(':issue_id', controller.issue.bind(controller, site));
 
-
         /**
          * Auth
          */
-        if (config.auth) {
-
+        if (config.auth && config.auth.required === true) {
+            router.get('/login', controller.login.bind(controller, site));
+            router.get('/login_callback', controller.loginCallback.bind(controller, site));
+            router.get('/logout', controller.logout.bind(controller, site));
         }
-        router.get('/login', controller.login.bind(controller, site));
-        router.get('/login_callback', controller.loginCallback.bind(controller, site));
-        router.get('/logout', controller.logout.bind(controller, site));
 
         /**
          * Router use by site url
