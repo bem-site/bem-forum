@@ -10,14 +10,15 @@
           "bundle": "index"
         },
         "debug": true,
-
+        "auth": {
+          "required": true
+        },
         "sites": [
-
 
           {
             "name": "forum",
             "url": "/",
-            "mode": "forum",
+            "mode": "default",
             "langs": ["en", "ru"],
             "storage": {
               "en": {
@@ -34,7 +35,6 @@
             },
             "labelsRequired": false
           },
-
 
           {
             "name": "blog",

@@ -1,5 +1,6 @@
 var _ = require('lodash'),
     Model = require('./models/model.js'),
+    Auth = require('./auth.js'),
     vow = require('vow');
 
 function Controller(config) {
@@ -9,8 +10,27 @@ function Controller(config) {
 Controller.prototype = {
 
     _init: function (config) {
-        this.model = new Model(config);
-        this.config = config;
+        this._model = new Model(config);
+        this._auth = new Auth(config);
+        this._config = config;
+    },
+
+    login: function (site, req, res, next) {
+        var token = req.cookies && req.cookies[site.name + '_token'];
+
+        if (token) {
+            return next();
+        }
+
+        this._auth.sendAuthRequest(site, req, res);
+    },
+
+    loginCallback: function (site, req, res, next) {
+        return next();
+    },
+
+    logout: function (site, req, res, next) {
+        return next();
     },
 
     /**
@@ -28,13 +48,12 @@ Controller.prototype = {
             lang = req.lang;
 
         vow.all({
-            labels: this.model.getLabels(null, site, lang)
-            //user: this.model.getAuthUser(req.cookies['forum_token'], {})
+            labels: this._model.getLabels(null, site, lang)
+            //user: this._model.getAuthUser(req.cookies['forum_token'], {})
         }).then(function (data) {
 
             // collect user data
-            if (!req.locals) req.locals = {};
-            req.locals.forum = _.extend(_this._getData(req), data);
+            res.locals.forum = _.extend(_this._getData(res), data);
 
             return def.resolve();
 
@@ -69,8 +88,8 @@ Controller.prototype = {
             });
 
         //return vow.all({
-        //    //title: this.model.getTitle(lang),
-        //    issues: this.model.getIssues(token, this.config, lang)
+        //    //title: this._model.getTitle(lang),
+        //    issues: this._model.getIssues(token, this._config, lang)
         //
         //}).then(function (data) {
         //
@@ -97,9 +116,9 @@ Controller.prototype = {
             id = req.params.issue_id;
 
         return vow.all({
-            title: this.model.getTitle(lang, id),
-            issue: this.model.getIssue(token, id, lang),
-            comments: this.model.getComments(token, id)
+            title: this._model.getTitle(lang, id),
+            issue: this._model.getIssue(token, id, lang),
+            comments: this._model.getComments(token, id)
 
         }).then(function (data) {
 
@@ -114,19 +133,14 @@ Controller.prototype = {
      * p.s. When the forum is used as a separate middleware
      * this method needed for extend data that collect earlier
      * with forum`s data
-     * @param {Object} req - express js request
-     * @returns {Object} req.local.forum
+     * @param {Object} res - express js response
+     * @returns {Object} res.local.forum
      * @private
      */
-    _getData: function (req) {
-        var data = {},
-            locals = req.locals;
+    _getData: function (res) {
+        var locals = res.locals;
 
-        if (locals) {
-            data = locals.forum ? locals.forum : (locals.forum = {});
-        }
-
-        return data;
+        return locals.forum ? locals.forum : (locals.forum = {});
     }
 };
 

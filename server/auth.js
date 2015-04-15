@@ -1,7 +1,7 @@
 var _ = require('lodash'),
     github = require('./github'),
-
     OAuth2 = require("oauth").OAuth2,
+    Logger = require('bem-site-logger'),
 
     oauth,
     options,
@@ -10,8 +10,64 @@ var _ = require('lodash'),
     },
     getRedirectUrl = function (req) {
         var c = options.oauth[req.host] || options.oauth;
+
         return c.redirectUrl;
     };
+
+function Auth(config) {
+    this._init(config);
+}
+
+Auth.prototype = {
+
+    _oAuth2: [],
+
+    _init: function (config) {
+        this._config = config;
+        this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
+        this._createOauth();
+    },
+
+    sendAuthRequest: function (site, req, res) {
+        res.writeHead(303, {
+            Location: this._getOauth().getAuthorizeUrl({
+                redirect_uri: getRedirectUrl(req),
+                scope: 'public_repo',
+                state: 'bem-info-forum-platform-authorization'
+            })
+        });
+
+        res.end();
+    },
+
+    _createOauth: function () {
+        var oAuth = this._config.oauth;
+
+        if (!oAuth) {
+            this._logger.error('Invalid oauth configuration');
+            process.exit();
+        }
+
+        this._oAuth2 = new OAuth2(oAuth.clientId, clientId.secret,
+            "https://github.com/",
+            "login/oauth/authorize",
+            "login/oauth/access_token");
+    },
+
+    _getAccessToken: function (req, res, code) {
+
+    },
+
+    _getOauth: function () {
+        return this._oAuth2;
+    },
+
+    _getRedirectUrl: function (req) {
+
+    }
+};
+
+module.exports = Auth;
 
 module.exports = {
 
@@ -19,13 +75,8 @@ module.exports = {
 
         options = opts || {};
         oauth = (function () {
-            var config = options.oauth,
-                createOauth = function (id, secret) {
-                    return new OAuth2(id, secret,
-                        "https://github.com/",
-                        "login/oauth/authorize",
-                        "login/oauth/access_token");
-                };
+            var config = options.oauth;
+
 
             if (!config || !_.isObject(config) || _.isEmpty(config)) {
                 throw new Error('Invalid oauth configuration');

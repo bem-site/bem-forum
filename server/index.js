@@ -47,20 +47,22 @@ app
          * get data`s json without templating
          */
         if (req.query._mode === 'json') {
-            return res.json(req.locals);
+            return res.json(res.locals);
         }
+
+        return res.end(res.locals || req.url || 'empty');
 
         /**
          * The generated html page using the bemhtml + bemhtml
          * and data obtained in middleware `forum`
          */
-        return template.run(_.extend({ block: 'page' }, req.locals), req)
-            .then(function (html) {
-                res.end(html);
-            })
-            .fail(function (err) {
-                res.end(err);
-            });
+        //return template.run(_.extend({ block: 'page' }, req.locals), req)
+        //    .then(function (html) {
+        //        res.end(html);
+        //    })
+        //    .fail(function (err) {
+        //        res.end(err);
+        //    });
     });
 
 app.listen(app.get('port'), function () {

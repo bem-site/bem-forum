@@ -18,15 +18,6 @@ module.exports = function (app, config) {
      */
     _.forEach(config.sites, function (site) {
 
-        githubOAuth({
-            githubClient: process.env['GITHUB_CLIENT'],
-            githubSecret: process.env['GITHUB_SECRET'],
-            baseURL: 'http://localhost',
-            loginURI: '/login',
-            callbackURI: '/callback',
-            scope: 'public_repo' // optional, default scope is set to user
-        });
-
         var router = express.Router();
 
         /**
@@ -38,6 +29,17 @@ module.exports = function (app, config) {
          * Post page
          */
         router.get(':issue_id', controller.issue.bind(controller, site));
+
+
+        /**
+         * Auth
+         */
+        if (config.auth) {
+
+        }
+        router.get('/login', controller.login.bind(controller, site));
+        router.get('/login_callback', controller.loginCallback.bind(controller, site));
+        router.get('/logout', controller.logout.bind(controller, site));
 
         /**
          * Router use by site url
