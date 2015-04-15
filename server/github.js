@@ -17,15 +17,13 @@ Github.prototype = {
         this._addDefaultAPI();
     },
 
-    _callGithubApi: function (token, group, name, options) {
+    _callGithubApi: function (token, group, name, options, site) {
         var _this = this,
             def = vow.defer(),
             github = token ? this._getUserAPI(token) : this._getDefaultAPI();
 
         // select github storage by lang
-        options = this._setStorage(options);
-
-        console.log('github', github[group][name]);
+        options = this._setStorage(options, site);
 
         this._logger.info('name: %s, token: %s, options: %s', name, token, JSON.stringify(options));
 
@@ -43,8 +41,8 @@ Github.prototype = {
         return def.promise();
     },
 
-    _setStorage: function (options) {
-        return _.extend(options, this._config.storage[options.lang]);
+    _setStorage: function (options, site) {
+        return _.extend(options, this._config.sites[site].storage[options.lang]);
     },
 
     _getGithubConfig: function () {
@@ -135,7 +133,25 @@ Github.prototype = {
      * @returns {*}
      */
     getLabels: function (token, options) {
+        console.log('options', options);
         return this._callGithubApi(token, 'issues', 'getLabels', options);
+    },
+
+    /**
+     * Returns list of issues for repository
+     * @param token - {String} oauth user token
+     * @param options - {Object} with fields:
+     *  - state {String} state of issue (open|closed)
+     *  - labels {Array} array of labels
+     *  - sort {String} sort criteria (created|updated|comments)
+     *  - direction {String} sort direction (asc|desc)
+     *  - since {Date}: date from (optional) YYYY-MM-DDTHH:MM:SSZ
+     *  - page {Number} number of page for pagination
+     *  - per_page {Number} number of records per one page
+     * @returns {*}
+     */
+    getIssues: function (token, options, site) {
+        return this._callGithubApi(token, 'issues', 'repoIssues', _.extend(options, { state: 'all', sort: 'updated' }), site);
     }
 };
 

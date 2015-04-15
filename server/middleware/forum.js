@@ -1,10 +1,9 @@
-var express = require('express');
+var _ = require('lodash'),
+    express = require('express');
 
 module.exports = function (app, config) {
 
-    var url = config.url,
-        router = express.Router(),
-        apiRouter = require('../routes/api.js')(express),
+    var apiRouter = require('../routes/api.js')(express),
         Controller = require('../controller.js');
 
     /**
@@ -13,26 +12,27 @@ module.exports = function (app, config) {
     var controller = new Controller(config);
 
     /**
-     * Handler for every request match on this router
-     * Collect baseData (Labels)
+     * Create router for every sites
      */
-    router.get('*', controller.base.bind(controller));
+    _.forEach(config.sites, function (site) {
 
-    /**
-     * INDEX PAGE ROUTE
-     */
-    router.get('/', controller.index.bind(controller));
+        var router = express.Router();
 
-    /**
-     * ISSUE`s page
-     */
-    router.get('/issues/:issue_id', controller.issue.bind(controller));
+        /**
+         * Index page route
+         */
+        router.get('/', controller.index.bind(controller, site));
 
-    /**
-     * Routers use
-     */
-    app.use(url, router);
-    //app.use(url, apiRouter);
+        /**
+         * Post page
+         */
+        router.get('/:issue_id', controller.issue.bind(controller));
+
+        /**
+         * Router use by site url
+         */
+        app.use(site.url, router);
+    });
 
     return function (req, res, next) {
         next();

@@ -1,31 +1,56 @@
 {
     "forum": {
-        "integrate": "default",
-        "url": "/",
         "logger": {
           "level": "debug"
         },
         "port": 3000,
-        "defaultLanguage": "ru",
-        "languages": ["en", "ru"],
-        "storage": {
-          "en": {
-            "user": "tavriaforever",
-            "repo": "bem-forum-tests-en"
-          },
-          "ru": {
-            "user": "tavriaforever",
-            "repo": "bem-forum-tests"
-          }
-        },
-        "archive": {
-          "ru": "archive-example_ru.json"
-        },
-        "labelsRequired": false,
+        "lang": "ru",
         "template": {
-            "level": "desktop",
-            "bundle": "index"
+          "level": "desktop",
+          "bundle": "index"
         },
-        "debug": true
+        "debug": true,
+
+        "sites": {
+
+
+          "forum": {
+            "url": "/",
+            "mode": "forum",
+            "languages": ["en", "ru"],
+            "storage": {
+              "en": {
+                "user": "tavriaforever",
+                "repo": "bem-forum-tests-en"
+              },
+              "ru": {
+                "user": "tavriaforever",
+                "repo": "bem-forum-tests"
+              }
+            },
+            "archive": {
+              "ru": "archive-example_ru.json"
+            },
+            "labelsRequired": false
+          },
+
+
+          "blog": {
+            "url": "/blog",
+            "mode": "blog",
+            "languages": ["en", "ru"],
+            "storage": {
+              "en": {
+                "user": "tavriaforever",
+                "repo": "bem-forum-tests-en"
+              },
+              "ru": {
+                "user": "tavriaforever",
+                "repo": "bem-forum-tests"
+              }
+            }
+          }
+
+        }
     }
 }

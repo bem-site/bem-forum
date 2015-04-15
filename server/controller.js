@@ -1,4 +1,5 @@
-var Model = require('./models/model.js'),
+var _ = require('lodash'),
+    Model = require('./models/model.js'),
     vow = require('vow');
 
 function Controller(config) {
@@ -18,23 +19,29 @@ Controller.prototype = {
      * 1. Get from model labels by lang and user info by token from req.cookies
      * 2. Extend req.locals.forum with labels and users data
      * @param {Object} req - express js request
-     * @param {Object} res - express js response
-     * @param {Function} next - express js call next middleware
      * @returns {*}
      */
-    base: function (req, res, next) {
-        return vow.all({
-            labels: this.model.getLabels(null, req.lang)
-            // user: this.model.getAuthUser(req.cookies['forum_token'], {})
-        }).then(function (data) {
-            // collect user data
-            _.extend(this._getData(req), data);
+    _base: function (site, req) {
+        var _this = this,
+            def = vow.defer(),
+            lang = req.lang;
 
-            return next();
+        vow.all({
+            labels: this.model.getLabels(null, 'forum', lang)
+            //user: this.model.getAuthUser(req.cookies['forum_token'], {})
+        }).then(function (data) {
+
+            // collect user data
+            if (!req.locals) req.locals = {};
+            req.locals.forum = _.extend(_this._getData(req), data);
+
+            return def.resolve();
+
         }).fail(function (err) {
-            console.log('err', err);
-            return next(err);
+            return def.reject(err);
         });
+
+        return def.promise();
     },
 
     /**
@@ -42,16 +49,23 @@ Controller.prototype = {
      * 1. Get from model page title and issues list
      * 2. Extend req.locals.forum with data got in 1 item
      * 3. Set for template view type -> 'issues'
+     * @param {Object} site - current site (forum || blog || etc)
      * @param {Object} req - express js request
      * @param {Object} res - express js response
      * @param {Function} next - express js call next middleware
      * @returns {*}
      */
-    index: function (req, res, next) {
+    index: function (site, req, res, next) {
         var token = req.cookies && req.cookies['forum_token'],
             lang = req.lang;
 
-        return next();
+        return this._base(site, req)
+            .then(function () {
+                return next();
+            })
+            .fail(function (err) {
+                return next(err);
+            });
 
         //return vow.all({
         //    //title: this.model.getTitle(lang),
@@ -88,7 +102,7 @@ Controller.prototype = {
 
         }).then(function (data) {
 
-            _.extend(this._getData(req), data, { view: 'issue' });
+            req.locals.forum = _.extend(this._getData(req), data, { view: 'issue' });
 
             return next();
         });

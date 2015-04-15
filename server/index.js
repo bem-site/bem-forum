@@ -21,13 +21,15 @@ var express = require('express'),
     logger = require('bem-site-logger').setOptions(config['logger']).createLogger(module);
 
 if (app.get('env') === 'development') {
-    // Rebuild bundle on request
-    app
-        .use(morgan('dev'))
-        .use(require('enb/lib/server/server-middleware').createMiddleware({
-            cdir: process.cwd(),
-            noLog: false
-        }));
+
+    // Logging http request
+    app.use(morgan('dev'));
+
+    // // Rebuild bundle on request
+    app.use(require('enb/lib/server/server-middleware').createMiddleware({
+        cdir: process.cwd(),
+        noLog: false
+    }));
 }
 
 app
@@ -38,12 +40,9 @@ app
     .use(bodyParser())
     .use(session({ secret: 'beminfoforum', saveUninitialized: false, resave: false }))
     .use(csrf())
-    .use(locale(config.defaultLanguage))
-    .use(forum(app, config)) // forum middleware
+    .use(locale(config.lang))
+    .use(forum(app, config, 'forum')) // forum middleware
     .use(function (req, res) {
-
-        console.log('end!!!!!!!!!!!!');
-
         /**
          * get data`s json without templating
          */
