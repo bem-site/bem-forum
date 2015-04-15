@@ -17,14 +17,7 @@
           "ru": "archive-example_ru.json"
         },
         "auth": {
-            "tokens": [
-                "7fbbbe1159620f0a973058fd4d2a5d01751d5351",
-                "01a89f20a3de437fbb4ee2f7aeb4891ff51bbde2",
-                "8e715cbedb1a419dea5f8633ce74702f049c72a7",
-                "384145169973a5496819df899d6c4c31c827fc05",
-                "168a4172fe0669724e9bbd565f85c2a716fed41a",
-                "e51bc394d8bf99d1ff80b3a920ba9f9b196ddf53"
-            ]
+            "tokens": []
         },
         "owner_token": "",
         "labelsRequired": false,
