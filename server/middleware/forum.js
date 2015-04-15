@@ -1,5 +1,7 @@
 var _ = require('lodash'),
-    express = require('express');
+    express = require('express'),
+
+    githubOAuth = require('github-oauth');
 
 module.exports = function (app, config) {
 
@@ -7,7 +9,7 @@ module.exports = function (app, config) {
         Controller = require('../controller.js');
 
     /**
-     * INIT SECTION
+     * One controller for all sites
      */
     var controller = new Controller(config);
 
@@ -15,6 +17,15 @@ module.exports = function (app, config) {
      * Create router for every sites
      */
     _.forEach(config.sites, function (site) {
+
+        githubOAuth({
+            githubClient: process.env['GITHUB_CLIENT'],
+            githubSecret: process.env['GITHUB_SECRET'],
+            baseURL: 'http://localhost',
+            loginURI: '/login',
+            callbackURI: '/callback',
+            scope: 'public_repo' // optional, default scope is set to user
+        });
 
         var router = express.Router();
 

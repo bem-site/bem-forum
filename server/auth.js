@@ -48,12 +48,14 @@ module.exports = {
      * @param res - {Object} response object
      */
     sendAuthRequest: function (req, res) {
+
         res.writeHead(303, {
             Location: getOauth(req).getAuthorizeUrl({
                 redirect_uri: getRedirectUrl(req),
                 scope: 'public_repo'
             })
         });
+
         res.end();
     },
 
