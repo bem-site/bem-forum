@@ -24,7 +24,7 @@ Model.prototype = {
 
         if (!sites || !sites.length) {
             this._logger.error('sites info not found in config');
-            process.exit();
+            process.exit(1);
         }
 
         // Fill the storage keys for the site name (forum, blog, etc)
@@ -101,6 +101,9 @@ Model.prototype = {
      * @returns {*}
      */
     getLabels: function (token, site, lang) {
+
+        console.log('LABELS!!!!!!!!!!!!!!');
+
         var _this = this,
             def = vow.defer(),
 

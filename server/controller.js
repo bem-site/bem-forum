@@ -1,6 +1,7 @@
 var _ = require('lodash'),
     Model = require('./models/model.js'),
     Auth = require('./auth.js'),
+    Logger = require('bem-site-logger'),
     vow = require('vow');
 
 function Controller(config) {
@@ -13,24 +14,7 @@ Controller.prototype = {
         this._model = new Model(config);
         this._auth = new Auth(config);
         this._config = config;
-    },
-
-    login: function (site, req, res, next) {
-        var token = req.cookies && req.cookies[site.name + '_token'];
-
-        if (token) {
-            return next();
-        }
-
-        this._auth.sendAuthRequest(site, req, res);
-    },
-
-    loginCallback: function (site, req, res, next) {
-        return next();
-    },
-
-    logout: function (site, req, res, next) {
-        return next();
+        this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
     },
 
     /**
@@ -40,9 +24,10 @@ Controller.prototype = {
      * 2. Extend req.locals.forum with labels and users data
      * @param {Object} site - current site config
      * @param {Object} req - express js request
+     * @param {Object} res - express js response
      * @returns {*}
      */
-    _base: function (site, req) {
+    _base: function (site, req, res) {
         var _this = this,
             def = vow.defer(),
             lang = req.lang;
@@ -52,8 +37,11 @@ Controller.prototype = {
             //user: this._model.getAuthUser(req.cookies['forum_token'], {})
         }).then(function (data) {
 
+            // set previous url for correct login redirect
+            _this._setPreviousUrl(req);
+
             // collect user data
-            res.locals.forum = _.extend(_this._getData(res), data);
+            res.locals.forum = _.extend(_this._getLocalData(res), data);
 
             return def.resolve();
 
@@ -62,6 +50,49 @@ Controller.prototype = {
         });
 
         return def.promise();
+    },
+
+    login: function (site, req, res) {
+        var token = this._auth.getToken(site, req);
+
+        if (token) {
+            return this._redirectAfter(req, res, 404, 'login');
+        }
+
+        this._auth.sendAuthRequest(req, res);
+    },
+
+    loginCallback: function (site, req, res) {
+        var _this = this,
+            code = req.query && req.query.code,
+            strUrl = 'login_callback';
+
+        if (!code || code && this._getTokenCookie(site, req)) {
+            return this._redirectAfter(req, res, 404, strUrl);
+        }
+
+        this._auth.getAccessToken(req, res, code, function (err, access_token) {
+
+            if (err) {
+                return _this._redirectAfter(req, res, 500, strUrl);
+            }
+
+            _this._setTokenCookie(site, res, access_token);
+            _this._redirectAfter(req, res, 303, strUrl);
+        });
+    },
+
+    logout: function (site, req, res) {
+        var token = this._getTokenCookie(site, req);
+
+        console.log('TOKEN', token);
+
+        if (!token) {
+            return this._redirectAfter(req, res, 404, 'logout');
+        }
+
+        res.clearCookie(site.name + '_token', { path: '/' });
+        this._redirectAfter(req, res, 303, 'logout');
     },
 
     /**
@@ -76,10 +107,8 @@ Controller.prototype = {
      * @returns {*}
      */
     index: function (site, req, res, next) {
-        var token = req.cookies && req.cookies['forum_token'],
-            lang = req.lang;
 
-        return this._base(site, req)
+        return this._base(site, req, res)
             .then(function () {
                 return next();
             })
@@ -94,7 +123,7 @@ Controller.prototype = {
         //}).then(function (data) {
         //
         //    // collect final data
-        //    _.extend(this._getData(req), data, { view: 'issues' });
+        //    _.extend(this._getLocalData(req), data, { view: 'issues' });
         //
         //    return next();
         //});
@@ -122,7 +151,7 @@ Controller.prototype = {
 
         }).then(function (data) {
 
-            req.locals.forum = _.extend(this._getData(req), data, { view: 'issue' });
+            req.locals.forum = _.extend(this._getLocalData(req), data, { view: 'issue' });
 
             return next();
         });
@@ -137,10 +166,43 @@ Controller.prototype = {
      * @returns {Object} res.local.forum
      * @private
      */
-    _getData: function (res) {
+    _getLocalData: function (res) {
         var locals = res.locals;
 
         return locals.forum ? locals.forum : (locals.forum = {});
+    },
+
+    _getTokenCookie: function (site, req) {
+        return req.cookies && req.cookies[site.name + '_token'];
+    },
+
+    _setTokenCookie: function (site, res, access_token) {
+        var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
+
+        res.cookie(site.name + '_token', access_token, { expires: expires });
+    },
+
+    _redirectAfter: function (req, res, statusCode, urlPart) {
+        var previousUrl = this._getPreviousUrl(req);
+
+        res.location(previousUrl ? previousUrl : req.url.replace(urlPart, ''));
+        return res.status(statusCode).end();
+    },
+
+    _getPreviousUrl: function (req) {
+        var session = req.session;
+
+        return session && session.previousUrl;
+    },
+
+    _setPreviousUrl: function (req) {
+        var session = req.session;
+
+        if (session) {
+            session.previousUrl = req.url;
+        } else {
+            this._logger.warn('Add session middleware for correct auth work');
+        }
     }
 };
 
