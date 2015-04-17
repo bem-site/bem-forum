@@ -31,16 +31,12 @@ Model.prototype = {
         // Added to the storage site's default values divided by language
         // this._storage.blog.ru = { ... }
         _.keys(storageByLang).forEach(function (lang) {
-            console.log('lang', lang);
             this._storage[lang] = {
                 labels: {
                     etag: "",
                     data: []
                 },
-                users: {
-                    etag: "",
-                    data: []
-                },
+                users: {},
                 issues: {
                     etag: "",
                     data: []
@@ -61,26 +57,64 @@ Model.prototype = {
 
     _getStorage: function (arg) {
         var lang = arg.lang,
-            type = arg.type;
+            type = arg.type,
+            name = arg.name;
 
-        this._logger.debug('Get %s from %s storage', type, lang);
+        this._logger.verbose('Get %s from %s storage', type, lang);
+
+        if (type === 'users' && name) {
+            return this._getUserStorage(lang, name).data;
+        }
+
         return this._storage[lang][type].data;
     },
 
     _setStorage: function (arg, data) {
         var lang = arg.lang,
-            type = arg.type;
+            type = arg.type,
+            name = arg.name;
 
-        this._logger.debug('Set %s in %s storage', type, lang);
+        this._logger.verbose('Set %s in %s storage', type, lang);
+
+        if (type === 'users' && name) {
+            return this._getUserStorage(lang, name).data = data;
+        }
+
         this._storage[lang][type].data = data;
     },
 
     _getEtag: function (arg) {
-        return this._storage[arg.lang][arg.type].etag;
+        var lang = arg.lang,
+            type = arg.type,
+            name = arg.name;
+
+        if (type === 'users' && name) {
+            return this._getUserStorage(lang, name).etag;
+        }
+
+        return this._storage[lang][type].etag;
     },
 
     _setEtag: function (arg, etag) {
-        this._storage[arg.lang][arg.type].etag = etag;
+        var lang = arg.lang,
+            type = arg.type,
+            name = arg.name;
+
+        if (type === 'users' && name) {
+            this._getUserStorage(lang, name).etag = etag;
+        }
+
+        this._storage[lang][type].etag = etag;
+    },
+
+    _getUserStorage: function (lang, name) {
+        var userStorage = this._storage[lang].users[name];
+
+        if (!userStorage) {
+            userStorage = { data: [], etag: '' };
+        }
+
+        return userStorage;
     },
 
     /**
@@ -89,7 +123,7 @@ Model.prototype = {
      * @param lang
      * @returns {*}
      */
-    getLabels: function (lang) {
+    getLabels: function (token, lang) {
         var _this = this,
             def = vow.defer(),
 
@@ -104,7 +138,7 @@ Model.prototype = {
                 page: 1
             };
 
-        this._github.getLabels(null, options)
+        this._github.getLabels(token, options)
             .then(function (result) {
 
                 var meta = result.meta;
@@ -126,6 +160,41 @@ Model.prototype = {
 
                 return def.resolve(result);
 
+            })
+            .fail(function (err) {
+                return def.reject(err);
+            });
+
+        return def.promise();
+    },
+
+    getAuthUser: function (req, token, name) {
+        var def = vow.defer();
+
+        if (!token) {
+            def.resolve();
+        }
+
+        var _this = this,
+            arg = { type: 'users', lang: req.lang, name: name },
+            user = this._getStorage(arg),
+            eTag = this._getEtag(arg);
+
+        this._github
+            .getAuthUser(token, { headers: eTag ? { 'If-None-Match': eTag } : {} })
+            .then(function (result) {
+                var meta = result.meta;
+
+                // save etag in memory
+                _this._setEtag(arg, meta.etag);
+
+                if (user && meta['x-ratelimit-remaining'] === 0 || _this._isNotChangedData(meta.status)) {
+                    return def.resolve(user);
+                }
+
+                _this._setStorage(arg, result);
+
+                return def.resolve(result);
             })
             .fail(function (err) {
                 return def.reject(err);

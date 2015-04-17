@@ -25,7 +25,7 @@ Github.prototype = {
         // select github storage by lang
         options = this._setStorage(options);
 
-        this._logger.info('name: %s, token: %s, options: %s', name, token, JSON.stringify(options));
+        this._logger.info('group: %s, name: %s, token: %s, options: %s', group, name, token, JSON.stringify(options));
 
         // see docs http://mikedeboer.github.io/node-github/
         github[group][name].call(null, options, function (err, result) {
@@ -133,6 +133,16 @@ Github.prototype = {
      */
     getLabels: function (token, options) {
         return this._callGithubApi(token, 'issues', 'getLabels', options);
+    },
+
+    /**
+     * Returns authentificated user
+     * @param token - {String} oauth user token
+     * @param options - {Object} empty object
+     * @returns {*}
+     */
+    getAuthUser: function (token, options) {
+        return this._callGithubApi(token, 'user', 'get', options);
     },
 
     /**

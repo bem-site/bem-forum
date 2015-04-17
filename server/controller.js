@@ -22,7 +22,6 @@ Controller.prototype = {
      * that match default`s forum router.
      * 1. Get from model labels by lang and user info by token from req.cookies
      * 2. Extend req.locals.forum with labels and users data
-     * @param {Object} site - current site config
      * @param {Object} req - express js request
      * @param {Object} res - express js response
      * @returns {*}
@@ -30,11 +29,14 @@ Controller.prototype = {
     _base: function (req, res) {
         var _this = this,
             def = vow.defer(),
-            lang = req.lang;
+            lang = req.lang,
+            userCookie = this._auth.getUserCookie(req, 'forum_user'),
+            token = userCookie ? userCookie[0] : null,
+            name = userCookie ? userCookie[1] : null;
 
         vow.all({
-            labels: this._model.getLabels(lang)
-            //user: this._model.getAuthUser(req.cookies['forum_token'], {})
+            labels: this._model.getLabels(token, lang),
+            user: this._model.getAuthUser(req, token, name)
         }).then(function (data) {
 
             // set previous url for correct login redirect
@@ -53,7 +55,7 @@ Controller.prototype = {
     },
 
     login: function (req, res) {
-        var token = this._auth.getToken(req);
+        var token = this._auth.getUserCookie(req, 'forum_user');
 
         if (token) {
             return this._redirectAfter(req, res, 303, 'login');
@@ -67,29 +69,45 @@ Controller.prototype = {
             code = req.query && req.query.code,
             strUrl = 'login_callback';
 
-        if (!code || code && this._auth.getToken(req)) {
+        if (!code || code && this._auth.getUserCookie(req, 'forum_user')) {
             return this._redirectAfter(req, res, 303, strUrl);
         }
 
-        this._auth.getAccessToken(req, res, code, function (err, access_token) {
+        this._auth.getAccessToken(req, res, code, function (err, token) {
 
             if (err) {
+                _this._logger.error('Can`t get access token %s', err);
                 return _this._redirectAfter(req, res, 500, strUrl);
             }
 
-            _this._auth.setToken(res, access_token);
-            _this._redirectAfter(req, res, 303, strUrl);
+            // get user login
+            _this._model.getAuthUser(req, token)
+                .then(function (result) {
+
+                    if (!result) {
+                        _this._logger.error('Can`t get user info after login, result is empty');
+                        _this._redirectAfter(req, res, 500, strUrl);
+                        return;
+                    }
+
+                    _this._auth.setUserCookie(res, 'forum_user', token, result.login);
+                    _this._redirectAfter(req, res, 303, strUrl);
+                })
+                .fail(function (err) {
+                    _this._logger.error('Can`t get user info after login %s', err);
+                    _this._redirectAfter(req, res, 500, strUrl);
+                });
         });
     },
 
     logout: function (req, res) {
-        var token = this._auth.getToken(req);
+        var token = this._auth.getUserCookie(req, 'forum_user');
 
         if (!token) {
             return this._redirectAfter(req, res, 303, 'logout');
         }
 
-        res.clearCookie('forum_token', { path: '/' });
+        this._auth.delUserCookie(res, 'forum_user', '/');
         this._redirectAfter(req, res, 303, 'logout');
     },
 
@@ -98,7 +116,6 @@ Controller.prototype = {
      * 1. Get from model page title and issues list
      * 2. Extend req.locals.forum with data got in 1 item
      * 3. Set for template view type -> 'issues'
-     * @param {Object} site - current site config
      * @param {Object} req - express js request
      * @param {Object} res - express js response
      * @param {Function} next - express js call next middleware

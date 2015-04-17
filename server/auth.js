@@ -42,14 +42,29 @@ Auth.prototype = {
         this._getOauth().getOAuthAccessToken(code, {}, cb);
     },
 
-    getToken: function (req) {
-        return req.cookies && req.cookies['forum_token'];
+    getUserCookie: function (req, name, onlyToken) {
+        var userCookie = req.cookies && req.cookies[name];
+
+        if (!userCookie) return '';
+
+        userCookie = userCookie.split(';;');
+
+        if (onlyToken) {
+            return userCookie[0];
+        }
+
+        return userCookie;
     },
 
-    setToken: function (res, access_token) {
-        var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
+    setUserCookie: function (res, cookieName, access_token, username) {
+        var expires = new Date(Date.now() + (86400000 * 5)),
+            value = [access_token, username].join(';;'); // 5 days
 
-        res.cookie('forum_token', access_token, { expires: expires });
+        res.cookie(cookieName, value, { expires: expires, httpOnly: true });
+    },
+
+    delUserCookie: function (res, cookieName, path) {
+        res.clearCookie(cookieName, { path: path });
     },
 
     _createOauth: function () {
