@@ -17,13 +17,13 @@ Github.prototype = {
         this._addDefaultAPI();
     },
 
-    _callGithubApi: function (site, token, group, name, options) {
+    _callGithubApi: function (token, group, name, options) {
         var _this = this,
             def = vow.defer(),
             github = token ? this._getUserAPI(token) : this._getDefaultAPI();
 
-        // select github storage by site and lang
-        options = this._setStorage(site, options);
+        // select github storage by lang
+        options = this._setStorage(options);
 
         this._logger.info('name: %s, token: %s, options: %s', name, token, JSON.stringify(options));
 
@@ -41,8 +41,8 @@ Github.prototype = {
         return def.promise();
     },
 
-    _setStorage: function (site, options) {
-        return _.extend(options, site.storage[options.lang]);
+    _setStorage: function (options) {
+        return _.extend(options, this._config.storage[options.lang]);
     },
 
     _getGithubConfig: function () {
@@ -131,8 +131,8 @@ Github.prototype = {
      * @param options - {Object} options { per_page, page, headers: {}, lang: ...}
      * @returns {*}
      */
-    getLabels: function (site, token, options) {
-        return this._callGithubApi(site, token, 'issues', 'getLabels', options);
+    getLabels: function (token, options) {
+        return this._callGithubApi(token, 'issues', 'getLabels', options);
     },
 
     /**
@@ -148,8 +148,8 @@ Github.prototype = {
      *  - per_page {Number} number of records per one page
      * @returns {*}
      */
-    getIssues: function (token, options, site) {
-        return this._callGithubApi(token, 'issues', 'repoIssues', _.extend(options, { state: 'all', sort: 'updated' }), site);
+    getIssues: function (token, options) {
+        return this._callGithubApi(token, 'issues', 'repoIssues', _.extend(options, { state: 'all', sort: 'updated' }));
     }
 };
 

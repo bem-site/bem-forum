@@ -27,13 +27,13 @@ Controller.prototype = {
      * @param {Object} res - express js response
      * @returns {*}
      */
-    _base: function (site, req, res) {
+    _base: function (req, res) {
         var _this = this,
             def = vow.defer(),
             lang = req.lang;
 
         vow.all({
-            labels: this._model.getLabels(null, site, lang)
+            labels: this._model.getLabels(lang)
             //user: this._model.getAuthUser(req.cookies['forum_token'], {})
         }).then(function (data) {
 
@@ -52,23 +52,23 @@ Controller.prototype = {
         return def.promise();
     },
 
-    login: function (site, req, res) {
-        var token = this._auth.getToken(site, req);
+    login: function (req, res) {
+        var token = this._auth.getToken(req);
 
         if (token) {
-            return this._redirectAfter(req, res, 404, 'login');
+            return this._redirectAfter(req, res, 303, 'login');
         }
 
         this._auth.sendAuthRequest(req, res);
     },
 
-    loginCallback: function (site, req, res) {
+    loginCallback: function (req, res) {
         var _this = this,
             code = req.query && req.query.code,
             strUrl = 'login_callback';
 
-        if (!code || code && this._getTokenCookie(site, req)) {
-            return this._redirectAfter(req, res, 404, strUrl);
+        if (!code || code && this._auth.getToken(req)) {
+            return this._redirectAfter(req, res, 303, strUrl);
         }
 
         this._auth.getAccessToken(req, res, code, function (err, access_token) {
@@ -77,21 +77,19 @@ Controller.prototype = {
                 return _this._redirectAfter(req, res, 500, strUrl);
             }
 
-            _this._setTokenCookie(site, res, access_token);
+            _this._auth.setToken(res, access_token);
             _this._redirectAfter(req, res, 303, strUrl);
         });
     },
 
-    logout: function (site, req, res) {
-        var token = this._getTokenCookie(site, req);
-
-        console.log('TOKEN', token);
+    logout: function (req, res) {
+        var token = this._auth.getToken(req);
 
         if (!token) {
-            return this._redirectAfter(req, res, 404, 'logout');
+            return this._redirectAfter(req, res, 303, 'logout');
         }
 
-        res.clearCookie(site.name + '_token', { path: '/' });
+        res.clearCookie('forum_token', { path: '/' });
         this._redirectAfter(req, res, 303, 'logout');
     },
 
@@ -106,9 +104,9 @@ Controller.prototype = {
      * @param {Function} next - express js call next middleware
      * @returns {*}
      */
-    index: function (site, req, res, next) {
+    index: function (req, res, next) {
 
-        return this._base(site, req, res)
+        return this._base(req, res)
             .then(function () {
                 return next();
             })
@@ -170,16 +168,6 @@ Controller.prototype = {
         var locals = res.locals;
 
         return locals.forum ? locals.forum : (locals.forum = {});
-    },
-
-    _getTokenCookie: function (site, req) {
-        return req.cookies && req.cookies[site.name + '_token'];
-    },
-
-    _setTokenCookie: function (site, res, access_token) {
-        var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
-
-        res.cookie(site.name + '_token', access_token, { expires: expires });
     },
 
     _redirectAfter: function (req, res, statusCode, urlPart) {

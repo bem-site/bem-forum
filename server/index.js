@@ -41,7 +41,7 @@ app
     .use(session({ secret: 'beminfoforum', saveUninitialized: false, resave: false }))
     .use(csrf())
     .use(locale(config.lang))
-    .use(forum(app, config, 'forum')) // forum middleware
+    .use(forum('/', app, config)) // forum middleware
     .use(function (req, res) {
 
         /**

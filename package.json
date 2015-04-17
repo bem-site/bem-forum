@@ -1,8 +1,18 @@
 {
-  "author": "tormozz48",
+  "author": "Nickolay Ilchenko <tavriaforever@yandex.ru> (http://github.com/tavriaforever)",
+  "contributors": [
+    {
+      "name": "Andrey Kuznecov",
+      "email": "<andrey.kuznetsov48@yandex.ua",
+      "github": "http://github.com/tormozz48"
+    },
+    {
+      "name": "Gela Konstantinova",
+      "github": "http://github.com/gela-d"
+    }
+  ],
   "name": "bem-forum",
-  "email": "tormozz48@gmail.com",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/bem/bem-forum.git"
@@ -19,7 +29,6 @@
     "express": "~4.3.0",
     "express-session": "^1.8.2",
     "github": "git://github.com/mikedeboer/node-github.git",
-    "github-oauth": "^0.2.1",
     "highlight.js": "7.0.1",
     "json-stringify-safe": "5.0.0",
     "lodash": "~2.4.1",

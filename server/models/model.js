@@ -19,46 +19,38 @@ Model.prototype = {
     },
 
     _initMemoryStorage: function () {
-        var config = this._config,
-            sites = config.sites;
+        var storageByLang = this._config.storage;
 
-        if (!sites || !sites.length) {
-            this._logger.error('sites info not found in config');
+        if (!storageByLang || _.isEmpty(storageByLang)) {
+            this._logger.error('forum middleware storage info not found in config');
             process.exit(1);
         }
 
-        // Fill the storage keys for the site name (forum, blog, etc)
-        _.forEach(sites, function (site) {
-            var siteName = site.name;
+        this._storage = {};
 
-            this._storage[siteName] = {};
-
-            // Added to the storage site's default values divided by language
-            // this._storage.blog.ru = { ... }
-            _.forEach(site.langs, function (lang) {
-                this._storage[siteName][lang] = {
-                    labels: {
-                        etag: "",
-                        data: []
-                    },
-                    users: {
-                        etag: "",
-                        data: []
-                    },
-                    issues: {
-                        etag: "",
-                        data: []
-                    },
-                    comments: {
-                        etag: "",
-                        data: []
-                    }
+        // Added to the storage site's default values divided by language
+        // this._storage.blog.ru = { ... }
+        _.keys(storageByLang).forEach(function (lang) {
+            console.log('lang', lang);
+            this._storage[lang] = {
+                labels: {
+                    etag: "",
+                    data: []
+                },
+                users: {
+                    etag: "",
+                    data: []
+                },
+                issues: {
+                    etag: "",
+                    data: []
+                },
+                comments: {
+                    etag: "",
+                    data: []
                 }
-            }, this);
-
+            }
         }, this);
-
-        //console.log('STORAGE', JSON.stringify(this._storage, null, 4));
 
         return this._storage;
     },
@@ -68,50 +60,40 @@ Model.prototype = {
     },
 
     _getStorage: function (arg) {
-        var siteName = arg.siteName,
-            lang = arg.lang,
+        var lang = arg.lang,
             type = arg.type;
 
-        this._logger.debug('Get %s from storage for %s %s', type, lang, siteName);
-        return this._storage[siteName][lang][type].data;
+        this._logger.debug('Get %s from %s storage', type, lang);
+        return this._storage[lang][type].data;
     },
 
     _setStorage: function (arg, data) {
-        var siteName = arg.siteName,
-            lang = arg.lang,
+        var lang = arg.lang,
             type = arg.type;
 
-        this._logger.debug('Set %s in storage for %s %s', type, lang, siteName);
-        this._storage[siteName][lang][type].data = data;
+        this._logger.debug('Set %s in %s storage', type, lang);
+        this._storage[lang][type].data = data;
     },
 
     _getEtag: function (arg) {
-        return this._storage[arg.siteName][arg.lang][arg.type].etag;
+        return this._storage[arg.lang][arg.type].etag;
     },
 
     _setEtag: function (arg, etag) {
-        this._storage[arg.siteName][arg.lang][arg.type].etag = etag;
+        this._storage[arg.lang][arg.type].etag = etag;
     },
 
     /**
      * Check result.meta -> status, etag, x-ratelimit-remaining
      * @param token
-     * @param site
      * @param lang
      * @returns {*}
      */
-    getLabels: function (token, site, lang) {
-
-        console.log('LABELS!!!!!!!!!!!!!!');
-
+    getLabels: function (lang) {
         var _this = this,
             def = vow.defer(),
 
-            arg = {
-                siteName: site.name,
-                type: 'labels',
-                lang: lang
-            },
+            arg = { type: 'labels', lang: lang },
             labels = this._getStorage(arg),
             eTag = this._getEtag(arg),
 
@@ -122,7 +104,7 @@ Model.prototype = {
                 page: 1
             };
 
-        this._github.getLabels(site, token, options)
+        this._github.getLabels(null, options)
             .then(function (result) {
 
                 var meta = result.meta;

@@ -42,8 +42,14 @@ Auth.prototype = {
         this._getOauth().getOAuthAccessToken(code, {}, cb);
     },
 
-    getToken: function (site, req) {
-        return req.cookies && req.cookies[site.name + '_token'];
+    getToken: function (req) {
+        return req.cookies && req.cookies['forum_token'];
+    },
+
+    setToken: function (res, access_token) {
+        var expires = new Date(Date.now() + (86400000 * 5)); // 5 days
+
+        res.cookie('forum_token', access_token, { expires: expires });
     },
 
     _createOauth: function () {
