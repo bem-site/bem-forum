@@ -28,34 +28,28 @@ Model.prototype = {
 
         this._storage = {};
 
-        // Added to the storage site's default values divided by language
-        // this._storage.blog.ru = { ... }
+        // Generate basic storage by lang
         _.keys(storageByLang).forEach(function (lang) {
             this._storage[lang] = {
-                labels: {
-                    etag: "",
-                    data: []
-                },
                 users: {},
-                issues: {
-                    etag: "",
-                    data: []
-                },
-                comments: {
-                    etag: "",
-                    data: []
-                }
+                issues: {},
+                labels: { etag: '', data: [] },
+                comments: { etag: '', data: [] }
             }
         }, this);
 
         return this._storage;
     },
 
-    _isNotChangedData: function (status) {
-        return status.indexOf('304') !== -1;
+    _isDataNotChanged: function (meta) {
+        return meta.status.indexOf('304') !== -1;
     },
 
-    _getStorage: function (arg) {
+    _isEndedApiReq: function (meta) {
+        return meta['x-ratelimit-remaining'] < 100;
+    },
+
+    _getStorage: function (arg, options) {
         var lang = arg.lang,
             type = arg.type,
             name = arg.name;
@@ -66,10 +60,14 @@ Model.prototype = {
             return this._getUserStorage(lang, name).data;
         }
 
+        if (type === 'issues' && options) {
+            return this._getIssuesStorage(options);
+        }
+
         return this._storage[lang][type].data;
     },
 
-    _setStorage: function (arg, data) {
+    _setStorage: function (arg, data, options) {
         var lang = arg.lang,
             type = arg.type,
             name = arg.name;
@@ -80,10 +78,14 @@ Model.prototype = {
             return this._getUserStorage(lang, name).data = data;
         }
 
+        if (type === 'issues' && options) {
+            return this._getIssuesStorage(options).data = data;
+        }
+
         this._storage[lang][type].data = data;
     },
 
-    _getEtag: function (arg) {
+    _getEtag: function (arg, options) {
         var lang = arg.lang,
             type = arg.type,
             name = arg.name;
@@ -92,16 +94,24 @@ Model.prototype = {
             return this._getUserStorage(lang, name).etag;
         }
 
+        if (type === 'issues' && options) {
+            return this._getIssuesStorage(options).etag;
+        }
+
         return this._storage[lang][type].etag;
     },
 
-    _setEtag: function (arg, etag) {
+    _setEtag: function (arg, etag, options) {
         var lang = arg.lang,
             type = arg.type,
             name = arg.name;
 
         if (type === 'users' && name) {
             this._getUserStorage(lang, name).etag = etag;
+        }
+
+        if (type === 'issues' && options) {
+            return this._getIssuesStorage(options).etag = etag;
         }
 
         this._storage[lang][type].etag = etag;
@@ -117,6 +127,58 @@ Model.prototype = {
         return userStorage;
     },
 
+    _getIssuesStorage: function (options) {
+        var lang = options.lang,
+            page = options.page,
+            sort = options.sort,
+            labels = options.labels;
+
+        var basicStorage = this._storage[lang].issues;
+
+        if (_.isEmpty(basicStorage) || !basicStorage[page]) {
+            basicStorage[page] = {};
+        }
+
+        if (_.isEmpty(basicStorage[page]) || !basicStorage[page][sort]) {
+            basicStorage[page][sort] = {};
+        }
+
+        if (_.isEmpty(basicStorage[page][sort]) || !basicStorage[page][sort][labels]) {
+            basicStorage[page][sort][labels] = {};
+        }
+
+        var issuesStorage = basicStorage[page][sort][labels];
+
+        if (!issuesStorage) {
+            issuesStorage = { data: [], etag: '' }
+        }
+
+        return issuesStorage;
+    },
+
+    _onSuccess: function (def, item, argv, options, data) {
+
+        // issues type have additional arguments
+        data = (argv.type === 'issues') ? data : options;
+
+        var meta = data.meta;
+
+        // We has had item and the datа wasn`t changed -> get item from storage
+        if (item && this._isDataNotChanged(meta)) {
+            return def.resolve(item);
+        }
+
+        // We don`t have a datа or datа was changed -> resolve with new data
+        this._setEtag(argv, meta.etag, options);
+        this._setStorage(argv, data, options);
+
+        return def.resolve(data);
+    },
+
+    _onError: function (def, err) {
+        return def.reject(err);
+    },
+
     /**
      * Check result.meta -> status, etag, x-ratelimit-remaining
      * @param token
@@ -124,46 +186,22 @@ Model.prototype = {
      * @returns {*}
      */
     getLabels: function (token, lang) {
-        var _this = this,
-            def = vow.defer(),
+        var def = vow.defer(),
 
-            arg = { type: 'labels', lang: lang },
-            labels = this._getStorage(arg),
-            eTag = this._getEtag(arg),
+            argv = { type: 'labels', lang: lang },
+            labels = this._getStorage(argv),
+            eTag = this._getEtag(argv),
 
             options = {
                 headers: eTag ? { 'If-None-Match': eTag } : {},
-                lang: lang,
                 per_page: 100,
+                lang: lang,
                 page: 1
             };
 
         this._github.getLabels(token, options)
-            .then(function (result) {
-
-                var meta = result.meta;
-
-                // save etag in memory
-                _this._setEtag(arg, meta.etag);
-
-                /**
-                 * If the labels are in memory
-                 * and we spent all requests to github API
-                 * or date hasn`t changed, then take the data from the memory
-                 */
-                if (labels && meta['x-ratelimit-remaining'] === 0 || _this._isNotChangedData(meta.status)) {
-                    return def.resolve(labels);
-                }
-
-                // Else save labels in memory
-                _this._setStorage(arg, result);
-
-                return def.resolve(result);
-
-            })
-            .fail(function (err) {
-                return def.reject(err);
-            });
+            .then(this._onSuccess.bind(this, def, labels, argv))
+            .fail(this._onError.bind(this, def));
 
         return def.promise();
     },
@@ -175,48 +213,38 @@ Model.prototype = {
             def.resolve();
         }
 
-        var _this = this,
-            arg = { type: 'users', lang: req.lang, name: name },
-            user = this._getStorage(arg),
-            eTag = this._getEtag(arg);
+        var argv = { type: 'users', lang: req.lang, name: name },
+            user = this._getStorage(argv),
+            eTag = this._getEtag(argv);
 
         this._github
             .getAuthUser(token, { headers: eTag ? { 'If-None-Match': eTag } : {} })
-            .then(function (result) {
-                var meta = result.meta;
-
-                // save etag in memory
-                _this._setEtag(arg, meta.etag);
-
-                if (user && meta['x-ratelimit-remaining'] === 0 || _this._isNotChangedData(meta.status)) {
-                    return def.resolve(user);
-                }
-
-                _this._setStorage(arg, result);
-
-                return def.resolve(result);
-            })
-            .fail(function (err) {
-                return def.reject(err);
-            });
+            .then(this._onSuccess.bind(this, def, user, argv))
+            .fail(this._onError.bind(this, def));
 
         return def.promise();
     },
 
-    getIssues: function (token, lang) {
+    getIssues: function (req, token) {
         var def = vow.defer(),
-            issues = this._issues,
-            etag = this._etag,
+            query = req.query || {},
             options = {
-                headers: etag ? { 'If-None-Match': etag } : {},
-                lang: lang,
-                per_page: 100,
-                page: 1,
                 state: 'all',
-                sort: 'updated'
-            };
+                lang: req.lang,
+                per_page: 5,
+                page: query.page || 1,
+                sort: query.sort || 'updated',
+                labels: query.labels || ''
+            },
+            argv = { type: 'issues', options: options},
+            issues = this._getStorage(argv, options),
+            eTag = this._getEtag(argv, options);
 
-        // this._github.getIssues(token, options);
+        this._github.getIssues(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
+            .then(this._onSuccess.bind(this, def, issues, argv, options))
+            .fail(this._onError.bind(this, def));
+
+        return def.promise();
     }
 };
 

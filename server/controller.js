@@ -122,26 +122,23 @@ Controller.prototype = {
      * @returns {*}
      */
     index: function (req, res, next) {
+        var _this = this;
+        var userCookie = this._auth.getUserCookie(req, 'forum_user');
+        var token = userCookie ? userCookie[0] : null;
 
         return this._base(req, res)
             .then(function () {
+                return _this._model.getIssues(req, token);
+            })
+            .then(function (data) {
+                // collect user data
+                res.locals.forum = _.extend(_this._getLocalData(res), data);
+
                 return next();
             })
             .fail(function (err) {
                 return next(err);
             });
-
-        //return vow.all({
-        //    //title: this._model.getTitle(lang),
-        //    issues: this._model.getIssues(token, this._config, lang)
-        //
-        //}).then(function (data) {
-        //
-        //    // collect final data
-        //    _.extend(this._getLocalData(req), data, { view: 'issues' });
-        //
-        //    return next();
-        //});
     },
 
     /**

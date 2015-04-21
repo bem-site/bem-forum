@@ -37,9 +37,9 @@ app.use(function (req, res) {
     /**
      * get data`s json without templating
      */
-    if (req.query._mode === 'json') {
+    //if (req.query._mode === 'json') {
         return res.end('<pre>' + JSON.stringify(res.locals, null, 4) + '</pre>');
-    }
+    //}
 
     /**
      * The generated html page using the bemhtml + bemhtml

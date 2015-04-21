@@ -25,23 +25,27 @@ Github.prototype = {
         // select github storage by lang
         options = this._setStorage(options);
 
-        this._logger.info('group: %s, name: %s, token: %s, options: %s', group, name, token, JSON.stringify(options));
-
         // see docs http://mikedeboer.github.io/node-github/
-        github[group][name].call(null, options, function (err, result) {
-            if (err || !result) {
-                _this._logger.error('name: %s, token: %s, options: %s', name, group, token);
+        github[group][name].call(null, options, function (err, data) {
+            if (err || !data) {
+                _this._logger.error(
+                    'group: %s, name: %s, token: %s, options: %s',
+                    group, name, token, JSON.stringify(options));
 
-                def.reject(err);
-            } else {
-                def.resolve(result);
+                return def.reject(err);
             }
+
+            _this._logger.info('status: %s, group: %s, name: %s, token: %s', data.meta.status, group, name, token);
+            _this._logger.debug('options: %s', JSON.stringify(options));
+            return def.resolve(data);
         });
 
         return def.promise();
     },
 
     _setStorage: function (options) {
+        console.log('storage', this._config.storage[options.lang]);
+
         return _.extend(options, this._config.storage[options.lang]);
     },
 
@@ -159,7 +163,7 @@ Github.prototype = {
      * @returns {*}
      */
     getIssues: function (token, options) {
-        return this._callGithubApi(token, 'issues', 'repoIssues', _.extend(options, { state: 'all', sort: 'updated' }));
+        return this._callGithubApi(token, 'issues', 'repoIssues', options);
     }
 };
 
