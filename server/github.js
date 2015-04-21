@@ -22,8 +22,10 @@ Github.prototype = {
             def = vow.defer(),
             github = token ? this._getUserAPI(token) : this._getDefaultAPI();
 
-        // select github storage by lang
-        options = this._setStorage(options);
+        if (options.setRepoStorage) {
+            // select github storage by lang
+            options = this._setStorage(options);
+        }
 
         // see docs http://mikedeboer.github.io/node-github/
         github[group][name].call(null, options, function (err, data) {
@@ -44,8 +46,6 @@ Github.prototype = {
     },
 
     _setStorage: function (options) {
-        console.log('storage', this._config.storage[options.lang]);
-
         return _.extend(options, this._config.storage[options.lang]);
     },
 

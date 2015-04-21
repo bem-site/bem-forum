@@ -28,10 +28,12 @@ Model.prototype = {
 
         this._storage = {};
 
+        // set data that not require lang
+        this._storage.users = {};
+
         // Generate basic storage by lang
         _.keys(storageByLang).forEach(function (lang) {
             this._storage[lang] = {
-                users: {},
                 issues: {},
                 labels: { etag: '', data: [] },
                 comments: { etag: '', data: [] }
@@ -72,17 +74,18 @@ Model.prototype = {
             type = arg.type,
             name = arg.name;
 
-        this._logger.verbose('Set %s in %s storage', type, lang);
-
         if (type === 'users' && name) {
-            return this._getUserStorage(lang, name).data = data;
+            this._logger.verbose('Set %s in storage', type);
+            return this._getUserStorage(name).data = data;
         }
+
+        this._logger.verbose('Set %s in %s storage', type, lang);
 
         if (type === 'issues' && options) {
             return this._getIssuesStorage(options).data = data;
         }
 
-        this._storage[lang][type].data = data;
+        return this._storage[lang][type].data = data;
     },
 
     _getEtag: function (arg, options) {
@@ -91,7 +94,7 @@ Model.prototype = {
             name = arg.name;
 
         if (type === 'users' && name) {
-            return this._getUserStorage(lang, name).etag;
+            return this._getUserStorage(name).etag;
         }
 
         if (type === 'issues' && options) {
@@ -107,24 +110,24 @@ Model.prototype = {
             name = arg.name;
 
         if (type === 'users' && name) {
-            this._getUserStorage(lang, name).etag = etag;
+            return this._getUserStorage(name).etag = etag;
         }
 
         if (type === 'issues' && options) {
             return this._getIssuesStorage(options).etag = etag;
         }
 
-        this._storage[lang][type].etag = etag;
+        return this._storage[lang][type].etag = etag;
     },
 
-    _getUserStorage: function (lang, name) {
-        var userStorage = this._storage[lang].users[name];
+    _getUserStorage: function (name) {
+        var userStorage = this._storage.users;
 
-        if (!userStorage) {
-            userStorage = { data: [], etag: '' };
+        if (!userStorage[name]) {
+            userStorage[name] = { data: [], etag: '' };
         }
 
-        return userStorage;
+        return userStorage[name];
     },
 
     _getIssuesStorage: function (options) {
@@ -193,6 +196,7 @@ Model.prototype = {
             eTag = this._getEtag(argv),
 
             options = {
+                setRepoStorage: true,
                 headers: eTag ? { 'If-None-Match': eTag } : {},
                 per_page: 100,
                 lang: lang,
@@ -229,6 +233,7 @@ Model.prototype = {
         var def = vow.defer(),
             query = req.query || {},
             options = {
+                setRepoStorage: true,
                 state: 'all',
                 lang: req.lang,
                 per_page: 5,

@@ -34,6 +34,8 @@ Controller.prototype = {
             token = userCookie ? userCookie[0] : null,
             name = userCookie ? userCookie[1] : null;
 
+        console.log('name', name);
+
         vow.all({
             labels: this._model.getLabels(token, lang),
             user: this._model.getAuthUser(req, token, name)
