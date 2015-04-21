@@ -38,7 +38,7 @@ Github.prototype = {
             }
 
             _this._logger.info('status: %s, group: %s, name: %s, token: %s', data.meta.status, group, name, token);
-            _this._logger.debug('options: %s', JSON.stringify(options));
+            _this._logger.verbose('options: %s', JSON.stringify(options));
             return def.resolve(data);
         });
 

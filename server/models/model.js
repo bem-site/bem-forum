@@ -1,6 +1,7 @@
 var _ = require('lodash'),
     vow = require('vow'),
     Github = require('../github.js'),
+    MemoryStorage = require('../memoryStorage.js'),
     Logger = require('bem-site-logger');
 
 function Model (config) {
@@ -9,154 +10,11 @@ function Model (config) {
 
 Model.prototype = {
 
-    _storage: {},
-
     _init: function (config) {
         this._config = config;
         this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
         this._github = new Github(config);
-        this._initMemoryStorage();
-    },
-
-    _initMemoryStorage: function () {
-        var storageByLang = this._config.storage;
-
-        if (!storageByLang || _.isEmpty(storageByLang)) {
-            this._logger.error('forum middleware storage info not found in config');
-            process.exit(1);
-        }
-
-        this._storage = {};
-
-        // set data that not require lang
-        this._storage.users = {};
-
-        // Generate basic storage by lang
-        _.keys(storageByLang).forEach(function (lang) {
-            this._storage[lang] = {
-                issues: {},
-                labels: { etag: '', data: [] },
-                comments: { etag: '', data: [] }
-            }
-        }, this);
-
-        return this._storage;
-    },
-
-    _isDataNotChanged: function (meta) {
-        return meta.status.indexOf('304') !== -1;
-    },
-
-    _isEndedApiReq: function (meta) {
-        return meta['x-ratelimit-remaining'] < 100;
-    },
-
-    _getStorage: function (arg, options) {
-        var lang = arg.lang,
-            type = arg.type,
-            name = arg.name;
-
-        this._logger.verbose('Get %s from %s storage', type, lang);
-
-        if (type === 'users' && name) {
-            return this._getUserStorage(lang, name).data;
-        }
-
-        if (type === 'issues' && options) {
-            return this._getIssuesStorage(options);
-        }
-
-        return this._storage[lang][type].data;
-    },
-
-    _setStorage: function (arg, data, options) {
-        var lang = arg.lang,
-            type = arg.type,
-            name = arg.name;
-
-        if (type === 'users' && name) {
-            this._logger.verbose('Set %s in storage', type);
-            return this._getUserStorage(name).data = data;
-        }
-
-        this._logger.verbose('Set %s in %s storage', type, lang);
-
-        if (type === 'issues' && options) {
-            return this._getIssuesStorage(options).data = data;
-        }
-
-        return this._storage[lang][type].data = data;
-    },
-
-    _getEtag: function (arg, options) {
-        var lang = arg.lang,
-            type = arg.type,
-            name = arg.name;
-
-        if (type === 'users' && name) {
-            return this._getUserStorage(name).etag;
-        }
-
-        if (type === 'issues' && options) {
-            return this._getIssuesStorage(options).etag;
-        }
-
-        return this._storage[lang][type].etag;
-    },
-
-    _setEtag: function (arg, etag, options) {
-        var lang = arg.lang,
-            type = arg.type,
-            name = arg.name;
-
-        if (type === 'users' && name) {
-            return this._getUserStorage(name).etag = etag;
-        }
-
-        if (type === 'issues' && options) {
-            return this._getIssuesStorage(options).etag = etag;
-        }
-
-        return this._storage[lang][type].etag = etag;
-    },
-
-    _getUserStorage: function (name) {
-        var userStorage = this._storage.users;
-
-        if (!userStorage[name]) {
-            userStorage[name] = { data: [], etag: '' };
-        }
-
-        return userStorage[name];
-    },
-
-    _getIssuesStorage: function (options) {
-        var lang = options.lang,
-            page = options.page,
-            sort = options.sort,
-            labels = options.labels;
-
-        var basicStorage = this._storage[lang].issues;
-
-        if (_.isEmpty(basicStorage) || !basicStorage[page]) {
-            basicStorage[page] = {};
-        }
-
-        if (_.isEmpty(basicStorage[page]) || !basicStorage[page][sort]) {
-            basicStorage[page][sort] = {};
-        }
-
-        if (_.isEmpty(basicStorage[page][sort]) || !basicStorage[page][sort][labels]) {
-            basicStorage[page][sort][labels] = {};
-        }
-
-        var issuesStorage = basicStorage[page][sort][labels];
-
-        if (!issuesStorage) {
-            issuesStorage = { data: [], etag: '' }
-        }
-
-        return issuesStorage;
+        this._storage = new MemoryStorage(config);
     },
 
     _onSuccess: function (def, item, argv, options, data) {
@@ -172,14 +30,19 @@ Model.prototype = {
         }
 
         // We don`t have a datа or datа was changed -> resolve with new data
-        this._setEtag(argv, meta.etag, options);
-        this._setStorage(argv, data, options);
+        this._logger.info('x-ratelimit-remaining: %s', data.meta['x-ratelimit-remaining']);
+        this._storage.setEtag(argv, meta.etag, options);
+        this._storage.setStorage(argv, data, options);
 
         return def.resolve(data);
     },
 
     _onError: function (def, err) {
         return def.reject(err);
+    },
+
+    _isDataNotChanged: function (meta) {
+        return meta.status.indexOf('304') !== -1;
     },
 
     /**
@@ -192,8 +55,8 @@ Model.prototype = {
         var def = vow.defer(),
 
             argv = { type: 'labels', lang: lang },
-            labels = this._getStorage(argv),
-            eTag = this._getEtag(argv),
+            labels = this._storage.getStorage(argv),
+            eTag = this._storage.getEtag(argv),
 
             options = {
                 setRepoStorage: true,
@@ -218,8 +81,8 @@ Model.prototype = {
         }
 
         var argv = { type: 'users', lang: req.lang, name: name },
-            user = this._getStorage(argv),
-            eTag = this._getEtag(argv);
+            user = this._storage.getStorage(argv),
+            eTag = this._storage.getEtag(argv);
 
         this._github
             .getAuthUser(token, { headers: eTag ? { 'If-None-Match': eTag } : {} })
@@ -242,8 +105,8 @@ Model.prototype = {
                 labels: query.labels || ''
             },
             argv = { type: 'issues', options: options},
-            issues = this._getStorage(argv, options),
-            eTag = this._getEtag(argv, options);
+            issues = this._storage.getStorage(argv, options),
+            eTag = this._storage.getEtag(argv, options);
 
         this._github.getIssues(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
             .then(this._onSuccess.bind(this, def, issues, argv, options))
