@@ -43,6 +43,10 @@ app
             .fail(function (err) {
                 res.end(err);
             });
+    })
+    .use(function (err, req, res, next) {
+        console.error(err);
+        return res.status(err.code).send(err.message).end();
     });
 
 app.listen(app.get('port'), function () {
