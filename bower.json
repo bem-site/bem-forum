@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "bem-components": "2.1.0",
-    "bem-history": "git://github.com/bem/bem-history.git#v2",
+    "bem-history": "git://github.com/bem/bem-history.git#v3.0.0",
     "bem-content": "git://github.com/tavriaforever/bem-content.git#747cae3c15a15a56a6d8eaedbee4674b6ddec21c"
   },
   "resolutions": {
