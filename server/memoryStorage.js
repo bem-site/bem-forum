@@ -82,10 +82,11 @@ MemoryStorage.prototype = {
             type = arg.type,
             name = arg.name;
 
+
         this._logger.verbose('Get %s from %s storage', type, lang);
 
-        if (type === 'users' && name) {
-            return this._getUserStorage(name).data;
+        if (type === 'users') {
+            return name ? this._getUserStorage(name).data : null;
         }
 
         if (type === 'issues' && options) {
@@ -119,8 +120,8 @@ MemoryStorage.prototype = {
             type = arg.type,
             name = arg.name;
 
-        if (type === 'users' && name) {
-            return this._getUserStorage(name).etag;
+        if (type === 'users') {
+            return name ? this._getUserStorage(name).etag : null;
         }
 
         if (type === 'issues' && options) {

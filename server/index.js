@@ -19,6 +19,8 @@ if (app.get('env') === 'development') {
     }));
 }
 
+template.init(config);
+
 app
     .set('port', process.env.PORT || config.port)
     .use(require('serve-static')(process.cwd()))
@@ -37,21 +39,21 @@ app.use(function (req, res) {
     /**
      * get data`s json without templating
      */
-    //if (req.query._mode === 'json') {
+    if (req.query._mode === 'json') {
         return res.end('<pre>' + JSON.stringify(res.locals, null, 4) + '</pre>');
-    //}
+    }
 
     /**
      * The generated html page using the bemhtml + bemhtml
      * and data obtained in middleware `forum`
      */
-    //return template.run(_.extend({ block: 'page' }, req.locals), req)
-    //    .then(function (html) {
-    //        res.end(html);
-    //    })
-    //    .fail(function (err) {
-    //        res.end(err);
-    //    });
+    return template.run(_.extend({ block: 'page' }, res.locals), req)
+        .then(function (html) {
+            res.end(html);
+        })
+        .fail(function (err) {
+            res.end(err);
+        });
 });
 
 app.listen(app.get('port'), function () {

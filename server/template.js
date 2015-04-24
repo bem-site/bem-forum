@@ -6,10 +6,12 @@ var u = require('util'),
     vfs = require('vow-fs'),
     _ = require('lodash'),
     stringify = require('json-stringify-safe'),
-    util = require('./util');
+    util = require('./util'),
+    target;
 
-exports.init = function (options) {
-    var t = options.template;
+exports.init = function (config) {
+    var t = config.template;
+
     target = u.format('%s.bundles/%s/%s.min.template.i18n.js', t.level, t.bundle, t.bundle);
 
     if (t.prefix) target = path.join(t.prefix, target);

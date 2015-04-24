@@ -77,7 +77,7 @@ Model.prototype = {
         var def = vow.defer();
 
         if (!token) {
-            def.resolve();
+            return def.resolve();
         }
 
         var argv = { type: 'users', lang: req.lang, name: name },
@@ -104,7 +104,7 @@ Model.prototype = {
                 sort: query.sort || 'updated',
                 labels: query.labels || ''
             },
-            argv = { type: 'issues', options: options},
+            argv = { type: 'issues', options: options },
             issues = this._storage.getStorage(argv, options),
             eTag = this._storage.getEtag(argv, options);
 

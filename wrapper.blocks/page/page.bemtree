@@ -16,7 +16,10 @@ block('page')(
         ];
     }),
 
-    match(function () { return !this.ctx.forum }).content()(function () {
+    match(function () {
+        console.log('this.ctx', this.ctx);
+        return !this.ctx.forum;
+    }).content()(function () {
         return 'Forum data is empty';
     })
 );

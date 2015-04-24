@@ -132,7 +132,7 @@ Controller.prototype = {
             })
             .then(function (data) {
                 // collect user data
-                res.locals.forum = _.extend(_this._getLocalData(res), data);
+                res.locals.forum = _.extend(_this._getLocalData(res), { issues: data });
 
                 return next();
             })
