@@ -153,7 +153,7 @@ module.exports = function (pattern, options) {
                     return next();
                 })
                 .fail(function (err) {
-                    console.error(err);
+                    return next(err);
                 });
         } else {
             // ajax requests

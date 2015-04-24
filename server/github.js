@@ -39,7 +39,11 @@ var apiCall = function (token, group, name, opts) {
 
     api[group][name].call(null, opts, function (err, res) {
         if (err || !res) {
-            console.error('api[%s][%s]: %s', group, name, err);
+            err = _.extend(err, {
+                app: 'forum',
+                apiMethod: 'group: ' + group + ', name: ' + name,
+                apiOptions: opts
+            });
             def.reject(err);
         } else {
             def.resolve(res);
