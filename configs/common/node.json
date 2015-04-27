@@ -1,5 +1,6 @@
 {
     "forum": {
+        "url": "/",
         "name": "forum",
         "logger": {
           "level": "info"

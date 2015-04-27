@@ -19,7 +19,6 @@ block('forum-header').elem('title')
                     content: ctx.content
                 }
             ],
-            mix: { block: 'forum-header', elem: 'title' },
-            attrs: { 'data-status': ctx.status }
+            mix: { block: 'forum-header', elem: 'title' }
         };
     });

@@ -4,20 +4,19 @@ block('page')(
 
         !this.ctx.head && (this.ctx.head = []);
         this.ctx.head.push({ elem: 'css', url: '/desktop.bundles/index/index.min.css' });
-        this.ctx.attrs = { style: 'white-space:pre-wrap;font-size:12px;font-family:Consolas;line-height:1.5;' };
+        // this.ctx.attrs = { style: 'white-space:pre-wrap;font-size:12px;font-family:Consolas;line-height:1.5;' };
 
         return applyNext();
     }),
 
     match(function () { return this.ctx.forum }).content()(function () {
         return [
-            JSON.stringify(this.ctx.forum, null, 4),
+            { block: 'forum', forum: this.ctx.forum },
             { elem: 'js' }
         ];
     }),
 
     match(function () {
-        console.log('this.ctx', this.ctx);
         return !this.ctx.forum;
     }).content()(function () {
         return 'Forum data is empty';

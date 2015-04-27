@@ -43,7 +43,7 @@ Controller.prototype = {
             _this._setPreviousUrl(req);
 
             // collect user data
-            res.locals.forum = _.extend(_this._getLocalData(res), data);
+            res.locals.forum = _.extend(_this._getLocalData(res), data, { url: _this._config.url });
 
             return def.resolve();
 
@@ -79,6 +79,8 @@ Controller.prototype = {
                 _this._logger.error('Can`t get access token %s', err);
                 return _this._redirectAfter(req, res, 500, strUrl);
             }
+
+            console.log('token: %s', token);
 
             // get user login
             _this._model.getAuthUser(req, token)
@@ -132,7 +134,10 @@ Controller.prototype = {
             })
             .then(function (data) {
                 // collect user data
-                res.locals.forum = _.extend(_this._getLocalData(res), { issues: data });
+                res.locals.forum = _.extend(_this._getLocalData(res), {
+                    issues: data,
+                    view: 'issues'
+                });
 
                 return next();
             })

@@ -78,73 +78,59 @@ MemoryStorage.prototype = {
     },
 
     getStorage: function (arg, options) {
-        var lang = arg.lang,
-            type = arg.type,
-            name = arg.name;
-
-
-        this._logger.verbose('Get %s from %s storage', type, lang);
+        var type = arg.type;
 
         if (type === 'users') {
-            return name ? this._getUserStorage(name).data : null;
+            return this._getUserStorage(arg.name).data;
         }
 
         if (type === 'issues' && options) {
             return this._getIssuesStorage(options);
         }
 
-        return this._storage[lang][type].data;
+        return this._storage[arg.lang][type].data;
     },
 
     setStorage: function (arg, data, options) {
-        var lang = arg.lang,
-            type = arg.type,
-            name = arg.name;
+        var type = arg.type;
 
-        if (type === 'users' && name) {
-            this._logger.verbose('Set %s in storage', type);
-            return this._getUserStorage(name).data = data;
+        if (type === 'users') {
+            return this._getUserStorage(arg.name).data = data;
         }
-
-        this._logger.verbose('Set %s in %s storage', type, lang);
 
         if (type === 'issues' && options) {
             return this._getIssuesStorage(options).data = data;
         }
 
-        return this._storage[lang][type].data = data;
+        return this._storage[arg.lang][type].data = data;
     },
 
     getEtag: function (arg, options) {
-        var lang = arg.lang,
-            type = arg.type,
-            name = arg.name;
+        var type = arg.type;
 
         if (type === 'users') {
-            return name ? this._getUserStorage(name).etag : null;
+            return this._getUserStorage(arg.name).etag;
         }
 
         if (type === 'issues' && options) {
             return this._getIssuesStorage(options).etag;
         }
 
-        return this._storage[lang][type].etag;
+        return this._storage[arg.lang][type].etag;
     },
 
     setEtag: function (arg, etag, options) {
-        var lang = arg.lang,
-            type = arg.type,
-            name = arg.name;
+        var type = arg.type;
 
-        if (type === 'users' && name) {
-            return this._getUserStorage(name).etag = etag;
+        if (type === 'users') {
+            return this._getUserStorage(arg.name).etag = etag;
         }
 
         if (type === 'issues' && options) {
             return this._getIssuesStorage(options).etag = etag;
         }
 
-        return this._storage[lang][type].etag = etag;
+        return this._storage[arg.lang][type].etag = etag;
     }
 };
 

@@ -1,14 +1,14 @@
 block('forum-header').mod('view', 'auth-no')(
 
-    match(function () { return !this._authUser; }).content()(function () {
+    match(function () { return !this._forum.user; }).content()(function () {
         var header = applyNext();
 
         return [
             header[0],
             {
                 block: 'button',
-                url: req.forumUrl + 'auth/',
-                text: BEM.I18N('forum-header', 'login') + ' (github.com)',
+                url: this._forum.url + 'login/',
+                text: BEM.I18N('forum-header', 'login') + ' (Github.com oAuth)',
                 mods: { theme: 'islands', size: 'm', view: 'action', type: 'link' },
                 mix: { block: 'forum-header', elem: 'auth-button' }
             },

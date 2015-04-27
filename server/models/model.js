@@ -80,7 +80,7 @@ Model.prototype = {
             return def.resolve();
         }
 
-        var argv = { type: 'users', lang: req.lang, name: name },
+        var argv = { type: 'users', name: name },
             user = this._storage.getStorage(argv),
             eTag = this._storage.getEtag(argv);
 
