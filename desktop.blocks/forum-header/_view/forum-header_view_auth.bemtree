@@ -38,7 +38,7 @@ block('forum-header').mod('view', 'auth')(
                     target: '_blank',
                     content: user.login
                 }
-            ]
+            ];
         })
     ),
 
@@ -52,7 +52,7 @@ block('forum-header').mod('view', 'auth')(
                     { block: 'forum-header', elem: 'add-button' },
                     { block: 'forum', elem: 'add' }
                 ]
-            }
+            };
         })
     ),
 
@@ -60,11 +60,11 @@ block('forum-header').mod('view', 'auth')(
         def()(function () {
             return {
                 block: 'button',
-                url: this._forum.url + 'logout/',
+                url: this._forum.config.url + 'logout/',
                 text: BEM.I18N('forum-header', 'logout'),
                 mods: { theme: 'islands', size: 'm', type: 'link' },
                 mix: { block: 'forum-header', elem: 'logout' }
-            }
+            };
         })
     )
 );

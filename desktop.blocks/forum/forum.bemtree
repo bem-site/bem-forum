@@ -4,15 +4,14 @@ block('forum')(
     }),
 
     content()(function () {
-        return 'forum content block';
-        //return {
-        //    block: 'forum-content',
-        //    mods: { view: this._forum.view },
-        //    js: { forumUrl: req.forumUrl },
-        //    mix: [
-        //        { block: 'forum', elem: 'content' }
-        //    ]
-        //}
+        var forum = this._forum;
+
+        return {
+            block: 'forum-content',
+            mods: { view: forum.view },
+            js: { forumUrl: forum.config.url },
+            mix: { block: 'forum', elem: 'content' }
+        };
     }),
 
     match(function () { return !this._forum.user; }).content()(function () {

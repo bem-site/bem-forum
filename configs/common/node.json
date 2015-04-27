@@ -3,7 +3,7 @@
         "url": "/",
         "name": "forum",
         "logger": {
-          "level": "info"
+          "level": "verbose"
         },
         "port": 3000,
         "template": {
@@ -29,6 +29,7 @@
         },
         "archive": {
           "ru": "archive-example_ru.json"
-        }
+        },
+        "perPage": 5
     }
 }

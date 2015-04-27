@@ -1,14 +1,19 @@
 block('forum-issues')(
     match(function () { return this.ctx.data && this.ctx.data.length; }).content()(function () {
+        var _this = this;
+
         return this.ctx.data.map(function (issue) {
+            var forum = _this._forum,
+                config = forum.config;
+
             return {
                 block: 'issue',
                 mods: { solved: issue.state === 'closed' },
                 data: issue,
-                forumUrl: req.forumUrl,
-                labelsRequired: req.labelsRequired,
-                csrf: req.csrf
-            }
+                forumUrl: config.url,
+                labelsRequired: config.labelsRequired,
+                csrf: forum.csrf
+            };
         });
     }),
 

@@ -2,7 +2,7 @@ block('forum-content').mod('view', 'issues')(
     content()(function () {
         var forum = this._forum,
             issues = forum.issues,
-            postPerPage = forum.postPerPage;
+            isHidePagination = forum.isHidePagination;
 
         return [
             {
@@ -12,9 +12,7 @@ block('forum-content').mod('view', 'issues')(
                     {
                         elem: 'left',
                         content: [
-                            {
-                                block: 'forum-loader'
-                            },
+                            { block: 'forum-loader' },
                             {
                                 elem: 'container',
                                 content: {
@@ -26,15 +24,13 @@ block('forum-content').mod('view', 'issues')(
                     },
                     {
                         elem: 'right',
-                        content: {
-                            block: 'forum-sidebar'
-                        }
+                        content: { block: 'forum-sidebar' }
                     }
                 ]
             },
             {
                 block: 'forum-pager',
-                mods: { disabled: issues.length < postPerPage }
+                mods: { disabled: isHidePagination }
             }
         ]
     })

@@ -6,9 +6,7 @@ block('forum-labels').mod('view', 'menu')(
                 mods: { theme: 'islands', size: 'l' },
                 mix: { block: 'forum-labels', elem: 'spin' }
             },
-            {
-                elem: 'wrap'
-            }
+            { elem: 'wrap' }
         ];
     }),
 

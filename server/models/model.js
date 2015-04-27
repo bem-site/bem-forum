@@ -99,9 +99,9 @@ Model.prototype = {
                 setRepoStorage: true,
                 state: 'all',
                 lang: req.lang,
-                per_page: 5,
+                per_page: this._config.perPage,
                 page: query.page || 1,
-                sort: query.sort || 'updated',
+                sort: query.labels || 'comments',
                 labels: query.labels || ''
             },
             argv = { type: 'issues', options: options },

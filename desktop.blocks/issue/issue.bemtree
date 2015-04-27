@@ -1,13 +1,15 @@
 block('issue')(
     match(function () { return this.ctx.data; }).def()(function () {
         var issue = this.ctx.data,
-            login = issue.user.login,
-            isArchive = issue.labels.some(function (label) {
-                return label.name === 'archive';
-            }),
-            isOwner = isArchive ? false : req.cookies['forum_username'] === login;
+            loginAuthor = issue.user.login,
+            // isArchive = issue.labels.some(function (label) {
+            //    return label.name === 'archive';
+            // }),
+            // isOwner = isArchive ? false : req.cookies['forum_username'] === login;
+            loginUser = this._forum.user && this._forum.user.login,
+            isOwner = loginUser === loginAuthor;
 
-        return applyNext({ _issue: issue, _isOwner: isOwner, _isArchive: isArchive });
+        return applyNext({ _issue: issue, _isOwner: isOwner, _isArchive: false });
     }),
 
     match(function () { return this._issue; }).content()(function () {
@@ -30,10 +32,8 @@ block('issue')(
                     }
                 ]
             },
-            {
-                elem: 'comments'
-            }
-        ]
+            { elem: 'comments' }
+        ];
     }),
 
     elem('comments')(
@@ -43,18 +43,16 @@ block('issue')(
                 issue = forum.issue,
                 comments = forum.comments;
 
-            return applyCtx([
-                {
-                    block: 'comments',
-                    mods: { view: 'open' },
-                    data: comments,
-                    js: {
-                        issueNumber: issue.number,
-                        comments: issue.comments,
-                        forumUrl: req.forumUrl
-                    }
+            return applyCtx({
+                block: 'comments',
+                mods: { view: 'open' },
+                data: comments,
+                js: {
+                    issueNumber: issue.number,
+                    comments: issue.comments,
+                    forumUrl: this._forum.config.url
                 }
-            ]);
+            });
         }),
 
         // hide comments on list issues page
@@ -67,7 +65,7 @@ block('issue')(
                 js: {
                     issueNumber: issue.number,
                     comments: issue.comments,
-                    forumUrl: req.forumUrl
+                    forumUrl: this._forum.config.url
                 },
                 content: {
                     elem: 'container'
@@ -204,7 +202,7 @@ block('issue')(
                                 {
                                     block: 'link',
                                     mix: { block: this.block, elem: 'title' },
-                                    url: req.forumUrl + 'issues/' + issue.number + '/',
+                                    url: this._forum.config.url + 'issues/' + issue.number + '/',
                                     content: _.escape(issue.title)
                                 },
                                 {
@@ -243,11 +241,14 @@ block('issue')(
 
         match(function () { return this._isOwner; }).def()(function () {
 
-            var issue = this._issue;
+            var issue = this._issue,
+                forum = this._forum,
+                config = forum.config,
+                labelsRequired = config.labelsRequired;
 
             return {
                 block: 'forum-form',
-                js: { labelsRequired: req.labelsRequired },
+                js: { labelsRequired: labelsRequired },
                 mods: { visibility: 'hidden' },
                 mix: {
                     block: 'issue',
@@ -278,7 +279,7 @@ block('issue')(
                     },
                     {
                         tag: 'input',
-                        attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
+                        attrs: { type: 'hidden', name: '_csrf', value: forum.csrf }
                     },
                     {
                         block: 'forum-create',
@@ -306,9 +307,9 @@ block('issue')(
                             ]
                         }
                     },
-                    req.labelsRequired ? {
+                    labelsRequired ? {
                         block: 'forum-labels',
-                        js: { forumUrl: req.forumUrl },
+                        js: { forumUrl: config.url },
                         mods: { inline: true, view: 'checkbox' },
                         mix: [{ block: 'issue', elem: 'edit-labels' }],
                         content: [
@@ -365,7 +366,9 @@ block('issue')(
 
     // labels
     elem('labels')(
-        match(function () { return this._issue.labels.length; }).def()(function () {
+        match(function () {
+            return this._issue.labels.length;
+        }).def()(function () {
 
             var labels = this._issue.labels;
 
@@ -382,9 +385,10 @@ block('issue')(
     // body content
     elem('body')(
         content()(function () {
-            var text = this._issue.body;
+            var text = this._issue.body,
+                mdToHtml = this._forum && this._forum.util && this._forum.util.mdToHtml;
 
-            return this._isArchive ? text : req.util.mdToHtml(text);
+            return (!this._isArchive && mdToHtml) ? mdToHtml(text) : text;
         })
     ),
 
@@ -394,7 +398,7 @@ block('issue')(
             var issue = this._issue,
                 comments = issue.comments;
 
-            if ((!req.cookies['forum_username'] || this._isArchive) && comments === 0) {
+            if ((!this._forum.user || this._isArchive) && comments === 0) {
                 return '';
             }
 

@@ -1,6 +1,6 @@
 block('forum-header')(
     content()(function () {
-        var url = this._forum.url;
+        var url = this._forum.config.url;
 
         return [
             {

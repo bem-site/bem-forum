@@ -1,6 +1,7 @@
 block('comments').mod('view', 'close')(
     content()(function () {
-        var ctx = this.ctx,
+        var forum = this._forum,
+            ctx = this.ctx,
             comments = ctx.data,
             issueNumber = ctx.issueNumber;
 
@@ -11,8 +12,8 @@ block('comments').mod('view', 'close')(
                 js: {
                     issueNumber: issueNumber,
                     id: comment.id,
-                    forumUrl: req.forumUrl,
-                    csrf: req.csrf
+                    forumUrl: forum.config.url,
+                    csrf: forum.csrf
                 }
             }
         });

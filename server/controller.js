@@ -2,6 +2,7 @@ var _ = require('lodash'),
     Model = require('./models/model.js'),
     Auth = require('./auth.js'),
     Logger = require('bem-site-logger'),
+    util = require('./util.js'),
     vow = require('vow');
 
 function Controller(config) {
@@ -43,7 +44,12 @@ Controller.prototype = {
             _this._setPreviousUrl(req);
 
             // collect user data
-            res.locals.forum = _.extend(_this._getLocalData(res), data, { url: _this._config.url });
+            var tools = {
+                util: util,
+                csrf: req.csrfToken(),
+                config: _this._config
+            }
+            res.locals.forum = _.extend(_this._getLocalData(res), data, tools);
 
             return def.resolve();
 
@@ -133,10 +139,12 @@ Controller.prototype = {
                 return _this._model.getIssues(req, token);
             })
             .then(function (data) {
+
                 // collect user data
                 res.locals.forum = _.extend(_this._getLocalData(res), {
                     issues: data,
-                    view: 'issues'
+                    view: 'issues',
+                    isHidePagination: _this._isHidePagination(data)
                 });
 
                 return next();
@@ -172,6 +180,10 @@ Controller.prototype = {
 
             return next();
         });
+    },
+
+    _isHidePagination: function (issues) {
+        return issues.length < this._config.perPage;
     },
 
     /**

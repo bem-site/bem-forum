@@ -85,7 +85,7 @@ MemoryStorage.prototype = {
         }
 
         if (type === 'issues' && options) {
-            return this._getIssuesStorage(options);
+            return this._getIssuesStorage(options).data;
         }
 
         return this._storage[arg.lang][type].data;
