@@ -1,21 +1,19 @@
 var _ = require('lodash'),
     vow = require('vow'),
+    inherit = require('inherit'),
     GitHubApi = require('github'),
     Logger = require('bem-site-logger');
 
-function Github (config) {
-    this._init(config);
-}
+var Github;
 
-Github.prototype = {
-
-    _authReadyApi: [],
-
-    _init: function (config) {
+module.exports = Github = inherit({
+    __constructor: function (config) {
         this._config = config;
         this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
         this._addDefaultAPI();
     },
+
+    _authReadyApi: [],
 
     _callGithubApi: function (token, group, name, options) {
         var _this = this,
@@ -165,6 +163,12 @@ Github.prototype = {
     getIssues: function (token, options) {
         return this._callGithubApi(token, 'issues', 'repoIssues', options);
     }
-};
+}, {
+    getInstance: function (config) {
+        if (!this._instance) {
+            this._instance = new Github(config);
+        }
 
-module.exports = Github;
+        return this._instance;
+    }
+});

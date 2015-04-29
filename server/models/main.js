@@ -1,7 +1,7 @@
 var _ = require('lodash'),
     vow = require('vow'),
-    Github = require('../github.js'),
-    MemoryStorage = require('../memoryStorage.js'),
+    Github = require('../services/github.js'),
+    MemoryStorage = require('../services/memoryStorage.js'),
     Logger = require('bem-site-logger');
 
 function Model (config) {
@@ -13,14 +13,17 @@ Model.prototype = {
     _init: function (config) {
         this._config = config;
         this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
-        this._github = new Github(config);
-        this._storage = new MemoryStorage(config);
+        this._github = Github.getInstance(config);
+        this._storage = MemoryStorage.getInstance(config);
     },
 
     _onSuccess: function (def, item, argv, options, data) {
-
-        // issues type have additional arguments
-        data = (argv.type === 'issues') ? data : options;
+        if (argv.type !== 'issues') {
+            data = options;
+            //isHidePagination: function (issues) {
+            //    return issues.length < this._config.perPage;
+            //},
+        }
 
         var meta = data.meta;
 

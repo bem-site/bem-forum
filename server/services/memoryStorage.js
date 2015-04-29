@@ -1,13 +1,13 @@
 var _ = require('lodash'),
     vow = require('vow'),
+    inherit = require('inherit'),
     Logger = require('bem-site-logger');
 
-function MemoryStorage (config) {
-    this._init(config);
-}
+var MemoryStorage;
 
-MemoryStorage.prototype = {
-    _init: function (config) {
+module.exports = MemoryStorage = inherit({
+
+    __constructor: function (config) {
         this._config = config;
         this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
         this._createStructure();
@@ -132,6 +132,12 @@ MemoryStorage.prototype = {
 
         return this._storage[arg.lang][type].etag = etag;
     }
-};
+}, {
+    getInstance: function (config) {
+        if (!this._instance) {
+            this._instance = new MemoryStorage(config);
+        }
 
-module.exports = MemoryStorage;
+        return this._instance;
+    }
+});

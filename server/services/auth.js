@@ -11,6 +11,9 @@ Auth.prototype = {
     _oAuth2: [],
 
     _init: function (config) {
+
+        console.log('auth init');
+
         this._config = config;
         this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
         this._createOauth();

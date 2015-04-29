@@ -30,10 +30,9 @@ modules.define(
         },
 
         _loadIssues: function (options) {
-            var uri = location.getUri(),
-                url = 'issues/';
+            var uri = location.getUri();
 
-            options.url  = url + uri.getQuery();
+            options.url  = 'api/' + uri.getQuery();
 
             this._sendRequest(options);
         },

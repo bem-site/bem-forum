@@ -49,6 +49,7 @@ Controller.prototype = {
                 csrf: req.csrfToken(),
                 config: _this._config
             }
+
             res.locals.forum = _.extend(_this._getLocalData(res), data, tools);
 
             return def.resolve();
