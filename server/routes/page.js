@@ -15,9 +15,7 @@ module.exports = function (express, config) {
     /**
      * Post page
      */
-    router.get(':issue_id', controller.issue.bind(controller));
+    router.get('/:issue_id', controller.issue.bind(controller));
 
     return router;
 };
-
-

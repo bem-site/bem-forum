@@ -23,12 +23,11 @@ module.exports = inherit(BaseController, {
      */
     _getCommon: function (req, res) {
         var _this = this,
-            def = vow.defer(),
             userCookie = this._auth.getUserCookie(req, 'forum_user'),
             token = userCookie ? userCookie[0] : null,
             name = userCookie ? userCookie[1] : null;
 
-        vow.all({
+        return vow.all({
             user: this._model.getAuthUser(req, token, name)
         }).then(function (data) {
 
@@ -36,15 +35,13 @@ module.exports = inherit(BaseController, {
             _this.setPreviousUrl(req);
 
             // collect user data
-            res.locals.forum = _.extend(_this.getLocalData(res), data, _this.getTmplHelpers(req));
-
-            return def.resolve();
+            return res.locals.forum = _.extend(_this.getLocalData(res), {
+                user: data.user
+            }, _this.getTmplHelpers(req));
 
         }).fail(function (err) {
             return def.reject(err);
         });
-
-        return def.promise();
     },
 
     /**
@@ -62,21 +59,20 @@ module.exports = inherit(BaseController, {
             userCookie = this._auth.getUserCookie(req, 'forum_user'),
             token = userCookie ? userCookie[0] : null;
 
-        return this._getCommon(req, res)
+        this._getCommon(req, res)
             .then(function () {
                 return vow.all({
                     issues: _this._model.getIssues(req, token),
-                    labels: _this._model.getLabels(token, req.lang)
+                    labels: _this._model.getLabels(req, token)
                 });
             })
             .then(function (data) {
-
                 // collect user data
                 res.locals.forum = _.extend(_this.getLocalData(res), {
                     issues: data.issues,
                     labels: data.labels,
                     view: 'issues',
-                    isHidePagination: data.hidePagination
+                    isHidePagination: data.length < _this._config.perPage
                 });
 
                 return next();
@@ -98,21 +94,23 @@ module.exports = inherit(BaseController, {
      */
     issue: function (req, res, next) {
         var _this = this,
-            token = req.cookies && req.cookies['forum_token'],
-            lang = req.lang,
-            id = req.params.issue_id;
+            userCookie = this._auth.getUserCookie(req, 'forum_user'),
+            token = userCookie ? userCookie[0] : null;
 
-        return this._getCommon(req, res)
+        this._getCommon(req, res)
             .then(function () {
                 return vow.all({
-                    title: this._model.getTitle(lang, id),
-                    issue: this._model.getIssue(token, id, lang),
-                    comments: this._model.getComments(token, id)
-
+                    //title: this._model.getTitle(lang, id),
+                    issue: _this._model.getIssue(req, token),
+                    comments: _this._model.getComments(req, token)
                 });
             })
-            .then(function () {
-                req.locals.forum = _.extend(_this.getLocalData(req), data, { view: 'issue' });
+            .then(function (data) {
+                res.locals.forum = _.extend(_this.getLocalData(res), {
+                    issue: data.issue,
+                    comments: data.comments,
+                    view: 'issue'
+                });
 
                 return next();
             })

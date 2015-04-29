@@ -162,7 +162,32 @@ module.exports = Github = inherit({
      */
     getIssues: function (token, options) {
         return this._callGithubApi(token, 'issues', 'repoIssues', options);
+    },
+
+    /**
+     * Returns issue by it number
+     * @param token - {String} oauth user token
+     * @param options - {Object} with fields:
+     *  - number {Number} unique number of issue
+     * @returns {*}
+     */
+    getIssue: function (token, options) {
+        return this._callGithubApi(token, 'issues', 'getRepoIssue', options);
+    },
+
+    /**
+     * Returns list of comments for issue
+     * @param token - {String} oauth user token
+     * @param options - {Object} with fields:
+     *  - number {Number} unique number of issue (required)
+     *  - page {Number} number of page for pagination (optional)
+     *  - per_page {Number} number of records on one page (optional)
+     * @returns {*}
+     */
+    getComments: function (token, options) {
+        return this._callGithubApi(token, 'issues', 'getComments', options);
     }
+
 }, {
     getInstance: function (config) {
         if (!this._instance) {

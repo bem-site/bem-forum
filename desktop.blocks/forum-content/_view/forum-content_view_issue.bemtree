@@ -1,11 +1,14 @@
 block('forum-content').mod('view', 'issue')(
     content()(function () {
+        var forum = this._forum,
+            config = forum.config;
+
         return {
             block: 'issue',
-            data: this._forum.issue,
-            forumUrl: req.forumUrl,
-            labelsRequired: req.labelsRequired,
-            csrf: req.csrf
+            data: forum.issue,
+            forumUrl: config.url,
+            labelsRequired: config.labelsRequired,
+            csrf: forum.csrf
         }
     })
 );

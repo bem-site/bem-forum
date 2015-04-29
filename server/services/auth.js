@@ -11,9 +11,6 @@ Auth.prototype = {
     _oAuth2: [],
 
     _init: function (config) {
-
-        console.log('auth init');
-
         this._config = config;
         this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
         this._createOauth();
@@ -40,6 +37,7 @@ Auth.prototype = {
      * @param req - {Object} request object
      * @param res - {Object} response object
      * @param code - {String} secret code as param for token retrieving
+     * @param cb - {Function} callback
      */
     getAccessToken: function (req, res, code, cb) {
         this._getOauth().getOAuthAccessToken(code, {}, cb);

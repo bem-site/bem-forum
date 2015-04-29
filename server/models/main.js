@@ -17,12 +17,10 @@ Model.prototype = {
         this._storage = MemoryStorage.getInstance(config);
     },
 
-    _onSuccess: function (def, item, argv, options, data) {
-        if (argv.type !== 'issues') {
+    _onSuccess: function (def, item, stOptions, options, data) {
+        // issues type have additional arguments
+        if (['issues', 'issue', 'comments'].indexOf(stOptions.type) === -1) {
             data = options;
-            //isHidePagination: function (issues) {
-            //    return issues.length < this._config.perPage;
-            //},
         }
 
         var meta = data.meta;
@@ -34,8 +32,8 @@ Model.prototype = {
 
         // We don`t have a datа or datа was changed -> resolve with new data
         this._logger.info('x-ratelimit-remaining: %s', data.meta['x-ratelimit-remaining']);
-        this._storage.setEtag(argv, meta.etag, options);
-        this._storage.setStorage(argv, data, options);
+        this._storage.setEtag(stOptions, meta.etag, options);
+        this._storage.setData(stOptions, data, options);
 
         return def.resolve(data);
     },
@@ -50,17 +48,16 @@ Model.prototype = {
 
     /**
      * Check result.meta -> status, etag, x-ratelimit-remaining
+     * @param req
      * @param token
-     * @param lang
      * @returns {*}
      */
-    getLabels: function (token, lang) {
+    getLabels: function (req, token) {
         var def = vow.defer(),
-
-            argv = { type: 'labels', lang: lang },
-            labels = this._storage.getStorage(argv),
-            eTag = this._storage.getEtag(argv),
-
+            lang = req.lang,
+            stOptions = { type: 'labels', lang: lang },
+            labels = this._storage.getData(stOptions),
+            eTag = this._storage.getEtag(stOptions),
             options = {
                 setRepoStorage: true,
                 headers: eTag ? { 'If-None-Match': eTag } : {},
@@ -70,7 +67,7 @@ Model.prototype = {
             };
 
         this._github.getLabels(token, options)
-            .then(this._onSuccess.bind(this, def, labels, argv))
+            .then(this._onSuccess.bind(this, def, labels, stOptions))
             .fail(this._onError.bind(this, def));
 
         return def.promise();
@@ -83,13 +80,13 @@ Model.prototype = {
             return def.resolve();
         }
 
-        var argv = { type: 'users', name: name },
-            user = this._storage.getStorage(argv),
-            eTag = this._storage.getEtag(argv);
+        var stOptions = { type: 'users', name: name },
+            user = this._storage.getData(stOptions),
+            eTag = this._storage.getEtag(stOptions);
 
         this._github
             .getAuthUser(token, { headers: eTag ? { 'If-None-Match': eTag } : {} })
-            .then(this._onSuccess.bind(this, def, user, argv))
+            .then(this._onSuccess.bind(this, def, user, stOptions))
             .fail(this._onError.bind(this, def));
 
         return def.promise();
@@ -107,12 +104,61 @@ Model.prototype = {
                 sort: query.labels || 'comments',
                 labels: query.labels || ''
             },
-            argv = { type: 'issues', options: options },
-            issues = this._storage.getStorage(argv, options),
-            eTag = this._storage.getEtag(argv, options);
+            stOptions = { type: 'issues', options: options },
+            issues = this._storage.getData(stOptions, options),
+            eTag = this._storage.getEtag(stOptions, options);
 
         this._github.getIssues(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
-            .then(this._onSuccess.bind(this, def, issues, argv, options))
+            .then(this._onSuccess.bind(this, def, issues, stOptions, options))
+            .fail(this._onError.bind(this, def));
+
+        return def.promise();
+    },
+
+    getIssue: function (req, token) {
+        var def = vow.defer(),
+            id = req.params && req.params.issue_id,
+            options = {
+                setRepoStorage: true,
+                lang: req.lang,
+                number: id
+            },
+            stOptions = {
+                type: 'issue',
+                number: id
+            },
+            issue = this._storage.getData(stOptions, options),
+            eTag = this._storage.getEtag(stOptions, options);
+
+        this._github.getIssue(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
+            .then(this._onSuccess.bind(this, def, issue, stOptions, options))
+            .fail(this._onError.bind(this, def));
+
+        return def.promise();
+    },
+
+    getComments: function (req, token) {
+        var def = vow.defer(),
+            id = req.params.issue_id,
+            query = req.query,
+            page = query && req.query.page,
+            options = {
+                setRepoStorage: true,
+                lang: req.lang,
+                number: id,
+                page: page,
+                per_page: query && req.query.per_page
+            },
+            stOptions = {
+                type: 'comments',
+                id: id,
+                page: page
+            },
+            comments = this._storage.getData(stOptions, options),
+            eTag = this._storage.getEtag(stOptions, options);
+
+        this._github.getComments(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
+            .then(this._onSuccess.bind(this, def, comments, stOptions, options))
             .fail(this._onError.bind(this, def));
 
         return def.promise();

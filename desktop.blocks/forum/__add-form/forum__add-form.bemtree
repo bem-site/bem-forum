@@ -5,9 +5,10 @@ block('forum').elem('add-form')(
             url = config.url,
             labelsRequired = config.labelsRequired,
             csrf = forum.csrf,
+            forumLabels = forum.labels,
             labels = [];
 
-        forum.labels.forEach(function (label) {
+        forumLabels && forumLabels.forEach(function (label) {
             return labels.push(label.name);
         });
 
@@ -125,6 +126,6 @@ block('forum').elem('add-form')(
                     }
                 ]
             }
-        }
+        };
     })
 );

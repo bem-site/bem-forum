@@ -30,15 +30,16 @@ module.exports = MemoryStorage = inherit({
         _.keys(storageByLang).forEach(function (lang) {
             this._storage[lang] = {
                 issues: {},
-                labels: { etag: '', data: [] },
-                comments: { etag: '', data: [] }
+                issue: {},
+                comments: {},
+                labels: { etag: '', data: [] }
             }
         }, this);
 
         return this._storage;
     },
 
-    _getUserStorage: function (name) {
+    _getUser: function (name) {
         var userStorage = this._storage.users;
 
         if (!userStorage[name]) {
@@ -48,7 +49,7 @@ module.exports = MemoryStorage = inherit({
         return userStorage[name];
     },
 
-    _getIssuesStorage: function (options) {
+    _getIssues: function (options) {
         var lang = options.lang,
             page = options.page,
             sort = options.sort,
@@ -71,35 +72,75 @@ module.exports = MemoryStorage = inherit({
         var issuesStorage = basicStorage[page][sort][labels];
 
         if (!issuesStorage) {
-            issuesStorage = { data: [], etag: '' }
+            issuesStorage = { data: [], etag: '' };
         }
 
         return issuesStorage;
     },
 
-    getStorage: function (arg, options) {
+    _getIssue: function (options) {
+        var id = options.number,
+            lang = options.lang,
+            issueStorage = this._storage[lang].issue;
+
+        if (!issueStorage[id]) {
+            issueStorage[id] = { data: [], etag: '' };
+        }
+
+        return issueStorage[id];
+    },
+
+    _getComments: function (options) {
+        var lang = options.lang,
+            id = options.id,
+            page = options.page;
+
+        var basicStorage = this._storage[lang].comments;
+
+        if (_.isEmpty(basicStorage) || !basicStorage[id]) {
+            basicStorage[id] = {};
+        }
+
+        if (_.isEmpty(basicStorage[id]) || !basicStorage[id][page]) {
+            basicStorage[id][page] = {};
+        }
+
+        var commentsStorage = basicStorage[id][page];
+
+        if (!commentsStorage) {
+            commentsStorage = { data: [], etag: '' };
+        }
+
+        return commentsStorage;
+    },
+
+    getData: function (arg, options) {
         var type = arg.type;
 
         if (type === 'users') {
-            return this._getUserStorage(arg.name).data;
+            return this._getUser(arg.name).data;
         }
 
-        if (type === 'issues' && options) {
-            return this._getIssuesStorage(options).data;
+        if (options) {
+            if (type === 'issues') return this._getIssues(options).data;
+            if (type === 'issue') return this._getIssue(options).data;
+            if (type === 'comments') return this._getComments(options).data;
         }
 
         return this._storage[arg.lang][type].data;
     },
 
-    setStorage: function (arg, data, options) {
+    setData: function (arg, data, options) {
         var type = arg.type;
 
         if (type === 'users') {
-            return this._getUserStorage(arg.name).data = data;
+            return this._getUser(arg.name).data = data;
         }
 
-        if (type === 'issues' && options) {
-            return this._getIssuesStorage(options).data = data;
+        if (options) {
+            if (type === 'issues') return this._getIssues(options).data = data;
+            if (type === 'issue') return this._getIssue(options).data = data;
+            if (type === 'comments') return this._getComments(options).data = data;
         }
 
         return this._storage[arg.lang][type].data = data;
@@ -109,11 +150,13 @@ module.exports = MemoryStorage = inherit({
         var type = arg.type;
 
         if (type === 'users') {
-            return this._getUserStorage(arg.name).etag;
+            return this._getUser(arg.name).etag;
         }
 
-        if (type === 'issues' && options) {
-            return this._getIssuesStorage(options).etag;
+        if (options) {
+            if (type === 'issues') return this._getIssues(options).etag;
+            if (type === 'issue') return this._getIssue(options).etag;
+            if (type === 'comments') return this._getComments(options).etag;
         }
 
         return this._storage[arg.lang][type].etag;
@@ -123,11 +166,13 @@ module.exports = MemoryStorage = inherit({
         var type = arg.type;
 
         if (type === 'users') {
-            return this._getUserStorage(arg.name).etag = etag;
+            return this._getUser(arg.name).etag = etag;
         }
 
-        if (type === 'issues' && options) {
-            return this._getIssuesStorage(options).etag = etag;
+        if (options) {
+            if (type === 'issues') return this._getIssues(options).etag = etag;
+            if (type === 'issue') return this._getIssue(options).etag = etag;
+            if (type === 'comments') return this._getComments(options).etag = etag;
         }
 
         return this._storage[arg.lang][type].etag = etag;

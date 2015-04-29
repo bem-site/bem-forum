@@ -202,7 +202,7 @@ block('issue')(
                                 {
                                     block: 'link',
                                     mix: { block: this.block, elem: 'title' },
-                                    url: this._forum.config.url + 'issues/' + issue.number + '/',
+                                    url: this._forum.config.url + issue.number + '/',
                                     content: _.escape(issue.title)
                                 },
                                 {
