@@ -57,5 +57,5 @@ app.use(function (req, res) {
 });
 
 app.listen(app.get('port'), function () {
-    logger.info('Forum running, visit http://localhost:%s', app.get('port'));
+    logger.info('Forum running in %s environment, visit http://localhost:%s', app.get('env'), app.get('port'));
 });
