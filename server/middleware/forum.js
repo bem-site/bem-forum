@@ -3,9 +3,9 @@ var _ = require('lodash'),
 
 module.exports = function (url, app, config) {
 
-    var pageRouter = require('../routes/page.js')(express, config);
+    var pageRouter = require('../routes/page.js')(express, config),
         //authRouter = require('../routes/auth.js')(express),
-        //apiRouter = require('../routes/api.js')(express),
+        apiRouter = require('../routes/api.js')(express, config);
 
     /**
      * Auth
@@ -19,6 +19,7 @@ module.exports = function (url, app, config) {
      */
 
     app.use(url, pageRouter);
+    //app.use(url + 'api', apiRouter);
 
     return function (req, res, next) {
         next();

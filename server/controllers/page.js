@@ -21,7 +21,7 @@ module.exports = inherit(BaseController, {
      * @param {Object} res - express js response
      * @returns {*}
      */
-    _getCommon: function (req, res) {
+    _getCommon: function (req, res, next) {
         var _this = this,
             userCookie = this._auth.getUserCookie(req, 'forum_user'),
             token = userCookie ? userCookie[0] : null,
@@ -40,7 +40,7 @@ module.exports = inherit(BaseController, {
             }, _this.getTmplHelpers(req));
 
         }).fail(function (err) {
-            return def.reject(err);
+            return next(err);
         });
     },
 
@@ -59,7 +59,7 @@ module.exports = inherit(BaseController, {
             userCookie = this._auth.getUserCookie(req, 'forum_user'),
             token = userCookie ? userCookie[0] : null;
 
-        this._getCommon(req, res)
+        this._getCommon(req, res, next)
             .then(function () {
                 return vow.all({
                     issues: _this._model.getIssues(req, token),
@@ -97,7 +97,7 @@ module.exports = inherit(BaseController, {
             userCookie = this._auth.getUserCookie(req, 'forum_user'),
             token = userCookie ? userCookie[0] : null;
 
-        this._getCommon(req, res)
+        this._getCommon(req, res, next)
             .then(function () {
                 return vow.all({
                     //title: this._model.getTitle(lang, id),

@@ -16,7 +16,7 @@ block('comments').mod('view', 'open')(
             return comments.map(function (comment) {
                 return {
                     block: 'comment',
-                    comment: comment,
+                    data: comment,
                     js: {
                         issueNumber: issueNumber,
                         id: comment.id,

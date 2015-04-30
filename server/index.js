@@ -1,5 +1,5 @@
 var config = require('./config').get('forum'),
-    template = require('./template'),
+    template = require('./template').getInstance(config),
 
     logger = require('bem-site-logger').setOptions(config['logger']).createLogger(module),
     express = require('express'),
@@ -18,8 +18,6 @@ if (app.get('env') === 'development') {
         noLog: false
     }));
 }
-
-template.init(config);
 
 app
     .set('port', process.env.PORT || config.port)
@@ -54,6 +52,11 @@ app.use(function (req, res) {
         .fail(function (err) {
             res.end(err);
         });
+});
+
+app.use(function (err, req, res, next) {
+    console.error(err);
+    return res.status(err.code).send(err.message).end();
 });
 
 app.listen(app.get('port'), function () {

@@ -1,33 +1,33 @@
-var ApiCtrl = require('../controllers/api.js');
+var ApiController = require('../controllers/api.js');
 
-module.exports = function (express) {
+module.exports = function (express, config) {
 
     var router = express.Router(),
-        ctrl = new ApiCtrl();
+        controller = new ApiController(config);
 
     // Hello API /api/
-    router.get('/', ctrl.index.bind(ctrl));
+    router.get('/', controller.index.bind(controller));
 
     // Issues collection (post, get)
     router.route('/issues')
-        .post(ctrl.postIssue.bind(ctrl))
-        .get(ctrl.getIssues.bind(ctrl));
+        .post(controller.postIssue.bind(controller))
+        .get(controller.getIssues.bind(controller));
 
     // Issue (get, edit, delete)
     router.route('/issues/:issue_id')
-        .get(ctrl.getIssue.bind(ctrl))
-        .put(ctrl.editIssue.bind(ctrl))
-        .delete(ctrl.deleteIssue.bind(ctrl));
+        .get(controller.getIssue.bind(controller))
+        .put(controller.editIssue.bind(controller))
+        .delete(controller.deleteIssue.bind(controller));
 
     // Comments collection (post, get)
     router.route('/issues/:issue_id/comments')
-        .post(ctrl.postComment.bind(ctrl))
-        .get(ctrl.getComments.bind(ctrl));
+        .post(controller.postComment.bind(controller))
+        .get(controller.getComments.bind(controller));
 
     // Comment (edit, delete)
     router.route('/issues/:issue_id/comments/:comment_id')
-        .put(ctrl.editComment.bind(ctrl))
-        .delete(ctrl.deleteComment.bind(ctrl));
+        .put(controller.editComment.bind(controller))
+        .delete(controller.deleteComment.bind(controller));
 
     return router;
 };

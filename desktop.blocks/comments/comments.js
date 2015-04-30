@@ -84,7 +84,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
 
             $.ajax({
                 dataType: 'html',
-                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/?__mode=content',
+                url: this.params.forumUrl + 'api/issues/' + this.params.issueNumber + '/comments/?__mode=content',
                 context: this
             }).done(function (html) {
                 this._render(html, 'update', 'container');
