@@ -18,10 +18,6 @@ module.exports = inherit(BaseController, {
         return res.end('Hello! This is a start point of API BEM-forum.');
     },
 
-    createIssue: function (req, res, next) {
-        return res.end('Hello! This is a start point of API BEM-forum.');
-    },
-
     getIssues: function (req, res, next) {
         var _this = this,
             context = { block: 'forum-issues' },
@@ -44,8 +40,52 @@ module.exports = inherit(BaseController, {
         return res.end('Hello! This is a start point of API BEM-forum.');
     },
 
+    createIssue: function (req, res, next) {
+        var _this = this,
+            token = this.getCookie(req, 'token'),
+            name = this.getCookie(req, 'name'),
+            context = { block: 'issue' };
+
+        this._model.createIssue(req, token)
+            .then(function (issue) {
+                _this._render(req, res, next, context, { issue: issue });
+            })
+            .fail(function (err) {
+                return next(err);
+            });
+    },
+
     editIssue: function (req, res, next) {
-        return res.end('Hello! This is a start point of API BEM-forum.');
+        var _this = this,
+            token = this.getCookie(req, 'token'),
+            name = this.getCookie(req, 'name'),
+            config = this._config,
+            context = { block: 'issue' };
+
+        // To add labels, select the token with admin rights
+        if (config.labelsRequired && config.auth && req.query && req.query.__admin) {
+            var adminToken = this._config.auth['admin-token'];
+
+            if (adminToken) {
+                token = adminToken;
+            } else {
+                this._logger.warn('Failed to add labels when editing issue,' +
+                ' for this you need to add the admin token in')
+            }
+        }
+
+        this._model.editIssue(req, token)
+            .then(function (issue) {
+                console.log('issue!!!!!!!!!!!!!!!!!!!');
+                res.locals.issue = issue;
+                return _this._model.getAuthUser(req, token, name);
+            })
+            .then(function (user) {
+                _this._render(req, res, next, context, { user: user });
+            })
+            .fail(function (err) {
+                return next(err);
+            });
     },
 
     deleteIssue: function (req, res, next) {
@@ -132,8 +172,8 @@ module.exports = inherit(BaseController, {
     _render: function (req, res, next, context, data) {
         res.locals = _.extend(res.locals, data, this.getTmplHelpers(req), { xhr: true });
 
-        if (req.query._mode === 'json') {
-            return res.json(JSON.stringify(data));
+        if (req.query.__mode === 'json') {
+            return res.json(data);
         }
 
         var ctx = {

@@ -138,6 +138,34 @@ Model.prototype = {
         return def.promise();
     },
 
+    createIssue: function (req, token) {
+        var body = req.body,
+            options = {
+                setRepoStorage: true,
+                lang: req.lang,
+                title: body.title,
+                body: body.body,
+                labels: body.labels
+            };
+
+        return this._github.createIssue(token, options);
+    },
+
+    editIssue: function (req, token) {
+        var body = req.body,
+            options = {
+                setRepoStorage: true,
+                lang: req.lang,
+                number: body.number,
+                title: body.title,
+                body: body.body,
+                labels: body.labels,
+                state: body.state
+            };
+
+        return this._github.editIssue(token, options);
+    },
+
     getComments: function (req, token) {
         var def = vow.defer(),
             id = req.params.issue_id,

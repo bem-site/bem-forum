@@ -1,13 +1,34 @@
 block('issue')(
-    match(function () { return this.ctx.data; }).def()(function () {
-        var issue = this.ctx.data,
+    match(function () { return this.ctx.issue || this._forum.issue; }).def()(function () {
+        var issue = this.ctx.issue || this._forum.issue,
+            forum = this._forum,
             loginAuthor = issue.user.login,
             // isArchive = issue.labels.some(function (label) {
             //    return label.name === 'archive';
             // }),
             // isOwner = isArchive ? false : req.cookies['forum_username'] === login;
-            loginUser = this._forum.user && this._forum.user.login,
-            isOwner = loginUser === loginAuthor;
+            loginUser = forum.user && forum.user.login,
+            isOwner = loginUser === loginAuthor,
+            config = forum.config,
+            labels = issue.labels;
+
+        this.ctx.js = {
+            labels: labels.map(function (label) {
+                return label.name;
+            }),
+            isArchive: labels.some(function (label) {
+                return label.name === 'archive';
+            }),
+            i18n: {
+                'remove-message': BEM.I18N('issue', 'remove-message'),
+                reply: BEM.I18N('issue', 'reply'),
+                comments: BEM.I18N('issue', 'comments')
+            },
+            forumUrl: config.url,
+            labelsRequired: config.labelsRequired,
+            csrf: forum.csrf,
+            number: issue.number
+        };
 
         return applyNext({ _issue: issue, _isOwner: isOwner, _isArchive: false });
     }),

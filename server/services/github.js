@@ -176,6 +176,34 @@ module.exports = Github = inherit({
     },
 
     /**
+     * Creates new issue
+     * @param token - {String} oauth user token
+     * @param options - {Object} with fields:
+     *  - title {String} title of issue (required)
+     *  - body {String} body of issue (optional)
+     *  - labels {Array} array of string label names (required)
+     * @returns {*}
+     */
+    createIssue: function (token, options) {
+        return this._callGithubApi(token, 'issues', 'create', options);
+    },
+
+    /**
+     * Edit issue
+     * @param token - {String} oauth user token
+     * @param options - {Object} with fields:
+     *  - number {Number} number of issue (required)
+     *  - title {String} title of issue (optional)
+     *  - body {String} body of issue (optional)
+     *  - labels {Array} array of string label names (optional)
+     *  - state {String} state of issue (open|closed) (optional)
+     * @returns {*}
+     */
+    editIssue: function (token, options) {
+        return this._callGithubApi(token, 'issues', 'edit', options);
+    },
+
+    /**
      * Returns list of comments for issue
      * @param token - {String} oauth user token
      * @param options - {Object} with fields:
