@@ -44,17 +44,25 @@ module.exports = inherit(BaseController, {
 
     getComments: function (req, res, next) {
         var _this = this,
-            ctx = {
+            context = {
                 block: 'comments',
                 mods: { view: 'close' },
                 issueNumber: req.params && req.params.issue_id
-            };
+            },
+            token = this.getCookie(req, 'token'),
+            name = this.getCookie(req, 'name');
 
-        this._model
-            .getComments(req, this.getCookie(req, 'token'))
-            .then(function (data) {
-                _this._render(req, res, next, ctx, data);
-            })
+        vow.all({
+            comments: this._model.getComments(req, token),
+            user: this._model.getAuthUser(req, token, name)
+        })
+        .then(function (data) {
+            _this._render(req, res, next, context, data);
+        })
+        .fail(function (err) {
+            res.status(500);
+            return next(err);
+        });
     },
 
     editComment: function (req, res, next) {
@@ -65,16 +73,19 @@ module.exports = inherit(BaseController, {
         return res.end('Hello! This is a start point of API BEM-forum.');
     },
 
-    _render: function (req, res, next, ctx, data) {
-        res.locals.forum = _.extend({ data: data }, this.getTmplHelpers(req));
+    _render: function (req, res, next, context, data) {
+        res.locals = _.extend(res.locals, data, this.getTmplHelpers(req), { xhr: true });
 
-        this._template
-            .run(_.extend(ctx, res.locals), req)
-            .then(function (html) {
-                return res.end(html);
-            })
-            .fail(function (err) {
-                return next(err);
-            });
+        if (req.query._mode === 'json') {
+            return res.json(JSON.stringify(data));
+        }
+
+        var ctx = {
+            block: 'root',
+            context: context,
+            data: { forum: res.locals }
+        };
+
+        return this._template.run(ctx, req, res, next);
     }
 });

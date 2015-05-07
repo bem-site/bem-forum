@@ -64,6 +64,7 @@ module.exports = Template = inherit({
                 }
 
                 return bemtreePromise.then(function (bemjson) {
+
                     if (req.query.__mode === 'bemjson') {
                         return stringify(bemjson, null, 2);
                     }
@@ -80,7 +81,7 @@ module.exports = Template = inherit({
                         return next(err);
                     }
 
-                    return html;
+                    return res.end(html);
                 });
             });
     }

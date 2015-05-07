@@ -46,16 +46,7 @@ app.use(function (req, res, next) {
      * and data obtained in middleware `forum`
      */
 
-    return template.run({
-            block: 'root',
-            data: { forum: res.locals }
-        }, req, res, next)
-        .then(function (html) {
-            res.end(html);
-        })
-        .fail(function (err) {
-            res.end(err);
-        });
+    return template.run({ block: 'root', data: { forum: res.locals }}, req, res, next);
 });
 
 app.use(function (err, req, res, next) {

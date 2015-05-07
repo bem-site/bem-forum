@@ -1,8 +1,8 @@
 block('comments').mod('view', 'close')(
     content()(function () {
         var ctx = this.ctx,
-            forum = this._forum || ctx.forum,
-            comments = ctx.data || forum.data;
+            forum = this._forum,
+            comments = forum.comments;
 
         return comments.map(function (comment) {
             return {
