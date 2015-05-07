@@ -1,15 +1,12 @@
-var AuthCtrl = require('../controllers/auth.js');
+var AuthController = require('../controllers/auth.js');
 
-module.exports = function (express) {
-    /**
-     * Create router
-     */
+module.exports = function (express, config) {
     var router = express.Router(),
-        ctrl = new AuthCtrl();
+        controller = new AuthController(config);
 
-    router.get('/login', ctrl.login.bind(ctrl));
-    router.get('/login_callback', ctrl.loginCallback.bind(ctrl));
-    router.get('/logout', ctrl.logout.bind(ctrl));
+    router.get('/login', controller.login.bind(controller));
+    router.get('/login_callback', controller.loginCallback.bind(controller));
+    router.get('/logout', controller.logout.bind(controller));
 
     return router;
 };

@@ -43,23 +43,18 @@ module.exports = inherit(BaseController, {
     },
 
     getComments: function (req, res, next) {
-        return res.end('Hello! This is a start point of API BEM-forum.');
-        //var id = req.params && req.params.issue_id,
-        //    mode = req.query && req.query.__mode,
-        //    ctx = {
-        //        block: 'comments',
-        //        mods: { view: 'close' },
-        //        issueNumber: id,
-        //        forumUrl: this._config.url
-        //    };
-        //
-        //this._template.run(ctx, req)
-        //    .then(function (html) {
-        //        return res.end(html);
-        //    })
-        //    .fail(function (err) {
-        //        return next(err);
-        //    })
+        var _this = this,
+            ctx = {
+                block: 'comments',
+                mods: { view: 'close' },
+                issueNumber: req.params && req.params.issue_id
+            };
+
+        this._model
+            .getComments(req, this.getCookie(req, 'token'))
+            .then(function (data) {
+                _this._render(req, res, next, ctx, data);
+            })
     },
 
     editComment: function (req, res, next) {
@@ -68,5 +63,18 @@ module.exports = inherit(BaseController, {
 
     deleteComment: function (req, res, next) {
         return res.end('Hello! This is a start point of API BEM-forum.');
+    },
+
+    _render: function (req, res, next, ctx, data) {
+        res.locals.forum = _.extend({ data: data }, this.getTmplHelpers(req));
+
+        this._template
+            .run(_.extend(ctx, res.locals), req)
+            .then(function (html) {
+                return res.end(html);
+            })
+            .fail(function (err) {
+                return next(err);
+            });
     }
 });

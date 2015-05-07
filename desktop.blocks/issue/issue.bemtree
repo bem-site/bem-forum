@@ -50,7 +50,8 @@ block('issue')(
                 js: {
                     issueNumber: issue.number,
                     comments: issue.comments,
-                    forumUrl: this._forum.config.url
+                    forumUrl: this._forum.config.url,
+                    csrf: this._forum.csrf
                 }
             });
         }),
@@ -65,7 +66,8 @@ block('issue')(
                 js: {
                     issueNumber: issue.number,
                     comments: issue.comments,
-                    forumUrl: this._forum.config.url
+                    forumUrl: this._forum.config.url,
+                    csrf: this._forum.csrf
                 },
                 content: {
                     elem: 'container'

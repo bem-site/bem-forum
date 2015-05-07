@@ -1,8 +1,4 @@
 block('forum')(
-    def()(function () {
-        return applyNext({ _forum: this.ctx.forum });
-    }),
-
     content()(function () {
         var forum = this._forum;
 

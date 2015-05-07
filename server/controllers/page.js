@@ -24,8 +24,8 @@ module.exports = inherit(BaseController, {
     _getCommon: function (req, res, next) {
         var _this = this,
             userCookie = this._auth.getUserCookie(req, 'forum_user'),
-            token = userCookie ? userCookie[0] : null,
-            name = userCookie ? userCookie[1] : null;
+            token = this.getCookie(req, 'token'),
+            name = this.getCookie(req, 'name');
 
         return vow.all({
             user: this._model.getAuthUser(req, token, name)
@@ -35,7 +35,7 @@ module.exports = inherit(BaseController, {
             _this.setPreviousUrl(req);
 
             // collect user data
-            return res.locals.forum = _.extend(_this.getLocalData(res), {
+            return res.locals = _.extend(res.locals, {
                 user: data.user
             }, _this.getTmplHelpers(req));
 
@@ -56,8 +56,7 @@ module.exports = inherit(BaseController, {
      */
     index: function (req, res, next) {
         var _this = this,
-            userCookie = this._auth.getUserCookie(req, 'forum_user'),
-            token = userCookie ? userCookie[0] : null;
+            token = this.getCookie(req, 'token');
 
         this._getCommon(req, res, next)
             .then(function () {
@@ -68,7 +67,7 @@ module.exports = inherit(BaseController, {
             })
             .then(function (data) {
                 // collect user data
-                res.locals.forum = _.extend(_this.getLocalData(res), {
+                res.locals = _.extend(res.locals, {
                     issues: data.issues,
                     labels: data.labels,
                     view: 'issues',
@@ -94,19 +93,18 @@ module.exports = inherit(BaseController, {
      */
     issue: function (req, res, next) {
         var _this = this,
-            userCookie = this._auth.getUserCookie(req, 'forum_user'),
-            token = userCookie ? userCookie[0] : null;
+            token = this.getCookie(req, 'token');
 
         this._getCommon(req, res, next)
             .then(function () {
                 return vow.all({
-                    //title: this._model.getTitle(lang, id),
+                    // title: this._model.getTitle(lang, id),
                     issue: _this._model.getIssue(req, token),
                     comments: _this._model.getComments(req, token)
                 });
             })
             .then(function (data) {
-                res.locals.forum = _.extend(_this.getLocalData(res), {
+                res.locals = _.extend(res.locals, {
                     issue: data.issue,
                     comments: data.comments,
                     view: 'issue'

@@ -45,7 +45,11 @@ app.use(function (req, res) {
      * The generated html page using the bemhtml + bemhtml
      * and data obtained in middleware `forum`
      */
-    return template.run(_.extend({ block: 'page' }, res.locals), req)
+
+    return template.run({
+            block: 'root',
+            data: { forum: res.locals }
+        }, req)
         .then(function (html) {
             res.end(html);
         })

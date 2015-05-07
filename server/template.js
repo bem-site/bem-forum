@@ -41,7 +41,6 @@ module.exports = Template = inherit({
                 var context = {
                     console: console,
                     Vow: vow,
-                    req: req,
                     _: _
                 };
 

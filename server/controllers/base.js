@@ -19,22 +19,10 @@ module.exports = BaseController = inherit({
         };
     },
 
-    /**
-     * Get forum data from req.locals.forum.
-     * p.s. When the forum is used as a separate middleware
-     * this method needed for extend data that collect earlier
-     * with forum`s data
-     * @param {Object} res - express js response
-     * @returns {Object} res.local.forum
-     * @private
-     */
-    getLocalData: function (res) {
-        var locals = res.locals;
-        return locals.forum ? locals.forum : (locals.forum = {});
-    },
+    getCookie: function (req, part) {
+        var userCookie = this._auth.getUserCookie(req, 'forum_user');
 
-    setLocalData: function (res, data) {
-
+        return userCookie ? userCookie[part === 'token' ? 0 : 1] : null;
     },
 
     getPreviousUrl: function (req) {
