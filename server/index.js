@@ -46,11 +46,20 @@ app.use(function (req, res, next) {
      * and data obtained in middleware `forum`
      */
 
-    return template.run({ block: 'root', data: { title: res.locals.title, forum: res.locals } }, req, res, next);
+    return template.run({
+        block: 'root',
+        data: {
+            title: res.locals.title,
+            forum: res.locals
+        }
+    }, req, res, next);
 });
 
 app.use(function (err, req, res, next) {
-    console.error(err);
+    if ([500, 404, 400].indexOf(err.code) === -1) {
+        err.code = 500;
+    }
+
     return res.status(err.code).send(err.message).end();
 });
 

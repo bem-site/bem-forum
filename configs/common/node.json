@@ -34,6 +34,6 @@
         "archive": {
           "ru": "archive-example_ru.json"
         },
-        "perPage": 5
+        "perPage": 15
     }
 }

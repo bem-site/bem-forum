@@ -63,20 +63,17 @@ module.exports = inherit(BaseController, {
             context = { block: 'issue' };
 
         // To add labels, select the token with admin rights
-        if (config.labelsRequired && config.auth && req.query && req.query.__admin) {
-            var adminToken = this._config.auth['admin-token'];
-
-            if (adminToken) {
-                token = adminToken;
+        if (req.query && req.query.__admin) {
+            if (config.auth && config.auth['admin-token']) {
+                token = config.auth['admin-token'];
             } else {
                 this._logger.warn('Failed to add labels when editing issue,' +
-                ' for this you need to add the admin token in')
+                ' for this you need to add the admin token in');
             }
         }
 
         this._model.editIssue(req, token)
             .then(function (issue) {
-                console.log('issue!!!!!!!!!!!!!!!!!!!');
                 res.locals.issue = issue;
                 return _this._model.getAuthUser(req, token, name);
             })

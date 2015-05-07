@@ -4,10 +4,18 @@ block('forum-issues')(
             issues = forum.issues;
 
         return issues.length ? issues.map(function (issue) {
-            return {
-                block: 'issue',
-                mods: { solved: issue.state === 'closed' },
-                issue: issue
+            // skip issue with that contains label `removed`
+            var labels = issue.labels,
+                isRemoved = labels.some(function (label) {
+                    return label.name === 'removed';
+                });
+
+            if (!isRemoved) {
+                return {
+                    block: 'issue',
+                    mods: { solved: issue.state === 'closed' },
+                    issue: issue
+                };
             }
         }) : {
             elem: 'error',

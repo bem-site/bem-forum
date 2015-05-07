@@ -86,7 +86,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
                     type: 'PUT',
                     timeout: 10000,
                     data: data,
-                    url: params.forumUrl + 'issues/' + params.number + '/?__access=owner&__mode=json',
+                    url: params.forumUrl + 'api/issues/' + params.number + '/?__admin=true&__mode=json',
                     context: this
                 }).done(function () {
                     var _this = this;
@@ -140,7 +140,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
                 type: 'PUT',
                 timeout: 10000,
                 data: data,
-                url: params.forumUrl + 'issues/' + number + '/?__access=owner',
+                url: params.forumUrl + 'api/issues/' + number + '/?__admin=true',
                 context: this
             }).done(function (html) {
                 this._render(html);
