@@ -146,8 +146,8 @@ Model.prototype = {
                 setRepoStorage: true,
                 lang: req.lang,
                 number: id,
-                page: page,
-                per_page: query && req.query.per_page
+                page: page || 1,
+                per_page: query && req.query.per_page || 100
             },
             stOptions = {
                 type: 'comments',
