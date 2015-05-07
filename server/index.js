@@ -33,7 +33,7 @@ app
 /**
  * Get results and templating data
  */
-app.use(function (req, res) {
+app.use(function (req, res, next) {
     /**
      * get data`s json without templating
      */
@@ -49,7 +49,7 @@ app.use(function (req, res) {
     return template.run({
             block: 'root',
             data: { forum: res.locals }
-        }, req)
+        }, req, res, next)
         .then(function (html) {
             res.end(html);
         })

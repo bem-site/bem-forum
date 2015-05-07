@@ -5,6 +5,7 @@ var util = require('util'),
     vow = require('vow'),
     vfs = require('vow-fs'),
     inherit = require('inherit'),
+    Logger = require('bem-site-logger'),
     stringify = require('json-stringify-safe'),
 
     forumUtil = require('./util');
@@ -14,6 +15,7 @@ var Template;
 module.exports = Template = inherit({
     __constructor: function (config) {
         this._config = config;
+        this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
         this._target = this._setTarget();
     },
 
@@ -29,7 +31,7 @@ module.exports = Template = inherit({
         return target;
     },
 
-    run: function (ctx, req) {
+    run: function (ctx, req, res, next) {
         var _this = this,
             builder = forumUtil.isDev()
                         ? require('./builder')
@@ -53,25 +55,33 @@ module.exports = Template = inherit({
                 // set lang
                 template.BEM.I18N.lang(req.lang);
 
-                return template.BEMTREE.apply(ctx)
-                    .then(function (bemjson) {
-                        if (req.query.__mode === 'bemjson') {
-                            return stringify(bemjson, null, 2);
-                        }
+                try {
+                    var bemtreePromise = template.BEMTREE.apply(ctx);
+                } catch (err) {
+                    _this._logger.error('BEMTREE ERROR: %s', err);
+                    res.status(500);
+                    return next(err);
+                }
 
-                        if (req.query.__mode === 'content') {
-                            bemjson = bemjson.content;
-                        }
+                return bemtreePromise.then(function (bemjson) {
+                    if (req.query.__mode === 'bemjson') {
+                        return stringify(bemjson, null, 2);
+                    }
 
-                        var html;
+                    if (req.query.__mode === 'content') {
+                        bemjson = bemjson.content;
+                    }
 
-                        try {
-                            html = template.BEMHTML.apply(bemjson);
-                        } catch (e) {
-                            throw new Error(e);
-                        }
-                        return html;
-                    });
+                    try {
+                        var html = template.BEMHTML.apply(bemjson);
+                    } catch (err) {
+                        _this._logger.error('BEMHTML ERROR: %s', err);
+                        res.status(500);
+                        return next(err);
+                    }
+
+                    return html;
+                });
             });
     }
 
