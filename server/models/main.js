@@ -97,7 +97,7 @@ Model.prototype = {
             query = req.query || {},
             options = {
                 setRepoStorage: true,
-                state: 'open',
+                state: 'all',
                 lang: req.lang,
                 per_page: this._config.perPage,
                 page: query.page || 1,

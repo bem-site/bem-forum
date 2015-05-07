@@ -1,6 +1,7 @@
 block('issue')(
     match(function () { return this.ctx.issue || this._forum.issue; }).def()(function () {
-        var issue = this.ctx.issue || this._forum.issue,
+        var ctx = this.ctx,
+            issue = ctx.issue || this._forum.issue,
             forum = this._forum,
             loginAuthor = issue.user.login,
             // isArchive = issue.labels.some(function (label) {
@@ -11,6 +12,10 @@ block('issue')(
             isOwner = loginUser === loginAuthor,
             config = forum.config,
             labels = issue.labels;
+
+        if (this._forum.xhr) {
+            ctx.mods = this.extend(ctx.mods, { solved: issue.state === 'closed' });
+        }
 
         this.ctx.js = {
             labels: labels.map(function (label) {

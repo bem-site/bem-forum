@@ -1,4 +1,5 @@
-var Model = require('../models/main.js'),
+var _ = require('lodash'),
+    Model = require('../models/main.js'),
     Auth = require('../services/auth.js'),
     util = require('../util.js'),
     inherit = require('inherit');
@@ -13,6 +14,7 @@ module.exports = BaseController = inherit({
 
     getTmplHelpers: function (req) {
         return {
+            _: _,
             util: util,
             csrf: req.csrfToken(),
             config: this._config
