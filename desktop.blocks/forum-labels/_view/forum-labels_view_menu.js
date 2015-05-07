@@ -63,7 +63,7 @@ modules.define(
             if (objects.isEmpty(this._labels)) {
                 location.change({ forceParams: true });
             } else {
-                location.change({ params: { labels: this._labels.join(',') }, forceParams: true });
+                location.change({ params: { labels: this._labels.join(',') } });
             }
         }
     }));

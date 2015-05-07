@@ -15,10 +15,7 @@ block('forum-content').mod('view', 'issues')(
                             { block: 'forum-loader' },
                             {
                                 elem: 'container',
-                                content: {
-                                    block: 'forum-issues',
-                                    data: issues
-                                }
+                                content: { block: 'forum-issues' }
                             }
                         ]
                     },

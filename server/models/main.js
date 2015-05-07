@@ -97,11 +97,12 @@ Model.prototype = {
             query = req.query || {},
             options = {
                 setRepoStorage: true,
-                state: 'all',
+                state: 'open',
                 lang: req.lang,
                 per_page: this._config.perPage,
                 page: query.page || 1,
-                sort: query.labels || 'comments',
+                sort: query.sort || 'updated',
+                direction: query.direction || 'desc',
                 labels: query.labels || ''
             },
             stOptions = { type: 'issues', options: options },

@@ -23,7 +23,21 @@ module.exports = inherit(BaseController, {
     },
 
     getIssues: function (req, res, next) {
-        return res.end('Hello! This is a start point of API BEM-forum.');
+        var _this = this,
+            context = { block: 'forum-issues' },
+            token = this.getCookie(req, 'token'),
+            name = this.getCookie(req, 'name');
+
+        vow.all({
+            issues: this._model.getIssues(req, token),
+            user: this._model.getAuthUser(req, token, name)
+        })
+        .then(function (data) {
+            _this._render(req, res, next, context, data);
+        })
+        .fail(function (err) {
+            return next(err);
+        });
     },
 
     getIssue: function (req, res, next) {

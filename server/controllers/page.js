@@ -71,7 +71,7 @@ module.exports = inherit(BaseController, {
                     issues: data.issues,
                     labels: data.labels,
                     view: 'issues',
-                    isHidePagination: data.length < _this._config.perPage
+                    isHidePagination: data.issues.length < _this._config.perPage
                 });
 
                 return next();

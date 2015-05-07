@@ -31,9 +31,7 @@ modules.define(
 
         _loadIssues: function (options) {
             var uri = location.getUri();
-
-            options.url  = 'api/' + uri.getQuery();
-
+            options.url = uri.getQuery();
             this._sendRequest(options);
         },
 
@@ -58,14 +56,14 @@ modules.define(
 
             this._xhr = $.ajax({
                 type: 'GET',
-                dataType: 'json',
-                url: this.params.forumUrl + options.url,
+                dataType: 'html',
+                url: this.params.forumUrl + 'api/issues/' + options.url,
                 cache: false,
                 context: this
-            }).done(function (result) {
-                this._pager.setMod('disabled', result.isLastPage);
+            }).done(function (html) {
+                //this._pager.setMod('disabled', result.isLastPage);
 
-                this._onSuccess(result.html, options.type)
+                this._onSuccess(html, options.type)
             });
         },
 
