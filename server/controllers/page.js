@@ -44,6 +44,10 @@ module.exports = inherit(BaseController, {
         });
     },
 
+    getCommonTitle: function (lang) {
+        return this._config.title && this._config.title[lang];
+    },
+
     /**
      * Index page controller
      * 1. Get from model page title and issues list
@@ -68,6 +72,7 @@ module.exports = inherit(BaseController, {
             .then(function (data) {
                 // collect user data
                 res.locals = _.extend(res.locals, {
+                    title: req.title || _this.getCommonTitle(req.lang),
                     issues: data.issues,
                     labels: data.labels,
                     view: 'issues',
@@ -104,8 +109,11 @@ module.exports = inherit(BaseController, {
                 });
             })
             .then(function (data) {
+                var issue = data.issue;
+
                 res.locals = _.extend(res.locals, {
-                    issue: data.issue,
+                    title: req.title || issue.title + ' / ' + _this.getCommonTitle(req.lang),
+                    issue: issue,
                     comments: data.comments,
                     view: 'issue'
                 });

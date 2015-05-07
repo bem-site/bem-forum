@@ -17,6 +17,10 @@
         "labelsRequired": false,
         "lang": "ru",
         "langs": ["en", "ru"],
+        "title": {
+          "en": "Forum on the full BEM technology stack",
+          "ru": "Форум на полном БЭМ стеке технологий"
+        },
         "storage": {
           "en": {
             "user": "tavriaforever",
