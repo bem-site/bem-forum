@@ -1,19 +1,28 @@
 block('comment')(
 
-    match(function () { return this.ctx.data; }).def()(function () {
-        var comment = this.ctx.data,
+    match(function () { return this.ctx.comment || this._forum.comment; }).def()(function () {
+        var ctx = this.ctx,
+            forum = this._forum,
+            comment = ctx.comment || forum.comment,
             loginAuthor = comment.user.login,
             //isArchive = comment.number && (comment.number < 0),
             isArchive = false,
             loginUser = this._forum.user && this._forum.user.login,
             isOwner = loginUser === loginAuthor;
 
-        return applyNext({ _isOwner: isOwner, _isArchive: isArchive });
+        this.ctx.js = {
+            issueNumber: ctx.issueNumber,
+            id: comment.id,
+            forumUrl: forum.config.url,
+            csrf: forum.csrf
+        };
+
+        return applyNext({ _isOwner: isOwner, _isArchive: isArchive, _comment: comment });
     }),
 
-    match(function () { return this.ctx.data; }).content()(function () {
+    match(function () { return this._comment; }).content()(function () {
 
-        var comment = this.ctx.data;
+        var comment = this._comment;
 
         return [
             {

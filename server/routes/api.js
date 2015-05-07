@@ -10,7 +10,7 @@ module.exports = function (express, config) {
 
     // Issues collection (post, get)
     router.route('/issues')
-        .post(controller.postIssue.bind(controller))
+        .post(controller.createIssue.bind(controller))
         .get(controller.getIssues.bind(controller));
 
     // Issue (get, edit, delete)
@@ -21,7 +21,7 @@ module.exports = function (express, config) {
 
     // Comments collection (post, get)
     router.route('/issues/:issue_id/comments')
-        .post(controller.postComment.bind(controller))
+        .post(controller.createComment.bind(controller))
         .get(controller.getComments.bind(controller));
 
     // Comment (edit, delete)

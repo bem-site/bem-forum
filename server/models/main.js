@@ -162,6 +162,40 @@ Model.prototype = {
             .fail(this._onError.bind(this, def));
 
         return def.promise();
+    },
+
+    createComment: function (req, token) {
+        var body = req.body,
+            options = {
+                setRepoStorage: true,
+                lang: req.lang,
+                number: body.number,
+                body: body.body
+            };
+
+        return this._github.createComment(token, options);
+    },
+
+    editComment: function (req, token) {
+        var body = req.body,
+            options = {
+                setRepoStorage: true,
+                lang: req.lang,
+                id: body.id,
+                body: body.body
+            };
+
+        return this._github.editComment(token, options);
+    },
+
+    deleteComment: function (req, token) {
+        var options = {
+                setRepoStorage: true,
+                lang: req.lang,
+                id: req.body.id
+            };
+
+        return this._github.deleteComment(token, options);
     }
 };
 

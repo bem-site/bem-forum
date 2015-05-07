@@ -47,7 +47,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
                 type: 'POST',
                 timeout: 10000,
                 data: data,
-                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/',
+                url: this.params.forumUrl + 'api/issues/' + this.params.issueNumber + '/comments/',
                 context: this
             }).done(function (html) {
                 this._render(html, 'append', 'container');
@@ -56,7 +56,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
             }).fail(function (xhr) {
                 alert('Не удалось добавить комментарий');
                 this._form.hideProcessing(true);
-                window.forum.debug && console.log('comment edit fail', xhr);
+                window.debug && console.log('comment edit fail', xhr);
             });
         },
 

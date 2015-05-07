@@ -18,7 +18,7 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $
                 type: 'PUT',
                 timeout: 10000,
                 data: data,
-                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/?__mode=content',
+                url: this.params.forumUrl + 'api/issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/?__mode=content',
                 context: this
             }).done(function (html) {
                 BEMDOM.update(this.domElem, html);
@@ -117,11 +117,16 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $
          */
         _onClickRemove: function () {
             if (window.confirm('Вы уверены?')) {
+                var params = this.params;
+
                 $.ajax({
                     type: 'DELETE',
                     timeout: 10000,
-                    data: { _csrf: this.params.csrf },
-                    url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/',
+                    data: {
+                        _csrf: params.csrf,
+                        id: params.id
+                    },
+                    url: this.params.forumUrl + 'api/issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/',
                     context: this
                 }).done(function () {
                     this.emit('comment:delete');

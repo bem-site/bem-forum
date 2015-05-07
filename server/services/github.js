@@ -186,6 +186,41 @@ module.exports = Github = inherit({
      */
     getComments: function (token, options) {
         return this._callGithubApi(token, 'issues', 'getComments', options);
+    },
+
+    /**
+     * Create new comment for issue
+     * @param token - {String} oauth user token
+     * @param options - {Object} with fields:
+     *  - number {String} unique number of issue (required)
+     *  - body {String} text for comment (required)
+     * @returns {*}
+     */
+    createComment: function (token, options) {
+        return this._callGithubApi(token, 'issues', 'createComment', options);
+    },
+
+    /**
+     * Edit issue comment
+     * @param token - {String} oauth user token
+     * @param options - {Object} with fields:
+     *  - id {String} unique id of comment (required)
+     *  - body {String} text of comment (required)
+     * @returns {*}
+     */
+    editComment: function (token, options) {
+        return this._callGithubApi(token, 'issues', 'editComment', options);
+    },
+
+    /**
+     * Removes comment from issue
+     * @param token - {String} oauth user token
+     * @param options - {Object} with fields:
+     *  - id {String} unique id of comment (required)
+     * @returns {*}
+     */
+    deleteComment: function (token, options) {
+        return this._callGithubApi(token, 'issues', 'deleteComment', options);
     }
 
 }, {

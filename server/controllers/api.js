@@ -18,7 +18,7 @@ module.exports = inherit(BaseController, {
         return res.end('Hello! This is a start point of API BEM-forum.');
     },
 
-    postIssue: function (req, res, next) {
+    createIssue: function (req, res, next) {
         return res.end('Hello! This is a start point of API BEM-forum.');
     },
 
@@ -38,8 +38,26 @@ module.exports = inherit(BaseController, {
         return res.end('Hello! This is a start point of API BEM-forum.');
     },
 
-    postComment: function (req, res, next) {
-        return res.end('Hello! This is a start point of API BEM-forum.');
+    createComment: function (req, res, next) {
+        var _this = this,
+            context = {
+                block: 'comment',
+                issueNumber: req.params && req.params.number
+            },
+            token = this.getCookie(req, 'token'),
+            name = this.getCookie(req, 'name');
+
+        this._model.createComment(req, token)
+            .then(function (comment) {
+                res.locals.comment = comment;
+                return _this._model.getAuthUser(req, token, name);
+            })
+            .then(function (user) {
+                _this._render(req, res, next, context, { user: user });
+            })
+            .fail(function (err) {
+                return next(err);
+            });
     },
 
     getComments: function (req, res, next) {
@@ -60,17 +78,41 @@ module.exports = inherit(BaseController, {
             _this._render(req, res, next, context, data);
         })
         .fail(function (err) {
-            res.status(500);
             return next(err);
         });
     },
 
     editComment: function (req, res, next) {
-        return res.end('Hello! This is a start point of API BEM-forum.');
+        var _this = this,
+            context = {
+                block: 'comment',
+                issueNumber: req.params && req.params.number
+            },
+            token = this.getCookie(req, 'token'),
+            name = this.getCookie(req, 'name');
+
+        this._model.editComment(req, token)
+            .then(function (comment) {
+                res.locals.comment = comment;
+                return _this._model.getAuthUser(req, token, name);
+            })
+            .then(function (user) {
+                _this._render(req, res, next, context, { user: user });
+            })
+            .fail(function (err) {
+                return next(err);
+            });
     },
 
     deleteComment: function (req, res, next) {
-        return res.end('Hello! This is a start point of API BEM-forum.');
+        this._model
+            .deleteComment(req, this.getCookie(req, 'token'))
+            .then(function () {
+                return res.end('ok');
+            })
+            .fail(function (err) {
+                return next(err);
+            });
     },
 
     _render: function (req, res, next, context, data) {

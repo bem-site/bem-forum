@@ -9,20 +9,10 @@ block('comments').mod('view', 'open')(
 
     elem('container')(
         content()(function () {
-            var forum = this._forum,
-                comments = forum.comments,
-                issueNumber = forum.issue.number;
-
-            return comments.map(function (comment) {
+            return this._forum.comments.map(function (comment) {
                 return {
                     block: 'comment',
-                    data: comment,
-                    js: {
-                        issueNumber: issueNumber,
-                        id: comment.id,
-                        forumUrl: forum.config.url,
-                        csrf: forum.csrf
-                    }
+                    comment: comment
                 }
             })
         })

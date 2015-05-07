@@ -1,19 +1,9 @@
 block('comments').mod('view', 'close')(
     content()(function () {
-        var ctx = this.ctx,
-            forum = this._forum,
-            comments = forum.comments;
-
-        return comments.map(function (comment) {
+        return this._forum.comments.map(function (comment) {
             return {
                 block: 'comment',
-                data: comment,
-                js: {
-                    issueNumber: ctx.issueNumber,
-                    id: comment.id,
-                    forumUrl: forum.config.url,
-                    csrf: forum.csrf
-                }
+                comment: comment
             };
         });
     })
