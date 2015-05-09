@@ -22,10 +22,11 @@ module.exports = inherit(BaseController, {
         var _this = this,
             token = this.getCookie(req, 'token'),
             name = this.getCookie(req, 'name'),
-            isArchive = this.isArchive(req);
+            isArchive = this.isArchive(req, res);
 
         // Check whether the archive page
         res.locals.isArchive = isArchive;
+        res.locals.isLangSupportArchive = this.isLangSupportArchive(req);
 
         vow.all({
             issues: this._model.getIssues(req, token, isArchive),

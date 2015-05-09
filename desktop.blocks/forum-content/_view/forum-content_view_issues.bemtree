@@ -3,7 +3,8 @@ block('forum-content').mod('view', 'issues')(
         var forum = this._forum,
             issues = forum.issues,
             isLastPage = forum.isLastPage,
-            isArchive = forum.isArchive;
+            isArchive = forum.isArchive,
+            isLangSupportArchive = forum.isLangSupportArchive;
 
         return [
             {
@@ -28,7 +29,7 @@ block('forum-content').mod('view', 'issues')(
             },
             {
                 elem: 'archive',
-                elemMods: { show: isLastPage && !isArchive },
+                elemMods: { show: isLangSupportArchive && isLastPage && !isArchive },
                 content: {
                     block: 'button',
                     mix: { block: this.block, elem: 'archive-button' },

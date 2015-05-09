@@ -17,7 +17,15 @@ module.exports = BaseController = inherit({
     },
 
     isArchive: function (req) {
-        return req.query && req.query.page < 0;
+        var isNegativePage = req.query && req.query.page < 0,
+            isLangArchive = this.isLangSupportArchive(req);
+
+        return isNegativePage && isLangArchive;
+    },
+
+    isLangSupportArchive: function (req) {
+        var archiveConfig = this._config.archive;
+        return archiveConfig && archiveConfig[req.lang];
     },
 
     getTmplHelpers: function (req) {

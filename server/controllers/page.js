@@ -29,6 +29,7 @@ module.exports = inherit(BaseController, {
 
         // Check whether the archive page
         res.locals.isArchive = this.isArchive(req);
+        res.locals.isLangSupportArchive = this.isLangSupportArchive(req);
 
         return vow.all({
             user: this._model.getAuthUser(req, token, name)
