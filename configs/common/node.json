@@ -32,7 +32,7 @@
           }
         },
         "archive": {
-          "ru": "archive-example_ru.json"
+          "ru": "archive.json"
         },
         "perPage": 15
     }

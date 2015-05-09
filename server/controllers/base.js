@@ -12,6 +12,14 @@ module.exports = BaseController = inherit({
         this._config = config;
     },
 
+    isLastPage: function (issues, perPage) {
+        return issues.length < perPage;
+    },
+
+    isArchive: function (req) {
+        return req.query && req.query.page < 0;
+    },
+
     getTmplHelpers: function (req) {
         return {
             _: _,

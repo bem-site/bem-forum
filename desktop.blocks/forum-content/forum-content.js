@@ -8,10 +8,9 @@ modules.define(
             js: {
                 inited: function () {
                     this._loader = this.findBlockInside('forum-loader');
-                    this._pager = this.findBlockInside('forum-pager');
                     this._labels = this.findBlockInside({ block: 'forum-labels', modName: 'view', modVal: 'menu' });
                     location.on('change', this._onChangeLocation, this);
-
+                    channels('forum-issues').on('show-archive', this._onShowArchive, this);
                     BEMDOM.blocks.issue.on('process', function (e, data) {
                         this._loader.setMod('progress', data.enable);
                     }, this);
@@ -29,6 +28,10 @@ modules.define(
             }
         },
 
+        _onShowArchive: function () {
+            this.setMod(this.elem('archive'), 'show', true);
+        },
+
         _loadIssues: function (options) {
             var uri = location.getUri();
             options.url = uri.getQuery();
@@ -41,6 +44,12 @@ modules.define(
                 prevPage = prevParams.page && prevParams.page[0] || 1,
                 currentPage = state.params.page && state.params.page[0] || 1,
                 options = {};
+
+            // invert pages numbers if it archive
+            if (currentPage < 0) {
+                prevPage = ~prevPage + 1;
+                currentPage = ~currentPage + 1;
+            }
 
             if (+prevPage < +currentPage) {
                 options.type = 'append';
@@ -61,8 +70,6 @@ modules.define(
                 cache: false,
                 context: this
             }).done(function (html) {
-                //this._pager.setMod('disabled', result.isLastPage);
-
                 this._onSuccess(html, options.type)
             });
         },

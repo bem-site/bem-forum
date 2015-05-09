@@ -20,15 +20,26 @@ module.exports = inherit(BaseController, {
 
     getIssues: function (req, res, next) {
         var _this = this,
-            context = { block: 'forum-issues' },
             token = this.getCookie(req, 'token'),
-            name = this.getCookie(req, 'name');
+            name = this.getCookie(req, 'name'),
+            isArchive = this.isArchive(req);
+
+        // Check whether the archive page
+        res.locals.isArchive = isArchive;
 
         vow.all({
-            issues: this._model.getIssues(req, token),
+            issues: this._model.getIssues(req, token, isArchive),
             user: this._model.getAuthUser(req, token, name)
         })
         .then(function (data) {
+            var context = {
+                block: 'forum-issues',
+                js: {
+                    isLastPage: _this.isLastPage(data.issues, _this._config.perPage),
+                    isArchive: isArchive
+                }
+            };
+
             _this._render(req, res, next, context, data);
         })
         .fail(function (err) {
@@ -121,8 +132,11 @@ module.exports = inherit(BaseController, {
             token = this.getCookie(req, 'token'),
             name = this.getCookie(req, 'name');
 
+        // Check whether the archive page
+        res.locals.isArchive = this.isArchive(req);
+
         vow.all({
-            comments: this._model.getComments(req, token),
+            comments: this._model.getComments(req, token, res.locals.isArchive),
             user: this._model.getAuthUser(req, token, name)
         })
         .then(function (data) {

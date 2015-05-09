@@ -17,15 +17,18 @@ module.exports = inherit(BaseController, {
      * that match default`s forum router.
      * 1. Get from model labels by lang and user info by token from req.cookies
      * 2. Extend req.locals.forum with labels and users data
-     * @param {Object} req - express js request
-     * @param {Object} res - express js response
+     * @param {Object} req
+     * @param {Object} res
+     * @param {Object} next
      * @returns {*}
      */
     _getCommon: function (req, res, next) {
         var _this = this,
-            userCookie = this._auth.getUserCookie(req, 'forum_user'),
             token = this.getCookie(req, 'token'),
             name = this.getCookie(req, 'name');
+
+        // Check whether the archive page
+        res.locals.isArchive = this.isArchive(req);
 
         return vow.all({
             user: this._model.getAuthUser(req, token, name)
@@ -62,21 +65,25 @@ module.exports = inherit(BaseController, {
         var _this = this,
             token = this.getCookie(req, 'token');
 
+        // Prepare data
         this._getCommon(req, res, next)
             .then(function () {
                 return vow.all({
-                    issues: _this._model.getIssues(req, token),
+                    issues: _this._model.getIssues(req, token, res.locals.isArchive),
                     labels: _this._model.getLabels(req, token)
                 });
             })
             .then(function (data) {
+                var issues = data.issues,
+                    isLastPage = _this.isLastPage(issues, _this._config.perPage);
+
                 // collect user data
                 res.locals = _.extend(res.locals, {
                     title: req.title || _this.getCommonTitle(req.lang),
-                    issues: data.issues,
+                    issues: issues,
                     labels: data.labels,
                     view: 'issues',
-                    isHidePagination: data.issues.length < _this._config.perPage
+                    isLastPage: isLastPage
                 });
 
                 return next();
@@ -98,14 +105,15 @@ module.exports = inherit(BaseController, {
      */
     issue: function (req, res, next) {
         var _this = this,
-            token = this.getCookie(req, 'token');
+            token = this.getCookie(req, 'token'),
+            isArchive = res.locals.isArchive;
 
         this._getCommon(req, res, next)
             .then(function () {
                 return vow.all({
                     // title: this._model.getTitle(lang, id),
-                    issue: _this._model.getIssue(req, token),
-                    comments: _this._model.getComments(req, token)
+                    issue: _this._model.getIssue(req, token, isArchive),
+                    comments: _this._model.getComments(req, token, isArchive)
                 });
             })
             .then(function (data) {

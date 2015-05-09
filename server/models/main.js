@@ -1,5 +1,6 @@
 var _ = require('lodash'),
     vow = require('vow'),
+    Archive = require('./archive.js'),
     Github = require('../services/github.js'),
     MemoryStorage = require('../services/memoryStorage.js'),
     Logger = require('bem-site-logger');
@@ -15,6 +16,7 @@ Model.prototype = {
         this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
         this._github = Github.getInstance(config);
         this._storage = MemoryStorage.getInstance(config);
+        this._archive = Archive.getInstance(config);
     },
 
     _onSuccess: function (def, item, stOptions, options, data) {
@@ -92,7 +94,7 @@ Model.prototype = {
         return def.promise();
     },
 
-    getIssues: function (req, token) {
+    getIssues: function (req, token, isArchive) {
         var def = vow.defer(),
             query = req.query || {},
             options = {
@@ -105,13 +107,27 @@ Model.prototype = {
                 direction: query.direction || 'desc',
                 labels: query.labels || ''
             },
-            stOptions = { type: 'issues', options: options },
-            issues = this._storage.getData(stOptions, options),
-            eTag = this._storage.getEtag(stOptions, options);
+            issues;
 
-        this._github.getIssues(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
-            .then(this._onSuccess.bind(this, def, issues, stOptions, options))
-            .fail(this._onError.bind(this, def));
+        if (isArchive) {
+
+            try {
+                issues = this._archive.getIssues(options);
+                def.resolve(issues);
+            } catch (err) {
+                def.reject(err);
+            }
+
+        } else {
+            var stOptions = { type: 'issues', options: options },
+                eTag = this._storage.getEtag(stOptions, options);
+
+            issues = this._storage.getData(stOptions, options)
+
+            this._github.getIssues(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
+                .then(this._onSuccess.bind(this, def, issues, stOptions, options))
+                .fail(this._onError.bind(this, def));
+        }
 
         return def.promise();
     },

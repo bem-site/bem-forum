@@ -1,55 +1,93 @@
-/**
- * Archive module
- * @returns {{init: init, getIssues: getIssues, getComments: getComments}}
- */
-var Archive = function (options, lang) {
-    this._options = options;
-    this._lang = lang;
-};
+var util = require('util'),
+    path = require('path'),
+    _ = require('lodash'),
+    vow = require('vow'),
+    vowFs = require('vow-fs'),
+    inherit = require('inherit'),
+    Logger = require('bem-site-logger'),
+    stringify = require('json-stringify-safe');
 
-Archive.prototype = {
-    model: {
-        issues: [],
-        comments: []
+var Archive;
+
+module.exports = Archive = inherit({
+    __constructor: function (config) {
+        this._config = config;
+        this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
+        this._initStorage();
     },
 
-    /**
-     * Initializing archive
-     * @returns {Object}
-     */
-    init: function () {
-        return vowFs.read(path.join(process.cwd(), this._options.archive[this._lang]), 'utf-8')
-            .then(function (data) {
-                data = JSON.parse(data);
-                this.model = Object.keys(data).reduce(function (prev, key) {
-                    prev[key] = data[key];
-                    return prev;
-                }, {});
-                return vow.resolve(this.model);
-            }, this);
+    _initStorage: function () {
+        var _this = this,
+            archiveConfig = this._config.archive;
+
+        this._storage = {};
+
+        if (!archiveConfig) {
+            return;
+        }
+
+        _.keys(archiveConfig).forEach(function (lang) {
+            vowFs
+                .read(path.join(process.cwd(), archiveConfig[lang]), 'utf-8')
+                .then(function (data) {
+                    try {
+                        data = JSON.parse(data);
+                    } catch (err) {
+                        _this._logger.error('Failed to parse json file with the %s archive error: %s', lang, err);
+                    }
+
+                    _this._storage[lang] = data;
+                }, this);
+        });
     },
 
-    /**
-     * Returns issues array from archive
-     * @returns {Array}
-     */
-    getIssues: function () {
-        return this.model.issues;
+    getIssues: function (options) {
+        var storage = this._storage[options.lang];
+
+        if (!storage) {
+            return [];
+        }
+
+        var issues = storage.issues;
+
+        // filter by issue labels
+        issues = this.filterIssuesByLabels(issues, options.labels);
+
+        // sort by type and direction
+        issues = this._sortIssues(issues, options.sort, options.direction);
+
+        // sort by page and limit per page
+        issues = this._filterByPage(issues, options.page, options['per_page']);
+
+        return issues;
     },
 
-    getIssue: function (number) {
-        return this.getIssues().filter(function (item) {
-            return item.number == number;
+    getIssue: function (issueId, lang) {
+        var storage = this._storage[lang];
+
+        if (!storage) {
+            return {};
+        }
+
+        return storage.issues.filter(function (item) {
+            return item.number == issueId;
         })[0];
     },
 
     /**
      * Returns comments array for issue with id
      * @param issueId - {Number} id of issue
+     * @param lang - {String} lang of archive
      * @returns {Array}
      */
-    getComments: function (issueId) {
-        return this.model.comments
+    getComments: function (issueId, lang) {
+        var storage = this._storage[lang];
+
+        if (!storage) {
+            return [];
+        }
+
+        return storage.comments
             .filter(function (item) {
                 return item.number == issueId;
             })
@@ -59,5 +97,74 @@ Archive.prototype = {
 
                 return db.getTime() - da.getTime();
             });
+    },
+
+    filterIssuesByLabels: function (issues, labels) {
+        if (!labels) {
+            return issues;
+        }
+
+        labels = labels.split(',');
+
+        return issues.filter(function (issue) {
+            // get issue label`s name
+            var issueLabels = issue.labels.map(function (label) {
+                return label.name || label;
+            });
+
+            // must have all option labels articles
+            return labels.every(function (label) {
+                return issueLabels.indexOf(label) > -1;
+            });
+        });
+    },
+
+    _filterByPage: function (issues, currentPage, perPage) {
+        var page = currentPage || 1,
+            limit = perPage || this._config.perPage;
+
+        // invert the negative value of the page
+        if (page < 0) {
+            page = ~page + 1;
+        }
+
+        return issues.filter(function (issue, index) {
+            return index >= limit * (page - 1) && index < limit * page;
+        });
+    },
+
+    _sortIssues: function (issues, sortType, direction) {
+        var sortField = this._getSortField(sortType),
+            order = this._getSortOrder(direction);
+
+        return issues.sort(function (a, b) {
+            if (sortField === 'comments') {
+                return order * (+a[sortField] - +b[sortField]);
+            }
+
+            return order * ((new Date(a[sortField + '_at'])).getTime() -
+                (new Date(b[sortField + '_at'])).getTime());
+        });
+    },
+
+    _getSortField: function (sortType) {
+        return (sortType && /^(created|updated|comments)$/.test(sortType)) ? sortType : 'updated';
+    },
+
+    _getSortOrder: function (direction) {
+        return this._getSortDirection(direction) === 'desc' ? -1 : 1;
+    },
+
+    _getSortDirection: function (direction) {
+        return (direction && /^(asc|desc)$/.test(direction)) ? direction : 'desc';
     }
-};
+
+}, {
+    getInstance: function (config) {
+        if (!this._instance) {
+            this._instance = new Archive(config);
+        }
+
+        return this._instance;
+    }
+});
