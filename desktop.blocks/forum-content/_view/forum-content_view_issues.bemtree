@@ -33,7 +33,7 @@ block('forum-content').mod('view', 'issues')(
                 content: {
                     block: 'button',
                     mix: { block: this.block, elem: 'archive-button' },
-                    mods: { theme: 'islands', size: 'l', type: 'link', view: 'action' },
+                    mods: { theme: 'islands', size: 'xl', type: 'link', view: 'action' },
                     url: forum.config.url + '?page=-1',
                     text: BEM.I18N('forum-content', 'archive')
                 }

@@ -14,8 +14,8 @@
         "auth": {
           "required": true
         },
-        "labelsRequired": false,
-        "lang": "en",
+        "labelsRequired": true,
+        "lang": "ru",
         "langs": ["en", "ru"],
         "title": {
           "en": "Forum on the full BEM technology stack",

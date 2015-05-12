@@ -25,7 +25,7 @@ module.exports = BaseController = inherit({
 
     isLangSupportArchive: function (req) {
         var archiveConfig = this._config.archive;
-        return archiveConfig && archiveConfig[req.lang];
+        return archiveConfig && archiveConfig[req.lang] ? true : false;
     },
 
     getTmplHelpers: function (req) {
@@ -51,8 +51,7 @@ module.exports = BaseController = inherit({
     setPreviousUrl: function (req) {
         var session = req.session;
 
-        session
-            ? session.previousUrl = req.url
+        session ? session.previousUrl = req.url
             : this._logger.warn('Add session middleware for correct auth work');
     }
 });

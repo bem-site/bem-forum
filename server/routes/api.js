@@ -29,5 +29,8 @@ module.exports = function (express, config) {
         .put(controller.editComment.bind(controller))
         .delete(controller.deleteComment.bind(controller));
 
+    router.route('/labels')
+        .get(controller.getLabels.bind(controller));
+
     return router;
 };

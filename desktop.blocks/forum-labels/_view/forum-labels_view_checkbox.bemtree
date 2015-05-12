@@ -1,8 +1,6 @@
 block('forum-labels').mod('view', 'checkbox')(
-    match(function () { return this.ctx.data; }).content()(function () {
-        var labels = this.ctx.data;
-
-        return labels.map(function (label) {
+    match(function () { return this._forum && this._forum.labels; }).content()(function () {
+        return this._forum.labels.map(function (label) {
             return {
                 block: 'checkbox',
                 mods: {

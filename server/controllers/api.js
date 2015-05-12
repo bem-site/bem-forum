@@ -22,11 +22,12 @@ module.exports = inherit(BaseController, {
         var _this = this,
             token = this.getCookie(req, 'token'),
             name = this.getCookie(req, 'name'),
-            isArchive = this.isArchive(req, res);
+            isArchive = this.isArchive(req, res),
+            isLangSupportArchive = this.isLangSupportArchive(req);
 
         // Check whether the archive page
         res.locals.isArchive = isArchive;
-        res.locals.isLangSupportArchive = this.isLangSupportArchive(req);
+        res.locals.isLangSupportArchive = isLangSupportArchive;
 
         vow.all({
             issues: this._model.getIssues(req, token, isArchive),
@@ -37,7 +38,8 @@ module.exports = inherit(BaseController, {
                 block: 'forum-issues',
                 js: {
                     isLastPage: _this.isLastPage(data.issues, _this._config.perPage),
-                    isArchive: isArchive
+                    isArchive: isArchive,
+                    isLangSupportArchive: isLangSupportArchive
                 }
             };
 
@@ -179,6 +181,20 @@ module.exports = inherit(BaseController, {
             .fail(function (err) {
                 return next(err);
             });
+    },
+
+    getLabels: function (req, res, next) {
+        var _this = this,
+            context = { block: 'forum-labels', mods: { view: req.query && req.query.view } };
+
+        _this._model.getLabels(req, this.getCookie(req, 'token'))
+            .then(function (labels) {
+                _this._render(req, res, next, context, { labels: labels });
+            })
+            .fail(function (err) {
+                return next(err);
+            });
+
     },
 
     _render: function (req, res, next, context, data) {

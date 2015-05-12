@@ -8,7 +8,7 @@ modules.define('forum-labels', ['jquery'], function (provide, $, Labels) {
 
             $.ajax({
                 dataType: 'html',
-                url: forumUrl + 'labels/?__mode=content&view=checkbox',
+                url: forumUrl + 'api/labels/?__mode=content&view=checkbox',
                 type: 'GET'
             }).done(function (html) {
                 Labels.update(_this.elem('wrap'), html);
