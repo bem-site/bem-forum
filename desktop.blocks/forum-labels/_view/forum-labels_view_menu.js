@@ -10,6 +10,7 @@ modules.define(
                 inited: function () {
                     this._labels = [];
                     this._getMenu();
+                    this._checkedLabelsByUri();
                     channels('filter').on('labels', this._checkedLabelByFilter, this);
                     channels('filter').on('labels:clear', this._clearLabels, this);
                 }
@@ -43,11 +44,11 @@ modules.define(
 
         _checkedLabelByFilter: function (e, data) {
             this._labels = data.labels;
-            this._checkedLabels();
+            this._checkedLabels(true);
             return this;
         },
 
-        _checkedLabels: function () {
+        _checkedLabels: function (needLocationChange) {
             var _this = this;
 
             this._menu.getItems().forEach(function (menuItem) {
@@ -60,7 +61,7 @@ modules.define(
                 });
             });
 
-            location.change({ params: this._getParams() });
+            needLocationChange && location.change({ params: this._getParams() });
         },
 
         _getParams: function () {
@@ -80,6 +81,16 @@ modules.define(
             params.labels = this._labels.join(',');
 
             return params;
+        },
+
+        _checkedLabelsByUri: function () {
+            var uri = location.getUri(),
+                query = uri.queryParams;
+
+            if (query.labels && query.labels[0]) {
+                this._labels = query.labels[0].split(',');
+                this._checkedLabels();
+            }
         }
     }));
 });
