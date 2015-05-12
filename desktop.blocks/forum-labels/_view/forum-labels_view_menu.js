@@ -1,7 +1,7 @@
 modules.define(
     'forum-labels',
-    ['jquery', 'events__channels', 'next-tick', 'location', 'objects'],
-    function (provide, $, channels, nextTick, location, objects, Labels) {
+    ['jquery', 'events__channels', 'next-tick', 'location'],
+    function (provide, $, channels, nextTick, location, Labels) {
 
     provide(Labels.decl({ modName: 'view', modVal: 'menu' }, {
 
@@ -60,11 +60,26 @@ modules.define(
                 });
             });
 
-            if (objects.isEmpty(this._labels)) {
-                location.change({ forceParams: true });
-            } else {
-                location.change({ params: { labels: this._labels.join(',') } });
-            }
+            location.change({ params: this._getParams() });
+        },
+
+        _getParams: function () {
+            var uri = location.getUri(),
+                query = uri.queryParams,
+                params = {};
+
+            Object.keys(query).forEach(function (key) {
+                if (key === 'page') {
+                    params[key] = 1;
+                    return false;
+                }
+
+                params[key] = query[key][0];
+            });
+
+            params.labels = this._labels.join(',');
+
+            return params;
         }
     }));
 });

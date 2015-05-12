@@ -1,7 +1,7 @@
 modules.define(
     'forum-sorting',
-    ['i-bem__dom', 'location'],
-    function (provide, BEMDOM, location) {
+    ['i-bem__dom', 'location', 'objects'],
+    function (provide, BEMDOM, location, objects) {
 
     provide(BEMDOM.decl(this.name, {
         onSetMod: {
@@ -19,7 +19,19 @@ modules.define(
                 sortNum = Math.floor(val / 2),
                 sort = (sortNum === 0 ? 'created' : (sortNum === 1 ? 'comments' : 'updated'));
 
-            location.change({ params: { sort: sort, direction: dir }, forceParams: true });
+            location.change({ params: this._getParams(sort, dir) });
+        },
+
+        _getParams: function (sort, dir) {
+            var uri = location.getUri(),
+                query = uri.queryParams,
+                params = {};
+
+            Object.keys(query).forEach(function (key) {
+                params[key] = query[key][0];
+            });
+
+            return objects.extend(params, { sort: sort, direction: dir });
         }
     }));
 });

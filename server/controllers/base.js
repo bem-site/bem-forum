@@ -12,15 +12,15 @@ module.exports = BaseController = inherit({
         this._config = config;
     },
 
-    isLastPage: function (issues, perPage) {
-        return issues.length < perPage;
+    isLastPage: function (issues) {
+        return issues.length < this._config.perPage;
     },
 
     isArchive: function (req) {
         var isNegativePage = req.query && req.query.page < 0,
             isLangArchive = this.isLangSupportArchive(req);
 
-        return isNegativePage && isLangArchive;
+        return (isNegativePage && isLangArchive) ? true : false;
     },
 
     isLangSupportArchive: function (req) {
@@ -51,7 +51,12 @@ module.exports = BaseController = inherit({
     setPreviousUrl: function (req) {
         var session = req.session;
 
-        session ? session.previousUrl = req.url
+        session ? (session.previousUrl = req.url)
             : this._logger.warn('Add session middleware for correct auth work');
+    },
+
+    onError: function (next, err) {
+        this._logger.error(err);
+        return next(err);
     }
 });

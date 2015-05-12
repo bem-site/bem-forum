@@ -1,10 +1,8 @@
 block('forum-content').mod('view', 'issues')(
     content()(function () {
-        var forum = this._forum,
-            issues = forum.issues,
-            isLastPage = forum.isLastPage,
-            isArchive = forum.isArchive,
-            isLangSupportArchive = forum.isLangSupportArchive;
+        var forum = this._forum;
+
+        console.log('forum.isMatchArchive', forum.isMatchArchive);
 
         return [
             {
@@ -18,6 +16,21 @@ block('forum-content').mod('view', 'issues')(
                             {
                                 elem: 'container',
                                 content: { block: 'forum-issues' }
+                            },
+                            {
+                                elem: 'archive',
+                                elemMods: { show: forum.isMatchArchive },
+                                content: {
+                                    block: 'button',
+                                    mix: { block: this.block, elem: 'archive-button' },
+                                    mods: { theme: 'islands', size: 'xl', type: 'link', view: 'action' },
+                                    url: forum.config.url + '?page=-1',
+                                    text: BEM.I18N('forum-content', 'archive')
+                                }
+                            },
+                            {
+                                block: 'forum-pager',
+                                mods: { disabled: forum.isLastPage }
                             }
                         ]
                     },
@@ -26,21 +39,6 @@ block('forum-content').mod('view', 'issues')(
                         content: { block: 'forum-sidebar' }
                     }
                 ]
-            },
-            {
-                elem: 'archive',
-                elemMods: { show: isLangSupportArchive && isLastPage && !isArchive },
-                content: {
-                    block: 'button',
-                    mix: { block: this.block, elem: 'archive-button' },
-                    mods: { theme: 'islands', size: 'xl', type: 'link', view: 'action' },
-                    url: forum.config.url + '?page=-1',
-                    text: BEM.I18N('forum-content', 'archive')
-                }
-            },
-            {
-                block: 'forum-pager',
-                mods: { disabled: isLastPage }
             }
         ]
     })

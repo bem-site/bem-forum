@@ -241,6 +241,20 @@ Model.prototype = {
             };
 
         return this._github.deleteComment(token, options);
+    },
+
+    inspectArchiveIssues: function (req) {
+        var query = req.query || {},
+            issues = this._archive.getIssues({
+                lang: req.lang,
+                per_page: this._config.perPage,
+                page: 1,
+                sort: 'updated',
+                direction: 'desc',
+                labels: query.labels || ''
+            });
+
+        return issues && issues.length ? true : false;
     }
 };
 

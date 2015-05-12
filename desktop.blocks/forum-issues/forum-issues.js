@@ -3,19 +3,10 @@ modules.define('forum-issues', ['i-bem__dom', 'events__channels'], function (pro
         onSetMod: {
             js: {
                 inited: function () {
-                    var params = this.params,
-                        isLastPage = params.isLastPage,
-                        isArchive = params.isArchive,
-                        isLangSupportArchive = params.isLangSupportArchive;
+                    var params = this.params;
 
-                    if (isLastPage) {
-                        channels('forum-issues').emit('hide-pager');
-                    }
-
-                    // Last page, but not archive
-                    if (isLangSupportArchive && isLastPage && !isArchive) {
-                        channels('forum-issues').emit('show-archive');
-                    }
+                    params.isLastPage && channels('forum-issues').emit('hide-pager');
+                    params.isMatchArchive && channels('forum-issues').emit('show-archive');
                 }
             }
         }

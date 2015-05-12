@@ -22,32 +22,38 @@ module.exports = inherit(BaseController, {
         var _this = this,
             token = this.getCookie(req, 'token'),
             name = this.getCookie(req, 'name'),
-            isArchive = this.isArchive(req, res),
-            isLangSupportArchive = this.isLangSupportArchive(req);
-
-        // Check whether the archive page
-        res.locals.isArchive = isArchive;
-        res.locals.isLangSupportArchive = isLangSupportArchive;
+            isArchive = _this.isArchive(req);
 
         vow.all({
             issues: this._model.getIssues(req, token, isArchive),
             user: this._model.getAuthUser(req, token, name)
         })
         .then(function (data) {
-            var context = {
-                block: 'forum-issues',
-                js: {
-                    isLastPage: _this.isLastPage(data.issues, _this._config.perPage),
-                    isArchive: isArchive,
-                    isLangSupportArchive: isLangSupportArchive
-                }
-            };
+            var def = vow.defer(),
+                isLastPage = _this.isLastPage(data.issues, _this._config.perPage),
+                isLangSupportArchive = _this.isLangSupportArchive(req),
+                isNextArchive = isLangSupportArchive && isLastPage && !isArchive,
+                isMatchArchive = false;
 
-            _this._render(req, res, next, context, data);
+                // Check if archive contain issues by current criteries
+                if (isNextArchive) {
+                    isMatchArchive = _this._model.inspectArchiveIssues(req)
+                }
+
+                var context = {
+                    block: 'forum-issues',
+                    js: {
+                        isLastPage: isLastPage,
+                        isMatchArchive: isMatchArchive
+                    }
+                };
+
+                _this._render(req, res, next, context, data);
+
+            return def.promise();
+
         })
-        .fail(function (err) {
-            return next(err);
-        });
+        .fail(this.onError.bind(this, next));
     },
 
     getIssue: function (req, res, next) {
@@ -64,9 +70,7 @@ module.exports = inherit(BaseController, {
             .then(function (issue) {
                 _this._render(req, res, next, context, { issue: issue });
             })
-            .fail(function (err) {
-                return next(err);
-            });
+            .fail(this.onError.bind(this, next));
     },
 
     editIssue: function (req, res, next) {
@@ -94,9 +98,7 @@ module.exports = inherit(BaseController, {
             .then(function (user) {
                 _this._render(req, res, next, context, { user: user });
             })
-            .fail(function (err) {
-                return next(err);
-            });
+            .fail(this.onError.bind(this, next));
     },
 
     deleteIssue: function (req, res, next) {
@@ -120,9 +122,7 @@ module.exports = inherit(BaseController, {
             .then(function (user) {
                 _this._render(req, res, next, context, { user: user });
             })
-            .fail(function (err) {
-                return next(err);
-            });
+            .fail(this.onError.bind(this, next));
     },
 
     getComments: function (req, res, next) {
@@ -145,9 +145,7 @@ module.exports = inherit(BaseController, {
         .then(function (data) {
             _this._render(req, res, next, context, data);
         })
-        .fail(function (err) {
-            return next(err);
-        });
+        .fail(this.onError.bind(this, next));
     },
 
     editComment: function (req, res, next) {
@@ -167,9 +165,7 @@ module.exports = inherit(BaseController, {
             .then(function (user) {
                 _this._render(req, res, next, context, { user: user });
             })
-            .fail(function (err) {
-                return next(err);
-            });
+            .fail(this.onError.bind(this, next));
     },
 
     deleteComment: function (req, res, next) {
@@ -178,22 +174,18 @@ module.exports = inherit(BaseController, {
             .then(function () {
                 return res.end('ok');
             })
-            .fail(function (err) {
-                return next(err);
-            });
+            .fail(this.onError.bind(this, next));
     },
 
     getLabels: function (req, res, next) {
         var _this = this,
             context = { block: 'forum-labels', mods: { view: req.query && req.query.view } };
 
-        _this._model.getLabels(req, this.getCookie(req, 'token'))
+        this._model.getLabels(req, this.getCookie(req, 'token'))
             .then(function (labels) {
                 _this._render(req, res, next, context, { labels: labels });
             })
-            .fail(function (err) {
-                return next(err);
-            });
+            .fail(this.onError.bind(this, next));
 
     },
 

@@ -27,9 +27,7 @@ module.exports = inherit(BaseController, {
             token = this.getCookie(req, 'token'),
             name = this.getCookie(req, 'name');
 
-        // Check whether the archive page
         res.locals.isArchive = this.isArchive(req);
-        res.locals.isLangSupportArchive = this.isLangSupportArchive(req);
 
         return vow.all({
             user: this._model.getAuthUser(req, token, name)
@@ -64,19 +62,23 @@ module.exports = inherit(BaseController, {
      */
     index: function (req, res, next) {
         var _this = this,
-            token = this.getCookie(req, 'token');
+            token = this.getCookie(req, 'token'),
+            isArchive = this.isArchive(req);
 
         // Prepare data
         this._getCommon(req, res, next)
             .then(function () {
                 return vow.all({
-                    issues: _this._model.getIssues(req, token, res.locals.isArchive),
+                    issues: _this._model.getIssues(req, token, isArchive),
                     labels: _this._model.getLabels(req, token)
                 });
             })
             .then(function (data) {
                 var issues = data.issues,
-                    isLastPage = _this.isLastPage(issues, _this._config.perPage);
+                    isLastPage = _this.isLastPage(issues),
+                    isLangSupportArchive = _this.isLangSupportArchive(req),
+                    isNextArchive = isLangSupportArchive && isLastPage && !isArchive,
+                    isMatchArchive = _this._model.inspectArchiveIssues(req) && isNextArchive;
 
                 // collect user data
                 res.locals = _.extend(res.locals, {
@@ -84,7 +86,9 @@ module.exports = inherit(BaseController, {
                     issues: issues,
                     labels: data.labels,
                     view: 'issues',
-                    isLastPage: isLastPage
+                    isLastPage: isLastPage,
+                    isNextArchive: isNextArchive,
+                    isMatchArchive: isMatchArchive
                 });
 
                 return next();
