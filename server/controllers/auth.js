@@ -27,7 +27,6 @@ module.exports = inherit(BaseController, {
             code = req.query && req.query.code,
             strUrl = 'login_callback';
 
-
         if (!code || code && this._auth.getUserCookie(req, 'forum_user')) {
             return this._doRedirect(req, res, 303, strUrl);
         }

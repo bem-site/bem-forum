@@ -5,8 +5,7 @@ block('comment')(
             forum = this._forum,
             comment = ctx.comment || forum.comment,
             loginAuthor = comment.user.login,
-            //isArchive = comment.number && (comment.number < 0),
-            isArchive = false,
+            isArchive = forum.isArchive,
             loginUser = this._forum.user && this._forum.user.login,
             isOwner = loginUser === loginAuthor;
 
@@ -149,7 +148,8 @@ block('comment')(
     elem('body')(
        content()(function () {
            var text = this.ctx.body,
-               mdToHtml = this._forum && this._forum.util && this._forum.util.mdToHtml;
+               forum = this._forum,
+               mdToHtml = forum.util && forum.util.mdToHtml;
 
            return (!this._isArchive && mdToHtml) ? mdToHtml(text) : text;
        })

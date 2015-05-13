@@ -1,0 +1,28 @@
+block('forum-footer')(
+    content()(function () {
+        return [
+            {
+                elem: 'item',
+                content: {
+                    block: 'link',
+                    mix: { block: this.block, elem: 'link' },
+                    mods: { theme: 'islands', size: 'm' },
+                    url: '//github.com/bem/bem-forum',
+                    target: '_blank',
+                    content: BEM.I18N('forum-footer', 'source-code')
+                }
+            },
+            {
+                elem: 'item',
+                content: {
+                    block: 'link',
+                    mix: { block: this.block, elem: 'link' },
+                    mods: { theme: 'islands', size: 's' },
+                    url: '//github.com/bem/bem-forum/issues',
+                    target: '_blank',
+                    content: BEM.I18N('forum-footer', 'report-bug')
+                }
+            }
+        ];
+    })
+);

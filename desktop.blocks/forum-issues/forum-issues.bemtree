@@ -1,9 +1,10 @@
 block('forum-issues')(
     match(function () { return this._forum.issues; }).content()(function () {
         var forum = this._forum,
-            issues = forum.issues;
+            issues = forum.issues,
+            length = issues.length;
 
-        return issues.length ? issues.map(function (issue) {
+        return length ? issues.map(function (issue, idx) {
             // skip issue with that contains label `removed`
             var labels = issue.labels,
                 isRemoved = labels.some(function (label) {
@@ -13,7 +14,7 @@ block('forum-issues')(
             if (!isRemoved) {
                 return {
                     block: 'issue',
-                    mods: { solved: issue.state === 'closed' },
+                    mods: { solved: issue.state === 'closed', last: (length - 1) === idx },
                     issue: issue
                 };
             }

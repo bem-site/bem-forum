@@ -1,4 +1,5 @@
 var _ = require('lodash'),
+    querystring = require('querystring'),
     Model = require('../models/main.js'),
     Auth = require('../services/auth.js'),
     util = require('../util.js'),
@@ -16,11 +17,8 @@ module.exports = BaseController = inherit({
         return issues.length < this._config.perPage;
     },
 
-    isArchive: function (req) {
-        var isNegativePage = req.query && req.query.page < 0,
-            isLangArchive = this.isLangSupportArchive(req);
-
-        return (isNegativePage && isLangArchive) ? true : false;
+    isArchive: function (req, value) {
+        return (value < 0 && this.isLangSupportArchive(req)) ? true : false;
     },
 
     isLangSupportArchive: function (req) {
@@ -39,7 +37,6 @@ module.exports = BaseController = inherit({
 
     getCookie: function (req, part) {
         var userCookie = this._auth.getUserCookie(req, 'forum_user');
-
         return userCookie ? userCookie[part === 'token' ? 0 : 1] : null;
     },
 
@@ -53,6 +50,38 @@ module.exports = BaseController = inherit({
 
         session ? (session.previousUrl = req.url)
             : this._logger.warn('Add session middleware for correct auth work');
+    },
+
+    getArchiveQuery: function (req) {
+        var query = req.query;
+
+        if (!query) {
+            return '';
+        }
+
+        delete query.page;
+
+        return '&' + querystring.stringify(query);
+    },
+
+    validateArchive: function (req) {
+        var isMatchArchive = false,
+            archiveUrl = this._config.url + '?page=-1';
+
+        // Check if archive contain issues by current criteries
+        if (this.isLangSupportArchive(req)) {
+            isMatchArchive = this._model.inspectArchiveIssues(req)
+        }
+
+        // Get url for archive button
+        if (isMatchArchive) {
+            archiveUrl += this.getArchiveQuery(req);
+        }
+
+        return {
+            isMatchArchive: isMatchArchive,
+            archiveUrl: archiveUrl
+        }
     },
 
     onError: function (next, err) {

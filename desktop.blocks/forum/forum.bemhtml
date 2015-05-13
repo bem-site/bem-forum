@@ -2,6 +2,6 @@ block('forum')(
     js()(function () {
         var config = this.ctx.forum && this.ctx.forum.config;
 
-        return { labelsRequired: config && config.labelsRequired };
+        return { setLabels: config && config.setLabels };
     })
 );

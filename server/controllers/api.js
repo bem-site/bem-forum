@@ -3,7 +3,6 @@ var _ = require('lodash'),
     inherit = require('inherit'),
     Logger = require('bem-site-logger'),
     BaseController = require('./base.js'),
-    util = require('../util.js'),
     Template = require('../template');
 
 module.exports = inherit(BaseController, {
@@ -22,7 +21,11 @@ module.exports = inherit(BaseController, {
         var _this = this,
             token = this.getCookie(req, 'token'),
             name = this.getCookie(req, 'name'),
-            isArchive = _this.isArchive(req);
+            query = req.query,
+            page = query && query.page || 1,
+            isArchive = _this.isArchive(req, page);
+
+        res.locals.isArchive = isArchive;
 
         vow.all({
             issues: this._model.getIssues(req, token, isArchive),
@@ -30,25 +33,22 @@ module.exports = inherit(BaseController, {
         })
         .then(function (data) {
             var def = vow.defer(),
-                isLastPage = _this.isLastPage(data.issues, _this._config.perPage),
-                isLangSupportArchive = _this.isLangSupportArchive(req),
-                isNextArchive = isLangSupportArchive && isLastPage && !isArchive,
-                isMatchArchive = false;
-
-                // Check if archive contain issues by current criteries
-                if (isNextArchive) {
-                    isMatchArchive = _this._model.inspectArchiveIssues(req)
-                }
-
-                var context = {
+                isLastPage = _this.isLastPage(data.issues),
+                context = {
                     block: 'forum-issues',
-                    js: {
-                        isLastPage: isLastPage,
-                        isMatchArchive: isMatchArchive
-                    }
+                    js: { isLastPage: isLastPage }
                 };
 
-                _this._render(req, res, next, context, data);
+            if (!isArchive && isLastPage) {
+                var archiveInfo = _this.validateArchive(req);
+
+                context.js = _.extend(context.js, {
+                    isMatchArchive: archiveInfo.isMatchArchive,
+                    archiveUrl: archiveInfo.archiveUrl
+                })
+            }
+
+            _this._render(req, res, next, context, data);
 
             return def.promise();
 
@@ -101,10 +101,6 @@ module.exports = inherit(BaseController, {
             .fail(this.onError.bind(this, next));
     },
 
-    deleteIssue: function (req, res, next) {
-        return res.end('Hello! This is a start point of API BEM-forum.');
-    },
-
     createComment: function (req, res, next) {
         var _this = this,
             context = {
@@ -127,19 +123,21 @@ module.exports = inherit(BaseController, {
 
     getComments: function (req, res, next) {
         var _this = this,
+            issueId = req.params && req.params.issue_id,
             context = {
                 block: 'comments',
                 mods: { view: 'close' },
-                issueNumber: req.params && req.params.issue_id
+                issueNumber: issueId
             },
             token = this.getCookie(req, 'token'),
-            name = this.getCookie(req, 'name');
+            name = this.getCookie(req, 'name'),
+            isArchive = this.isArchive(req, issueId);
 
         // Check whether the archive page
-        res.locals.isArchive = this.isArchive(req);
+        res.locals.isArchive = isArchive;
 
         vow.all({
-            comments: this._model.getComments(req, token, res.locals.isArchive),
+            comments: this._model.getComments(req, token, isArchive),
             user: this._model.getAuthUser(req, token, name)
         })
         .then(function (data) {

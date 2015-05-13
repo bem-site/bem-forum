@@ -39,7 +39,7 @@ modules.define(
                 this._labels.splice(position, 1);
             }
 
-            nextTick(function () { _this._checkedLabels() });
+            nextTick(function () { _this._checkedLabels(true) });
         },
 
         _checkedLabelByFilter: function (e, data) {
@@ -71,7 +71,7 @@ modules.define(
 
             Object.keys(query).forEach(function (key) {
                 if (key === 'page') {
-                    params[key] = 1;
+                    params[key] = (+query[key] < 0) ? -1 : 1;
                     return false;
                 }
 

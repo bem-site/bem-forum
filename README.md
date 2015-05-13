@@ -48,7 +48,7 @@ The description of how to configure the project could be found within the follow
          */
         "owner_token": "98af04fdb993cee3fdc83e338f3dfd74dff5fdeb", // This is a demonstration only token
         /* An option to show or hide labels within the opening/editing form of the issue */
-        "labelsRequired": true,
+        "setLabels": true,
         /* A repository to store posts */
         "storage": {
             "user": "tavriaforever",
@@ -113,4 +113,4 @@ Standard behaviour so to say "battaries included" is the following: it is *not a
 
 2) To register within your own profile on github a token with rights to push into a repository where issues are hosted and paste this token into `owner_token` field
 
-3) To enable labels within opening/editing posts forms set `labelsRequired` field as `true`
+3) To enable labels within opening/editing posts forms set `setLabels` field as `true`

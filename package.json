@@ -61,7 +61,7 @@
   },
   "scripts": {
     "start": "node server/index.js",
-    "dev": "nodemon server/index.js -w server/ -w wrapper.blocks/  -w desktop.blocks/ -w desktop.bundles/index/index.bemdecl.js",
+    "dev": "nodemon server/index.js --watch server --watch wrapper.blocks --watch desktop.blocks --watch desktop.bundles/index/index.bemdecl.js",
     "production": "cd configs && ln -snf production current && cd .. && YENV=production enb make --no-cache && NODE_ENV=production npm start",
     "deps": "npm install && npm run config && cd configs && ln -snf development current && cd .. && bower install && enb make --no-cache",
     "config": "for file in `find ./configs -iname _credentials.json -type f`; do cp $file `echo $file | sed -e s/_//g`; done; echo credentials configs was created!",

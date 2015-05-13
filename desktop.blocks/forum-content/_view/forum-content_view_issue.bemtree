@@ -7,7 +7,7 @@ block('forum-content').mod('view', 'issue')(
             block: 'issue',
             data: forum.issue,
             forumUrl: config.url,
-            labelsRequired: config.labelsRequired,
+            setLabels: config.setLabels,
             csrf: forum.csrf
         }
     })

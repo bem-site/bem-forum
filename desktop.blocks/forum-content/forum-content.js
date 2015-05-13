@@ -28,8 +28,9 @@ modules.define(
             }
         },
 
-        _onShowArchive: function () {
+        _onShowArchive: function (e, data) {
             this.setMod(this.elem('archive'), 'show', true);
+            this.elem('archive-button').attr('href', data.archiveUrl);
         },
 
         _loadIssues: function (options) {

@@ -79,7 +79,7 @@ Model.prototype = {
         var def = vow.defer();
 
         if (!token) {
-            return def.resolve();
+            def.resolve();
         }
 
         var stOptions = { type: 'users', name: name },
@@ -132,7 +132,7 @@ Model.prototype = {
         return def.promise();
     },
 
-    getIssue: function (req, token) {
+    getIssue: function (req, token, isArchive) {
         var def = vow.defer(),
             id = req.params && req.params.issue_id,
             options = {
@@ -140,12 +140,24 @@ Model.prototype = {
                 lang: req.lang,
                 number: id
             },
-            stOptions = {
-                type: 'issue',
-                number: id
-            },
-            issue = this._storage.getData(stOptions, options),
-            eTag = this._storage.getEtag(stOptions, options);
+            issue;
+
+        if (isArchive) {
+            try {
+                issue = this._archive.getIssue(options);
+                def.resolve(issue);
+            } catch (err) {
+                def.reject(err);
+            }
+        } else {
+            var stOptions = {
+                    type: 'issue',
+                    number: id
+                },
+                eTag = this._storage.getEtag(stOptions, options);
+
+            issue = this._storage.getData(stOptions, options);
+        }
 
         this._github.getIssue(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
             .then(this._onSuccess.bind(this, def, issue, stOptions, options))
@@ -182,7 +194,7 @@ Model.prototype = {
         return this._github.editIssue(token, options);
     },
 
-    getComments: function (req, token) {
+    getComments: function (req, token, isArchive) {
         var def = vow.defer(),
             id = req.params.issue_id,
             query = req.query,
@@ -194,17 +206,29 @@ Model.prototype = {
                 page: page || 1,
                 per_page: query && req.query.per_page || 100
             },
-            stOptions = {
-                type: 'comments',
-                id: id,
-                page: page
-            },
-            comments = this._storage.getData(stOptions, options),
-            eTag = this._storage.getEtag(stOptions, options);
+            comments;
 
-        this._github.getComments(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
-            .then(this._onSuccess.bind(this, def, comments, stOptions, options))
-            .fail(this._onError.bind(this, def));
+        if (isArchive) {
+            try {
+                comments = this._archive.getComments(options);
+                def.resolve(comments);
+            } catch (err) {
+                def.reject(err);
+            }
+        } else {
+            var stOptions = {
+                    type: 'comments',
+                    id: id,
+                    page: page
+                },
+                eTag = this._storage.getEtag(stOptions, options);
+
+            comments = this._storage.getData(stOptions, options)
+
+            this._github.getComments(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
+                .then(this._onSuccess.bind(this, def, comments, stOptions, options))
+                .fail(this._onError.bind(this, def));
+        }
 
         return def.promise();
     },

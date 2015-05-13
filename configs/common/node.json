@@ -1,20 +1,16 @@
 {
     "forum": {
         "url": "/",
-        "name": "forum",
         "logger": {
-          "level": "verbose"
+          "level": "debug"
         },
         "port": 3000,
         "template": {
           "level": "desktop",
           "bundle": "index"
         },
-        "debug": true,
-        "auth": {
-          "required": true
-        },
-        "labelsRequired": true,
+        "auth": { "required": true },
+        "setLabels": true,
         "lang": "ru",
         "langs": ["en", "ru"],
         "title": {
@@ -31,9 +27,7 @@
             "repo": "bem-forum-tests"
           }
         },
-        "archive": {
-          "ru": "archive-example_ru.json"
-        },
+        "archive": { "ru": "archive.json" },
         "perPage": 15
     }
 }

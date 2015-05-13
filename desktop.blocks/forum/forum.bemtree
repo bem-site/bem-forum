@@ -2,12 +2,15 @@ block('forum')(
     content()(function () {
         var forum = this._forum;
 
-        return {
-            block: 'forum-content',
-            mods: { view: forum.view },
-            js: { forumUrl: forum.config.url },
-            mix: { block: 'forum', elem: 'content' }
-        };
+        return [
+            {
+                block: 'forum-content',
+                mods: { view: forum.view },
+                js: { forumUrl: forum.config.url },
+                mix: { block: 'forum', elem: 'content' }
+            },
+            { block: 'forum-footer' }
+        ];
     }),
 
     match(function () { return !this._forum.user; }).content()(function () {

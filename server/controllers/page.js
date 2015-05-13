@@ -2,8 +2,7 @@ var _ = require('lodash'),
     vow = require('vow'),
     inherit = require('inherit'),
     Logger = require('bem-site-logger'),
-    BaseController = require('./base.js'),
-    util = require('../util.js');
+    BaseController = require('./base.js');
 
 module.exports = inherit(BaseController, {
 
@@ -22,31 +21,26 @@ module.exports = inherit(BaseController, {
      * @param {Object} next
      * @returns {*}
      */
-    _getCommon: function (req, res, next) {
-        var _this = this,
-            token = this.getCookie(req, 'token'),
-            name = this.getCookie(req, 'name');
+    _baseActions: function (req, res, next) {
+        var _this = this;
 
-        res.locals.isArchive = this.isArchive(req);
+        return this._model
+            .getAuthUser(req, this.getCookie(req, 'token'), this.getCookie(req, 'name'))
+            .then(function (data) {
+                // set previous url for correct login redirect
+                _this.setPreviousUrl(req);
 
-        return vow.all({
-            user: this._model.getAuthUser(req, token, name)
-        }).then(function (data) {
+                // collect user data
+                return res.locals = _.extend(res.locals, {
+                    user: data
+                }, _this.getTmplHelpers(req));
 
-            // set previous url for correct login redirect
-            _this.setPreviousUrl(req);
-
-            // collect user data
-            return res.locals = _.extend(res.locals, {
-                user: data.user
-            }, _this.getTmplHelpers(req));
-
-        }).fail(function (err) {
-            return next(err);
-        });
+            }).fail(function (err) {
+                return next(err);
+            });
     },
 
-    getCommonTitle: function (lang) {
+    _getPageTitle: function (lang) {
         return this._config.title && this._config.title[lang];
     },
 
@@ -63,46 +57,60 @@ module.exports = inherit(BaseController, {
     index: function (req, res, next) {
         var _this = this,
             token = this.getCookie(req, 'token'),
-            isArchive = this.isArchive(req);
+            isArchive = this.isArchive(req, req.query.page || 1);
 
         // Prepare data
-        this._getCommon(req, res, next)
+        this._baseActions(req, res, next)
             .then(function () {
                 return vow.all({
                     issues: _this._model.getIssues(req, token, isArchive),
                     labels: _this._model.getLabels(req, token)
                 });
             })
-            .then(function (data) {
-                var issues = data.issues,
-                    isLastPage = _this.isLastPage(issues),
-                    isLangSupportArchive = _this.isLangSupportArchive(req),
-                    isNextArchive = isLangSupportArchive && isLastPage && !isArchive,
-                    isMatchArchive = _this._model.inspectArchiveIssues(req) && isNextArchive;
-
-                // collect user data
-                res.locals = _.extend(res.locals, {
-                    title: req.title || _this.getCommonTitle(req.lang),
-                    issues: issues,
-                    labels: data.labels,
-                    view: 'issues',
-                    isLastPage: isLastPage,
-                    isNextArchive: isNextArchive,
-                    isMatchArchive: isMatchArchive
-                });
-
-                return next();
-            })
+            .then(this._afterGetIndexData.bind(this, req, res, next))
             .fail(function (err) {
                 return next(err);
             });
     },
 
+    _afterGetIndexData: function (req, res, next, data) {
+        var issues = data.issues,
+            labels = data.labels,
+            isLastPage = this.isLastPage(issues),
+            isArchive = this.isArchive(req, req.query.page || 1);
+
+        if (!isArchive && isLastPage) {
+            var archiveInfo = this.validateArchive(req);
+
+            res.locals = _.extend(res.locals, {
+                isMatchArchive: archiveInfo.isMatchArchive,
+                archiveUrl: archiveInfo.archiveUrl
+            })
+        }
+
+        // collect user data
+        res.locals = _.extend(res.locals, {
+            title: req.title || this._getPageTitle(req.lang),
+            issues: issues,
+            labels: labels,
+            view: 'issues',
+            isLastPage: isLastPage,
+            isArchive: isArchive
+        });
+
+        return next();
+    },
+
     /**
      * Issue page controller
      * 1. Get from model page title, issue, issue`s comments to show on load
-     * 2. Extend req.locals with data got in 1 item
-     * 3. Set for template view type -> 'issue'
+     * 2. Require data:
+     * - user
+     * - title
+     * - view
+     * - issue
+     * - comments
+     * - isArchive
      * @param {Object} req - express js request
      * @param {Object} res - express js response
      * @param {Function} next - express js call next middleware
@@ -111,24 +119,27 @@ module.exports = inherit(BaseController, {
     issue: function (req, res, next) {
         var _this = this,
             token = this.getCookie(req, 'token'),
-            isArchive = res.locals.isArchive;
+            params = req.params,
+            id = params && params.issue_id,
+            isArchive = this.isArchive(req, id);
 
-        this._getCommon(req, res, next)
+        this._baseActions(req, res, next)
             .then(function () {
                 return vow.all({
-                    // title: this._model.getTitle(lang, id),
                     issue: _this._model.getIssue(req, token, isArchive),
                     comments: _this._model.getComments(req, token, isArchive)
                 });
             })
             .then(function (data) {
-                var issue = data.issue;
+                var issue = data.issue,
+                    comments = data.comments;
 
                 res.locals = _.extend(res.locals, {
-                    title: req.title || issue.title + ' / ' + _this.getCommonTitle(req.lang),
+                    title: req.title || issue.title + ' / ' + _this._getPageTitle(req.lang),
                     issue: issue,
-                    comments: data.comments,
-                    view: 'issue'
+                    comments: comments,
+                    view: 'issue',
+                    isArchive: isArchive
                 });
 
                 return next();

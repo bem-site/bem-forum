@@ -7,11 +7,6 @@
 
     box-sizing: padding-box;
 
-    &:last-child
-    {
-        margin-bottom: 10px;
-    }
-
     &__wrap
     {
         transition: all .5s ease;
@@ -29,6 +24,16 @@
 
                 box-sizing: padding-box;
             }
+        }
+    }
+
+    &_last
+    {
+        margin-bottom: 10px;
+
+        .issue__line_level_bottom
+        {
+            border-bottom: none;
         }
     }
 }

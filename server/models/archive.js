@@ -62,26 +62,25 @@ module.exports = Archive = inherit({
         return issues;
     },
 
-    getIssue: function (issueId, lang) {
-        var storage = this._storage[lang];
+    getIssue: function (options) {
+        var storage = this._storage[options.lang];
 
         if (!storage) {
             return {};
         }
 
         return storage.issues.filter(function (item) {
-            return item.number == issueId;
+            return item.number == options.number;
         })[0];
     },
 
     /**
      * Returns comments array for issue with id
-     * @param issueId - {Number} id of issue
-     * @param lang - {String} lang of archive
+     * @param options - {Number} id of issue
      * @returns {Array}
      */
-    getComments: function (issueId, lang) {
-        var storage = this._storage[lang];
+    getComments: function (options) {
+        var storage = this._storage[options.lang];
 
         if (!storage) {
             return [];
@@ -89,13 +88,13 @@ module.exports = Archive = inherit({
 
         return storage.comments
             .filter(function (item) {
-                return item.number == issueId;
+                return item.number == options.number;
             })
             .sort(function (a, b) {
                 var da = new Date(a['created_at']),
                     db = new Date(b['created_at']);
 
-                return db.getTime() - da.getTime();
+                return da.getTime() - db.getTime();
             });
     },
 

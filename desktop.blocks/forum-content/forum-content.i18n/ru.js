@@ -1,5 +1,5 @@
 module.exports = {
     "forum-content": {
-        "archive": "Просмотреть архив"
+        "archive": "Есть в архиве"
     }
 };

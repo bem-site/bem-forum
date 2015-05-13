@@ -115,7 +115,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
 
             this._formEdit = this.findBlockInside('edit-form', 'forum-form');
 
-            if (this.params.labelsRequired) {
+            if (this.params.setLabels) {
                 this.findBlockInside('edit-labels', 'forum-labels').getLabels(this.params.labels);
             }
 

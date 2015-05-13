@@ -5,7 +5,7 @@ block('issue').elem('read-only')(
                 block: 'icon',
                 mods: { view: 'read-only', size: 16 }
             },
-            this.ctx.content
+            applyNext()
         ];
     })
 );

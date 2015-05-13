@@ -2,8 +2,6 @@ block('forum-content').mod('view', 'issues')(
     content()(function () {
         var forum = this._forum;
 
-        console.log('forum.isMatchArchive', forum.isMatchArchive);
-
         return [
             {
                 elem: 'wrap',
@@ -24,7 +22,7 @@ block('forum-content').mod('view', 'issues')(
                                     block: 'button',
                                     mix: { block: this.block, elem: 'archive-button' },
                                     mods: { theme: 'islands', size: 'xl', type: 'link', view: 'action' },
-                                    url: forum.config.url + '?page=-1',
+                                    url: forum.archiveUrl,
                                     text: BEM.I18N('forum-content', 'archive')
                                 }
                             },

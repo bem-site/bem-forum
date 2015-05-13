@@ -4,10 +4,7 @@ block('issue')(
             issue = ctx.issue || this._forum.issue,
             forum = this._forum,
             loginAuthor = issue.user.login,
-            // isArchive = issue.labels.some(function (label) {
-            //    return label.name === 'archive';
-            // }),
-            // isOwner = isArchive ? false : req.cookies['forum_username'] === login;
+            isArchive = forum.isArchive,
             loginUser = forum.user && forum.user.login,
             isOwner = loginUser === loginAuthor,
             config = forum.config,
@@ -30,12 +27,12 @@ block('issue')(
                 comments: BEM.I18N('issue', 'comments')
             },
             forumUrl: config.url,
-            labelsRequired: config.labelsRequired,
+            setLabels: config.setLabels,
             csrf: forum.csrf,
             number: issue.number
         };
 
-        return applyNext({ _issue: issue, _isOwner: isOwner, _isArchive: false });
+        return applyNext({ _issue: issue, _isOwner: isOwner, _isArchive: isArchive });
     }),
 
     match(function () { return this._issue; }).content()(function () {
@@ -272,11 +269,11 @@ block('issue')(
             var issue = this._issue,
                 forum = this._forum,
                 config = forum.config,
-                labelsRequired = config.labelsRequired;
+                setLabels = config.setLabels;
 
             return {
                 block: 'forum-form',
-                js: { labelsRequired: labelsRequired },
+                js: { setLabels: setLabels },
                 mods: { visibility: 'hidden' },
                 mix: {
                     block: 'issue',
@@ -335,7 +332,7 @@ block('issue')(
                             ]
                         }
                     },
-                    labelsRequired ? {
+                    setLabels ? {
                         block: 'forum-labels',
                         js: { forumUrl: config.url },
                         mods: { inline: true, view: 'checkbox' },
@@ -414,7 +411,8 @@ block('issue')(
     elem('body')(
         content()(function () {
             var text = this._issue.body,
-                mdToHtml = this._forum && this._forum.util && this._forum.util.mdToHtml;
+                forum = this._forum,
+                mdToHtml = forum.util && forum.util.mdToHtml;
 
             return (!this._isArchive && mdToHtml) ? mdToHtml(text) : text;
         })

@@ -3,7 +3,7 @@ block('forum').elem('add-form')(
         var forum = this._forum,
             config = forum.config,
             url = config.url,
-            labelsRequired = config.labelsRequired,
+            setLabels = config.setLabels,
             csrf = forum.csrf,
             forumLabels = forum.labels,
             labels = [];
@@ -16,7 +16,7 @@ block('forum').elem('add-form')(
             block: 'forum-form',
             js: {
                 forumUrl: url,
-                labelsRequired: labelsRequired
+                setLabels: setLabels
             },
             mods: { visibility: 'hidden' },
             mix: {
@@ -78,7 +78,7 @@ block('forum').elem('add-form')(
                             ]
                         }
                     },
-                    labelsRequired ? {
+                    setLabels ? {
                         block: 'forum-labels',
                         js: { labels: labels, forumUrl: url },
                         mods: { inline: true, view: 'checkbox' },

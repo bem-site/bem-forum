@@ -16,8 +16,7 @@ module.exports = function (express, config) {
     // Issue (get, edit, delete)
     router.route('/issues/:issue_id')
         .get(controller.getIssue.bind(controller))
-        .put(controller.editIssue.bind(controller))
-        .delete(controller.deleteIssue.bind(controller));
+        .put(controller.editIssue.bind(controller));
 
     // Comments collection (post, get)
     router.route('/issues/:issue_id/comments')
