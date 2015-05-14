@@ -19,25 +19,29 @@ Model.prototype = {
         this._archive = Archive.getInstance(config);
     },
 
-    _onSuccess: function (def, item, stOptions, options, data) {
-        // issues type have additional arguments
-        if (['issues', 'issue', 'comments'].indexOf(stOptions.type) === -1) {
-            data = options;
-        }
-
-        var meta = data.meta;
+    _onSuccess: function (options, data) {
+        var meta = data.meta,
+            stData = options.stData,
+            stOptions = options.stOptions,
+            ghOptions = options.ghOptions,
+            cb = options.cb,
+            result;
 
         // We has had item and the datа wasn`t changed -> get item from storage
-        if (item && this._isDataNotChanged(meta)) {
-            return def.resolve(item);
+        if (stData && this._isDataNotChanged(meta)) {
+            result = stData;
+        } else {
+            result = data;
+            this._logger.info('x-ratelimit-remaining: %s', data.meta['x-ratelimit-remaining']);
+            this._storage.setEtag(stOptions, meta.etag, ghOptions);
+            this._storage.setData(stOptions, data, ghOptions);
         }
 
-        // We don`t have a datа or datа was changed -> resolve with new data
-        this._logger.info('x-ratelimit-remaining: %s', data.meta['x-ratelimit-remaining']);
-        this._storage.setEtag(stOptions, meta.etag, options);
-        this._storage.setData(stOptions, data, options);
+        if (cb && _.isFunction(cb)) {
+            result = cb.call(this, result);
+        }
 
-        return def.resolve(data);
+        return options.def.resolve(result);
     },
 
     _onError: function (def, err) {
@@ -68,8 +72,19 @@ Model.prototype = {
                 page: 1
             };
 
+        function skipRemovedLabel(data) {
+            return data.filter(function (label) {
+                return !label.name || label.name !== 'removed';
+            });
+        }
+
         this._github.getLabels(token, options)
-            .then(this._onSuccess.bind(this, def, labels, stOptions))
+            .then(this._onSuccess.bind(this, {
+                def: def,
+                stData: labels,
+                stOptions: stOptions,
+                cb: skipRemovedLabel
+            }))
             .fail(this._onError.bind(this, def));
 
         return def.promise();
@@ -84,11 +99,16 @@ Model.prototype = {
 
         var stOptions = { type: 'users', name: name },
             user = this._storage.getData(stOptions),
-            eTag = this._storage.getEtag(stOptions);
+            eTag = this._storage.getEtag(stOptions),
+            headers = eTag ? { 'If-None-Match': eTag } : {};
 
         this._github
-            .getAuthUser(token, { headers: eTag ? { 'If-None-Match': eTag } : {} })
-            .then(this._onSuccess.bind(this, def, user, stOptions))
+            .getAuthUser(token, { headers: headers })
+            .then(this._onSuccess.bind(this, {
+                def: def,
+                stData: user,
+                stOptions: stOptions
+            }))
             .fail(this._onError.bind(this, def));
 
         return def.promise();
@@ -115,17 +135,23 @@ Model.prototype = {
                 issues = this._archive.getIssues(options);
                 def.resolve(issues);
             } catch (err) {
-                def.reject(err);
+                this._onError.bind(this, def, err);
             }
 
         } else {
             var stOptions = { type: 'issues', options: options },
-                eTag = this._storage.getEtag(stOptions, options);
+                eTag = this._storage.getEtag(stOptions, options),
+                headers = eTag ? { 'If-None-Match': eTag } : {};
 
             issues = this._storage.getData(stOptions, options)
 
-            this._github.getIssues(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
-                .then(this._onSuccess.bind(this, def, issues, stOptions, options))
+            this._github.getIssues(token, _.extend(options, { headers: headers }))
+                .then(this._onSuccess.bind(this, {
+                    def: def,
+                    stData: issues,
+                    stOptions: stOptions,
+                    ghOptions: options
+                }))
                 .fail(this._onError.bind(this, def));
         }
 
@@ -147,21 +173,27 @@ Model.prototype = {
                 issue = this._archive.getIssue(options);
                 def.resolve(issue);
             } catch (err) {
-                def.reject(err);
+                this._onError.bind(this, def, err);
             }
         } else {
             var stOptions = {
                     type: 'issue',
                     number: id
                 },
-                eTag = this._storage.getEtag(stOptions, options);
+                eTag = this._storage.getEtag(stOptions, options),
+                headers = eTag ? { 'If-None-Match': eTag } : {};
 
             issue = this._storage.getData(stOptions, options);
-        }
 
-        this._github.getIssue(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
-            .then(this._onSuccess.bind(this, def, issue, stOptions, options))
-            .fail(this._onError.bind(this, def));
+            this._github.getIssue(token, _.extend(options, { headers: headers }))
+                .then(this._onSuccess.bind(this, {
+                    def: def,
+                    stData: issue,
+                    stOptions: stOptions,
+                    ghOptions: options
+                }))
+                .fail(this._onError.bind(this, def));
+        }
 
         return def.promise();
     },
@@ -213,7 +245,7 @@ Model.prototype = {
                 comments = this._archive.getComments(options);
                 def.resolve(comments);
             } catch (err) {
-                def.reject(err);
+                this._onError.bind(this, def, err);
             }
         } else {
             var stOptions = {
@@ -221,12 +253,18 @@ Model.prototype = {
                     id: id,
                     page: page
                 },
-                eTag = this._storage.getEtag(stOptions, options);
+                eTag = this._storage.getEtag(stOptions, options),
+                headers = eTag ? { 'If-None-Match': eTag } : {};
 
             comments = this._storage.getData(stOptions, options)
 
-            this._github.getComments(token, _.extend(options, { headers: eTag ? { 'If-None-Match': eTag } : {} }))
-                .then(this._onSuccess.bind(this, def, comments, stOptions, options))
+            this._github.getComments(token, _.extend(options, { headers: headers }))
+                .then(this._onSuccess.bind(this, {
+                    def: def,
+                    stData: comments,
+                    stOptions: stOptions,
+                    ghOptions: options
+                }))
                 .fail(this._onError.bind(this, def));
         }
 

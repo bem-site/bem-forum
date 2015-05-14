@@ -10,7 +10,7 @@
           "bundle": "index"
         },
         "auth": { "required": true },
-        "setLabels": true,
+        "setLabels": false,
         "lang": "ru",
         "langs": ["en", "ru"],
         "title": {

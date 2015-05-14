@@ -131,7 +131,8 @@ module.exports = MemoryStorage = inherit({
     },
 
     setData: function (arg, data, options) {
-        var type = arg.type;
+        var type = arg.type,
+            lang = arg.lang;
 
         if (type === 'users') {
             return this._getUser(arg.name).data = data;
@@ -143,7 +144,7 @@ module.exports = MemoryStorage = inherit({
             if (type === 'comments') return this._getComments(options).data = data;
         }
 
-        return this._storage[arg.lang][type].data = data;
+        return this._storage[lang][type].data = data;
     },
 
     getEtag: function (arg, options) {
