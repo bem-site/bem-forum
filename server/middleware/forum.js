@@ -17,7 +17,7 @@ module.exports = function (url, app, config) {
     /**
      * Auth
      */
-    if (config.auth && config.auth.required === true) {
+    if (config.auth && config.auth.login === true) {
         app.use(url, authRouter)
     }
 

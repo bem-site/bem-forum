@@ -76,7 +76,7 @@ module.exports = Github = inherit({
 
     _addDefaultAPI: function () {
         var _this = this,
-            tokens = this._config['api-tokens'];
+            tokens = this._config.auth['api-tokens'];
 
         if (!tokens || !tokens.length) {
             this._logger.error('Filler in the config field "config/credentials.json -> api tokens" to access the Github API');
@@ -124,7 +124,7 @@ module.exports = Github = inherit({
         if (_.isEmpty(this._authReadyApi)) {
             this._addDefaultAPI();
         }
-        return this._authReadyApi[_.sample(this._config['api-tokens'])];
+        return this._authReadyApi[_.sample(this._config.auth['api-tokens'])];
     },
 
     /**
