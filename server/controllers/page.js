@@ -40,8 +40,10 @@ module.exports = inherit(BaseController, {
             });
     },
 
-    _getPageTitle: function (lang) {
-        return this._config.title && this._config.title[lang];
+    _getPageTitle: function (req) {
+        var config = this._config;
+
+        return req.title ? req.title : config.title && config.title[req.lang];
     },
 
     /**
@@ -90,7 +92,7 @@ module.exports = inherit(BaseController, {
 
         // collect user data
         res.locals = _.extend(res.locals, {
-            title: req.title || this._getPageTitle(req.lang),
+            title: this._getPageTitle(req),
             issues: issues,
             labels: labels,
             view: 'issues',
@@ -135,7 +137,7 @@ module.exports = inherit(BaseController, {
                     comments = data.comments;
 
                 res.locals = _.extend(res.locals, {
-                    title: req.title || issue.title + ' / ' + _this._getPageTitle(req.lang),
+                    title: issue.title + ' / ' + _this._getPageTitle(req),
                     issue: issue,
                     comments: comments,
                     view: 'issue',

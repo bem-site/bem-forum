@@ -40,7 +40,7 @@ module.exports = inherit(BaseController, {
                 };
 
             if (!isArchive && isLastPage) {
-                var archiveInfo = _this.validateArchive(req);
+                var archiveInfo = this.validateArchive(req);
 
                 context.js = _.extend(context.js, {
                     isMatchArchive: archiveInfo.isMatchArchive,
