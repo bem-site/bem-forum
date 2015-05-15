@@ -1,16 +1,17 @@
 block('issue')(
-    match(function () { return this.ctx.issue || this._forum.issue; }).def()(function () {
+    match(function () { return this.ctx.issue || this.forum.issue; }).def()(function () {
         var ctx = this.ctx,
-            issue = ctx.issue || this._forum.issue,
-            forum = this._forum,
+            forum = this.forum,
+            issue = ctx.issue || forum.issue,
             loginAuthor = issue.user.login,
             isArchive = forum.isArchive,
-            loginUser = forum.user && forum.user.login,
+            user = forum.user,
+            loginUser = user && user.login,
             isOwner = loginUser === loginAuthor,
             config = forum.config,
             labels = issue.labels;
 
-        if (this._forum.xhr) {
+        if (forum.xhr) {
             ctx.mods = this.extend(ctx.mods, { solved: issue.state === 'closed' });
         }
 
@@ -61,8 +62,11 @@ block('issue')(
 
     elem('comments')(
         // show comments on issue page
-        match(function () { return this._forum && this._forum.comments; }).def()(function () {
-            var forum = this._forum,
+        match(function () {
+            var forum = this.forum;
+            return forum && forum.comments;
+        }).def()(function () {
+            var forum = this.forum,
                 issue = forum.issue,
                 comments = forum.comments;
 
@@ -73,15 +77,16 @@ block('issue')(
                 js: {
                     issueNumber: issue.number,
                     comments: issue.comments,
-                    forumUrl: this._forum.config.url,
-                    csrf: this._forum.csrf
+                    forumUrl: forum.config.url,
+                    csrf: forum.csrf
                 }
             });
         }),
 
         // hide comments on list issues page
-        match(function () { return !this._forum.comments; }).def()(function () {
-            var issue = this._issue;
+        match(function () { return !this.forum.comments; }).def()(function () {
+            var issue = this._issue,
+                forum = this.forum;
 
             return applyCtx({
                 block: 'comments',
@@ -89,8 +94,8 @@ block('issue')(
                 js: {
                     issueNumber: issue.number,
                     comments: issue.comments,
-                    forumUrl: this._forum.config.url,
-                    csrf: this._forum.csrf
+                    forumUrl: forum.config.url,
+                    csrf: forum.csrf
                 },
                 content: {
                     elem: 'container'
@@ -227,7 +232,7 @@ block('issue')(
                                 {
                                     block: 'link',
                                     mix: { block: this.block, elem: 'title' },
-                                    url: this._forum.config.url + issue.number + '/',
+                                    url: this.forum.config.url + issue.number + '/',
                                     content: _.escape(issue.title)
                                 },
                                 {
@@ -267,7 +272,7 @@ block('issue')(
         match(function () { return this._isOwner; }).def()(function () {
 
             var issue = this._issue,
-                forum = this._forum,
+                forum = this.forum,
                 config = forum.config,
                 setLabels = config.setLabels;
 
@@ -411,7 +416,7 @@ block('issue')(
     elem('body')(
         content()(function () {
             var text = this._issue.body,
-                forum = this._forum,
+                forum = this.forum,
                 mdToHtml = forum.util && forum.util.mdToHtml;
 
             return (!this._isArchive && mdToHtml) ? mdToHtml(text) : text;
@@ -420,11 +425,14 @@ block('issue')(
 
     // button 'answer'
     elem('line').elemMod('level', 'bottom')(
-        match(function () { return !this._forum || !this._forum.comments; }).content()(function () {
+        match(function () {
+            var forum = this.forum;
+            return !forum || !forum.comments;
+        }).content()(function () {
             var issue = this._issue,
                 comments = issue.comments;
 
-            if ((!this._forum.user || this._isArchive) && comments === 0) {
+            if ((!this.forum.user || this._isArchive) && comments === 0) {
                 return '';
             }
 

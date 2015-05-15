@@ -1,6 +1,6 @@
 block('forum')(
     content()(function () {
-        var forum = this._forum;
+        var forum = this.forum;
 
         return [
             {
@@ -13,7 +13,7 @@ block('forum')(
         ];
     }),
 
-    match(function () { return !this._forum.user; }).content()(function () {
+    match(function () { return !this.forum.user; }).content()(function () {
         return [
             {
                 block: 'forum-header',
@@ -23,7 +23,7 @@ block('forum')(
         ]
     }),
 
-    match(function () { return this._forum.user; }).content()(function () {
+    match(function () { return this.forum.user; }).content()(function () {
         return [
             {
                 block: 'forum-header',

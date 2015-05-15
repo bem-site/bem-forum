@@ -1,6 +1,6 @@
 block('forum-issues')(
-    match(function () { return this._forum.issues; }).content()(function () {
-        var forum = this._forum,
+    match(function () { return this.forum.issues; }).content()(function () {
+        var forum = this.forum,
             issues = forum.issues,
             length = issues.length;
 

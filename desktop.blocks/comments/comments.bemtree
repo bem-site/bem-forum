@@ -1,5 +1,5 @@
 block('comments')(
-    match(function () { return this._forum.user && !this._isArchive; }).content()(function () {
+    match(function () { return this.forum.user && !this._isArchive; }).content()(function () {
         return [
             applyNext(),
             { elem: 'add-form' }

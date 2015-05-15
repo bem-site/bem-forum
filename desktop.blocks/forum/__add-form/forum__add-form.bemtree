@@ -1,6 +1,6 @@
 block('forum').elem('add-form')(
     def()(function () {
-        var forum = this._forum,
+        var forum = this.forum,
             config = forum.config,
             url = config.url,
             setLabels = config.setLabels,

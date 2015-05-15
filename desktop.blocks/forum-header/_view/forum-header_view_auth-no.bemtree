@@ -1,6 +1,6 @@
 block('forum-header').mod('view', 'auth-no')(
 
-    match(function () { return !this._forum.user; }).content()(function () {
+    match(function () { return !this.forum.user; }).content()(function () {
         var header = applyNext();
 
         return [
@@ -8,7 +8,7 @@ block('forum-header').mod('view', 'auth-no')(
             header[1],
             {
                 block: 'button',
-                url: this._forum.config.url + 'login/',
+                url: this.forum.config.url + 'login/',
                 text: BEM.I18N('forum-header', 'login') + ' (Github.com oAuth)',
                 mods: { theme: 'islands', size: 'm', view: 'action', type: 'link' },
                 mix: { block: 'forum-header', elem: 'auth-button' }

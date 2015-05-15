@@ -2,7 +2,7 @@ block('root').def()(function () {
     var ctx = this.ctx,
         context = ctx.context;
 
-    this._forum = ctx.data && ctx.data.forum;
+    this.forum = ctx.data && ctx.data.forum;
 
     if (context) {
         return applyCtx(context);

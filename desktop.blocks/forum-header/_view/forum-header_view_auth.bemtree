@@ -1,6 +1,6 @@
 block('forum-header').mod('view', 'auth')(
 
-    match(function () { return this._forum.user; }).content()(function () {
+    match(function () { return this.forum.user; }).content()(function () {
         var header = applyNext();
 
         return [
@@ -21,7 +21,7 @@ block('forum-header').mod('view', 'auth')(
 
     elem('user-wrapper')(
         content()(function () {
-            var user = this._forum.user;
+            var user = this.forum.user;
 
             return [
                 {
@@ -61,7 +61,7 @@ block('forum-header').mod('view', 'auth')(
         def()(function () {
             return {
                 block: 'button',
-                url: this._forum.config.url + 'logout/',
+                url: this.forum.config.url + 'logout/',
                 text: BEM.I18N('forum-header', 'logout'),
                 mods: { theme: 'islands', size: 'm', type: 'link' },
                 mix: { block: 'forum-header', elem: 'logout' }

@@ -1,12 +1,13 @@
 block('comment')(
 
-    match(function () { return this.ctx.comment || this._forum.comment; }).def()(function () {
+    match(function () { return this.ctx.comment || this.forum.comment; }).def()(function () {
         var ctx = this.ctx,
-            forum = this._forum,
+            forum = this.forum,
             comment = ctx.comment || forum.comment,
             loginAuthor = comment.user.login,
             isArchive = forum.isArchive,
-            loginUser = this._forum.user && this._forum.user.login,
+            user = forum.user,
+            loginUser = user && user.login,
             isOwner = loginUser === loginAuthor;
 
         this.ctx.js = {
@@ -148,7 +149,7 @@ block('comment')(
     elem('body')(
        content()(function () {
            var text = this.ctx.body,
-               forum = this._forum,
+               forum = this.forum,
                mdToHtml = forum.util && forum.util.mdToHtml;
 
            return (!this._isArchive && mdToHtml) ? mdToHtml(text) : text;
@@ -201,7 +202,7 @@ block('comment')(
                         },
                         {
                             tag: 'input',
-                            attrs: { type: 'hidden', name: '_csrf', value: this._forum.csrf }
+                            attrs: { type: 'hidden', name: '_csrf', value: this.forum.csrf }
                         },
                         {
                             block: 'forum-form',

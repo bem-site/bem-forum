@@ -1,6 +1,6 @@
 block('forum-content').mod('view', 'issue')(
     content()(function () {
-        var forum = this._forum,
+        var forum = this.forum,
             config = forum.config;
 
         return {

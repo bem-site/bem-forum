@@ -1,6 +1,6 @@
 block('comments').mod('view', 'close')(
     content()(function () {
-        return this._forum.comments.map(function (comment) {
+        return this.forum.comments.map(function (comment) {
             return {
                 block: 'comment',
                 comment: comment
