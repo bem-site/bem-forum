@@ -36,11 +36,11 @@ module.exports = inherit(BaseController, {
                 isLastPage = _this.isLastPage(data.issues),
                 context = {
                     block: 'forum-issues',
-                    js: { isLastPage: isLastPage }
+                    js: { isLastPage: isLastPage, isArchive: isArchive }
                 };
 
             if (!isArchive && isLastPage) {
-                var archiveInfo = this.validateArchive(req);
+                var archiveInfo = _this.validateArchive(req);
 
                 context.js = _.extend(context.js, {
                     isMatchArchive: archiveInfo.isMatchArchive,

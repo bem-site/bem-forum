@@ -6,6 +6,7 @@ module.exports = {
         "github-button-title": "Repository forum",
         "add-post-button": "Submit new post",
         "login": "Login",
-        "logout": "Logout"
+        "logout": "Logout",
+        "archive": "Archive"
     }
 };

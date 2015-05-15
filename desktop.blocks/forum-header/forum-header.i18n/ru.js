@@ -6,6 +6,7 @@ module.exports = {
         "github-button-title": "Репозиторий форума",
         "add-post-button": "Добавить пост",
         "login": "Войти",
-        "logout": "Выйти"
+        "logout": "Выйти",
+        "archive": "Архив"
     }
 };

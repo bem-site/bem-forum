@@ -5,6 +5,7 @@ block('forum-header').mod('view', 'auth-no')(
 
         return [
             header[0],
+            header[1],
             {
                 block: 'button',
                 url: this._forum.config.url + 'login/',
@@ -12,8 +13,8 @@ block('forum-header').mod('view', 'auth-no')(
                 mods: { theme: 'islands', size: 'm', view: 'action', type: 'link' },
                 mix: { block: 'forum-header', elem: 'auth-button' }
             },
-            header[1],
-            header[2]
+            header[2],
+            header[3]
         ]
     })
 );
