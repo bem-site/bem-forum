@@ -1,11 +1,11 @@
-var PageController = require('../controllers/page.js');
+var express = require('express'),
+    PageController = require('../controllers/page.js');
 
-module.exports = function (express, config) {
-    var router = express.Router(),
-        controller = new PageController(config);
+module.exports = function (config) {
+    var controller = new PageController(config);
 
-    router.get('/', controller.index.bind(controller));
-    router.get('/:issue_id([-0-9]+)', controller.issue.bind(controller));
-
-    return router;
+    return [['/', 'index'], ['/:issue_id([-0-9]+)', 'issue']].reduce(function (router, route) {
+        router.get(route[0], controller[route[1]].bind(controller));
+        return router;
+    }, express.Router());
 };

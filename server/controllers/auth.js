@@ -13,49 +13,53 @@ module.exports = inherit(BaseController, {
     },
 
     login: function (req, res) {
-        var token = this.getCookie(req, 'token');
+        var token = this.getCookie(req).token;
 
         if (token) {
             return this._doRedirect(req, res, 303, 'login');
         }
 
-        this._auth.sendAuthRequest(req, res);
+        return this._auth.sendAuthRequest(req, res);
     },
 
     loginCallback: function (req, res) {
-        var _this = this,
-            code = req.query && req.query.code,
+        var code = req.query && req.query.code,
             strUrl = 'login_callback';
 
         if (!code || code && this._auth.getUserCookie(req, 'forum_user')) {
             return this._doRedirect(req, res, 303, strUrl);
         }
 
-        this._auth.getAccessToken(req, res, code, function (err, token) {
+        function onSuccess (req, res, token) {
+            // get user login
+            return this._model.getAuthUser(req, token)
+                .then(function (result) {
+                    if (!result) {
+                        this._logger.error('Can`t get user info after login, result is empty');
+                        return this._doRedirect(req, res, 500, strUrl);
+                    }
+                    this._auth.setUserCookie(res, 'forum_user', token, result.login);
 
+                    return this._doRedirect(req, res, 303, strUrl);
+                }, this)
+                .fail(function (err) {
+                    this._logger.error('Can`t get user info after login %s', err);
+                    return this._doRedirect(req, res, 500, strUrl);
+                }, this);
+        }
+
+        function onError (req, res, err) {
+            this._logger.error('Can`t get access token %s', err);
+            return this._doRedirect(req, res, 500, strUrl);
+        }
+
+        return this._auth.getAccessToken(req, res, code, function (err, token) {
             if (err) {
-                _this._logger.error('Can`t get access token %s', err);
-                return _this._doRedirect(req, res, 500, strUrl);
+                return onError.call(this, req, res, err);
             }
 
-            // get user login
-            _this._model.getAuthUser(req, token)
-                .then(function (result) {
-
-                    if (!result) {
-                        _this._logger.error('Can`t get user info after login, result is empty');
-                        _this._doRedirect(req, res, 500, strUrl);
-                        return;
-                    }
-
-                    _this._auth.setUserCookie(res, 'forum_user', token, result.login);
-                    _this._doRedirect(req, res, 303, strUrl);
-                })
-                .fail(function (err) {
-                    _this._logger.error('Can`t get user info after login %s', err);
-                    _this._doRedirect(req, res, 500, strUrl);
-                });
-        });
+            return onSuccess.call(this, req, res, token);
+        }.bind(this));
     },
 
     logout: function (req, res) {

@@ -3,6 +3,9 @@ Russian version of readme is available [here](https://github.com/bem/bem-forum/b
 bem-forum
 =========
 
+[![David](https://img.shields.io/david/bem/bem-forum.svg)](https://david-dm.org/bem/bem-forum)
+[![David](https://img.shields.io/david/dev/bem/bem-forum.svg)](https://david-dm.org/bem/bem-forum#info=devDependencies)
+
 BEM forum project is built according to BEM methodology and uses github issues as it's main data storage.
  
 Forum could be used in two capacities:

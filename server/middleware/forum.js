@@ -1,24 +1,23 @@
-var _ = require('lodash'),
-    express = require('express');
+var _ = require('lodash');
 
-module.exports = function (url, app, config) {
+module.exports = function (baseUrl, app, config) {
 
-    var pageRouter = require('../routes/page.js')(express, config),
-        authRouter = require('../routes/auth.js')(express, config),
-        apiRouter = require('../routes/api.js')(express, config);
+    var pageRouter = require('../routes/page.js')(config),
+        authRouter = require('../routes/auth.js')(config),
+        apiRouter = require('../routes/api.js')(config);
 
     /**
      * Router use by site url
      */
 
-    app.use(url, pageRouter);
-    app.use(url + 'api', apiRouter);
+    app.use(baseUrl, pageRouter);
+    app.use(baseUrl + 'api', apiRouter);
 
     /**
      * Auth
      */
     if (config.auth && config.auth.login === true) {
-        app.use(url, authRouter)
+        app.use(baseUrl, authRouter)
     }
 
     return function (req, res, next) {

@@ -22,27 +22,27 @@ module.exports = inherit(BaseController, {
      * @returns {*}
      */
     _baseActions: function (req, res, next) {
-        var _this = this;
+        var cookie = this.getCookie(req);
 
         return this._model
-            .getAuthUser(req, this.getCookie(req, 'token'), this.getCookie(req, 'name'))
+            .getAuthUser(req, cookie.token, cookie.name)
             .then(function (data) {
                 // set previous url for correct login redirect
-                _this.setPreviousUrl(req);
+                this.setPreviousUrl(req);
 
                 // collect user data
                 return res.locals = _.extend(res.locals, {
                     user: data
-                }, _this.getTmplHelpers(req));
+                }, this.getTmplHelpers(req));
 
-            }).fail(function (err) {
+            }, this)
+            .fail(function (err) {
                 return next(err);
-            });
+            }, this);
     },
 
     _getPageTitle: function (req) {
         var config = this._config;
-
         return req.title ? req.title : config.title && config.title[req.lang];
     },
 
@@ -58,7 +58,7 @@ module.exports = inherit(BaseController, {
      */
     index: function (req, res, next) {
         var _this = this,
-            token = this.getCookie(req, 'token'),
+            token = this.getCookie(req).token,
             isArchive = this.isArchive(req, req.query.page || 1);
 
         // Prepare data
@@ -77,8 +77,9 @@ module.exports = inherit(BaseController, {
 
     _afterGetIndexData: function (req, res, next, data) {
         var issues = data.issues,
-            labels = data.labels,
-            isLastPage = this.isLastPage(issues),
+            labels = data.labels;
+
+        var isLastPage = this.isLastPage(issues),
             isArchive = this.isArchive(req, req.query.page || 1);
 
         if (!isArchive && isLastPage) {
@@ -87,7 +88,7 @@ module.exports = inherit(BaseController, {
             res.locals = _.extend(res.locals, {
                 isMatchArchive: archiveInfo.isMatchArchive,
                 archiveUrl: archiveInfo.archiveUrl
-            })
+            });
         }
 
         // collect user data
@@ -119,8 +120,7 @@ module.exports = inherit(BaseController, {
      * @returns {*}
      */
     issue: function (req, res, next) {
-        var _this = this,
-            token = this.getCookie(req, 'token'),
+        var token = this.getCookie(req).token,
             params = req.params,
             id = params && params.issue_id,
             isArchive = this.isArchive(req, id);
@@ -128,16 +128,16 @@ module.exports = inherit(BaseController, {
         this._baseActions(req, res, next)
             .then(function () {
                 return vow.all({
-                    issue: _this._model.getIssue(req, token, isArchive),
-                    comments: _this._model.getComments(req, token, isArchive)
+                    issue: this._model.getIssue(req, token, isArchive),
+                    comments: this._model.getComments(req, token, isArchive)
                 });
-            })
+            }, this)
             .then(function (data) {
                 var issue = data.issue,
                     comments = data.comments;
 
                 res.locals = _.extend(res.locals, {
-                    title: issue.title + ' / ' + _this._getPageTitle(req),
+                    title: issue.title + ' / ' + this._getPageTitle(req),
                     issue: issue,
                     comments: comments,
                     view: 'issue',
@@ -145,7 +145,7 @@ module.exports = inherit(BaseController, {
                 });
 
                 return next();
-            })
+            }, this)
             .fail(function (err) {
                 return next(err);
             });

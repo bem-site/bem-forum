@@ -1,6 +1,7 @@
-var ApiController = require('../controllers/api.js');
+var express = require('express'),
+    ApiController = require('../controllers/api.js');
 
-module.exports = function (express, config) {
+module.exports = function (config) {
 
     var router = express.Router(),
         controller = new ApiController(config);

@@ -5,7 +5,7 @@ var _ = require('lodash'),
     util = require('../util.js'),
     inherit = require('inherit');
 
-module.exports = BaseController = inherit({
+module.exports = inherit({
 
     __constructor: function (config) {
         this._model = new Model(config);
@@ -35,9 +35,17 @@ module.exports = BaseController = inherit({
         };
     },
 
-    getCookie: function (req, part) {
+    getCookie: function (req) {
         var userCookie = this._auth.getUserCookie(req, 'forum_user');
-        return userCookie ? userCookie[part === 'token' ? 0 : 1] : null;
+
+        if (!userCookie) {
+            return {};
+        }
+
+        return {
+            token: userCookie[0],
+            name: userCookie[1]
+        };
     },
 
     getPreviousUrl: function (req) {

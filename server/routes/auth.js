@@ -1,12 +1,15 @@
-var AuthController = require('../controllers/auth.js');
+var express = require('express'),
+    AuthController = require('../controllers/auth.js');
 
-module.exports = function (express, config) {
-    var router = express.Router(),
-        controller = new AuthController(config);
+module.exports = function (config) {
+    var controller = new AuthController(config);
 
-    router.get('/login', controller.login.bind(controller));
-    router.get('/login_callback', controller.loginCallback.bind(controller));
-    router.get('/logout', controller.logout.bind(controller));
-
-    return router;
+    return [
+        ['/login', 'login'],
+        ['/login_callback', 'loginCallback'],
+        ['/logout', 'logout']
+    ].reduce(function (router, route) {
+            router.get(route[0], controller[route[1]].bind(controller));
+            return router;
+    }, express.Router());
 };
