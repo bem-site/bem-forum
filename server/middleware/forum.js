@@ -6,16 +6,11 @@ module.exports = function (baseUrl, app, config) {
         authRouter = require('../routes/auth.js')(config),
         apiRouter = require('../routes/api.js')(config);
 
-    /**
-     * Router use by site url
-     */
-
+    // Router for common pages and ajax API
     app.use(baseUrl, pageRouter);
     app.use(baseUrl + 'api', apiRouter);
 
-    /**
-     * Auth
-     */
+    // Router for auth actions
     if (config.auth && config.auth.login === true) {
         app.use(baseUrl, authRouter)
     }

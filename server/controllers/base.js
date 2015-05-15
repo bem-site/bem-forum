@@ -13,19 +13,40 @@ module.exports = inherit({
         this._config = config;
     },
 
+    /**
+     * Verify the last page if the model gave less issues than expected
+     * @param issues {Array}
+     * @returns {boolean}
+     */
     isLastPage: function (issues) {
         return issues.length < this._config.perPage;
     },
 
+    /**
+     * Verify by what type of page the user has requested archive or not
+     * @param req {Object}
+     * @param value {Number} page or issue id
+     * @returns {boolean}
+     */
     isArchive: function (req, value) {
         return (value < 0 && this.isLangSupportArchive(req)) ? true : false;
     },
 
-    isLangSupportArchive: function (req) {
+    /**
+     * Verify if the requested language archive posts
+     * @param lang {String}
+     * @returns {boolean}
+     */
+    isLangSupportArchive: function (lang) {
         var archiveConfig = this._config.archive;
-        return archiveConfig && archiveConfig[req.lang] ? true : false;
+        return archiveConfig && archiveConfig[lang] ? true : false;
     },
 
+    /**
+     * Prepare a list of helpers for templates
+     * @param req {Object}
+     * @returns {Object}
+     */
     getTmplHelpers: function (req) {
         return {
             _: _,
@@ -77,7 +98,7 @@ module.exports = inherit({
             archiveUrl = this._config.url + '?page=-1';
 
         // Check if archive contain issues by current criteries
-        if (this.isLangSupportArchive(req)) {
+        if (this.isLangSupportArchive(req.lang)) {
             isMatchArchive = this._model.inspectArchiveIssues(req)
         }
 
