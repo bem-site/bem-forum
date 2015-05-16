@@ -1,3 +1,32 @@
+/**
+ *  Router to implement the API to retrieve data for the forum using ajax
+ *  Currently available are 10 route:
+ *  - Index:
+ *      Path example: /api
+ *      Description: The entry point of the API, in response, sends a greeting text
+ *  - Create issue:
+ *      Path example: POST /api/issues
+ *  - Get list of the issues:
+ *      Path example: GET /api/issues
+ *
+ *  - Get issue:
+ *      Path example: GET /api/issues/425
+ *  - Edit issue (Issue deleted by setting the label removed):
+ *      Path example: PUT /api/issues/425
+ *
+ *  - Create comment:
+ *      Path example: POST /api/issues/425/comments
+ *  - Get list of the issue`s comments:
+ *      Path example: GET /api/issues/425/comments
+ *  - Edit comment:
+ *      Path example: PUT /api/issues/425/comments/10
+ *  - Delete comment:
+ *      Path example: DELETE /api/issues/425/comments/10
+ *
+ *  - Get list of the forum labels:
+ *      Path example: DELETE /api/labels
+ */
+
 var express = require('express'),
     ApiController = require('../controllers/api.js');
 
@@ -14,7 +43,7 @@ module.exports = function (config) {
         .post(controller.createIssue.bind(controller))
         .get(controller.getIssues.bind(controller));
 
-    // Issue (get, edit, delete)
+    // Issue (get, edit)
     router.route('/issues/:issue_id')
         .get(controller.getIssue.bind(controller))
         .put(controller.editIssue.bind(controller));

@@ -12,10 +12,11 @@ module.exports = inherit(BaseController, {
     },
 
     /**
-     * Base controller, use on every request,
-     * that match default`s forum router.
-     * 1. Get from model labels by lang and user info by token from req.cookies
-     * 2. Extend req.locals.forum with labels and users data
+     * Base controller, use on every page request.
+     * The controller queries the number of data are required for both pages (home page)
+     * 1. Get user data
+     * 2. Remember the current url for the possibility of return if the user decided to enter or leave
+     * 3. Fill res.locals basic helper methods that are used in templates
      * @param {Object} req
      * @param {Object} res
      * @param {Object} next
@@ -41,19 +42,14 @@ module.exports = inherit(BaseController, {
             }, this);
     },
 
-    _getPageTitle: function (req) {
-        var config = this._config;
-        return req.title ? req.title : config.title && config.title[req.lang];
-    },
-
     /**
-     * Index page controller
-     * 1. Get from model page title and issues list
-     * 2. Extend req.locals.forum with data got in 1 item
-     * 3. Set for template view type -> 'issues'
-     * @param {Object} req - express js request
-     * @param {Object} res - express js response
-     * @param {Function} next - express js call next middleware
+     * The controller of the index page
+     * 1. Receives from the model list of posts and labels
+     * 2. Called next() after all the necessary steps and data made
+     * IMPORTANT! All the necessary data for templating are in res.locals
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
      * @returns {*}
      */
     index: function (req, res, next) {
@@ -61,7 +57,6 @@ module.exports = inherit(BaseController, {
             token = this.getCookie(req).token,
             isArchive = this.isArchive(req, req.query.page || 1);
 
-        // Prepare data
         this._baseActions(req, res, next)
             .then(function () {
                 return vow.all({
@@ -75,6 +70,21 @@ module.exports = inherit(BaseController, {
             });
     },
 
+    /**
+     * Handler for successful reception of data from the model for the index page
+     * 1. Fills res.locals with the necessary data
+     * 2. Checks whether the requested page to the archive section
+     * and whether it is the last page and expresses it in the templates.
+     * 3. If it's the last page and not an archive,
+     * checking to see if the archive posts on current criteria
+     * and pass this knowledge to the template
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     * @param data {Object} - retrieved date from the model (posts and labels)
+     * @returns {*}
+     * @private
+     */
     _afterGetIndexData: function (req, res, next, data) {
         var issues = data.issues,
             labels = data.labels;
@@ -105,18 +115,14 @@ module.exports = inherit(BaseController, {
     },
 
     /**
-     * Issue page controller
-     * 1. Get from model page title, issue, issue`s comments to show on load
-     * 2. Require data:
-     * - user
-     * - title
-     * - view
-     * - issue
-     * - comments
-     * - isArchive
-     * @param {Object} req - express js request
-     * @param {Object} res - express js response
-     * @param {Function} next - express js call next middleware
+     * The controller of the issue page
+     * 1. Receives from the model issue data and it`s list of comments
+     * 2. Checks whether this post to the archive section on
+     * and pass this knowledge to the template
+     * 3. Fills res.locals with the necessary data
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
      * @returns {*}
      */
     issue: function (req, res, next) {
@@ -149,5 +155,17 @@ module.exports = inherit(BaseController, {
             .fail(function (err) {
                 return next(err);
             });
+    },
+
+    /**
+     * Getter to retrieve the page titl
+     * If not req.the title uses the title from config
+     * @param req {Object}
+     * @returns {*}
+     * @private
+     */
+    _getPageTitle: function (req) {
+        var config = this._config;
+        return req.title ? req.title : config.title && config.title[req.lang];
     }
 });
