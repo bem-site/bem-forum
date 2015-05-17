@@ -13,10 +13,29 @@ module.exports = inherit(BaseController, {
         this._template = Template.getInstance(config);
     },
 
+    /**
+     * The entry point of the API, in response, sends a greeting text
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     */
     index: function (req, res, next) {
         return res.end('Hello! This is a start point of API BEM-forum.');
     },
 
+    /**
+     * The controller receiving the list of issues
+     * 1. Get data list of issues and user
+     * 2. Fills res.locals with the necessary data
+     * 3. If it's the last page and not an archive,
+     * checking to see if the archive posts on current criteria
+     * and pass this knowledge to the template
+     * 4. Calls the render function to complete the request html response
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     * @returns {*}
+     */
     getIssues: function (req, res, next) {
         var cookie = this.getCookie(req),
             query = req.query,
@@ -47,25 +66,52 @@ module.exports = inherit(BaseController, {
             }
 
             this._render(req, res, next, context, data);
+
             return def.promise();
+
         }, this)
         .fail(this.onError.bind(this, next));
     },
 
+    /**
+     * Controller receive data single issue
+     * p.s. Currently not used
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     */
     getIssue: function (req, res, next) {
         return res.end('Hello! This is a start point of API BEM-forum.');
     },
 
+    /**
+     * Create a new issue
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     * @returns {*}
+     */
     createIssue: function (req, res, next) {
-        var context = { block: 'issue' };
-
         return this._model.createIssue(req, this.getCookie(req).token)
             .then(function (issue) {
-                return this._render(req, res, next, context, { issue: issue });
+                return this._render(req, res, next, { block: 'issue' }, { issue: issue });
             }, this)
             .fail(this.onError.bind(this, next));
     },
 
+    /**
+     * Edit issue
+     * According to the rules of github to put labels can only maintainer repository,
+     * which publishes the post to work around this limitation,
+     * when creating/editing post - edited post as administrator, take the token from config
+     *
+     * IMPORTANT! Used for both editing and removal of posts.
+     * To remove the post, he needs to put a label 'removed'
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     * @returns {*}
+     */
     editIssue: function (req, res, next) {
         var cookie = this.getCookie(req),
             config = this._config,
@@ -92,6 +138,13 @@ module.exports = inherit(BaseController, {
             .fail(this.onError.bind(this, next));
     },
 
+    /**
+     * Create new comment
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     * @returns {*}
+     */
     createComment: function (req, res, next) {
         var context = {
                 block: 'comment',
@@ -110,6 +163,17 @@ module.exports = inherit(BaseController, {
             .fail(this.onError.bind(this, next));
     },
 
+    /**
+     * Get a list of comments
+     * 1. Check whether to take comments from the archive
+     * and fill res.locals knowledge about the archive
+     * 2. Get comments and user data from model
+     * 3. Calls the render function to complete the request html response
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     * @returns {*}
+     */
     getComments: function (req, res, next) {
         var issueId = req.params && req.params.issue_id,
             context = {
@@ -120,7 +184,6 @@ module.exports = inherit(BaseController, {
             cookie = this.getCookie(req),
             isArchive = this.isArchive(req, issueId);
 
-        // Check whether the archive page
         res.locals.isArchive = isArchive;
 
         return vow.all({
@@ -133,6 +196,13 @@ module.exports = inherit(BaseController, {
         .fail(this.onError.bind(this, next));
     },
 
+    /**
+     * Edit comment
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     * @returns {*}
+     */
     editComment: function (req, res, next) {
         var context = {
                 block: 'comment',
@@ -151,6 +221,13 @@ module.exports = inherit(BaseController, {
             .fail(this.onError.bind(this, next));
     },
 
+    /**
+     * Delete comment
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     * @returns {*}
+     */
     deleteComment: function (req, res, next) {
         return this._model
             .deleteComment(req, this.getCookie(req).token)
@@ -160,6 +237,13 @@ module.exports = inherit(BaseController, {
             .fail(this.onError.bind(this, next));
     },
 
+    /**
+     * Get list of all forum labels
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     * @returns {*}
+     */
     getLabels: function (req, res, next) {
         var context = { block: 'forum-labels', mods: { view: req.query && req.query.view } };
 
@@ -170,8 +254,20 @@ module.exports = inherit(BaseController, {
             .fail(this.onError.bind(this, next));
     },
 
+    /**
+     * Function for rendering html and the response to the client
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     * @param context {Object} - BEMJSON
+     * @param data {Object} - data for templates
+     * @returns {*}
+     * @private
+     */
     _render: function (req, res, next, context, data) {
-        res.locals = _.extend(res.locals, data, this.getTmplHelpers(req), { xhr: true });
+
+        // Fills res.locals with the necessary data
+        res.locals = _.extend(res.locals, data, this.getTemplateHelpers(req), { xhr: true });
 
         if (req.query.__mode === 'json') {
             return res.json(data);

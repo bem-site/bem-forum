@@ -34,7 +34,7 @@ module.exports = inherit(BaseController, {
                 // collect user data
                 return res.locals = _.extend(res.locals, {
                     user: data
-                }, this.getTmplHelpers(req));
+                }, this.getTemplateHelpers(req));
 
             }, this)
             .fail(function (err) {

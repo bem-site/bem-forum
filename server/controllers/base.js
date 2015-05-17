@@ -29,7 +29,7 @@ module.exports = inherit({
      * @returns {boolean}
      */
     isArchive: function (req, value) {
-        return (value < 0 && this.isLangSupportArchive(req)) ? true : false;
+        return (value < 0 && this.isLangSupportArchive(req.lang)) ? true : false;
     },
 
     /**
@@ -47,7 +47,7 @@ module.exports = inherit({
      * @param req {Object}
      * @returns {Object}
      */
-    getTmplHelpers: function (req) {
+    getTemplateHelpers: function (req) {
         return {
             _: _,
             util: util,

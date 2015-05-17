@@ -104,6 +104,17 @@ module.exports = inherit(BaseController, {
         return res.status(statusCode).end();
     },
 
+    /**
+     * The handler success attempts got a user token base on code received from github
+     * 1. Get user data by using the obtained in the previous step token,
+     * 2. if all is well, we write the token and the user name in a special cookie
+     * @param req {Object}
+     * @param res {Object}
+     * @param urlPart {String} - Part of the url that needs to be cut
+     * @param token {Number} - user token
+     * @returns {*}
+     * @private
+     */
     _onSuccessGetToken: function (req, res, urlPart, token) {
         return this._model.getAuthUser(req, token)
             .then(function (result) {
