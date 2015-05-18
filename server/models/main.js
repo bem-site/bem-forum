@@ -3,7 +3,11 @@ var _ = require('lodash'),
     Archive = require('./archive.js'),
     Github = require('../services/github.js'),
     MemoryStorage = require('../services/memoryStorage.js'),
-    Logger = require('bem-site-logger');
+    Logger = require('bem-site-logger'),
+
+    CONST = {
+        MAX_RECORD_PER_PAGE: 100
+    };
 
 function Model (config) {
     this._init(config);
@@ -20,6 +24,10 @@ Model.prototype = {
     },
 
     _onSuccess: function (options, data) {
+        if (options.resolve) {
+            return options.resolve(data);
+        }
+
         var meta = data.meta,
             stData = options.stData,
             stOptions = options.stOptions,
@@ -33,8 +41,8 @@ Model.prototype = {
         } else {
             result = data;
             this._logger.info('x-ratelimit-remaining: %s', data.meta['x-ratelimit-remaining']);
-            this._storage.setEtag(stOptions, meta.etag, ghOptions);
-            this._storage.setData(stOptions, data, ghOptions);
+            this._storage.setData('etag', stOptions, ghOptions, meta.etag);
+            this._storage.setData('data', stOptions, ghOptions, data);
         }
 
         if (cb && _.isFunction(cb)) {
@@ -45,6 +53,7 @@ Model.prototype = {
     },
 
     _onError: function (def, err) {
+        this._logger.error('Error occur: %s', err.message);
         return def.reject(err);
     },
 
@@ -62,8 +71,8 @@ Model.prototype = {
         var def = vow.defer(),
             lang = req.lang,
             stOptions = { type: 'labels', lang: lang },
-            labels = this._storage.getData(stOptions),
-            eTag = this._storage.getEtag(stOptions),
+            labels = this._storage.getData('data', stOptions, null),
+            eTag = this._storage.getData('etag', stOptions, null),
             options = {
                 setRepoStorage: true,
                 headers: eTag ? { 'If-None-Match': eTag } : {},
@@ -98,8 +107,8 @@ Model.prototype = {
         }
 
         var stOptions = { type: 'users', name: name },
-            user = this._storage.getData(stOptions),
-            eTag = this._storage.getEtag(stOptions),
+            user = this._storage.getData('data', stOptions, null),
+            eTag = this._storage.getData('etag', stOptions, null),
             headers = eTag ? { 'If-None-Match': eTag } : {};
 
         this._github
@@ -140,10 +149,10 @@ Model.prototype = {
 
         } else {
             var stOptions = { type: 'issues', options: options },
-                eTag = this._storage.getEtag(stOptions, options),
+                eTag = this._storage.getData('etag', stOptions, options),
                 headers = eTag ? { 'If-None-Match': eTag } : {};
 
-            issues = this._storage.getData(stOptions, options)
+            issues = this._storage.getData('data', stOptions, options)
 
             this._github.getIssues(token, _.extend(options, { headers: headers }))
                 .then(this._onSuccess.bind(this, {
@@ -180,10 +189,10 @@ Model.prototype = {
                     type: 'issue',
                     number: id
                 },
-                eTag = this._storage.getEtag(stOptions, options),
+                eTag = this._storage.getData('etag', stOptions, options),
                 headers = eTag ? { 'If-None-Match': eTag } : {};
 
-            issue = this._storage.getData(stOptions, options);
+            issue = this._storage.getData('data', stOptions, options);
 
             this._github.getIssue(token, _.extend(options, { headers: headers }))
                 .then(this._onSuccess.bind(this, {
@@ -199,7 +208,8 @@ Model.prototype = {
     },
 
     createIssue: function (req, token) {
-        var body = req.body,
+        var def = vow.defer(),
+            body = req.body,
             options = {
                 setRepoStorage: true,
                 lang: req.lang,
@@ -208,11 +218,16 @@ Model.prototype = {
                 labels: body.labels
             };
 
-        return this._github.createIssue(token, options);
+        this._github.createIssue(token, options)
+            .then(this._onSuccess.bind(this, def))
+            .fail(this._onError.bind(this, def));
+
+        return def.promise();
     },
 
     editIssue: function (req, token) {
-        var body = req.body,
+        var def = vow.defer(),
+            body = req.body,
             options = {
                 setRepoStorage: true,
                 lang: req.lang,
@@ -223,7 +238,11 @@ Model.prototype = {
                 state: body.state
             };
 
-        return this._github.editIssue(token, options);
+        this._github.editIssue(token, options)
+            .then(this._onSuccess.bind(this, def))
+            .fail(this._onError.bind(this, def));
+
+        return def.promise();
     },
 
     getComments: function (req, token, isArchive) {
@@ -253,10 +272,10 @@ Model.prototype = {
                     id: id,
                     page: page
                 },
-                eTag = this._storage.getEtag(stOptions, options),
+                eTag = this._storage.getData('etag', stOptions, options),
                 headers = eTag ? { 'If-None-Match': eTag } : {};
 
-            comments = this._storage.getData(stOptions, options)
+            comments = this._storage.getData('data', stOptions, options)
 
             this._github.getComments(token, _.extend(options, { headers: headers }))
                 .then(this._onSuccess.bind(this, {
@@ -272,7 +291,8 @@ Model.prototype = {
     },
 
     createComment: function (req, token) {
-        var body = req.body,
+        var def = vow.defer(),
+            body = req.body,
             options = {
                 setRepoStorage: true,
                 lang: req.lang,
@@ -280,11 +300,16 @@ Model.prototype = {
                 body: body.body
             };
 
-        return this._github.createComment(token, options);
+        this._github.createComment(token, options)
+            .then(this._onSuccess.bind(this, def))
+            .fail(this._onError.bind(this, def));
+
+        return def.promise();
     },
 
     editComment: function (req, token) {
-        var body = req.body,
+        var def = vow.defer(),
+            body = req.body,
             options = {
                 setRepoStorage: true,
                 lang: req.lang,
@@ -292,17 +317,26 @@ Model.prototype = {
                 body: body.body
             };
 
-        return this._github.editComment(token, options);
+        this._github.editComment(token, options)
+            .then(this._onSuccess.bind(this, def))
+            .fail(this._onError.bind(this, def));
+
+        return def.promise();
     },
 
     deleteComment: function (req, token) {
-        var options = {
+        var def = vow.defer(),
+            options = {
                 setRepoStorage: true,
                 lang: req.lang,
                 id: req.body.id
             };
 
-        return this._github.deleteComment(token, options);
+        this._github.deleteComment(token, options)
+            .then(this._onSuccess.bind(this, def))
+            .fail(this._onError.bind(this, def));
+
+        return def.promise();
     },
 
     inspectArchiveIssues: function (req) {

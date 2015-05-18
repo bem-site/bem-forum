@@ -1,4 +1,5 @@
-var util = require('util'),
+var fs = require('fs'),
+    util = require('util'),
     path = require('path'),
     _ = require('lodash'),
     vow = require('vow'),
@@ -17,8 +18,7 @@ module.exports = Archive = inherit({
     },
 
     _initStorage: function () {
-        var _this = this,
-            archiveConfig = this._config.archive;
+        var archiveConfig = this._config.archive;
 
         this._storage = {};
 
@@ -27,18 +27,13 @@ module.exports = Archive = inherit({
         }
 
         _.keys(archiveConfig).forEach(function (lang) {
-            vowFs
-                .read(path.join(process.cwd(), archiveConfig[lang]), 'utf-8')
-                .then(function (data) {
-                    try {
-                        data = JSON.parse(data);
-                    } catch (err) {
-                        _this._logger.error('Failed to parse json file with the %s archive error: %s', lang, err);
-                    }
-
-                    _this._storage[lang] = data;
-                }, this);
-        });
+            try {
+                var data = fs.readFileSync(path.join(process.cwd(), archiveConfig[lang]), { encoding: 'utf-8' });
+                this._storage[lang] = JSON.parse(data);
+            } catch (err) {
+                this._logger.error('Failed to parse json file with the %s archive error: %s', lang, err);
+            }
+        }, this);
     },
 
     getIssues: function (options) {
@@ -128,7 +123,7 @@ module.exports = Archive = inherit({
         }
 
         return issues.filter(function (issue, index) {
-            return index >= limit * (page - 1) && index < limit * page;
+            return (index >= limit * (page - 1)) && (index < limit * page);
         });
     },
 

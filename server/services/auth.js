@@ -17,9 +17,9 @@ Auth.prototype = {
     },
 
     /**
-     * Send auth request
-     * @param req - {Object} request object
-     * @param res - {Object} response object
+     * Send auth request to Github
+     * @param req {Object}
+     * @param res {Object}
      */
     sendAuthRequest: function (req, res) {
         res.writeHead(303, {
