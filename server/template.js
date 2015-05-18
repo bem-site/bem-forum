@@ -35,15 +35,58 @@ module.exports = Template = inherit({
     },
 
     /**
-     * Consistent calls of the BEMTREE and BEMHTML templates
-     * for getting the html and the server response to the client
-     *
-     * 1. In the dev environment runs Builder module to rebuild the templates,
-     * in production just run templates
-     *
-     * 2. Each request creates a new vm.context,
+     * Read the template file and create a new context,
      * it is necessary to ensure that the scope of the template
      * to put the vow(required for the BEMTREE) and console.log
+     * @returns {Promise} - promise with file
+     * @private
+     */
+    _prepareTemplates: function () {
+        var context = {
+            console: console,
+            Vow: vow
+        };
+
+        return vfs.read(path.join(process.cwd(), this._target))
+            .then(function (bundleFile) {
+                vm.runInNewContext(bundleFile, context);
+                return context;
+            });
+    },
+
+    /**
+     * In the dev environment runs Builder module to rebuild the templates,
+     * in production just run templates.
+     * In every
+     * @returns {*}
+     * @private
+     */
+    _resolveTemplate: function () {
+        if (!forumUtil.isDev()) {
+
+            if (this._template) {
+                return vow.resolve(this._template);
+            }
+
+            return this._prepareTemplates()
+                .then(function (template) {
+                    this._template = template;
+                    return vow.resolve(this._template);
+                }, this);
+        }
+
+        var builder = require('./builder');
+
+        return builder
+            .build([this._target])
+            .then(function () {
+                return this._prepareTemplates();
+            }, this);
+    },
+
+    /**
+     * Consistent calls of the BEMTREE and BEMHTML templates
+     * for getting the html and the server response to the client
      *
      * @param ctx {Object} - BEMJSON
      * @param req {Object}
@@ -52,32 +95,21 @@ module.exports = Template = inherit({
      * @returns {*}
      */
     run: function (ctx, req, res, next) {
-        var _this = this,
-            builder = forumUtil.isDev() ? require('./builder') : { build: function () { return vow.resolve(); } };
+        var _this = this;
 
-        return builder
-            .build([this._target])
-            .then(function () {
-                var context = {
-                    console: console,
-                    Vow: vow,
-                    _: _
-                };
-
-                return vfs.read(path.join(process.cwd(), _this._target)).then(function (bundleFile) {
-                    vm.runInNewContext(bundleFile, context);
-                    return context;
-                });
-            })
+        return this._resolveTemplate()
             .then(function (template) {
+
                 // set lang
                 template.BEM.I18N.lang(req.lang);
 
                 try {
+                    // apply bemtree templates
                     var bemtreePromise = template.BEMTREE.apply(ctx);
                 } catch (err) {
                     _this._logger.error('BEMTREE ERROR: %s', err);
                     res.status(500);
+
                     return next(err);
                 }
 
@@ -92,15 +124,20 @@ module.exports = Template = inherit({
                     }
 
                     try {
+                        // apply bemhtml templates
                         var html = template.BEMHTML.apply(bemjson);
                     } catch (err) {
                         _this._logger.error('BEMHTML ERROR: %s', err);
                         res.status(500);
+
                         return next(err);
                     }
 
                     return res.end(html);
                 });
+            })
+            .fail(function (err) {
+                return next(err);
             });
     }
 

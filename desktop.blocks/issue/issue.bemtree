@@ -203,7 +203,8 @@ block('issue')(
     elem('line').elemMod('level', 'middle')(
 
         content()(function () {
-            var issue = this._issue;
+            var issue = this._issue,
+                forum = this.forum;
 
             return [
                 {
@@ -232,8 +233,8 @@ block('issue')(
                                 {
                                     block: 'link',
                                     mix: { block: this.block, elem: 'title' },
-                                    url: this.forum.config.url + issue.number + '/',
-                                    content: _.escape(issue.title)
+                                    url: forum.config.url + issue.number + '/',
+                                    content: forum._.escape(issue.title)
                                 },
                                 {
                                     block: 'issue',
@@ -317,7 +318,7 @@ block('issue')(
                             block: 'textarea',
                             mods: { theme: 'islands', size: 'l', width: 'available' },
                             name: 'body',
-                            val: _.escape(issue.body),
+                            val: forum._.escape(issue.body),
                             placeholder: BEM.I18N('issue', 'edit-form-desc-placeholder'),
                             mix: [
                                 {
