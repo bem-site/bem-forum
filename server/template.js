@@ -7,10 +7,8 @@ var util = require('util'),
     inherit = require('inherit'),
     Logger = require('bem-site-logger'),
     stringify = require('json-stringify-safe'),
-
-    forumUtil = require('./util');
-
-var Template;
+    forumUtil = require('./util'),
+    Template;
 
 module.exports = Template = inherit({
     __constructor: function (config) {
@@ -19,23 +17,43 @@ module.exports = Template = inherit({
         this._target = this._setTarget();
     },
 
+    /**
+     * Set the full path to the compiled file with BEMTREE and BEMHTML templates
+     * @returns {String}
+     * @private
+     */
     _setTarget: function () {
         var tPath = this._config.template,
             target = util.format('%s.bundles/%s/%s.min.template.i18n.js', tPath.level, tPath.bundle, tPath.bundle);
 
         // For when a bundle is in a different location, e.g. bem-info
         if (tPath.prefix) {
-            target = path.join(t.prefix, target)
+            target = path.join(tPath.prefix, target)
         }
 
         return target;
     },
 
+    /**
+     * Consistent calls of the BEMTREE and BEMHTML templates
+     * for getting the html and the server response to the client
+     *
+     * 1. In the dev environment runs Builder module to rebuild the templates,
+     * in production just run templates
+     *
+     * 2. Each request creates a new vm.context,
+     * it is necessary to ensure that the scope of the template
+     * to put the vow(required for the BEMTREE) and console.log
+     *
+     * @param ctx {Object} - BEMJSON
+     * @param req {Object}
+     * @param res {Object}
+     * @param next {Function}
+     * @returns {*}
+     */
     run: function (ctx, req, res, next) {
         var _this = this,
-            builder = forumUtil.isDev()
-                        ? require('./builder')
-                        : { build: function () { return vow.resolve(); } };
+            builder = forumUtil.isDev() ? require('./builder') : { build: function () { return vow.resolve(); } };
 
         return builder
             .build([this._target])
@@ -87,6 +105,11 @@ module.exports = Template = inherit({
     }
 
 }, {
+    /**
+     * Get singleton instance of class Template
+     * @param config
+     * @returns {*}
+     */
     getInstance: function (config) {
         if (!this._instance) {
             this._instance = new Template(config);
