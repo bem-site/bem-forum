@@ -1,5 +1,6 @@
 /**
- *  Router to the pages of the forum
+ *  Router to authenticate users
+ *
  *  Currently available are 3 route:
  *  - Login:
  *      Path example: /login

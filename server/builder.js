@@ -1,3 +1,8 @@
+/**
+ * Module for building bundles with css, js, BEMTREE, BEMHTML files for app.
+ * Used together with the module template
+ */
+
 var path = require('path'),
     vow = require('vow'),
     enbBuilder = require('enb/lib/server/server-middleware').createBuilder({

@@ -1,5 +1,6 @@
 /**
- *  Router to authenticate users
+ *  Router to the pages of the forum
+ *
  *  Currently available are 2 route:
  *  Index:
  *      Path example: /forum?page=1; /forum?page=-1 (Archive)
