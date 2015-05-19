@@ -1,3 +1,17 @@
+/**
+ * Module for oAuth2 authorization using Github
+ *
+ * Authorization takes place in 2 stages:
+ *
+ * Step 1 - redirect the client on Github, where, after entry and confirmation of the user,
+ * Github returns the user to the address of the application's callback {forum-url}/login_callback
+ * with the special query value(time code)
+ *
+ * Step 2 - new send the request on Github with the received code,
+ * if the code is verified, receives a response from Github,
+ * together with the token issued to the user that will be used to work with the Github API
+ * on behalf of the user.
+ */
 var _ = require('lodash'),
     inherit = require('inherit'),
     OAuth2 = require("oauth").OAuth2,
@@ -10,62 +24,44 @@ module.exports = Auth = inherit({
     __constructor: function (config) {
         this._config = config;
         this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
-        this._createOauth();
+        this._initOauth();
     },
 
     /**
-     * Send auth request to Github
+     * Sending user on Github to confirm authorization
+     * and received the time code to get the user token
      * @param req {Object}
      * @param res {Object}
      */
     sendAuthRequest: function (req, res) {
         res.writeHead(303, {
-            Location: this._getOauth().getAuthorizeUrl({
+            Location: this._oAuth2.getAuthorizeUrl({
                 redirect_uri: this._config.auth.redirectUrl,
                 scope: 'public_repo'
             })
         });
 
-        res.end();
+        return res.end();
     },
 
     /**
-     * Send request for retrieve access token
-     * @param req - {Object} request object
-     * @param res - {Object} response object
-     * @param code - {String} secret code as param for token retrieving
-     * @param cb - {Function} callback
+     * Send request for get user access token from Github
+     * @param req {Object}
+     * @param res {Object}
+     * @param code {String} secret code as param for token retrieving
+     * @param cb {Function} callback
      */
     getAccessToken: function (req, res, code, cb) {
-        this._getOauth().getOAuthAccessToken(code, {}, cb);
+        return this._oAuth2.getOAuthAccessToken(code, {}, cb);
     },
 
-    getUserCookie: function (req, name, onlyToken) {
-        var userCookie = req.cookies && req.cookies[name];
-
-        if (!userCookie) return '';
-
-        userCookie = userCookie.split(';;');
-
-        if (onlyToken) {
-            return userCookie[0];
-        }
-
-        return userCookie;
-    },
-
-    setUserCookie: function (res, cookieName, access_token, username) {
-        var expires = new Date(Date.now() + (86400000 * 5)),
-            value = [access_token, username].join(';;'); // 5 days
-
-        res.cookie(cookieName, value, { expires: expires, httpOnly: true });
-    },
-
-    delUserCookie: function (res, cookieName, path) {
-        res.clearCookie(cookieName, { path: path });
-    },
-
-    _createOauth: function () {
+    /**
+     * Initialization of a class oAuth2
+     * IMPORTANT! Exit the application if the module was created,
+     * but the config is not specified the settings for oAuth authorization
+     * @private
+     */
+    _initOauth: function () {
         var oAuth = this._config.auth;
 
         if (!oAuth) {
@@ -77,10 +73,6 @@ module.exports = Auth = inherit({
             "https://github.com/",
             "login/oauth/authorize",
             "login/oauth/access_token");
-    },
-
-    _getOauth: function () {
-        return this._oAuth2;
     }
 }, {
     getInstance: function (config) {

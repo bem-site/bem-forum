@@ -39,6 +39,7 @@ module.exports = inherit({
      */
     isLangSupportArchive: function (lang) {
         var archiveConfig = this._config.archive;
+
         return archiveConfig && archiveConfig[lang] ? true : false;
     },
 
@@ -62,16 +63,50 @@ module.exports = inherit({
      * @returns {Object} { user: ..., token: ... }
      */
     getCookie: function (req) {
-        var userCookie = this._auth.getUserCookie(req, 'forum_user');
-
-        if (!userCookie) {
-            return {};
-        }
+        var userCookie = this.getUserCookie(req, 'forum_user');
 
         return {
-            token: userCookie[0],
-            name: userCookie[1]
+            token: userCookie ? userCookie[0] : null,
+            name: userCookie ? userCookie[1] : null
         };
+    },
+
+    /**
+     * Get user`s cookie
+     * Cook stores the user name and the token value divided cerise ';;'
+     * @param req {Object}
+     * @param name {String} - cookie name
+     * @returns {*}
+     */
+    getUserCookie: function (req, name) {
+        var userCookie = req.cookies && req.cookies[name];
+
+        return userCookie ? userCookie.split(';;') : '';
+    },
+
+    /**
+     * Put the cookie of the user for 30 days for authorization
+     * @param res {Object}
+     * @param cookieName {String}
+     * @param token {Number} - user token
+     * @param username {String}
+     * @returns {Object}
+     */
+    setUserCookie: function (res, cookieName, token, username) {
+        var expires = new Date(Date.now() + (86400000 * 30)),
+            value = [token, username].join(';;');
+
+        return res.cookie(cookieName, value, { expires: expires, httpOnly: true });
+    },
+
+    /**
+     * Delete user`s cookie
+     * @param res
+     * @param cookieName
+     * @param path
+     */
+    delUserCookie: function (res, cookieName, path) {
+        return res.clearCookie(cookieName, { path: path });
     },
 
     /**
@@ -81,6 +116,7 @@ module.exports = inherit({
      */
     getPreviousUrl: function (req) {
         var session = req.session;
+
         return session && session.previousUrl;
     },
 

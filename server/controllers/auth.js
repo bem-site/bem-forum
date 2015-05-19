@@ -48,7 +48,7 @@ module.exports = inherit(BaseController, {
         var code = req.query && req.query.code,
             urlPart = 'login_callback';
 
-        if (!code || code && this._auth.getUserCookie(req, 'forum_user')) {
+        if (!code || code && this.getUserCookie(req, 'forum_user')) {
             return this._doRedirect(req, res, 303, urlPart);
         }
 
@@ -72,10 +72,10 @@ module.exports = inherit(BaseController, {
      * @returns {*}
      */
     logout: function (req, res) {
-        var token = this._auth.getUserCookie(req, 'forum_user');
+        var token = this.getUserCookie(req, 'forum_user');
 
         if (token) {
-            this._auth.delUserCookie(res, 'forum_user', '/');
+            this.delUserCookie(res, 'forum_user', '/');
         }
 
         return this._doRedirect(req, res, 303, 'logout');
@@ -124,7 +124,7 @@ module.exports = inherit(BaseController, {
                     return this._doRedirect(req, res, 500, urlPart);
                 }
 
-                this._auth.setUserCookie(res, 'forum_user', token, result.login);
+                this.setUserCookie(res, 'forum_user', token, result.login);
                 return this._doRedirect(req, res, 303, urlPart);
 
             }, this)
