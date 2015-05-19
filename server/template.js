@@ -97,46 +97,30 @@ module.exports = Template = inherit({
     run: function (ctx, req, res, next) {
         var _this = this;
 
-        return this._resolveTemplate()
+        return this
+            ._resolveTemplate()
             .then(function (template) {
-
-                // set lang
                 template.BEM.I18N.lang(req.lang);
 
-                try {
-                    // apply bemtree templates
-                    var bemtreePromise = template.BEMTREE.apply(ctx);
-                } catch (err) {
-                    _this._logger.error('BEMTREE ERROR: %s', err);
-                    res.status(500);
+                return template.BEMTREE.apply(ctx)
+                    .then(function (bemjson) {
+                        var mode = req.query && req.query.__mode;
 
-                    return next(err);
-                }
+                        if (mode === 'bemjson') {
+                            return stringify(bemjson, null, 2);
+                        }
 
-                return bemtreePromise.then(function (bemjson) {
+                        if (mode === 'content') {
+                            bemjson = bemjson.content;
+                        }
 
-                    if (req.query.__mode === 'bemjson') {
-                        return stringify(bemjson, null, 2);
-                    }
-
-                    if (req.query.__mode === 'content') {
-                        bemjson = bemjson.content;
-                    }
-
-                    try {
-                        // apply bemhtml templates
-                        var html = template.BEMHTML.apply(bemjson);
-                    } catch (err) {
-                        _this._logger.error('BEMHTML ERROR: %s', err);
-                        res.status(500);
-
-                        return next(err);
-                    }
-
-                    return res.end(html);
-                });
+                        return res.end(template.BEMHTML.apply(bemjson));
+                    })
             })
             .fail(function (err) {
+                _this._logger.error('Template: %s', err);
+                res.status(500);
+
                 return next(err);
             });
     }
