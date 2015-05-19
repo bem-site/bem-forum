@@ -70,8 +70,13 @@ modules.define(
                 url: this.params.forumUrl + 'api/issues/' + options.url,
                 cache: false,
                 context: this
+            }).fail(function () {
+                alert('Не удалось получить данные с сервера');
             }).done(function (html) {
                 this._onSuccess(html, options.type)
+            })
+            .always(function () {
+                this.delMod('loading');
             });
         },
 
@@ -80,9 +85,7 @@ modules.define(
         },
 
         _onSuccess: function (html, type) {
-            if (!type) type = 'update';
-
-            this.delMod('loading');
+            type = type || 'update';
             this._render(html, type, 'container');
         },
 

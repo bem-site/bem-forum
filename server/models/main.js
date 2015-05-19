@@ -1,3 +1,9 @@
+/**
+ * 1. The basic model to retrieve data and work with them.
+ * 2. The model works with two data sources: Github archive and, if specified in the config app.
+ * 3. For caching data from the Github module uses MemoryStorage that stores data in computer memory.
+ */
+
 var _ = require('lodash'),
     vow = require('vow'),
     inherit = require('inherit'),
@@ -8,6 +14,11 @@ var _ = require('lodash'),
     Model;
 
 module.exports = Model = inherit({
+    /**
+     * The constructor of the Model class
+     * @param config {Object} - app config
+     * @private
+     */
     __constructor: function (config) {
         this._config = config;
         this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
@@ -16,8 +27,24 @@ module.exports = Model = inherit({
         this._archive = Archive.getInstance(config);
     },
 
+    /**
+     * The handler successfully receive data from sources
+     * 1. If the source replied 304, returns data from the memory,
+     * in this case, the elapsed request to Github is not considered.
+     * 2. If the data has changed and the source sent 200,
+     * the data written in the memory and response to the new data.
+     * @param options {Object}
+     * @param data {Object} - data from source
+     * @returns {Promise}
+     * @private
+     */
     _onSuccess: function (options, data) {
-        if (options.resolve) {
+
+        /*
+          If the option was given promise object,
+          resolve data without additional action.
+        */
+        if (options.resolve || options.isArchive) {
             return options.resolve(data);
         }
 
@@ -28,7 +55,6 @@ module.exports = Model = inherit({
             cb = options.cb,
             result;
 
-        // We has had item and the datа wasn`t changed -> get item from storage
         if (stData && this._isDataNotChanged(meta)) {
             result = stData;
         } else {
@@ -38,6 +64,11 @@ module.exports = Model = inherit({
             this._storage.setData('data', stOptions, ghOptions, data);
         }
 
+        /*
+          If the passed callback - that is called after data processing.
+          This is needed for cases when you need to perform custom processing
+          on the data before the response
+        */
         if (cb && _.isFunction(cb)) {
             result = cb.call(this, result);
         }
@@ -45,20 +76,34 @@ module.exports = Model = inherit({
         return options.def.resolve(result);
     },
 
+    /**
+     * The handler failed receive data from sources
+     * @param def {Object} - vow.defer() object
+     * @param err {Object}
+     * @returns {Promise}
+     * @private
+     */
     _onError: function (def, err) {
         this._logger.error('Error occur: %s', err.message);
         return def.reject(err);
     },
 
+    /**
+     * If the response status from Github contains code 304,
+     * then the data has not changed
+     * @param meta {Object} - meta response data from the data source
+     * @returns {boolean}
+     * @private
+     */
     _isDataNotChanged: function (meta) {
-        return meta.status.indexOf('304') !== -1;
+        return meta.status.indexOf('304') > -1;
     },
 
     /**
-     * Check result.meta -> status, etag, x-ratelimit-remaining
-     * @param req
-     * @param token
-     * @returns {*}
+     * Get the list of all labels in the Github repository
+     * @param req {Object}
+     * @param token {Number} - user token
+     * @returns {Promise} - promise with array of labels
      */
     getLabels: function (req, token) {
         var def = vow.defer(),
@@ -74,6 +119,12 @@ module.exports = Model = inherit({
                 page: 1
             };
 
+        /**
+         * The filtered labels that result in missed service label removed
+         * Used as a callback for post-processing of the data got from Github
+         * @param data {Array} - list of labels
+         * @returns {*}
+         */
         function skipRemovedLabel(data) {
             return data.filter(function (label) {
                 return !label.name || label.name !== 'removed';
@@ -92,6 +143,13 @@ module.exports = Model = inherit({
         return def.promise();
     },
 
+    /**
+     * Getting data about the user based on the token passed
+     * @param req {Object}
+     * @param token {Number} - user token
+     * @param name {String} - user name
+     * @returns {Promise} - promise with object of user data
+     */
     getAuthUser: function (req, token, name) {
         var def = vow.defer();
 
@@ -116,6 +174,14 @@ module.exports = Model = inherit({
         return def.promise();
     },
 
+    /**
+     * Get the list of issues
+     * IMPORTANT! If request an archive issues, take data from the archive.
+     * @param req {Object}
+     * @param token {Number} - user token
+     * @param isArchive {Boolean}
+     * @returns {Promise} - promise with array of issues
+     */
     getIssues: function (req, token, isArchive) {
         var def = vow.defer(),
             query = req.query || {},
@@ -128,24 +194,15 @@ module.exports = Model = inherit({
                 sort: query.sort || 'updated',
                 direction: query.direction || 'desc',
                 labels: query.labels || ''
-            },
-            issues;
+            };
 
         if (isArchive) {
-
-            try {
-                issues = this._archive.getIssues(options);
-                def.resolve(issues);
-            } catch (err) {
-                this._onError.bind(this, def, err);
-            }
-
+            def.resolve(this._archive.getIssues(options));
         } else {
             var stOptions = { type: 'issues', options: options },
+                issues = this._storage.getData('data', stOptions, options),
                 eTag = this._storage.getData('etag', stOptions, options),
                 headers = eTag ? { 'If-None-Match': eTag } : {};
-
-            issues = this._storage.getData('data', stOptions, options)
 
             this._github.getIssues(token, _.extend(options, { headers: headers }))
                 .then(this._onSuccess.bind(this, {
@@ -160,6 +217,14 @@ module.exports = Model = inherit({
         return def.promise();
     },
 
+    /**
+     * Get data about single issue
+     * IMPORTANT! If request an archive issue, take data from the archive.
+     * @param req {Object}
+     * @param token {Number} - user token
+     * @param isArchive {Boolean}
+     * @returns {Promise} - promise with object of issue data
+     */
     getIssue: function (req, token, isArchive) {
         var def = vow.defer(),
             id = req.params && req.params.issue_id,
@@ -167,25 +232,15 @@ module.exports = Model = inherit({
                 setRepoStorage: true,
                 lang: req.lang,
                 number: id
-            },
-            issue;
+            };
 
         if (isArchive) {
-            try {
-                issue = this._archive.getIssue(options);
-                def.resolve(issue);
-            } catch (err) {
-                this._onError.bind(this, def, err);
-            }
+            def.resolve(this._archive.getIssue(options));
         } else {
-            var stOptions = {
-                    type: 'issue',
-                    number: id
-                },
+            var stOptions = { type: 'issue', number: id },
+                issue = this._storage.getData('data', stOptions, options),
                 eTag = this._storage.getData('etag', stOptions, options),
                 headers = eTag ? { 'If-None-Match': eTag } : {};
-
-            issue = this._storage.getData('data', stOptions, options);
 
             this._github.getIssue(token, _.extend(options, { headers: headers }))
                 .then(this._onSuccess.bind(this, {
@@ -200,6 +255,12 @@ module.exports = Model = inherit({
         return def.promise();
     },
 
+    /**
+     * Create new issue
+     * @param req {Object}
+     * @param token {Number} - user token
+     * @returns {Promise} - promise with object of issue data
+     */
     createIssue: function (req, token) {
         var def = vow.defer(),
             body = req.body,
@@ -218,6 +279,12 @@ module.exports = Model = inherit({
         return def.promise();
     },
 
+    /**
+     * Edit issue
+     * @param req {Object}
+     * @param token {Number} - user token
+     * @returns {Promise} - promise with object of issue edited data
+     */
     editIssue: function (req, token) {
         var def = vow.defer(),
             body = req.body,
@@ -238,6 +305,14 @@ module.exports = Model = inherit({
         return def.promise();
     },
 
+    /**
+     * Get list of issue`s comments
+     * IMPORTANT! If request an archive issue`s comments, take data from the archive.
+     * @param req {Object}
+     * @param token {Number} - user token
+     * @param isArchive {Boolean}
+     * @returns {Promise} - promise with array of comments
+     */
     getComments: function (req, token, isArchive) {
         var def = vow.defer(),
             id = req.params.issue_id,
@@ -249,26 +324,15 @@ module.exports = Model = inherit({
                 number: id,
                 page: page || 1,
                 per_page: query && req.query.per_page || 100
-            },
-            comments;
+            };
 
         if (isArchive) {
-            try {
-                comments = this._archive.getComments(options);
-                def.resolve(comments);
-            } catch (err) {
-                this._onError.bind(this, def, err);
-            }
+            def.resolve(this._archive.getComments(options));
         } else {
-            var stOptions = {
-                    type: 'comments',
-                    id: id,
-                    page: page
-                },
+            var stOptions = { type: 'comments', id: id, page: page },
+                comments = this._storage.getData('data', stOptions, options),
                 eTag = this._storage.getData('etag', stOptions, options),
                 headers = eTag ? { 'If-None-Match': eTag } : {};
-
-            comments = this._storage.getData('data', stOptions, options)
 
             this._github.getComments(token, _.extend(options, { headers: headers }))
                 .then(this._onSuccess.bind(this, {
@@ -283,6 +347,12 @@ module.exports = Model = inherit({
         return def.promise();
     },
 
+    /**
+     * Create new comment
+     * @param req {Object}
+     * @param token {Number} - user token
+     * @returns {Promise} - promise with object of comment data
+     */
     createComment: function (req, token) {
         var def = vow.defer(),
             body = req.body,
@@ -300,6 +370,12 @@ module.exports = Model = inherit({
         return def.promise();
     },
 
+    /**
+     * Edit comment
+     * @param req {Object}
+     * @param token {Number} - user token
+     * @returns {Promise} - promise with object of comment edited data
+     */
     editComment: function (req, token) {
         var def = vow.defer(),
             body = req.body,
@@ -317,6 +393,12 @@ module.exports = Model = inherit({
         return def.promise();
     },
 
+    /**
+     * Delete comment
+     * @param req {Object}
+     * @param token {Number} - user token=
+     * @returns {Promise} - promise with object of comment data
+     */
     deleteComment: function (req, token) {
         var def = vow.defer(),
             options = {
@@ -332,6 +414,11 @@ module.exports = Model = inherit({
         return def.promise();
     },
 
+    /**
+     * Inspection whether the archive posts matching the query
+     * @param req {Object}
+     * @returns {boolean}
+     */
     inspectArchiveIssues: function (req) {
         var query = req.query || {},
             issues = this._archive.getIssues({
