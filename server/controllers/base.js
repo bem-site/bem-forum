@@ -8,7 +8,7 @@ var _ = require('lodash'),
 module.exports = inherit({
 
     __constructor: function (config) {
-        this._model = new Model(config);
+        this._model = Model.getInstance(config);
         this._auth = new Auth(config);
         this._config = config;
     },

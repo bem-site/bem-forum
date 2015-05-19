@@ -1,21 +1,14 @@
 var _ = require('lodash'),
     vow = require('vow'),
+    inherit = require('inherit'),
     Archive = require('./archive.js'),
     Github = require('../services/github.js'),
     MemoryStorage = require('../services/memoryStorage.js'),
     Logger = require('bem-site-logger'),
+    Model;
 
-    CONST = {
-        MAX_RECORD_PER_PAGE: 100
-    };
-
-function Model (config) {
-    this._init(config);
-}
-
-Model.prototype = {
-
-    _init: function (config) {
+module.exports = Model = inherit({
+    __constructor: function (config) {
         this._config = config;
         this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
         this._github = Github.getInstance(config);
@@ -352,6 +345,12 @@ Model.prototype = {
 
         return issues && issues.length ? true : false;
     }
-};
+}, {
+    getInstance: function (config) {
+        if (!this._instance) {
+            this._instance = new Model(config);
+        }
 
-module.exports = Model;
+        return this._instance;
+    }
+});

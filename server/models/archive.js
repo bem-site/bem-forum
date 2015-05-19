@@ -3,12 +3,10 @@ var fs = require('fs'),
     path = require('path'),
     _ = require('lodash'),
     vow = require('vow'),
-    vowFs = require('vow-fs'),
     inherit = require('inherit'),
     Logger = require('bem-site-logger'),
-    stringify = require('json-stringify-safe');
-
-var Archive;
+    stringify = require('json-stringify-safe'),
+    Archive;
 
 module.exports = Archive = inherit({
     __constructor: function (config) {

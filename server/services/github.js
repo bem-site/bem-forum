@@ -2,9 +2,8 @@ var _ = require('lodash'),
     vow = require('vow'),
     inherit = require('inherit'),
     GitHubApi = require('github'),
-    Logger = require('bem-site-logger');
-
-var Github;
+    Logger = require('bem-site-logger'),
+    Github;
 
 module.exports = Github = inherit({
     __constructor: function (config) {

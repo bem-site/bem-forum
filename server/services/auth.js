@@ -1,16 +1,13 @@
 var _ = require('lodash'),
+    inherit = require('inherit'),
     OAuth2 = require("oauth").OAuth2,
-    Logger = require('bem-site-logger');
+    Logger = require('bem-site-logger'),
+    Auth;
 
-function Auth(config) {
-    this._init(config);
-}
-
-Auth.prototype = {
-
+module.exports = Auth = inherit({
     _oAuth2: [],
 
-    _init: function (config) {
+    __constructor: function (config) {
         this._config = config;
         this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
         this._createOauth();
@@ -85,6 +82,12 @@ Auth.prototype = {
     _getOauth: function () {
         return this._oAuth2;
     }
-};
+}, {
+    getInstance: function (config) {
+        if (!this._instance) {
+            this._instance = new Auth(config);
+        }
 
-module.exports = Auth;
+        return this._instance;
+    }
+});

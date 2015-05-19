@@ -1,9 +1,8 @@
 var _ = require('lodash'),
     vow = require('vow'),
     inherit = require('inherit'),
-    Logger = require('bem-site-logger');
-
-var MemoryStorage;
+    Logger = require('bem-site-logger'),
+    MemoryStorage;
 
 module.exports = MemoryStorage = inherit({
 
