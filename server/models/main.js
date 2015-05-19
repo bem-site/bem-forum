@@ -1,5 +1,5 @@
 /**
- * 1. The basic model to retrieve data and work with them.
+ * 1. The main model to retrieve data and work with them.
  * 2. The model works with two data sources: Github archive and, if specified in the config app.
  * 3. For caching data from the Github module uses MemoryStorage that stores data in computer memory.
  */
@@ -11,9 +11,9 @@ var _ = require('lodash'),
     Github = require('../services/github.js'),
     MemoryStorage = require('../services/memoryStorage.js'),
     Logger = require('bem-site-logger'),
-    Model;
+    MainModel;
 
-module.exports = Model = inherit({
+module.exports = MainModel = inherit({
     /**
      * The constructor of the Model class
      * @param config {Object} - app config
@@ -39,7 +39,6 @@ module.exports = Model = inherit({
      * @private
      */
     _onSuccess: function (options, data) {
-
         /*
           If the option was given promise object,
           resolve data without additional action.
@@ -185,18 +184,21 @@ module.exports = Model = inherit({
     getIssues: function (req, token, isArchive) {
         var def = vow.defer(),
             query = req.query || {},
+            page = query.page || 1,
             options = {
                 setRepoStorage: true,
                 state: 'all',
                 lang: req.lang,
                 per_page: this._config.perPage,
-                page: query.page || 1,
+                page: page,
                 sort: query.sort || 'updated',
                 direction: query.direction || 'desc',
                 labels: query.labels || ''
             };
 
-        if (isArchive) {
+        if (!isArchive && page < 0) {
+            def.reject({ message: 'getIssues - no data found!', code: 404 });
+        } else if (isArchive) {
             def.resolve(this._archive.getIssues(options));
         } else {
             var stOptions = { type: 'issues', options: options },
@@ -234,7 +236,9 @@ module.exports = Model = inherit({
                 number: id
             };
 
-        if (isArchive) {
+        if (!isArchive && id < 0) {
+            def.reject({ message: 'getIssue - no data found!', code: 404 });
+        } else if (isArchive) {
             def.resolve(this._archive.getIssue(options));
         } else {
             var stOptions = { type: 'issue', number: id },
@@ -326,7 +330,9 @@ module.exports = Model = inherit({
                 per_page: query && req.query.per_page || 100
             };
 
-        if (isArchive) {
+        if (!isArchive && id < 0) {
+            def.reject({ message: 'getComments - no data found!', code: 404 });
+        } else if (isArchive) {
             def.resolve(this._archive.getComments(options));
         } else {
             var stOptions = { type: 'comments', id: id, page: page },
@@ -435,7 +441,7 @@ module.exports = Model = inherit({
 }, {
     getInstance: function (config) {
         if (!this._instance) {
-            this._instance = new Model(config);
+            this._instance = new MainModel(config);
         }
 
         return this._instance;

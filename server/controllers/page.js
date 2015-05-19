@@ -38,6 +38,7 @@ module.exports = inherit(BaseController, {
 
             }, this)
             .fail(function (err) {
+                this._logger.error(err);
                 return next(err);
             }, this);
     },
@@ -53,21 +54,21 @@ module.exports = inherit(BaseController, {
      * @returns {*}
      */
     index: function (req, res, next) {
-        var _this = this,
-            token = this.getCookie(req).token,
+        var token = this.getCookie(req).token,
             isArchive = this.isArchive(req, req.query.page || 1);
 
         this._baseActions(req, res, next)
             .then(function () {
                 return vow.all({
-                    issues: _this._model.getIssues(req, token, isArchive),
-                    labels: _this._model.getLabels(req, token)
+                    issues: this._model.getIssues(req, token, isArchive),
+                    labels: this._model.getLabels(req, token)
                 });
-            })
+            }, this)
             .then(this._afterGetIndexData.bind(this, req, res, next))
             .fail(function (err) {
+                this._logger.error(err);
                 return next(err);
-            });
+            }, this);
     },
 
     /**
@@ -153,8 +154,9 @@ module.exports = inherit(BaseController, {
                 return next();
             }, this)
             .fail(function (err) {
+                this._logger.error(err);
                 return next(err);
-            });
+            }, this);
     },
 
     /**

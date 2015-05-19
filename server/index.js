@@ -63,8 +63,6 @@ app.use(function (err, req, res, next) {
         err.code = 500;
     }
 
-    logger.error(err);
-
     var code = err.code,
         message = forumUtil.isDev() ? err.message : 'Error: ' + code;
 
