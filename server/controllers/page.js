@@ -104,7 +104,7 @@ module.exports = inherit(BaseController, {
 
         // collect user data
         res.locals = _.extend(res.locals, {
-            title: this._getPageTitle(req),
+            pageTitle: this._getPageTitle(req, res),
             issues: issues,
             labels: labels,
             view: 'issues',
@@ -144,7 +144,7 @@ module.exports = inherit(BaseController, {
                     comments = data.comments;
 
                 res.locals = _.extend(res.locals, {
-                    title: issue.title + ' / ' + this._getPageTitle(req),
+                    pageTitle: issue.title + ' / ' + this._getPageTitle(req, res),
                     issue: issue,
                     comments: comments,
                     view: 'issue',
@@ -160,14 +160,18 @@ module.exports = inherit(BaseController, {
     },
 
     /**
-     * Getter to retrieve the page titl
-     * If not req.the title uses the title from config
+     * Get page title
+     * If not res.local.title -uses the title from config
      * @param req {Object}
-     * @returns {*}
+     * @param res {Object}
+     * @returns {String} - page title
      * @private
      */
-    _getPageTitle: function (req) {
-        var config = this._config;
-        return req.title ? req.title : config.title && config.title[req.lang];
+    _getPageTitle: function (req, res) {
+        var config = this._config,
+            configTitle = (config.title && config.title[req.lang]) || '',
+            resTitle = res.locals.pageTitle;
+
+        return resTitle ? resTitle : configTitle;
     }
 });
