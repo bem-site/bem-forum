@@ -128,7 +128,7 @@ module.exports = inherit({
     setPreviousUrl: function (req) {
         var session = req.session;
 
-        session ? (session.previousUrl = req.url)
+        session ? (session.previousUrl = req.originalUrl)
             : this._logger.warn('Add session middleware for correct auth work');
 
         return this;
