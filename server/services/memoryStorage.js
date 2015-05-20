@@ -1,5 +1,35 @@
+/**
+ *  Module for caching/storage of data in memory obtained from Github.
+ *  Cache special 'etag' value, used to verify the status change data
+ *
+ *  Store the following data types:
+ *  - Issues: [lang]issues[page][sort][labels] = {
+ *      data: {Array} list of issues,
+ *      etag: {Number} etag
+ *  }
+ *
+ *  - Issue: [lang]issue[issue_id] = {
+ *      data: {Object} issue data,
+ *      etag: {Number} etag
+ *  }
+ *
+ *  - Comments: [lang]comments[issue_id][page] = {
+ *      data: {Array} list of comments,
+ *      etag: {Number} etag
+ *  }
+ *
+ *  - Labels: [lang]labels = {
+ *      data: {Array} list of labels,
+ *      etag: {Number} etag
+ *  }
+ *
+ *  - Users: users[name] = {
+ *      data: {Object} user data,
+ *      etag: {Number} etag
+ *  }
+ */
+
 var _ = require('lodash'),
-    vow = require('vow'),
     inherit = require('inherit'),
     Logger = require('bem-site-logger'),
     MemoryStorage;
@@ -12,6 +42,13 @@ module.exports = MemoryStorage = inherit({
         this._createStructure();
     },
 
+    /**
+     * Creates an initial memory storage structure
+     * IMPORTANT! If you do not specify the data sources from Github,
+     * which will need storing - exit from the application.
+     * @returns {Object} - storage
+     * @private
+     */
     _createStructure: function () {
         var storageByLang = this._config.storage;
 
@@ -25,7 +62,6 @@ module.exports = MemoryStorage = inherit({
         // set data that not require lang
         this._storage.users = {};
 
-        // Generate basic storage by lang
         this._storage = Object.keys(storageByLang).reduce(function (prev, lang) {
             prev[lang] = {
                 issues: {},
@@ -39,13 +75,48 @@ module.exports = MemoryStorage = inherit({
         return this._storage;
     },
 
-    _getUser: function (name) {
-        var userStorage = this._storage.users;
+    /**
+     * Getter for the labels storage
+     * @param options {Object}
+     * @returns {Array} - list of repo labels
+     * @private
+     */
+    _getLabels: function (options) {
+        return this._storage[options.lang].labels;
+    },
+
+    /**
+     * Getter for the users storage by passed name
+     * If this key(name of user) is not in the storage,
+     * creates a new basic structure
+     * @param options {Object}
+     * Required:
+     * - name {String} - user name
+     * @returns {Object} - user storage
+     * @private
+     */
+    _getUser: function (options) {
+        var name = options.name,
+            userStorage = this._storage.users;
+
         userStorage[name] = userStorage[name] || { data: [], etag: '' };
 
         return userStorage[name];
     },
 
+    /**
+     * Getter for the issues storage
+     * If issues with such key in the vault was not,
+     * creates a new basic structure
+     * @param options {Object}
+     * Required:
+     * - lang {String} - ru|en|etc
+     * - page {Number} - number of issue page
+     * - sort {String} - updated|created|comments
+     * - labels {String} - bug,bemtree,bemhtml,etc
+     * @returns {Array} - issues storage
+     * @private
+     */
     _getIssues: function (options) {
         var lang = options.lang,
             page = options.page,
@@ -64,6 +135,17 @@ module.exports = MemoryStorage = inherit({
         return issuesStorage;
     },
 
+    /**
+     * Getter for the issues storage
+     * If issue with such issue id in the vault was not,
+     * creates a new basic structure
+     * @param options {Object}
+     * Required:
+     * - lang {String}
+     * - number {Number} - issue number(id)
+     * @returns {Object} - issue storage
+     * @private
+     */
     _getIssue: function (options) {
         var id = options.number,
             lang = options.lang,
@@ -74,9 +156,21 @@ module.exports = MemoryStorage = inherit({
         return issueStorage[id];
     },
 
+    /**
+     * Getter for the comments storage
+     * If comments with such keys in the vault was not,
+     * creates a new basic structure
+     * @param options {Object}
+     * Required:
+     * - lang {String}
+     * - number {Number} - issue number(id )
+     * - page {Number} - requested page comments
+     * @returns {Array} - comments storage
+     * @private
+     */
     _getComments: function (options) {
         var lang = options.lang,
-            id = options.id,
+            id = options.number,
             page = options.page,
             basicStorage = this._storage[lang].comments,
             commentsStorage;
@@ -90,34 +184,46 @@ module.exports = MemoryStorage = inherit({
         return commentsStorage;
     },
 
-    _flowData: function (field, arg, options, data) {
-        var type = arg.type,
-            result;
+    /**
+     * Call methods for getting and setting data
+     * @param field {String} - the type of field from which you want to interact (etag|data)
+     * @param options {Object} - options for storage
+     * @param [data] {Array|Object} - optional
+     * @returns {Array|Object}
+     * @private
+     */
+    _flowData: function (field, options, data) {
+        var method = {
+            labels: '_getLabels',
+            users: '_getUser',
+            issues: '_getIssues',
+            issue: '_getIssue',
+            comments: '_getComments'
+        }[options.type],
+        result = this[method](options);
 
-        if (type === 'users') {
-            result = this._getUser(arg.name);
-        }
-
-        if (options) {
-            var method = {
-                issues: '_getIssues',
-                issue: '_getIssue',
-                comments: '_getComments'
-            }[type];
-            result = this[method](options);
-        }
-
-        result = result || this._storage[arg.lang][type];
-
-        return arguments.length > 3 ? result[field] = data : result[field];
+        return arguments.length > 2 ? result[field] = data : result[field];
     },
 
-    getData: function (field, arg, options) {
-        return this._flowData(field, arg, options);
+    /**
+     * Getter data from storage
+     * @param field {String} - the type of field from which you want to interact (etag|data)
+     * @param options {Object} - options for storage
+     * @returns {*}
+     */
+    getData: function (field, options) {
+        return this._flowData(field, options);
     },
 
-    setData: function (field, arg, options, data) {
-        return this._flowData(field, arg, options, data);
+    /**
+     * Setter data to storage
+     * @param field {String} - the type of field from which you want to interact (etag|data)
+     * @param options {Object} - options for storage
+     * @param [data] {Array|Object} - optional
+     * @returns {Array|Object}
+     */
+    setData: function (field, options, data) {
+        return this._flowData(field, options, data);
     }
 }, {
     getInstance: function (config) {

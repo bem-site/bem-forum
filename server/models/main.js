@@ -49,8 +49,7 @@ module.exports = MainModel = inherit({
 
         var meta = data.meta,
             stData = options.stData,
-            stOptions = options.stOptions,
-            ghOptions = options.ghOptions,
+            optionsData = options.optionsData,
             cb = options.cb,
             result;
 
@@ -59,8 +58,8 @@ module.exports = MainModel = inherit({
         } else {
             result = data;
             this._logger.info('x-ratelimit-remaining: %s', data.meta['x-ratelimit-remaining']);
-            this._storage.setData('etag', stOptions, ghOptions, meta.etag);
-            this._storage.setData('data', stOptions, ghOptions, data);
+            this._storage.setData('etag', optionsData, meta.etag);
+            this._storage.setData('data', optionsData, data);
         }
 
         /*
@@ -107,16 +106,17 @@ module.exports = MainModel = inherit({
     getLabels: function (req, token) {
         var def = vow.defer(),
             lang = req.lang,
-            stOptions = { type: 'labels', lang: lang },
-            labels = this._storage.getData('data', stOptions, null),
-            eTag = this._storage.getData('etag', stOptions, null),
             options = {
+                type: 'labels',
                 setRepoStorage: true,
-                headers: eTag ? { 'If-None-Match': eTag } : {},
                 per_page: 100,
                 lang: lang,
                 page: 1
-            };
+            },
+            labels = this._storage.getData('data', options),
+            eTag = this._storage.getData('etag', options);
+
+        options = this._extendEtagHeaders(options, eTag);
 
         /**
          * The filtered labels that result in missed service label removed
@@ -134,12 +134,23 @@ module.exports = MainModel = inherit({
             .then(this._onSuccess.bind(this, {
                 def: def,
                 stData: labels,
-                stOptions: stOptions,
+                optionsData: options,
                 cb: skipRemovedLabel
             }))
             .fail(this._onError.bind(this, def));
 
         return def.promise();
+    },
+
+    /**
+     * Extends object field headers,
+     * and added 'If-None-Match' if the specified eTag
+     * @param obj {Object}
+     * @param eTag {Number}
+     * @private
+     */
+    _extendEtagHeaders: function (obj, eTag) {
+        return _.extend(obj, { headers: eTag ? { 'If-None-Match': eTag } : {} });
     },
 
     /**
@@ -156,17 +167,18 @@ module.exports = MainModel = inherit({
             def.resolve();
         }
 
-        var stOptions = { type: 'users', name: name },
-            user = this._storage.getData('data', stOptions, null),
-            eTag = this._storage.getData('etag', stOptions, null),
-            headers = eTag ? { 'If-None-Match': eTag } : {};
+        var options = { type: 'users', name: name },
+            user = this._storage.getData('data', options),
+            eTag = this._storage.getData('etag', options);
+
+        options = this._extendEtagHeaders(options, eTag);
 
         this._github
-            .getAuthUser(token, { headers: headers })
+            .getAuthUser(token, options)
             .then(this._onSuccess.bind(this, {
                 def: def,
                 stData: user,
-                stOptions: stOptions
+                optionsData: options
             }))
             .fail(this._onError.bind(this, def));
 
@@ -186,6 +198,7 @@ module.exports = MainModel = inherit({
             query = req.query || {},
             page = query.page || 1,
             options = {
+                type: 'issues',
                 setRepoStorage: true,
                 state: 'all',
                 lang: req.lang,
@@ -201,17 +214,16 @@ module.exports = MainModel = inherit({
         } else if (isArchive) {
             def.resolve(this._archive.getIssues(options));
         } else {
-            var stOptions = { type: 'issues', options: options },
-                issues = this._storage.getData('data', stOptions, options),
-                eTag = this._storage.getData('etag', stOptions, options),
-                headers = eTag ? { 'If-None-Match': eTag } : {};
+            var issues = this._storage.getData('data', options),
+                eTag = this._storage.getData('etag', options);
 
-            this._github.getIssues(token, _.extend(options, { headers: headers }))
+            options = this._extendEtagHeaders(options, eTag);
+
+            this._github.getIssues(token, options)
                 .then(this._onSuccess.bind(this, {
                     def: def,
                     stData: issues,
-                    stOptions: stOptions,
-                    ghOptions: options
+                    optionsData: options
                 }))
                 .fail(this._onError.bind(this, def));
         }
@@ -231,6 +243,7 @@ module.exports = MainModel = inherit({
         var def = vow.defer(),
             id = req.params && req.params.issue_id,
             options = {
+                type: 'issue',
                 setRepoStorage: true,
                 lang: req.lang,
                 number: id
@@ -241,17 +254,16 @@ module.exports = MainModel = inherit({
         } else if (isArchive) {
             def.resolve(this._archive.getIssue(options));
         } else {
-            var stOptions = { type: 'issue', number: id },
-                issue = this._storage.getData('data', stOptions, options),
-                eTag = this._storage.getData('etag', stOptions, options),
-                headers = eTag ? { 'If-None-Match': eTag } : {};
+            var issue = this._storage.getData('data', options),
+                eTag = this._storage.getData('etag', options);
 
-            this._github.getIssue(token, _.extend(options, { headers: headers }))
+            options = this._extendEtagHeaders(options, eTag);
+
+            this._github.getIssue(token, options)
                 .then(this._onSuccess.bind(this, {
                     def: def,
                     stData: issue,
-                    stOptions: stOptions,
-                    ghOptions: options
+                    optionsData: options
                 }))
                 .fail(this._onError.bind(this, def));
         }
@@ -323,6 +335,7 @@ module.exports = MainModel = inherit({
             query = req.query,
             page = query && req.query.page,
             options = {
+                type: 'comments',
                 setRepoStorage: true,
                 lang: req.lang,
                 number: id,
@@ -335,17 +348,16 @@ module.exports = MainModel = inherit({
         } else if (isArchive) {
             def.resolve(this._archive.getComments(options));
         } else {
-            var stOptions = { type: 'comments', id: id, page: page },
-                comments = this._storage.getData('data', stOptions, options),
-                eTag = this._storage.getData('etag', stOptions, options),
-                headers = eTag ? { 'If-None-Match': eTag } : {};
+            var comments = this._storage.getData('data', options),
+                eTag = this._storage.getData('etag', options);
 
-            this._github.getComments(token, _.extend(options, { headers: headers }))
+            options = this._extendEtagHeaders(options, eTag);
+
+            this._github.getComments(token, options)
                 .then(this._onSuccess.bind(this, {
                     def: def,
                     stData: comments,
-                    stOptions: stOptions,
-                    ghOptions: options
+                    optionsData: options
                 }))
                 .fail(this._onError.bind(this, def));
         }
