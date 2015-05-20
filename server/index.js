@@ -2,13 +2,12 @@ var config = require('./config').get('forum'),
     template = require('./template').getInstance(config),
     logger = require('bem-site-logger').setOptions(config['logger']).createLogger(module),
     express = require('express'),
-    _ = require('lodash'),
     app = express(),
     forumUtil = require('./util');
 
 app.set('port', process.env.PORT || config.port)
 
-// Development
+// 1. Middleware for development env
 if (forumUtil.isDev()) {
 
     // Logging http request
@@ -20,7 +19,7 @@ if (forumUtil.isDev()) {
         noLog: false
     }));
 }
-
+// 2. Middleware for all env
 app
     .use(require('serve-static')(process.cwd()))
     .use(require('serve-favicon')(process.cwd() + '/public/favicon.ico'))
@@ -37,17 +36,12 @@ app
     // forum middleware
     .use(require('./middleware/forum')('/', app, config))
 
-// Get results and templating data
+// 3. Get html/json results
 app.use(function (req, res, next) {
 
     if (req.query._mode === 'json') {
         return res.end('<pre>' + JSON.stringify(res.locals, null, 4) + '</pre>');
     }
-
-    /**
-     * The generated html page using the bemhtml + bemhtml
-     * and data obtained in middleware `forum`
-     */
 
     return template.run({
         block: 'root',
@@ -58,6 +52,7 @@ app.use(function (req, res, next) {
     }, req, res, next);
 });
 
+// 4. Error handler
 app.use(function (err, req, res, next) {
     if ([500, 404, 400].indexOf(err.code) === -1) {
         err.code = 500;
@@ -69,6 +64,7 @@ app.use(function (err, req, res, next) {
     return res.status(code).send(message).end();
 });
 
+// 5. Start app
 app.listen(app.get('port'), function () {
     logger.info('Forum running in %s environment, visit http://localhost:%s', app.get('env'), app.get('port'));
 });
