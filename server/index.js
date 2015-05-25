@@ -1,54 +1,71 @@
-var express = require('express'),
-    st = require('serve-static'),
-    bodyParser = require('body-parser'),
-    cookieParser = require('cookie-parser'),
-    session = require('express-session'),
-    csrf = require('csurf'),
-    favicon = require('serve-favicon'),
-    _ = require('lodash'),
+var config = require('./config').get('forum'),
+    template = require('./template').getInstance(config),
+    logger = require('bem-site-logger').setOptions(config.logger).createLogger(module),
+    express = require('express'),
+    app = express(),
+    forumUtil = require('./util');
 
-    // forum modules
-    forum = require('./forum'),
-    locale = require('./locale'),
-    config = require('./config').get('forum'),
-    util = require('./util'),
-    template = require('./template'),
+app.set('port', process.env.PORT || config.port);
 
-    // app
-    app = express();
+// 1. Middleware for development env
+if (forumUtil.isDev()) {
 
-if (util.isDev()) {
+    // Logging http request
+    app.use(require('morgan')('dev'));
+
+    // Rebuild bundle on request
     app.use(require('enb/lib/server/server-middleware').createMiddleware({
         cdir: process.cwd(),
         noLog: false
     }));
 }
-
-app.set('port', process.env.PORT || config.port);
-
+// 2. Middleware for all env
 app
-    .use(st(process.cwd()))
-    .use(favicon(process.cwd() + '/public/favicon.ico'))
-    .use(cookieParser())
-    .use(bodyParser())
-    .use(session({ secret: 'beminfoforum', saveUninitialized: false, resave: false }))
-    .use(csrf())
-    .use(locale(config.defaultLanguage))
-    .use(forum('/', config)) // forum middleware
-    .use(function (req, res) {
-        return template.run(_.extend({ block: 'page' }, req.__data), req)
-            .then(function (html) {
-                res.end(html);
-            })
-            .fail(function (err) {
-                res.end(err);
-            });
-    })
-    .use(function (err, req, res, next) {
-        console.error(err);
-        return res.status(err.code).send(err.message).end();
-    });
+    .use(require('serve-static')(process.cwd()))
+    .use(require('serve-favicon')(process.cwd() + '/public/favicon.ico'))
+    .use(require('cookie-parser')())
+    .use(require('body-parser')())
+    .use(require('express-session')({ secret: config.auth.secret, saveUninitialized: false, resave: false }))
 
+    // csrf protection
+    .use(require('csurf')())
+
+    // middleware for set default lang
+    .use(require('./middleware/locale')(config.lang))
+
+    // forum middleware
+    .use(require('./middleware/forum')('/', app, config));
+
+// 3. Get html/json results
+app.use(function (req, res, next) {
+    var locals = res.locals;
+
+    if (req.query._mode === 'json') {
+        return res.end('<pre>' + JSON.stringify(locals, null, 4) + '</pre>');
+    }
+
+    return template.run({
+        block: 'root',
+        data: {
+            title: locals.title,
+            forum: locals
+        }
+    }, req, res, next);
+});
+
+// 4. Error handler
+app.use(function (err, req, res) {
+    if ([500, 404, 400].indexOf(err.code) === -1) {
+        err.code = 500;
+    }
+
+    var code = err.code,
+        message = forumUtil.isDev() ? err.message : 'Error: ' + code;
+
+    return res.status(code).send(message).end();
+});
+
+// 5. Start app
 app.listen(app.get('port'), function () {
-    console.log('app forum running on port:', app.get('port'));
+    logger.info('Forum running in %s environment, visit http://localhost:%s', app.get('env'), app.get('port'));
 });

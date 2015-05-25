@@ -1,12 +1,14 @@
 block('comment')(
     js()(true),
     match(function () { return this.ctx.issueNumber; }).js()(function () {
+        var ctx = this.ctx;
+
         return {
-            issueNumber: this.ctx.issueNumber,
-            id: this.ctx.data.id,
-            forumUrl: this.ctx.forumUrl,
-            csrf: this.ctx.csrf
-        }
+            issueNumber: ctx.issueNumber,
+            id: ctx.data.id,
+            forumUrl: ctx.forumUrl,
+            csrf: ctx.csrf
+        };
     }),
     mix()([
         { block: 'forum-flex' },

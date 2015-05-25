@@ -1,8 +1,15 @@
 {
     "forum": {
-        "port": 3000,
-        "defaultLanguage": "ru",
+        "url": "/",
+        "logger": {
+          "level": "debug"
+        },
+        "lang": "ru",
         "languages": ["en", "ru"],
+        "title": {
+          "en": "Forum on the full BEM technology stack",
+          "ru": "Форум на полном БЭМ стеке технологий"
+        },
         "storage": {
           "en": {
             "user": "tavriaforever",
@@ -16,15 +23,15 @@
         "archive": {
           "ru": "archive-example_ru.json"
         },
+        "perPage": 15,
+        "setLabels": false,
         "auth": {
-            "tokens": []
+          "login": true
         },
-        "owner_token": "",
-        "labelsRequired": false,
+        "port": 3000,
         "template": {
-            "level": "desktop",
-            "bundle": "index"
-        },
-        "debug": true
+          "level": "desktop",
+          "bundle": "index"
+        }
     }
 }

@@ -1,21 +1,22 @@
 block('forum-issues')(
-    match(function () { return this.ctx.data && this.ctx.data.length; }).content()(function () {
-        return this.ctx.data.map(function (issue) {
-            return {
-                block: 'issue',
-                mods: { solved: issue.state === 'closed' },
-                data: issue,
-                forumUrl: req.forumUrl,
-                labelsRequired: req.labelsRequired,
-                csrf: req.csrf
-            }
-        });
-    }),
+    match(function () { return this.forum.issues; }).content()(function () {
+        var forum = this.forum,
+            issues = forum.issues,
+            length = issues.length;
 
-    match(function () { return !this.ctx.data.length; }).content()(function () {
-        return {
-            elem: 'error',
-            elemMods: { view: 'labels' }
-        };
+        return length ? issues
+            .filter(function (issue) {
+                return forum._.pluck(issue.labels, 'name').indexOf('removed') === -1;
+            })
+            .map(function (issue, idx) {
+                return {
+                    block: 'issue',
+                    mods: { solved: issue.state === 'closed', last: (length - 1) === idx },
+                    issue: issue
+                };
+            }) : {
+                elem: 'error',
+                elemMods: { view: 'labels' }
+            };
     })
 );

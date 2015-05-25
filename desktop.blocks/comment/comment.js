@@ -8,25 +8,29 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $
          * @private
          */
         _onSubmitEdit: function (e, data) {
-            if (this._getFormEdit().isEmptyInput('comment')) return false;
+            var formEdit = this._getFormEdit();
 
-            this._getFormEdit().showProcessing();
-            data.push({ name: 'id', value: this.params.id });
+            if (formEdit.isEmptyInput('comment')) return false;
+
+            var params = this.params;
+
+            formEdit.showProcessing();
+            data.push({ name: 'id', value: params.id });
 
             $.ajax({
                 dataType: 'html',
                 type: 'PUT',
                 timeout: 10000,
                 data: data,
-                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/?__mode=content',
+                url: params.forumUrl + 'api/issues/' + params.issueNumber + '/comments/' + params.id + '/?__mode=content',
                 context: this
             }).done(function (html) {
                 BEMDOM.update(this.domElem, html);
-                this._getFormEdit().hideProcessing();
+                formEdit.hideProcessing();
                 this._dropCached();
             }).fail(function (xhr) {
-                alert('Не удалось отредактировать комментарий');
-                this._getFormEdit().hideProcessing(true);
+                alert(params.i18n['error-edit-comment']);
+                formEdit.hideProcessing(true);
                 window.forum.debug && console.log('comment edit fail', xhr);
             });
         },
@@ -117,17 +121,22 @@ modules.define('comment', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $
          */
         _onClickRemove: function () {
             if (window.confirm('Вы уверены?')) {
+                var params = this.params;
+
                 $.ajax({
                     type: 'DELETE',
                     timeout: 10000,
-                    data: { _csrf: this.params.csrf },
-                    url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/' + this.params.id + '/',
+                    data: {
+                        _csrf: params.csrf,
+                        id: params.id
+                    },
+                    url: params.forumUrl + 'api/issues/' + params.issueNumber + '/comments/' + params.id + '/',
                     context: this
                 }).done(function () {
                     this.emit('comment:delete');
                     BEMDOM.destruct(this.domElem);
                 }).fail(function () {
-                    alert('Не удалось удалить комментарий');
+                    alert(params.i18n['error-delete-comment']);
                 });
             }
         }

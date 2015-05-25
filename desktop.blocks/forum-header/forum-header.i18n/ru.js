@@ -5,6 +5,8 @@ module.exports = {
         "bug-button-title": "Репорт багов",
         "github-button-title": "Репозиторий форума",
         "add-post-button": "Добавить пост",
-        "login": "Авторизоваться"
+        "login": "Войти",
+        "logout": "Выйти",
+        "archive": "Архив"
     }
 };

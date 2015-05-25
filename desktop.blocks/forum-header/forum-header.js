@@ -1,15 +1,15 @@
-modules.define('forum-header', ['i-bem__dom', 'jquery', 'events__channels'], function (provide, BEMDOM, $, channels) {
+modules.define('forum-header', ['i-bem__dom', 'events__channels'], function (provide, BEMDOM, channels) {
     provide(BEMDOM.decl(this.name, {
-        _showLabel: function (e) {
-            channels('filter').emit('labels', { labels: ['bem-forum'] });
-        }
-    }, {
-        live: function () {
-            this.liveBindTo('bug-button', 'click', function (e) {
-                e.preventDefault();
+        onSetMod: {
+            js: {
+                inited: function () {
+                    channels('forum-issues').on('archive', this._onArchive, this);
+                }
+            }
+        },
 
-                this._showLabel();
-            });
+        _onArchive: function () {
+            this.setMod(this.elem('archive'), 'show', true);
         }
     }));
 });

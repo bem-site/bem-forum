@@ -4,25 +4,15 @@ block('comments').mod('view', 'open')(
         return [
             { elem: 'container' },
             applyNext()
-        ]
+        ];
     }),
 
     elem('container')(
         content()(function () {
-            var forum = this._forum,
-                comments = forum.comments,
-                issueNumber = forum.issue.number;
-
-            return comments.map(function (comment) {
+            return this.forum.comments.map(function (comment) {
                 return {
                     block: 'comment',
-                    comment: comment,
-                    js: {
-                        issueNumber: issueNumber,
-                        id: comment.id,
-                        forumUrl: req.forumUrl,
-                        csrf: req.csrf
-                    }
+                    comment: comment
                 }
             })
         })

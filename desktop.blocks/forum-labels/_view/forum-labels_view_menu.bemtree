@@ -1,20 +1,18 @@
 block('forum-labels').mod('view', 'menu')(
-    match(function () { return this._forum.labels; }).content()(function () {
+    match(function () { return this.forum.labels; }).content()(function () {
         return [
             {
                 block: 'spin',
                 mods: { theme: 'islands', size: 'l' },
                 mix: { block: 'forum-labels', elem: 'spin' }
             },
-            {
-                elem: 'wrap'
-            }
+            { elem: 'wrap' }
         ];
     }),
 
     elem('wrap')(
         content()(function () {
-            var labels = this._forum.labels;
+            var labels = this.forum.labels;
 
             return [
                 {

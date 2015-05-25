@@ -6,6 +6,7 @@ block('comments').elem('add-form')(
 
         return {
             block: 'forum-form',
+            js: { i18n: { 'error-add-comment': BEM.I18N('comments', 'error-add-comment') } },
             mix: { block: 'forum-flex' },
             content:  [
                 {
@@ -43,7 +44,7 @@ block('comments').elem('add-form')(
                         },
                         {
                             tag: 'input',
-                            attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
+                            attrs: { type: 'hidden', name: '_csrf', value: this.forum.csrf }
                         },
                         {
                             block: 'forum-form',

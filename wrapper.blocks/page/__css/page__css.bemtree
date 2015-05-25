@@ -1,5 +1,0 @@
-block('page').elem('css').def()(function () {
-    this.ctx.url = 'desktop.bundles/index/index.min.css';
-
-    return this.ctx;
-});

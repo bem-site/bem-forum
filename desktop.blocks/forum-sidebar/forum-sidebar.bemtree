@@ -8,9 +8,7 @@ block('forum-sidebar')(
                         elem: 'title',
                         content: BEM.I18N('forum-sidebar', 'title-sorting')
                     },
-                    {
-                        block: 'forum-sorting'
-                    }
+                    { block: 'forum-sorting' }
                 ]
             },
             {

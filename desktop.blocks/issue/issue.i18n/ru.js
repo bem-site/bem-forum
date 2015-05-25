@@ -14,6 +14,10 @@ module.exports = {
         "remove-message": "Вы уверены?",
         "close-message": "Закрыть",
         "open-message": "Переоткрыть",
-        "post": "Пост"
+        "error-close-message": "Не удалось закрыть пост",
+        "error-open-message": "Не удалось переоткрыть пост",
+        "post": "Пост",
+        "error-edit-post": "Не удалось отредактировать пост",
+        "error-delete-post": "Не удалось удалить пост"
     }
 };

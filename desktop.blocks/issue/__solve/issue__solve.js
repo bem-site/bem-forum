@@ -17,6 +17,7 @@ modules.define('issue', ['jquery'], function (provide, $, Issue) {
             this.__base.apply(this, arguments);
 
             this._comments.on('comment:add', function () {
+
                 this.hasMod('solved') && this._changeState(true);
             }, this);
         },
@@ -62,13 +63,12 @@ modules.define('issue', ['jquery'], function (provide, $, Issue) {
                     number: params.number,
                     _csrf: params.csrf
                 },
-                url: params.forumUrl + 'issues/' + params.id + '/?__mode=json',
+                url: params.forumUrl + 'api/issues/' + params.number + '/?__mode=json',
                 context: this
             }).done(function () {
                 this.setMod('solved', !isSolved);
             }).fail(function (xhr) {
-                alert('Не удалось ' + (isSolved ? 'Переоткрыть' : 'закрыть') + ' пост');
-                window.forum.debug && console.log('issue closed fail', xhr);
+                alert(this.elemParams('solve').i18n[isSolved ? 'error-open-post' : 'error-close-post']);
             }).always(function () {
                 this.emit('process', { enable: false });
             });

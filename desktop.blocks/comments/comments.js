@@ -39,24 +39,28 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
          * @private
          */
         _postComment: function (data) {
-            this._form.showProcessing();
-            data.push({ name: 'number', value: this.params.issueNumber });
+            var addForm = this._form,
+                params = this.params,
+                issueNumber = params.issueNumber;
+
+            addForm.showProcessing();
+            data.push({ name: 'number', value: issueNumber });
 
             $.ajax({
                 dataType: 'html',
                 type: 'POST',
                 timeout: 10000,
                 data: data,
-                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/',
+                url: params.forumUrl + 'api/issues/' + issueNumber + '/comments/',
                 context: this
             }).done(function (html) {
                 this._render(html, 'append', 'container');
                 this._afterAdd();
-                this._form.hideProcessing();
+                addForm.hideProcessing();
             }).fail(function (xhr) {
-                alert('Не удалось добавить комментарий');
-                this._form.hideProcessing(true);
-                window.forum.debug && console.log('comment edit fail', xhr);
+                alert(addForm.params.i18n['error-add-comment']);
+                addForm.hideProcessing(true);
+                window.debug && console.log('comment edit fail', xhr);
             });
         },
 
@@ -84,7 +88,7 @@ modules.define('comments', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, 
 
             $.ajax({
                 dataType: 'html',
-                url: this.params.forumUrl + 'issues/' + this.params.issueNumber + '/comments/?__mode=content',
+                url: this.params.forumUrl + 'api/issues/' + this.params.issueNumber + '/comments/?__mode=content',
                 context: this
             }).done(function (html) {
                 this._render(html, 'update', 'container');

@@ -8,10 +8,9 @@ modules.define(
             js: {
                 inited: function () {
                     this._loader = this.findBlockInside('forum-loader');
-                    this._pager = this.findBlockInside('forum-pager');
                     this._labels = this.findBlockInside({ block: 'forum-labels', modName: 'view', modVal: 'menu' });
                     location.on('change', this._onChangeLocation, this);
-
+                    channels('forum-issues').on('show-archive', this._onShowArchive, this);
                     BEMDOM.blocks.issue.on('process', function (e, data) {
                         this._loader.setMod('progress', data.enable);
                     }, this);
@@ -29,12 +28,15 @@ modules.define(
             }
         },
 
+        _onShowArchive: function (e, data) {
+            this
+                .setMod(this.elem('archive'), 'show', true)
+                .elem('archive-button').attr('href', data.archiveUrl);
+        },
+
         _loadIssues: function (options) {
-            var uri = location.getUri(),
-                url = 'issues/';
-
-            options.url  = url + uri.getQuery();
-
+            var uri = location.getUri();
+            options.url = uri.getQuery();
             this._sendRequest(options);
         },
 
@@ -44,6 +46,12 @@ modules.define(
                 prevPage = prevParams.page && prevParams.page[0] || 1,
                 currentPage = state.params.page && state.params.page[0] || 1,
                 options = {};
+
+            // invert pages numbers if it is archive
+            if (currentPage < 0) {
+                prevPage = Math.abs(prevPage);
+                currentPage = Math.abs(currentPage);
+            }
 
             if (+prevPage < +currentPage) {
                 options.type = 'append';
@@ -55,18 +63,23 @@ modules.define(
         _sendRequest: function (options) {
             this._abortRequest();
 
+            var params = this.params;
+
             this.setMod('loading', true);
 
             this._xhr = $.ajax({
                 type: 'GET',
-                dataType: 'json',
-                url: this.params.forumUrl + options.url,
+                dataType: 'html',
+                url: params.forumUrl + 'api/issues/' + options.url,
                 cache: false,
                 context: this
-            }).done(function (result) {
-                this._pager.setMod('disabled', result.isLastPage);
-
-                this._onSuccess(result.html, options.type)
+            }).fail(function () {
+                alert(params.i18n['error-get-data']);
+            }).done(function (html) {
+                this._onSuccess(html, options.type)
+            })
+            .always(function () {
+                this.delMod('loading');
             });
         },
 
@@ -75,9 +88,7 @@ modules.define(
         },
 
         _onSuccess: function (html, type) {
-            if (!type) type = 'update';
-
-            this.delMod('loading');
+            type = type || 'update';
             this._render(html, type, 'container');
         },
 

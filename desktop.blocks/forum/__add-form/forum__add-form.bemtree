@@ -1,23 +1,29 @@
 block('forum').elem('add-form')(
     def()(function () {
-        var forum = this._forum,
+        var forum = this.forum,
+            config = forum.config,
+            url = config.url,
+            setLabels = config.setLabels,
+            csrf = forum.csrf,
+            forumLabels = forum.labels,
             labels = [];
 
-        forum.labels.forEach(function (label) {
+        forumLabels && forumLabels.forEach(function (label) {
             return labels.push(label.name);
         });
 
         return {
             block: 'forum-form',
             js: {
-                forumUrl: req.forumUrl,
-                labelsRequired: req.labelsRequired
+                forumUrl: url,
+                setLabels: setLabels,
+                i18n: { 'error-add-post': BEM.I18N('forum', 'error-add-post') }
             },
             mods: { visibility: 'hidden' },
             mix: {
                 block: 'forum',
                 elem: 'add-form',
-                js: { csrf: req.csrf }
+                js: { csrf: csrf }
             },
             content: {
                 block: 'forum',
@@ -46,7 +52,7 @@ block('forum').elem('add-form')(
                     },
                     {
                         tag: 'input',
-                        attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
+                        attrs: { type: 'hidden', name: '_csrf', value: csrf }
                     },
                     {
                         block: 'forum-create',
@@ -73,9 +79,9 @@ block('forum').elem('add-form')(
                             ]
                         }
                     },
-                    req.labelsRequired ? {
+                    setLabels ? {
                         block: 'forum-labels',
-                        js: { labels: labels, forumUrl: req.forumUrl },
+                        js: { labels: labels, forumUrl: url },
                         mods: { inline: true, view: 'checkbox' },
                         mix: [{ block: 'forum', elem: 'labels' }],
                         content: [
@@ -121,6 +127,6 @@ block('forum').elem('add-form')(
                     }
                 ]
             }
-        }
+        };
     })
 );

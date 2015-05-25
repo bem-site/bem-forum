@@ -4,6 +4,8 @@ module.exports = {
         "edit-form-save": "Save edit",
         "edit-form-cancel": "Cancel",
         "edit": "Edit",
-        "remove": "Remove"
+        "remove": "Remove",
+        "error-edit-comment": "Failed to edit comment",
+        "error-delete-comment": "Failed to delete comment"
     }
 };

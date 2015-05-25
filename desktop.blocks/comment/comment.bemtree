@@ -1,18 +1,32 @@
 block('comment')(
 
-    match(function () { return this.ctx.comment || this.ctx.data; }).def()(function () {
-        var login = (this.ctx.comment && this.ctx.comment.user.login) ||
-                    (this.ctx.data && this.ctx.data.user.login),
-            comment  = this.ctx.comment || this.ctx.data,
-            isArchive = comment.number && (comment.number < 0),
-            isOwner = req.cookies['forum_username'] === login;
+    match(function () { return this.ctx.comment || this.forum.comment; }).def()(function () {
+        var ctx = this.ctx,
+            forum = this.forum,
+            comment = ctx.comment || forum.comment,
+            loginAuthor = comment.user.login,
+            isArchive = forum.isArchive,
+            user = forum.user,
+            loginUser = user && user.login,
+            isOwner = loginUser === loginAuthor;
 
-        return applyNext({ _isOwner: isOwner, _isArchive: isArchive });
+        ctx.js = {
+            issueNumber: ctx.issueNumber,
+            id: comment.id,
+            forumUrl: forum.config.url,
+            csrf: forum.csrf,
+            i18n: {
+                'error-edit-comment': BEM.I18N('comment', 'error-edit-comment'),
+                'error-delete-comment': BEM.I18N('comment', 'error-delete-comment')
+            }
+        };
+
+        return applyNext({ _isOwner: isOwner, _isArchive: isArchive, _comment: comment });
     }),
 
-    match(function () { return this.ctx.comment || this.ctx.data; }).content()(function () {
+    match(function () { return this._comment; }).content()(function () {
 
-        var comment = this.ctx.comment || this.ctx.data;
+        var comment = this._comment;
 
         return [
             {
@@ -57,7 +71,7 @@ block('comment')(
                             {
                                 block: 'comment',
                                 elem: 'edit-form',
-                                body: _.escape(comment.body)
+                                body: this.forum._.escape(comment.body)
                             }
                         ]
                     }
@@ -99,24 +113,28 @@ block('comment')(
 
     elem('username')(
         def()(function () {
+            var ctx = this.ctx;
+
             return {
                 block: 'forum-user',
                 elem: 'name',
-                url: this.ctx.url,
+                url: ctx.url,
                 mix: [{ block: 'comment', elem: 'username' }],
-                content: this.ctx.name
+                content: ctx.name
             }
         })
     ),
 
     elem('avatar')(
         def()(function () {
+            var ctx = this.ctx;
+
             return applyCtx({
                 block: 'forum-user',
                 elem: 'avatar',
-                url: this.ctx.url,
-                alt: this.ctx.alt,
-                link: this.ctx.link,
+                url: ctx.url,
+                alt: ctx.alt,
+                link: ctx.link,
                 mix: [{ block: 'comment', elem: 'avatar' }]
             })
         })
@@ -134,9 +152,11 @@ block('comment')(
 
     elem('body')(
        content()(function () {
-           var text = this.ctx.body;
+           var text = this.ctx.body,
+               forum = this.forum,
+               mdToHtml = forum.util && forum.util.mdToHtml;
 
-           return this._isArchive ? text : req.util.mdToHtml(text);
+           return (!this._isArchive && mdToHtml) ? mdToHtml(text) : text;
        })
     ),
 
@@ -148,11 +168,11 @@ block('comment')(
         match(function () { return this._isOwner && !this._isArchive; }).def()(function () {
             return {
                     block: 'forum-form',
-                    mods: { visibility: 'hidden' },
                     mix: {
                         block: 'comment',
                         elem: 'edit-form'
                     },
+                    mods: { visibility: 'hidden' },
                     content: [
                         {
                             block: 'forum-create',
@@ -186,7 +206,7 @@ block('comment')(
                         },
                         {
                             tag: 'input',
-                            attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
+                            attrs: { type: 'hidden', name: '_csrf', value: this.forum.csrf }
                         },
                         {
                             block: 'forum-form',

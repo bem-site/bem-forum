@@ -3,6 +3,9 @@
 bem-forum
 =========
 
+[![David](https://img.shields.io/david/bem/bem-forum.svg)](https://david-dm.org/bem/bem-forum)
+[![David](https://img.shields.io/david/dev/bem/bem-forum.svg)](https://david-dm.org/bem/bem-forum#info=devDependencies)
+
 Форум построен на БЭМ-методологии и использует github issues в качестве основного хранилища.
  
 Форум можно использовать в 2-х режимах:

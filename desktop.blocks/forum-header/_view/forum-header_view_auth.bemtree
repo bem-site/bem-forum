@@ -1,17 +1,19 @@
 block('forum-header').mod('view', 'auth')(
 
-    match(function () { return req.cookies['forum_username']; }).content()(function () {
+    match(function () { return this.forum.user; }).content()(function () {
         var header = applyNext();
 
         return [
             header[0],
+            header[1],
             {
                 elem: 'side-right',
                 content: [
                     { elem: 'user-wrapper' },
                     { elem: 'add-button' },
-                    header[1],
-                    header[2]
+                    header[2],
+                    header[3],
+                    { elem: 'logout' }
                 ]
             }
         ]
@@ -19,7 +21,7 @@ block('forum-header').mod('view', 'auth')(
 
     elem('user-wrapper')(
         content()(function () {
-            var user = this._forum.user;
+            var user = this.forum.user;
 
             return [
                 {
@@ -37,7 +39,7 @@ block('forum-header').mod('view', 'auth')(
                     target: '_blank',
                     content: user.login
                 }
-            ]
+            ];
         })
     ),
 
@@ -51,7 +53,19 @@ block('forum-header').mod('view', 'auth')(
                     { block: 'forum-header', elem: 'add-button' },
                     { block: 'forum', elem: 'add' }
                 ]
-            }
+            };
+        })
+    ),
+
+    elem('logout')(
+        def()(function () {
+            return {
+                block: 'button',
+                url: this.forum.config.url + 'logout/',
+                text: BEM.I18N('forum-header', 'logout'),
+                mods: { theme: 'islands', size: 'm', type: 'link' },
+                mix: { block: 'forum-header', elem: 'logout' }
+            };
         })
     )
 );

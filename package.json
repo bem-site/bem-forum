@@ -1,8 +1,18 @@
 {
-  "author": "tormozz48",
+  "author": "Nickolay Ilchenko <tavriaforever@yandex.ru> (http://github.com/tavriaforever)",
+  "contributors": [
+    {
+      "name": "Andrey Kuznecov",
+      "email": "<andrey.kuznetsov48@yandex.ua",
+      "github": "http://github.com/tormozz48"
+    },
+    {
+      "name": "Gela Konstantinova",
+      "github": "http://github.com/gela-d"
+    }
+  ],
   "name": "bem-forum",
-  "email": "tormozz48@gmail.com",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/bem/bem-forum.git"
@@ -11,30 +21,30 @@
     "node": ">=0.10"
   },
   "dependencies": {
-    "body-parser": "~1.3.1",
-    "cookie-parser": "~1.1.0",
-    "cron": "1.0.1",
-    "csurf": "^1.6.1",
-    "express": "~4.3.0",
-    "express-session": "^1.8.2",
-    "github": "git://github.com/mikedeboer/node-github.git",
-    "highlight.js": "7.0.1",
+    "bem-md-renderer": "^0.2.x",
+    "bem-site-logger": "0.0.x",
+    "body-parser": "~1.3.x",
+    "cookie-parser": "~1.1.x",
+    "csurf": "^1.6.x",
+    "express": "~4.3.x",
+    "express-session": "^1.8.x",
+    "github": "^0.2.x",
+    "highlight.js": "7.0.x",
+    "inherit": "^2.2.x",
     "json-stringify-safe": "5.0.0",
-    "lodash": "~2.4.1",
+    "lodash": "~2.4.x",
     "marked": "^0.3.2",
     "nconf": "~0.6.9",
     "oauth": "~0.9.7",
     "serve-favicon": "^2.1.6",
     "serve-static": "~1.1.0",
-    "susanin": "~0.1.10",
     "vow": "~0.4.1",
     "vow-fs": "0.3.0"
   },
   "devDependencies": {
     "bem-site-codestyle": "~0.1.0",
-    "borschik": "^1.3.2",
     "borschik-tech-cleancss": "^1.0.3",
-    "bower": "~1.3.9",
+    "bower": "~1.4.1",
     "enb": "0.13.4",
     "enb-autoprefixer": "0.1.1",
     "enb-bem-i18n": "^0.1.2",
@@ -42,11 +52,18 @@
     "enb-borschik": "^1.4.0",
     "enb-diverse-js": "0.1.0",
     "enb-modules": "0.1.2",
-    "enb-stylus": "^1.1.4"
+    "enb-stylus": "^1.1.4",
+    "morgan": "^1.5.2",
+    "nodemon": "^1.3.7"
   },
   "scripts": {
     "start": "node server/index.js",
-    "deps": "npm install && cd configs && ln -snf development current && cd .. && bower install && enb make --no-cache",
+    "watch": "nodemon server/index.js --watch server",
+    "build": "npm install && npm run create-config && npm run config-dev && bower install && enb make --no-cache",
+    "build-prod": "npm run config-production && YENV=production enb make --no-cache && NODE_ENV=production npm start",
+    "config-dev": "cd configs && ln -snf development current && cd ..",
+    "config-prod": "cd configs && ln -snf production current && cd ..",
+    "create-config": "for file in `find ./configs -iname _credentials.json -type f`; do cp $file `echo $file | sed -e s/_//g`; done; echo credentials configs was created!",
     "lint": "jshint-groups && jscs ."
   }
 }

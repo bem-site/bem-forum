@@ -171,7 +171,7 @@ modules.define('forum-form', ['i-bem__dom', 'jquery'], function (provide, BEMDOM
          * @returns {boolean}
          */
         isEmptyCheckbox: function (name) {
-            if (this.params.labelsRequired) {
+            if (this.params.setLabels) {
                 var checked = this.findBlocksInside(this.elem('control'), 'checkbox')
                     .filter(function (checkbox) {
                         return checkbox.elem('control').attr('name') === name;

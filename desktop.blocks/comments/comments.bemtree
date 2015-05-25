@@ -1,10 +1,8 @@
 block('comments')(
-    match(function () { return req.cookies['forum_username'] && !this._isArchive; }).content()(function () {
+    match(function () { return this.forum.user && !this._isArchive; }).content()(function () {
         return [
-            (!this._forum || !this._forum.comments) ? applyNext() : undefined,
-            {
-                elem: 'add-form'
-            }
-        ]
+            applyNext(),
+            { elem: 'add-form' }
+        ];
     })
 );

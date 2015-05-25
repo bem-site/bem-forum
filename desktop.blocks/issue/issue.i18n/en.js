@@ -14,6 +14,10 @@ module.exports = {
         "remove-message": "Are you sure?",
         "close-message": "Close",
         "open-message": "Reopen",
-        "post": "Post"
+        "error-close-post": "Failed to close post",
+        "error-open-post": "Failed to reopen post",
+        "post": "Post",
+        "error-edit-post": "Failed to edit post",
+        "error-delete-post": "Failed to delete post"
     }
 };

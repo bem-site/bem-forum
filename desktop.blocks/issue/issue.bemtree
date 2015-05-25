@@ -1,11 +1,39 @@
 block('issue')(
-    match(function () { return this.ctx.data; }).def()(function () {
-        var issue = this.ctx.data,
-            login = issue.user.login,
-            isArchive = issue.labels.some(function (label) {
+    match(function () { return this.ctx.issue || this.forum.issue; }).def()(function () {
+        var ctx = this.ctx,
+            forum = this.forum,
+            issue = ctx.issue || forum.issue,
+            loginAuthor = issue.user.login,
+            isArchive = forum.isArchive,
+            user = forum.user,
+            loginUser = user && user.login,
+            isOwner = loginUser === loginAuthor,
+            config = forum.config,
+            labels = issue.labels;
+
+        if (forum.xhr) {
+            ctx.mods = this.extend(ctx.mods, { solved: issue.state === 'closed' });
+        }
+
+        ctx.js = {
+            labels: labels.map(function (label) {
+                return label.name;
+            }),
+            isArchive: labels.some(function (label) {
                 return label.name === 'archive';
             }),
-            isOwner = isArchive ? false : req.cookies['forum_username'] === login;
+            i18n: {
+                reply: BEM.I18N('issue', 'reply'),
+                comments: BEM.I18N('issue', 'comments'),
+                'remove-message': BEM.I18N('issue', 'remove-message'),
+                'error-edit-post': BEM.I18N('issue', 'error-edit-post'),
+                'error-delete-post': BEM.I18N('issue', 'error-delete-post')
+            },
+            forumUrl: config.url,
+            setLabels: config.setLabels,
+            csrf: forum.csrf,
+            number: issue.number
+        };
 
         return applyNext({ _issue: issue, _isOwner: isOwner, _isArchive: isArchive });
     }),
@@ -30,36 +58,37 @@ block('issue')(
                     }
                 ]
             },
-            {
-                elem: 'comments'
-            }
-        ]
+            { elem: 'comments' }
+        ];
     }),
 
     elem('comments')(
         // show comments on issue page
-        match(function () { return this._forum && this._forum.comments; }).def()(function () {
-            var forum = this._forum,
+        match(function () {
+            var forum = this.forum;
+            return forum && forum.comments;
+        }).def()(function () {
+            var forum = this.forum,
                 issue = forum.issue,
                 comments = forum.comments;
 
-            return applyCtx([
-                {
-                    block: 'comments',
-                    mods: { view: 'open' },
-                    data: comments,
-                    js: {
-                        issueNumber: issue.number,
-                        comments: issue.comments,
-                        forumUrl: req.forumUrl
-                    }
+            return applyCtx({
+                block: 'comments',
+                mods: { view: 'open' },
+                data: comments,
+                js: {
+                    issueNumber: issue.number,
+                    comments: issue.comments,
+                    forumUrl: forum.config.url,
+                    csrf: forum.csrf
                 }
-            ]);
+            });
         }),
 
         // hide comments on list issues page
-        match(function () { return !this._forum || !this._forum.comments; }).def()(function () {
-            var issue = this._issue;
+        match(function () { return !this.forum.comments; }).def()(function () {
+            var issue = this._issue,
+                forum = this.forum;
 
             return applyCtx({
                 block: 'comments',
@@ -67,7 +96,8 @@ block('issue')(
                 js: {
                     issueNumber: issue.number,
                     comments: issue.comments,
-                    forumUrl: req.forumUrl
+                    forumUrl: forum.config.url,
+                    csrf: forum.csrf
                 },
                 content: {
                     elem: 'container'
@@ -154,9 +184,11 @@ block('issue')(
                     elem: 'solve',
                     js: {
                         i18n: {
+                            post: BEM.I18N('issue', 'post'),
                             'open-message': BEM.I18N('issue', 'open-message'),
                             'close-message': BEM.I18N('issue', 'close-message'),
-                            post: BEM.I18N('issue', 'post')
+                            'error-open-post': BEM.I18N('issue', 'error-open-post'),
+                            'error-close-post': BEM.I18N('issue', 'error-close-post')
                         }
                     },
                     isClosed: this._issue.state === 'closed'
@@ -175,7 +207,8 @@ block('issue')(
     elem('line').elemMod('level', 'middle')(
 
         content()(function () {
-            var issue = this._issue;
+            var issue = this._issue,
+                forum = this.forum;
 
             return [
                 {
@@ -204,8 +237,8 @@ block('issue')(
                                 {
                                     block: 'link',
                                     mix: { block: this.block, elem: 'title' },
-                                    url: req.forumUrl + 'issues/' + issue.number + '/',
-                                    content: _.escape(issue.title)
+                                    url: forum.config.url + issue.number + '/',
+                                    content: forum._.escape(issue.title)
                                 },
                                 {
                                     block: 'issue',
@@ -243,11 +276,14 @@ block('issue')(
 
         match(function () { return this._isOwner; }).def()(function () {
 
-            var issue = this._issue;
+            var issue = this._issue,
+                forum = this.forum,
+                config = forum.config,
+                setLabels = config.setLabels;
 
             return {
                 block: 'forum-form',
-                js: { labelsRequired: req.labelsRequired },
+                js: { setLabels: setLabels },
                 mods: { visibility: 'hidden' },
                 mix: {
                     block: 'issue',
@@ -278,7 +314,7 @@ block('issue')(
                     },
                     {
                         tag: 'input',
-                        attrs: { type: 'hidden', name: '_csrf', value: req.csrf }
+                        attrs: { type: 'hidden', name: '_csrf', value: forum.csrf }
                     },
                     {
                         block: 'forum-create',
@@ -286,7 +322,7 @@ block('issue')(
                             block: 'textarea',
                             mods: { theme: 'islands', size: 'l', width: 'available' },
                             name: 'body',
-                            val: _.escape(issue.body),
+                            val: forum._.escape(issue.body),
                             placeholder: BEM.I18N('issue', 'edit-form-desc-placeholder'),
                             mix: [
                                 {
@@ -306,9 +342,9 @@ block('issue')(
                             ]
                         }
                     },
-                    req.labelsRequired ? {
+                    setLabels ? {
                         block: 'forum-labels',
-                        js: { forumUrl: req.forumUrl },
+                        js: { forumUrl: config.url },
                         mods: { inline: true, view: 'checkbox' },
                         mix: [{ block: 'issue', elem: 'edit-labels' }],
                         content: [
@@ -365,7 +401,9 @@ block('issue')(
 
     // labels
     elem('labels')(
-        match(function () { return this._issue.labels.length; }).def()(function () {
+        match(function () {
+            return this._issue.labels.length;
+        }).def()(function () {
 
             var labels = this._issue.labels;
 
@@ -382,19 +420,24 @@ block('issue')(
     // body content
     elem('body')(
         content()(function () {
-            var text = this._issue.body;
+            var text = this._issue.body,
+                forum = this.forum,
+                mdToHtml = forum.util && forum.util.mdToHtml;
 
-            return this._isArchive ? text : req.util.mdToHtml(text);
+            return (!this._isArchive && mdToHtml) ? mdToHtml(text) : text;
         })
     ),
 
     // button 'answer'
     elem('line').elemMod('level', 'bottom')(
-        match(function () { return !this._forum || !this._forum.comments; }).content()(function () {
+        match(function () {
+            var forum = this.forum;
+            return !forum || !forum.comments;
+        }).content()(function () {
             var issue = this._issue,
                 comments = issue.comments;
 
-            if ((!req.cookies['forum_username'] || this._isArchive) && comments === 0) {
+            if ((!this.forum.user || this._isArchive) && comments === 0) {
                 return '';
             }
 

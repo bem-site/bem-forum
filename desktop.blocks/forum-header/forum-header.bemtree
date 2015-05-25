@@ -1,33 +1,19 @@
 block('forum-header')(
     content()(function () {
+        var forum = this.forum,
+            url = forum.config.url;
+
         return [
             {
                 elem: 'title',
                 content: BEM.I18N('forum-header', 'logo'),
-                url: req.forumUrl,
+                url: url,
                 status: BEM.I18N('forum-header', 'status')
             },
             {
-                block: 'button',
-                url: req.forumUrl + '?labels=bem-forum',
-                icon: { block: 'icon', mods: { view: 'bug' } },
-                mods: { theme: 'islands', size: 'm', type: 'link' },
-                mix: [
-                    { block: this.block, elem: 'bug-button' },
-                    { block: this.block, elem: 'icon-button' }
-                ],
-                attrs: { title: BEM.I18N('forum-header', 'bug-button-title') }
-            },
-            {
-                block: 'button',
-                url: '//github.com/bem/bem-forum',
-                icon: { block: 'icon', mods: { view: 'github-logo' } },
-                mods: { theme: 'islands', size: 'm', type: 'link' },
-                mix: [
-                    { block: this.block, elem: 'github-button' },
-                    { block: this.block, elem: 'icon-button' }
-                ],
-                attrs: { title: BEM.I18N('forum-header', 'github-button-title') }
+                elem: 'archive',
+                elemMods: { show: forum.isArchive },
+                content: BEM.I18N('forum-header', 'archive')
             }
         ]
     })

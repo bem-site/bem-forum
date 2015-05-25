@@ -1,20 +1,22 @@
 block('forum')(
-    def()(function () {
-        return applyNext({ _forum: this.ctx.forum });
-    }),
-
     content()(function () {
-        return {
-            block: 'forum-content',
-            mods: { view: this._forum.view },
-            js: { forumUrl: req.forumUrl },
-            mix: [
-                { block: 'forum', elem: 'content' }
-            ]
-        }
+        var forum = this.forum;
+
+        return [
+            {
+                block: 'forum-content',
+                mods: { view: forum.view },
+                js: {
+                    forumUrl: forum.config.url,
+                    i18n: { 'error-get-data': BEM.I18N('forum-content', 'error-get-data') }
+                },
+                mix: { block: 'forum', elem: 'content' }
+            },
+            { block: 'forum-footer' }
+        ];
     }),
 
-    match(function () { return !req.cookies['forum_username']; }).content()(function () {
+    match(function () { return !this.forum.user; }).content()(function () {
         return [
             {
                 block: 'forum-header',
@@ -24,7 +26,7 @@ block('forum')(
         ]
     }),
 
-    match(function () { return req.cookies['forum_username']; }).content()(function () {
+    match(function () { return this.forum.user; }).content()(function () {
         return [
             {
                 block: 'forum-header',
@@ -32,6 +34,7 @@ block('forum')(
             },
             {
                 elem: 'add-form'
+
             },
             applyNext()
         ]

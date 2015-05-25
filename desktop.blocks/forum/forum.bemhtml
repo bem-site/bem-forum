@@ -1,13 +1,8 @@
 block('forum')(
-    // for check, if user checked at least one label
-    // for create/edit issue forms - knowledge is taken
-    // from common config website
     js()(function () {
-        var forum = this.ctx.forum;
+        var forum = this.ctx.forum,
+            config = forum && forum.config;
 
-        return {
-            labelsRequired: forum.labelsRequired,
-            global: forum.global
-        };
+        return { setLabels: config && config.setLabels };
     })
 );

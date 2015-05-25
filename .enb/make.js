@@ -84,6 +84,6 @@ function getDesktops(config) {
         'desktop.blocks',
         'wrapper.blocks'
     ].map(function(level) {
-            return config.resolvePath(level);
-        });
+        return config.resolvePath(level);
+    });
 }

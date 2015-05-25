@@ -3,8 +3,6 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) 
         onSetMod: {
             js: {
                 inited: function () {
-                    if (this.params.global) this._setGlobalParams();
-
                     this._formAdd = this.findBlockInside('add-form', 'forum-form');
 
                     if (this._formAdd) {
@@ -18,14 +16,12 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) 
             }
         },
 
-        _setGlobalParams: function () {
-            window.forum = this.params.global;
-        },
-
         _addIssue: function (e, data) {
-            if (this._formAdd.isEmptyRequiredField('title', 'labels[]')) return false;
+            var formAdd = this._formAdd;
 
-            this._formAdd.showProcessing();
+            if (formAdd.isEmptyRequiredField('title', 'labels[]')) return false;
+
+            formAdd.showProcessing();
 
             var labels = data
                 .filter(function (item) {
@@ -40,31 +36,32 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) 
                 type: 'POST',
                 timeout: 10000,
                 data: data,
-                url: this._forumUrl + 'issues/?__mode=json',
+                url: this._forumUrl + 'api/issues/?__mode=json',
                 context: this
-            }).done(function (json) {
-                this._addLabelsAfter(JSON.parse(json), labels);
+            }).done(function (issueJson) {
+                this._addLabelsAfter(JSON.parse(issueJson), labels);
             }).fail(function (xhr) {
-                alert('Не удалось добавить пост');
-                this._formAdd.hideProcessing(true);
+                alert(formAdd.params.i18n['error-add-post']);
+                formAdd.hideProcessing(true);
                 window.forum.debug && console.log('issue add fail', xhr);
             });
         },
 
         _addLabelsAfter: function (result, labels) {
-            var data = {
-                number: result.number,
-                title: result.title,
-                body: result.body,
-                labels: labels,
-                _csrf: this.elemParams('add-form').csrf
-            };
+            var issue = result.issue,
+                data = {
+                    number: issue.number,
+                    title: issue.title,
+                    body: issue.body,
+                    labels: labels,
+                    _csrf: this.elemParams('add-form').csrf
+                };
 
             $.ajax({
                 dataType: 'html',
                 type: 'PUT',
                 data: data,
-                url: this._forumUrl + 'issues/' + result.number + '/?__access=owner',
+                url: this._forumUrl + 'api/issues/' + issue.number + '/?__admin=true',
                 context: this
             }).done(function (html) {
                 this._render(html, 'prepend');

@@ -1,7 +1,8 @@
 var _ = require('lodash'),
     md = require('marked'),
     hljs = require('highlight.js'),
-    config = require('./config');
+    config = require('./config'),
+    bmdr = require('bem-md-renderer');
 
 module.exports = {
 
@@ -26,6 +27,8 @@ module.exports = {
         }
 
         return md(content, _.extend({
+            renderer: new bmdr.getRenderer(),
+            gfm: true,
             breaks: true,
             sanitize: true,
             highlight: function (content) {

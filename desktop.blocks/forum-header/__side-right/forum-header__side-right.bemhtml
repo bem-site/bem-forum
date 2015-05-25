@@ -1,5 +1,3 @@
 block('forum-header').elem('side-right')(
-    mix()(function () {
-        return { block: 'forum-flex' }
-    })
+    mix()({ block: 'forum-flex' })
 );

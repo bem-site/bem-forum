@@ -1,24 +1,7 @@
 block('page')(
-    match(function () { return !this._myGuard; }).def()(function () {
-        this._myGuard = true;
-
-        !this.ctx.head && (this.ctx.head = []);
-        this.ctx.head.push({ elem: 'css', url: '/desktop.bundles/index/index.min.css' });
-
-        return applyNext();
-    }),
-
-    match(function () { return this.ctx.forum }).content()(function () {
-        return [
-            {
-                block: 'forum',
-                forum: this.ctx.forum
-            },
-            { elem: 'js' }
-        ];
-    }),
-
-    match(function () { return !this.ctx.forum }).content()(function () {
-        return 'Forum data is empty';
+    content()(function () {
+        return this.forum ? [
+            { block: 'forum' }
+        ] : 'Forum data is empty';
     })
 );
