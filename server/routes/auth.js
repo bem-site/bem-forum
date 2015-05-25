@@ -1,7 +1,7 @@
 /**
  *  Router to authenticate users
  *
- *  Currently available are 3 route:
+ *  Currently 3 routes are available:
  *  - Login:
  *      Path example: /login
  *      Description: Redirected to github for authorization оAuth
@@ -21,14 +21,17 @@ var express = require('express'),
     AuthController = require('../controllers/auth.js');
 
 module.exports = function (config) {
-    var controller = new AuthController(config);
+    var controller = new AuthController(config),
+    router = express.Router(),
+        routingTable = {
+            '/login': 'login',
+            '/login_callback': 'loginCallback',
+            '/logout': 'logout'
+        };
 
-    return [
-        ['/login', 'login'],
-        ['/login_callback', 'loginCallback'],
-        ['/logout', 'logout']
-    ].reduce(function (router, route) {
-            router.get(route[0], controller[route[1]].bind(controller));
-            return router;
-    }, express.Router());
+    Object.keys(routingTable).forEach(function (route) {
+        router.get(route, controller[routingTable[route]].bind(controller));
+    });
+
+    return router;
 };

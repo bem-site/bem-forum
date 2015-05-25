@@ -1,0 +1,18 @@
+{
+  "node"     : true,
+  "bitwise"  : true,
+  "undef"    : true,
+  "eqeqeq"   : true,
+  "forin"    : true,
+  "immed"    : true,
+  "noarg"    : true,
+  "unused"   : true,
+  "maxlen"   : 120,
+  "indent"   : 4,
+  "predef"   : ["describe", "it", "before", "after", "beforeEach", "afterEach"],
+  "quotmark" : "single",
+  "maxerr": 5,
+  "maxdepth": 2,
+  "maxstatements": 12,
+  "maxcomplexity": 5
+}

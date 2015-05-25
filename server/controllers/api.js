@@ -20,7 +20,7 @@ module.exports = inherit(BaseController, {
      * @param next {Function}
      */
     index: function (req, res, next) {
-        return res.end('Hello! This is a start point of API BEM-forum.');
+        return res.end('Hello! This is a start point of bem-forum API.');
     },
 
     /**
@@ -30,7 +30,7 @@ module.exports = inherit(BaseController, {
      * 3. If it's the last page and not an archive,
      * checking to see if the archive posts on current criteria
      * and pass this knowledge to the template
-     * 4. Calls the render function to complete the request html response
+     * 4. Call the render function to complete the request html response
      * @param req {Object}
      * @param res {Object}
      * @param next {Function}
@@ -81,7 +81,7 @@ module.exports = inherit(BaseController, {
      * @param next {Function}
      */
     getIssue: function (req, res, next) {
-        return res.end('Hello! This is a start point of API BEM-forum.');
+        return res.end('Hello! This is a start point of bem-forum API.');
     },
 
     /**
@@ -168,7 +168,7 @@ module.exports = inherit(BaseController, {
      * 1. Check whether to take comments from the archive
      * and fill res.locals knowledge about the archive
      * 2. Get comments and user data from model
-     * 3. Calls the render function to complete the request html response
+     * 3. Call the render function to complete the request html response
      * @param req {Object}
      * @param res {Object}
      * @param next {Function}

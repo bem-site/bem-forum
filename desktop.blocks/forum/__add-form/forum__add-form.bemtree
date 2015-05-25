@@ -16,7 +16,8 @@ block('forum').elem('add-form')(
             block: 'forum-form',
             js: {
                 forumUrl: url,
-                setLabels: setLabels
+                setLabels: setLabels,
+                i18n: { 'error-add-post': BEM.I18N('forum', 'error-add-post') }
             },
             mods: { visibility: 'hidden' },
             mix: {

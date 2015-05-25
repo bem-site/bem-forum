@@ -8,7 +8,7 @@ block('comment')(
             id: ctx.data.id,
             forumUrl: ctx.forumUrl,
             csrf: ctx.csrf
-        }
+        };
     }),
     mix()([
         { block: 'forum-flex' },

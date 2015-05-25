@@ -1,7 +1,7 @@
 /**
  *  Router to the pages of the forum
  *
- *  Currently available are 2 route:
+ *  Currently 2 routes are available:
  *  Index:
  *      Path example: /forum?page=1; /forum?page=-1 (Archive)
  *      Description: page with a list of posts and the right column with the list of tags for filtering
@@ -14,10 +14,16 @@ var express = require('express'),
     PageController = require('../controllers/page.js');
 
 module.exports = function (config) {
-    var controller = new PageController(config);
+    var controller = new PageController(config),
+        router = express.Router(),
+        routingTable = {
+            '/': 'index',
+            '/:issue_id([-0-9]+)': 'issue'
+        };
 
-    return [['/', 'index'], ['/:issue_id([-0-9]+)', 'issue']].reduce(function (router, route) {
-        router.get(route[0], controller[route[1]].bind(controller));
-        return router;
-    }, express.Router());
+    Object.keys(routingTable).forEach(function (route) {
+        router.get(route, controller[routingTable[route]].bind(controller));
+    });
+
+    return router;
 };

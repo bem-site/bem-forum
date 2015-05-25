@@ -4,6 +4,7 @@ module.exports = {
         "body-placeholder": "Description",
         "title-labels": "Labels",
         "add-post": "Submit",
-        "cancel-post": "Cancel"
+        "cancel-post": "Cancel",
+        "error-add-post": "Failed to add post"
     }
 };

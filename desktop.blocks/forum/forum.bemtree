@@ -6,7 +6,10 @@ block('forum')(
             {
                 block: 'forum-content',
                 mods: { view: forum.view },
-                js: { forumUrl: forum.config.url },
+                js: {
+                    forumUrl: forum.config.url,
+                    i18n: { 'error-get-data': BEM.I18N('forum-content', 'error-get-data') }
+                },
                 mix: { block: 'forum', elem: 'content' }
             },
             { block: 'forum-footer' }
@@ -31,6 +34,7 @@ block('forum')(
             },
             {
                 elem: 'add-form'
+
             },
             applyNext()
         ]

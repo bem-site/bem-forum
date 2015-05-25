@@ -29,6 +29,7 @@
   "resolutions": {
     "bem-social": "94e93a02d34196dd4c7121059a70517c4d2be562",
     "bem-components": "2.1.0",
-    "bem-core": "2.6.0"
+    "bem-core": "2.6.0",
+    "bem-history": "3.0.0"
   }
 }

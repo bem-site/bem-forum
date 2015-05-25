@@ -15,28 +15,6 @@ block('forum-header')(
                 elemMods: { show: forum.isArchive },
                 content: BEM.I18N('forum-header', 'archive')
             }
-            // {
-            //    block: 'button',
-            //    url: url + '?labels=bem-forum',
-            //    icon: { block: 'icon', mods: { view: 'bug' } },
-            //    mods: { theme: 'islands', size: 'm', type: 'link' },
-            //    mix: [
-            //        { block: this.block, elem: 'bug-button' },
-            //        { block: this.block, elem: 'icon-button' }
-            //    ],
-            //    attrs: { title: BEM.I18N('forum-header', 'bug-button-title') }
-            // }
-            // {
-            //    block: 'button',
-            //    url: '//github.com/bem/bem-forum',
-            //    icon: { block: 'icon', mods: { view: 'github-logo' } },
-            //    mods: { theme: 'islands', size: 'm', type: 'link' },
-            //    mix: [
-            //        { block: this.block, elem: 'github-button' },
-            //        { block: this.block, elem: 'icon-button' }
-            //    ],
-            //    attrs: { title: BEM.I18N('forum-header', 'github-button-title') }
-            // }
         ]
     })
 );

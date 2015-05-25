@@ -8,7 +8,7 @@ module.exports = inherit(BaseController, {
 
     __constructor: function (config) {
         this.__base(config);
-        this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
+        this._logger = Logger.setOptions(this._config.logger).createLogger(module);
     },
 
     /**
@@ -32,9 +32,9 @@ module.exports = inherit(BaseController, {
                 this.setPreviousUrl(req);
 
                 // collect user data
-                return res.locals = _.extend(res.locals, {
+                return (res.locals = _.extend(res.locals, {
                     user: data
-                }, this.getTemplateHelpers(req));
+                }, this.getTemplateHelpers(req)));
 
             }, this)
             .fail(function (err) {
@@ -172,6 +172,6 @@ module.exports = inherit(BaseController, {
             configTitle = (config.title && config.title[req.lang]) || '',
             resTitle = res.locals.pageTitle;
 
-        return resTitle ? resTitle : configTitle;
+        return resTitle || configTitle;
     }
 });

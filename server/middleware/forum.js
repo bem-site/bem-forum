@@ -25,10 +25,10 @@ module.exports = function (baseUrl, app, config) {
     app.use(baseUrl + 'api', apiRouter);
 
     if (config.auth && config.auth.login === true) {
-        app.use(baseUrl, authRouter)
+        app.use(baseUrl, authRouter);
     }
 
     return function (req, res, next) {
         next();
-    }
+    };
 };

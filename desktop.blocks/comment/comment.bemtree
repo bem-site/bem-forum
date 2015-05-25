@@ -10,11 +10,15 @@ block('comment')(
             loginUser = user && user.login,
             isOwner = loginUser === loginAuthor;
 
-        this.ctx.js = {
+        ctx.js = {
             issueNumber: ctx.issueNumber,
             id: comment.id,
             forumUrl: forum.config.url,
-            csrf: forum.csrf
+            csrf: forum.csrf,
+            i18n: {
+                'error-edit-comment': BEM.I18N('comment', 'error-edit-comment'),
+                'error-delete-comment': BEM.I18N('comment', 'error-delete-comment')
+            }
         };
 
         return applyNext({ _isOwner: isOwner, _isArchive: isArchive, _comment: comment });
@@ -164,11 +168,11 @@ block('comment')(
         match(function () { return this._isOwner && !this._isArchive; }).def()(function () {
             return {
                     block: 'forum-form',
-                    mods: { visibility: 'hidden' },
                     mix: {
                         block: 'comment',
                         elem: 'edit-form'
                     },
+                    mods: { visibility: 'hidden' },
                     content: [
                         {
                             block: 'forum-create',

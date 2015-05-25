@@ -21,11 +21,15 @@ modules.define(
             this._menu.getItems().forEach(function (menuItem) {
                 menuItem.delMod('checked');
             });
+
+            return this;
         },
 
         _getMenu: function () {
             this._menu = this.findBlockInside('labels', 'menu');
             this._menu && this._menu.on('item-click', this._checkedLabelsByFilter, this);
+
+            return this;
         },
 
         _checkedLabelsByFilter: function (e, item) {
@@ -40,6 +44,8 @@ modules.define(
             }
 
             nextTick(function () { _this._checkedLabels(true) });
+
+            return this;
         },
 
         _checkedLabelByFilter: function (e, data) {
@@ -62,6 +68,8 @@ modules.define(
             });
 
             needLocationChange && location.change({ params: this._getParams() });
+
+            return this;
         },
 
         _getParams: function () {
@@ -85,12 +93,15 @@ modules.define(
 
         _checkedLabelsByUri: function () {
             var uri = location.getUri(),
-                query = uri.queryParams;
+                query = uri.queryParams,
+                queryLabels = query.labels;
 
-            if (query.labels && query.labels[0]) {
-                this._labels = query.labels[0].split(',');
+            if (queryLabels && queryLabels[0]) {
+                this._labels = queryLabels[0].split(',');
                 this._checkedLabels();
             }
+
+            return this;
         }
     }));
 });

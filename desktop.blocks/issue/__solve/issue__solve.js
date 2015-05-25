@@ -68,8 +68,7 @@ modules.define('issue', ['jquery'], function (provide, $, Issue) {
             }).done(function () {
                 this.setMod('solved', !isSolved);
             }).fail(function (xhr) {
-                alert('Не удалось ' + (isSolved ? 'Переоткрыть' : 'закрыть') + ' пост');
-                window.forum.debug && console.log('issue closed fail', xhr);
+                alert(this.elemParams('solve').i18n[isSolved ? 'error-open-post' : 'error-close-post']);
             }).always(function () {
                 this.emit('process', { enable: false });
             });

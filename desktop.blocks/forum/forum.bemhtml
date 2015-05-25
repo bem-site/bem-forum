@@ -1,6 +1,7 @@
 block('forum')(
     js()(function () {
-        var config = this.ctx.forum && this.ctx.forum.config;
+        var forum = this.ctx.forum,
+            config = forum && forum.config;
 
         return { setLabels: config && config.setLabels };
     })

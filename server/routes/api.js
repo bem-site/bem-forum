@@ -1,6 +1,6 @@
 /**
  *  Router to implement the API to retrieve data for the forum using ajax
- *  Currently available are 10 route:
+ *  Currently 10 routes are available:
  *  - Index:
  *      Path example: /api
  *      Description: The entry point of the API, in response, sends a greeting text

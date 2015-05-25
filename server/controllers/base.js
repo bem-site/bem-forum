@@ -40,7 +40,7 @@ module.exports = inherit({
     isLangSupportArchive: function (lang) {
         var archiveConfig = this._config.archive;
 
-        return archiveConfig && archiveConfig[lang] ? true : false;
+        return archiveConfig && !!archiveConfig[lang];
     },
 
     /**
@@ -166,7 +166,7 @@ module.exports = inherit({
 
         // Check if there are any archived posts for the current language
         if (this.isLangSupportArchive(req.lang)) {
-            isMatchArchive = this._model.inspectArchiveIssues(req)
+            isMatchArchive = this._model.inspectArchiveIssues(req);
         }
 
         /**
@@ -181,7 +181,7 @@ module.exports = inherit({
         return {
             isMatchArchive: isMatchArchive,
             archiveUrl: archiveUrl
-        }
+        };
     },
 
     /**

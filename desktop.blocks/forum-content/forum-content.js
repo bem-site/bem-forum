@@ -29,8 +29,9 @@ modules.define(
         },
 
         _onShowArchive: function (e, data) {
-            this.setMod(this.elem('archive'), 'show', true);
-            this.elem('archive-button').attr('href', data.archiveUrl);
+            this
+                .setMod(this.elem('archive'), 'show', true)
+                .elem('archive-button').attr('href', data.archiveUrl);
         },
 
         _loadIssues: function (options) {
@@ -46,10 +47,10 @@ modules.define(
                 currentPage = state.params.page && state.params.page[0] || 1,
                 options = {};
 
-            // invert pages numbers if it archive
+            // invert pages numbers if it is archive
             if (currentPage < 0) {
-                prevPage = ~prevPage + 1;
-                currentPage = ~currentPage + 1;
+                prevPage = Math.abs(prevPage);
+                currentPage = Math.abs(currentPage);
             }
 
             if (+prevPage < +currentPage) {
@@ -62,16 +63,18 @@ modules.define(
         _sendRequest: function (options) {
             this._abortRequest();
 
+            var params = this.params;
+
             this.setMod('loading', true);
 
             this._xhr = $.ajax({
                 type: 'GET',
                 dataType: 'html',
-                url: this.params.forumUrl + 'api/issues/' + options.url,
+                url: params.forumUrl + 'api/issues/' + options.url,
                 cache: false,
                 context: this
             }).fail(function () {
-                alert('Не удалось получить данные с сервера');
+                alert(params.i18n['error-get-data']);
             }).done(function (html) {
                 this._onSuccess(html, options.type)
             })

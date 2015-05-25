@@ -1,15 +1,12 @@
-var _ = require('lodash'),
-    vow = require('vow'),
-    inherit = require('inherit'),
+var inherit = require('inherit'),
     Logger = require('bem-site-logger'),
-    BaseController = require('./base.js'),
-    util = require('../util.js');
+    BaseController = require('./base.js');
 
 module.exports = inherit(BaseController, {
 
     __constructor: function (config) {
         this.__base(config);
-        this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
+        this._logger = Logger.setOptions(this._config.logger).createLogger(module);
     },
 
     /**
@@ -100,7 +97,7 @@ module.exports = inherit(BaseController, {
     _doRedirect: function (req, res, statusCode, urlPart) {
         var previousUrl = this.getPreviousUrl(req);
 
-        res.location(previousUrl ? previousUrl : req.url.replace(urlPart, ''));
+        res.location(previousUrl || req.url.replace(urlPart, ''));
         return res.status(statusCode).end();
     },
 

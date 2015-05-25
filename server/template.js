@@ -1,7 +1,6 @@
 var util = require('util'),
     path = require('path'),
     vm = require('vm'),
-    _ = require('lodash'),
     vow = require('vow'),
     vfs = require('vow-fs'),
     inherit = require('inherit'),
@@ -13,7 +12,7 @@ var util = require('util'),
 module.exports = Template = inherit({
     __constructor: function (config) {
         this._config = config;
-        this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
+        this._logger = Logger.setOptions(this._config.logger).createLogger(module);
         this._target = this._setTarget();
     },
 
@@ -26,12 +25,8 @@ module.exports = Template = inherit({
         var tPath = this._config.template,
             target = util.format('%s.bundles/%s/%s.min.template.i18n.js', tPath.level, tPath.bundle, tPath.bundle);
 
-        // For when a bundle is in a different location, e.g. bem-info
-        if (tPath.prefix) {
-            target = path.join(tPath.prefix, target)
-        }
-
-        return target;
+        // When a bundle is in a different location, e.g. bem-info
+        return tPath.prefix ? path.join(tPath.prefix, target) : target;
     },
 
     /**
@@ -115,14 +110,14 @@ module.exports = Template = inherit({
                         }
 
                         return res.end(template.BEMHTML.apply(bemjson));
-                    })
+                    });
             })
             .fail(function (err) {
                 _this._logger.error('Template: %s', err);
                 res.status(500);
 
                 return next(err);
-            });
+            }).done();
     }
 
 }, {

@@ -1,6 +1,6 @@
 /**
  * 1. The main model to retrieve data and work with them.
- * 2. The model works with two data sources: Github archive and, if specified in the config app.
+ * 2. The model works with two data sources: Github and archive, if specified in the config app.
  * 3. For caching data from the Github module uses MemoryStorage that stores data in computer memory.
  */
 
@@ -53,7 +53,7 @@ module.exports = MainModel = inherit({
             cb = options.cb,
             result;
 
-        if (stData && this._isDataNotChanged(meta)) {
+        if (stData && this._isNotModified(meta)) {
             result = stData;
         } else {
             result = data;
@@ -75,7 +75,7 @@ module.exports = MainModel = inherit({
     },
 
     /**
-     * The handler failed receive data from sources
+     * The handler failed to receive data from sources
      * @param def {Object} - vow.defer() object
      * @param err {Object}
      * @returns {Promise}
@@ -93,7 +93,7 @@ module.exports = MainModel = inherit({
      * @returns {boolean}
      * @private
      */
-    _isDataNotChanged: function (meta) {
+    _isNotModified: function (meta) {
         return meta.status.indexOf('304') > -1;
     },
 
@@ -150,7 +150,7 @@ module.exports = MainModel = inherit({
      * @private
      */
     _extendEtagHeaders: function (obj, eTag) {
-        return _.extend(obj, { headers: eTag ? { 'If-None-Match': eTag } : {} });
+        return eTag ? _.extend(obj, { headers: { 'If-None-Match': eTag } }) : obj;
     },
 
     /**
@@ -187,7 +187,7 @@ module.exports = MainModel = inherit({
 
     /**
      * Get the list of issues
-     * IMPORTANT! If request an archive issues, take data from the archive.
+     * IMPORTANT! If request is an archive issues, take data from the archive.
      * @param req {Object}
      * @param token {Number} - user token
      * @param isArchive {Boolean}
@@ -233,7 +233,7 @@ module.exports = MainModel = inherit({
 
     /**
      * Get data about single issue
-     * IMPORTANT! If request an archive issue, take data from the archive.
+     * IMPORTANT! If request is an archive issue, take data from the archive.
      * @param req {Object}
      * @param token {Number} - user token
      * @param isArchive {Boolean}
@@ -323,7 +323,7 @@ module.exports = MainModel = inherit({
 
     /**
      * Get list of issue`s comments
-     * IMPORTANT! If request an archive issue`s comments, take data from the archive.
+     * IMPORTANT! If request is an archive issue`s comments, take data from the archive.
      * @param req {Object}
      * @param token {Number} - user token
      * @param isArchive {Boolean}
@@ -448,7 +448,7 @@ module.exports = MainModel = inherit({
                 labels: query.labels || ''
             });
 
-        return issues && issues.length ? true : false;
+        return !!issues && !!issues.length;
     }
 }, {
     getInstance: function (config) {

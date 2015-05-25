@@ -12,9 +12,8 @@
  * together with the token issued to the user that will be used to work with the Github API
  * on behalf of the user.
  */
-var _ = require('lodash'),
-    inherit = require('inherit'),
-    OAuth2 = require("oauth").OAuth2,
+var inherit = require('inherit'),
+    OAuth2 = require('oauth').OAuth2,
     Logger = require('bem-site-logger'),
     Auth;
 
@@ -23,7 +22,7 @@ module.exports = Auth = inherit({
 
     __constructor: function (config) {
         this._config = config;
-        this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
+        this._logger = Logger.setOptions(this._config.logger).createLogger(module);
         this._initOauth();
     },
 
@@ -41,7 +40,7 @@ module.exports = Auth = inherit({
             })
         });
 
-        return res.end();
+        res.end();
     },
 
     /**
@@ -62,17 +61,17 @@ module.exports = Auth = inherit({
      * @private
      */
     _initOauth: function () {
-        var oAuth = this._config.auth;
+        var auth = this._config.auth;
 
-        if (!oAuth) {
+        if (!auth) {
             this._logger.error('Invalid oauth configuration');
             process.exit(1);
         }
 
-        this._oAuth2 = new OAuth2(oAuth.clientId, oAuth.secret,
-            "https://github.com/",
-            "login/oauth/authorize",
-            "login/oauth/access_token");
+        this._oAuth2 = new OAuth2(auth.clientId, auth.clientSecret,
+            'https://github.com/',
+            'login/oauth/authorize',
+            'login/oauth/access_token');
     }
 }, {
     getInstance: function (config) {

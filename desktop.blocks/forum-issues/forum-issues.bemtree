@@ -4,23 +4,19 @@ block('forum-issues')(
             issues = forum.issues,
             length = issues.length;
 
-        return length ? issues.map(function (issue, idx) {
-            // skip issue with that contains label `removed`
-            var labels = issue.labels,
-                isRemoved = labels.some(function (label) {
-                    return label.name === 'removed';
-                });
-
-            if (!isRemoved) {
+        return length ? issues
+            .filter(function (issue) {
+                return forum._.pluck(issue.labels, 'name').indexOf('removed') === -1;
+            })
+            .map(function (issue, idx) {
                 return {
                     block: 'issue',
                     mods: { solved: issue.state === 'closed', last: (length - 1) === idx },
                     issue: issue
                 };
-            }
-        }) : {
-            elem: 'error',
-            elemMods: { view: 'labels' }
-        };
+            }) : {
+                elem: 'error',
+                elemMods: { view: 'labels' }
+            };
     })
 );

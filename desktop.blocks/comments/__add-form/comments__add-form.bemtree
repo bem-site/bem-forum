@@ -6,6 +6,7 @@ block('comments').elem('add-form')(
 
         return {
             block: 'forum-form',
+            js: { i18n: { 'error-add-comment': BEM.I18N('comments', 'error-add-comment') } },
             mix: { block: 'forum-flex' },
             content:  [
                 {

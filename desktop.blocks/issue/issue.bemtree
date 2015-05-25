@@ -15,7 +15,7 @@ block('issue')(
             ctx.mods = this.extend(ctx.mods, { solved: issue.state === 'closed' });
         }
 
-        this.ctx.js = {
+        ctx.js = {
             labels: labels.map(function (label) {
                 return label.name;
             }),
@@ -23,9 +23,11 @@ block('issue')(
                 return label.name === 'archive';
             }),
             i18n: {
-                'remove-message': BEM.I18N('issue', 'remove-message'),
                 reply: BEM.I18N('issue', 'reply'),
-                comments: BEM.I18N('issue', 'comments')
+                comments: BEM.I18N('issue', 'comments'),
+                'remove-message': BEM.I18N('issue', 'remove-message'),
+                'error-edit-post': BEM.I18N('issue', 'error-edit-post'),
+                'error-delete-post': BEM.I18N('issue', 'error-delete-post')
             },
             forumUrl: config.url,
             setLabels: config.setLabels,
@@ -182,9 +184,11 @@ block('issue')(
                     elem: 'solve',
                     js: {
                         i18n: {
+                            post: BEM.I18N('issue', 'post'),
                             'open-message': BEM.I18N('issue', 'open-message'),
                             'close-message': BEM.I18N('issue', 'close-message'),
-                            post: BEM.I18N('issue', 'post')
+                            'error-open-post': BEM.I18N('issue', 'error-open-post'),
+                            'error-close-post': BEM.I18N('issue', 'error-close-post')
                         }
                     },
                     isClosed: this._issue.state === 'closed'

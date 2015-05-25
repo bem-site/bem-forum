@@ -1,5 +1,4 @@
 ({
-    mustDeps: [
-        'page'
-    ]
+    mustDeps: 'i-bem',
+    shouldDeps: 'page'
 });

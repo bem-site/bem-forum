@@ -3,12 +3,15 @@ block('forum-form')(
     tag()('form'),
 
     js()(function () {
+        var jsParams = this.ctx.js,
+            i18nParams = (jsParams && jsParams.i18n) || {};
+
         return {
-            i18n: {
+            i18n: this.extend({
                 'empty-title': BEM.I18N('forum-form', 'empty-title'),
                 'empty-comment': BEM.I18N('forum-form', 'empty-comment'),
                 'empty-labels': BEM.I18N('forum-form', 'empty-labels')
-            }
+            }, i18nParams)
         };
     })
 );

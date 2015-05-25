@@ -72,13 +72,14 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
 
             if (window.confirm(this.params.i18n['remove-message'])) {
                 var data = this.findBlockInside('edit-form', 'forum-form').getSerialize(),
-                    params = this.params;
+                    params = this.params,
+                    number = params.number;
 
                 this.emit('process', { enable: true });
 
                 data.push(
                     { name: 'labels[]', value: 'removed' },
-                    { name: 'number', value: params.number }
+                    { name: 'number', value: number }
                 );
 
                 $.ajax({
@@ -86,7 +87,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
                     type: 'PUT',
                     timeout: 10000,
                     data: data,
-                    url: params.forumUrl + 'api/issues/' + params.number + '/?__admin=true&__mode=json',
+                    url: params.forumUrl + 'api/issues/' + number + '/?__admin=true&__mode=json',
                     context: this
                 }).done(function () {
                     var _this = this;
@@ -96,8 +97,7 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
                         BEMDOM.destruct(_this.domElem);
                     });
                 }).fail(function (xhr) {
-                    alert('Не удалось удалить пост');
-                    window.forum.debug && console.log('issue remove fail', xhr);
+                    alert(params.i18n['error-delete-post']);
                 }).always(function () {
                     this.emit('process', { enable: false });
                 });
@@ -147,9 +147,8 @@ modules.define('issue', ['i-bem__dom', 'jquery', 'events__channels', 'dom', 'nex
                 this._afterEdit();
                 this._formEdit.hideProcessing();
             }).fail(function (xhr) {
-                alert('Не удалось отредактировать пост');
+                alert(params.i18n['error-edit-post']);
                 this._formEdit.hideProcessing(true);
-                window.forum.debug && console.log('issue add fail', xhr);
             });
         },
 

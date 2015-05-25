@@ -1,5 +1,3 @@
 ({
-    shouldDeps: [
-        'forum'
-    ]
+    shouldDeps: 'forum'
 });

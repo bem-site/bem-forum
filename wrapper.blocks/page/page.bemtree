@@ -1,8 +1,7 @@
 block('page')(
     content()(function () {
         return this.forum ? [
-            { block: 'forum' },
-            { elem: 'js' }
+            { block: 'forum' }
         ] : 'Forum data is empty';
     })
 );

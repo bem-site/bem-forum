@@ -1,8 +1,9 @@
 block('root').def()(function () {
     var ctx = this.ctx,
-        context = ctx.context;
+        context = ctx.context,
+        data = ctx.data;
 
-    this.forum = ctx.data && ctx.data.forum;
+    this.forum = data && data.forum;
 
     if (context) {
         return applyCtx(context);
@@ -10,7 +11,7 @@ block('root').def()(function () {
 
     return applyCtx({
         block: 'page',
-        title: ctx.data.title,
+        title: this.forum.pageTitle,
         favicon: '/favicon.ico',
         styles: [
             {

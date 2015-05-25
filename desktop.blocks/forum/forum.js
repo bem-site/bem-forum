@@ -17,9 +17,11 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) 
         },
 
         _addIssue: function (e, data) {
-            if (this._formAdd.isEmptyRequiredField('title', 'labels[]')) return false;
+            var formAdd = this._formAdd;
 
-            this._formAdd.showProcessing();
+            if (formAdd.isEmptyRequiredField('title', 'labels[]')) return false;
+
+            formAdd.showProcessing();
 
             var labels = data
                 .filter(function (item) {
@@ -39,8 +41,8 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) 
             }).done(function (issueJson) {
                 this._addLabelsAfter(JSON.parse(issueJson), labels);
             }).fail(function (xhr) {
-                alert('Не удалось добавить пост');
-                this._formAdd.hideProcessing(true);
+                alert(formAdd.params.i18n['error-add-post']);
+                formAdd.hideProcessing(true);
                 window.forum.debug && console.log('issue add fail', xhr);
             });
         },

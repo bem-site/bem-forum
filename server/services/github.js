@@ -102,7 +102,7 @@ module.exports = Github = inherit({
         });
 
         if (!github) {
-            this._logger.warn('Not able to authenticate on github under this token: %s', token);
+            this._logger.warn('Authentification on Github with token %s failed', token);
         }
 
         return github;
@@ -120,7 +120,7 @@ module.exports = Github = inherit({
             tokens = this._config.auth['api-tokens'];
 
         if (!tokens || !tokens.length) {
-            this._logger.error('Filler in the config field "config/credentials.json -> api tokens" to access the Github API');
+            this._logger.error('Fill in api tokens at config/credentials.json to access Github');
 
             // Stop app if github access tokens not added
             process.exit(1);

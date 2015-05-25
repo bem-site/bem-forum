@@ -38,7 +38,7 @@ module.exports = MemoryStorage = inherit({
 
     __constructor: function (config) {
         this._config = config;
-        this._logger = Logger.setOptions(this._config['logger']).createLogger(module);
+        this._logger = Logger.setOptions(this._config.logger).createLogger(module);
         this._createStructure();
     },
 
@@ -99,15 +99,12 @@ module.exports = MemoryStorage = inherit({
         var name = options.name,
             userStorage = this._storage.users;
 
-        userStorage[name] = userStorage[name] || { data: [], etag: '' };
-
-        return userStorage[name];
+        return (userStorage[name] = userStorage[name] || { data: [], etag: '' });
     },
 
     /**
      * Getter for the issues storage
-     * If issues with such key in the vault was not,
-     * creates a new basic structure
+     * If there's no issue with such keys in the vault — create new basic structure
      * @param options {Object}
      * Required:
      * - lang {String} - ru|en|etc
@@ -122,23 +119,17 @@ module.exports = MemoryStorage = inherit({
             page = options.page,
             sort = options.sort,
             labels = options.labels,
-            basicStorage = this._storage[lang].issues,
-            issuesStorage;
+            basicStorage = this._storage[lang].issues;
 
         basicStorage[page] = basicStorage[page] || {};
         basicStorage[page][sort] = basicStorage[page][sort] || {};
-        basicStorage[page][sort][labels] = basicStorage[page][sort][labels] || {};
 
-        issuesStorage = basicStorage[page][sort][labels];
-        issuesStorage = issuesStorage || { data: [], etag: '' };
-
-        return issuesStorage;
+        return (basicStorage[page][sort][labels] = basicStorage[page][sort][labels] || { data: [], etag: '' });
     },
 
     /**
      * Getter for the issues storage
-     * If issue with such issue id in the vault was not,
-     * creates a new basic structure
+     * If there's no issue with such id in the vault — create new basic structure
      * @param options {Object}
      * Required:
      * - lang {String}
@@ -151,15 +142,12 @@ module.exports = MemoryStorage = inherit({
             lang = options.lang,
             issueStorage = this._storage[lang].issue;
 
-        issueStorage[id] = issueStorage[id] || { data: [], etag: '' };
-
-        return issueStorage[id];
+        return (issueStorage[id] = issueStorage[id] || { data: [], etag: '' });
     },
 
     /**
      * Getter for the comments storage
-     * If comments with such keys in the vault was not,
-     * creates a new basic structure
+     * If there's no issue with such keys in the vault — create new basic structure
      * @param options {Object}
      * Required:
      * - lang {String}
@@ -172,21 +160,16 @@ module.exports = MemoryStorage = inherit({
         var lang = options.lang,
             id = options.number,
             page = options.page,
-            basicStorage = this._storage[lang].comments,
-            commentsStorage;
+            basicStorage = this._storage[lang].comments;
 
         basicStorage[id] = basicStorage[id] || {};
-        basicStorage[id][page] = basicStorage[id][page] || {};
 
-        commentsStorage = basicStorage[id][page];
-        commentsStorage = commentsStorage || { data: [], etag: '' };
-
-        return commentsStorage;
+        return (basicStorage[id][page] = basicStorage[id][page] || { data: [], etag: '' });
     },
 
     /**
      * Call methods for getting and setting data
-     * @param field {String} - the type of field from which you want to interact (etag|data)
+     * @param field {String} - type of field to interact with (etag|data)
      * @param options {Object} - options for storage
      * @param [data] {Array|Object} - optional
      * @returns {Array|Object}
@@ -207,7 +190,7 @@ module.exports = MemoryStorage = inherit({
 
     /**
      * Getter data from storage
-     * @param field {String} - the type of field from which you want to interact (etag|data)
+     * @param field {String} - type of field to interact with (etag|data)
      * @param options {Object} - options for storage
      * @returns {*}
      */
@@ -217,7 +200,7 @@ module.exports = MemoryStorage = inherit({
 
     /**
      * Setter data to storage
-     * @param field {String} - the type of field from which you want to interact (etag|data)
+     * @param field {String} - type of field to interact with (etag|data)
      * @param options {Object} - options for storage
      * @param [data] {Array|Object} - optional
      * @returns {Array|Object}

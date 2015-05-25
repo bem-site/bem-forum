@@ -206,7 +206,7 @@ module.exports = ArchiveModel = inherit({
 
         // invert the negative value of the page
         if (page < 0) {
-            page = ~page + 1;
+            page = Math.abs(page);
         }
 
         return issues.filter(function (issue, index) {
