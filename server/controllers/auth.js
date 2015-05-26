@@ -22,7 +22,7 @@ module.exports = inherit(BaseController, {
         var token = this.getCookie(req).token;
 
         if (token) {
-            return this._doRedirect(req, res, 303, 'login');
+            return this._doRedirect(req, res, 303);
         }
 
         return this._auth.sendAuthRequest(req, res);
@@ -42,19 +42,18 @@ module.exports = inherit(BaseController, {
      * @returns {*}
      */
     loginCallback: function (req, res) {
-        var code = req.query && req.query.code,
-            urlPart = 'login_callback';
+        var code = req.query && req.query.code;
 
-        if (!code || code && this.getUserCookie(req, 'forum_user')) {
-            return this._doRedirect(req, res, 303, urlPart);
+        if (!code || code && this.getCookie(req).token) {
+            return this._doRedirect(req, res, 303);
         }
 
         return this._auth.getAccessToken(req, res, code, function (err, token) {
             if (err) {
-                return this._onErrorGetToken(req, res, urlPart, err);
+                return this._onErrorGetToken(req, res, err);
             }
 
-            return this._onSuccessGetToken(req, res, urlPart, token);
+            return this._onSuccessGetToken(req, res, token);
 
         }.bind(this));
     },
@@ -69,13 +68,13 @@ module.exports = inherit(BaseController, {
      * @returns {*}
      */
     logout: function (req, res) {
-        var token = this.getUserCookie(req, 'forum_user');
+        var token = this.getCookie(req).token;
 
         if (token) {
             this.delUserCookie(res, 'forum_user', '/');
         }
 
-        return this._doRedirect(req, res, 303, 'logout');
+        return this._doRedirect(req, res, 303);
     },
 
     /**
@@ -89,15 +88,16 @@ module.exports = inherit(BaseController, {
      * @param req {Object}
      * @param res {Object}
      * @param statusCode {Number} - 303, 500, etc
-     * @param urlPart {String} - Part of the url that needs to be cut
-     * if the session user does not have knowledge about the previous visited page
      * @returns {*}
      * @private
      */
-    _doRedirect: function (req, res, statusCode, urlPart) {
-        var previousUrl = this.getPreviousUrl(req);
+    _doRedirect: function (req, res, statusCode) {
+        var previousUrl = this.getPreviousUrl(req),
+            url = previousUrl || this._config.url;
 
-        res.location(previousUrl || req.url.replace(urlPart, ''));
+        res.location(url);
+        this._logger.info('Redirect to %s', url);
+
         return res.status(statusCode).end();
     },
 
@@ -107,27 +107,26 @@ module.exports = inherit(BaseController, {
      * 2. if all is well, we write the token and the user name in a special cookie
      * @param req {Object}
      * @param res {Object}
-     * @param urlPart {String} - Part of the url that needs to be cut
      * @param token {Number} - user token
      * @returns {*}
      * @private
      */
-    _onSuccessGetToken: function (req, res, urlPart, token) {
+    _onSuccessGetToken: function (req, res, token) {
         return this._model.getAuthUser(req, token)
             .then(function (result) {
 
                 if (!result) {
                     this._logger.error('Can`t get user info after login, result is empty');
-                    return this._doRedirect(req, res, 500, urlPart);
+                    return this._doRedirect(req, res, 500);
                 }
 
                 this.setUserCookie(res, 'forum_user', token, result.login);
-                return this._doRedirect(req, res, 303, urlPart);
+                return this._doRedirect(req, res, 303);
 
             }, this)
             .fail(function (err) {
                 this._logger.error('Can`t get user info after login %s', err);
-                return this._doRedirect(req, res, 500, urlPart);
+                return this._doRedirect(req, res, 500);
             }, this);
     },
 
@@ -135,13 +134,12 @@ module.exports = inherit(BaseController, {
      * The handler failed attempts got a user token base on code received from github
      * @param req {Object}
      * @param res {Object}
-     * @param urlPart {String}
      * @param err
      * @returns {*}
      * @private
      */
-    _onErrorGetToken: function (req, res, urlPart, err) {
+    _onErrorGetToken: function (req, res, err) {
         this._logger.error('Can`t get access token %s', err);
-        return this._doRedirect(req, res, 500, urlPart);
+        return this._doRedirect(req, res, 500);
     }
 });
