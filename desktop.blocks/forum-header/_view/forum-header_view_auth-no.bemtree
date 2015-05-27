@@ -9,7 +9,7 @@ block('forum-header').mod('view', 'auth-no')(
             {
                 block: 'button',
                 url: this.forum.config.url + 'login/',
-                text: BEM.I18N('forum-header', 'login') + ' (Github.com oAuth)',
+                text: BEM.I18N('forum-header', 'login'),
                 mods: { theme: 'islands', size: 'm', view: 'action', type: 'link' },
                 mix: { block: 'forum-header', elem: 'auth-button' }
             },
