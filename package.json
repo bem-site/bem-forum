@@ -45,7 +45,7 @@
     "bem-site-codestyle": "~0.1.0",
     "borschik-tech-cleancss": "^1.0.3",
     "bower": "~1.4.1",
-    "enb": "~0.15.x",
+    "enb": "0.15.x",
     "enb-autoprefixer": "~0.1.1",
     "enb-bem-i18n": "^0.3.x",
     "enb-bem-techs": "1.0.5-beta3",
