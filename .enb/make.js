@@ -38,7 +38,7 @@ module.exports = function(config) {
         nodeConfig.addTechs([
             [ techs.bem.levels, { levels: getDesktops(config) } ],
             [ techs.css.autoprefixer, {
-                browserSupport: [ 'last 2 versions', 'ie 10', 'ff 24', 'opera 12.16' ],
+                browserSupport: ['ie >= 8', 'last 3 versions', '> 2%'],
                 sourceTarget: '?.noprefix.css'
             }]
         ]);
@@ -58,9 +58,24 @@ module.exports = function(config) {
     config.mode('production', function(modeConfig) {
         config.nodes('*.bundles/*', function(nodeConfig) {
             nodeConfig.addTechs([
-                [ techs.borschik, { sourceTarget: '?.css', destTarget: '?.min.css', tech: 'cleancss', freeze: true } ],
-                [ techs.borschik, { sourceTarget: '?.template.i18n.js', destTarget: '?.min.template.i18n.js' } ],
-                [ techs.borschik, { sourceTarget: '?.js', destTarget: '?.min.js' } ]
+                [ techs.borschik, {
+                    sourceTarget: '?.css',
+                    destTarget: '?.min.css',
+                    tech: 'cleancss',
+                    freeze: true
+                } ],
+                [ techs.borschik, {
+                    sourceTarget: '?.template.i18n.js',
+                    destTarget: '?.min.template.i18n.js',
+                    minify: true,
+                    freeze: true
+                } ],
+                [ techs.borschik, {
+                    sourceTarget: '?.js',
+                    destTarget: '?.min.js',
+                    minify: true,
+                    freeze: true
+                } ]
             ]);
         });
     });
