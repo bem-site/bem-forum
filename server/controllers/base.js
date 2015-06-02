@@ -53,7 +53,8 @@ module.exports = inherit({
             _: _,
             util: util,
             csrf: req.csrfToken(),
-            config: this._config
+            config: this._config,
+            host: req.headers && req.headers.host
         };
     },
 

@@ -3,8 +3,9 @@ block('comments').mod('view', 'close')(
         return this.forum.comments.map(function (comment) {
             return {
                 block: 'comment',
-                comment: comment
+                comment: comment,
+                issueNumber: this.ctx.issueNumber
             };
-        });
+        }, this);
     })
 );
