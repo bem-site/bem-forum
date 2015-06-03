@@ -8,11 +8,15 @@ block('comment')(
             isArchive = forum.isArchive,
             user = forum.user,
             loginUser = user && user.login,
-            isOwner = loginUser === loginAuthor;
+            isOwner = loginUser === loginAuthor,
+            issueNumber = ctx.issueNumber,
+            id = comment.id;
+
+        ctx.attrs = { id: 'comment-' + id };
 
         ctx.js = {
-            issueNumber: ctx.issueNumber,
-            id: comment.id,
+            issueNumber: issueNumber,
+            id: id,
             forumUrl: forum.config.url,
             csrf: forum.csrf,
             i18n: {
@@ -21,7 +25,35 @@ block('comment')(
             }
         };
 
-        return applyNext({ _isOwner: isOwner, _isArchive: isArchive, _comment: comment });
+        /**
+         * Get comment anchor
+         * @param config {Object}
+         * protocol: e.g // || https://
+         * host: site host, e.g. ru.bem.info
+         * forumUrl: base forum url, e.g. /forum/
+         * issueNumber: number of related issue, e.g. 45
+         * commentId: id of comment, e.g 105333
+         * @returns {string} - full path with anchor, e.g. //ru.bem.info/forum/45/#comment-1053333
+         * @private
+         */
+        function _getAnchor (config) {
+            return [
+                config.protocol,
+                config.host,
+                config.forumUrl,
+                config.issueNumber,
+                '/#comment-',
+                config.commentId
+            ].join('');
+        }
+
+        return applyNext({
+            _issueNumber: issueNumber,
+            _isOwner: isOwner,
+            _isArchive: isArchive,
+            _comment: comment,
+            _getAnchor: _getAnchor
+        });
     }),
 
     match(function () { return this._comment; }).content()(function () {
@@ -82,9 +114,25 @@ block('comment')(
 
     elem('header')(
         content()(function () {
-            var comment = this.ctx.comment;
+            var comment = this.ctx.comment,
+                forum = this.forum,
+                anchor = this._getAnchor({
+                    protocol: '//',
+                    host: forum.host,
+                    forumUrl: forum.config.url,
+                    issueNumber: this._issueNumber,
+                    commentId: comment.id
+                });
 
             return [
+                {
+                    block: 'link',
+                    mix: { block: 'comment', elem: 'anchor' },
+                    mods: { theme: 'islands', size: 'xl' },
+                    url: anchor,
+                    title: BEM.I18N('comment', 'anchor'),
+                    content: '#'
+                },
                 {
                     elem: 'username',
                     url: comment.user.html_url,

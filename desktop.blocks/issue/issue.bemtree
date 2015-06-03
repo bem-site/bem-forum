@@ -70,14 +70,15 @@ block('issue')(
         }).def()(function () {
             var forum = this.forum,
                 issue = forum.issue,
+                issueNumber = issue.number,
                 comments = forum.comments;
 
             return applyCtx({
                 block: 'comments',
                 mods: { view: 'open' },
-                data: comments,
+                issueNumber: issueNumber,
                 js: {
-                    issueNumber: issue.number,
+                    issueNumber: issueNumber,
                     comments: issue.comments,
                     forumUrl: forum.config.url,
                     csrf: forum.csrf
@@ -88,20 +89,20 @@ block('issue')(
         // hide comments on list issues page
         match(function () { return !this.forum.comments; }).def()(function () {
             var issue = this._issue,
+                issueNumber = issue.number,
                 forum = this.forum;
 
             return applyCtx({
                 block: 'comments',
                 mods: { hidden: true },
+                issueNumber: issueNumber,
                 js: {
-                    issueNumber: issue.number,
+                    issueNumber: issueNumber,
                     comments: issue.comments,
                     forumUrl: forum.config.url,
                     csrf: forum.csrf
                 },
-                content: {
-                    elem: 'container'
-                }
+                content: { elem: 'container' }
             });
         })
     ),
@@ -228,11 +229,6 @@ block('issue')(
                                     block: 'issue',
                                     elem: 'solve-badge',
                                     elemMods: { show: issue.state === 'closed' }
-                                },
-                                {
-                                    block: 'issue',
-                                    elem: 'number',
-                                    content: '#' + issue.number
                                 },
                                 {
                                     block: 'link',

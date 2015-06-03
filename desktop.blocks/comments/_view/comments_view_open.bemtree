@@ -1,20 +1,23 @@
 block('comments').mod('view', 'open')(
 
-    content()(function () {
+    match(function () {
+        var forum = this.forum;
+        return forum && forum.comments;
+    }).content()(function () {
+        var issueNumber = this.ctx.issueNumber;
+
         return [
-            { elem: 'container' },
+            {
+                elem: 'container',
+                content: this.forum.comments.map(function (comment) {
+                    return {
+                        block: 'comment',
+                        comment: comment,
+                        issueNumber: issueNumber
+                    };
+                })
+            },
             applyNext()
         ];
-    }),
-
-    elem('container')(
-        content()(function () {
-            return this.forum.comments.map(function (comment) {
-                return {
-                    block: 'comment',
-                    comment: comment
-                }
-            })
-        })
-    )
+    })
 );

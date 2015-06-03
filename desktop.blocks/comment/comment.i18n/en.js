@@ -6,6 +6,7 @@ module.exports = {
         "edit": "Edit",
         "remove": "Remove",
         "error-edit-comment": "Failed to edit comment",
-        "error-delete-comment": "Failed to delete comment"
+        "error-delete-comment": "Failed to delete comment",
+        "anchor": "Comment link"
     }
 };
