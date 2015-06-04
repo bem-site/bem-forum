@@ -32,6 +32,9 @@
         "template": {
           "level": "desktop",
           "bundle": "index"
-        }
+        },
+        "sitemap": [
+          { "lang": "ru", "url": "http://localhost:3000/" }
+        ]
     }
 }

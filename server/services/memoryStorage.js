@@ -57,13 +57,14 @@ module.exports = MemoryStorage = inherit({
             process.exit(1);
         }
 
-        this._storage = {};
-
-        // set data that not require lang
-        this._storage.users = {};
+        this._storage = {
+            // set data that not require lang
+            users: {}
+        };
 
         this._storage = Object.keys(storageByLang).reduce(function (prev, lang) {
             prev[lang] = {
+                allIssues: { time: null, data: [] },
                 issues: {},
                 issue: {},
                 comments: {},
@@ -78,7 +79,9 @@ module.exports = MemoryStorage = inherit({
     /**
      * Getter for the labels storage
      * @param options {Object}
-     * @returns {Array} - list of repo labels
+     * * Required:
+     * - lang {String} - language
+     * @returns {Object} - list of repo labels
      * @private
      */
     _getLabels: function (options) {
@@ -107,11 +110,11 @@ module.exports = MemoryStorage = inherit({
      * If there's no issue with such keys in the vault — create new basic structure
      * @param options {Object}
      * Required:
-     * - lang {String} - ru|en|etc
+     * - lang {String} - language
      * - page {Number} - number of issue page
      * - sort {String} - updated|created|comments
      * - labels {String} - bug,bemtree,bemhtml,etc
-     * @returns {Array} - issues storage
+     * @returns {Object} - issues storage
      * @private
      */
     _getIssues: function (options) {
@@ -132,7 +135,7 @@ module.exports = MemoryStorage = inherit({
      * If there's no issue with such id in the vault — create new basic structure
      * @param options {Object}
      * Required:
-     * - lang {String}
+     * - lang {String} - language
      * - number {Number} - issue number(id)
      * @returns {Object} - issue storage
      * @private
@@ -150,10 +153,10 @@ module.exports = MemoryStorage = inherit({
      * If there's no issue with such keys in the vault — create new basic structure
      * @param options {Object}
      * Required:
-     * - lang {String}
+     * - lang {String} - language
      * - number {Number} - issue number(id )
      * - page {Number} - requested page comments
-     * @returns {Array} - comments storage
+     * @returns {Object} - comments storage
      * @private
      */
     _getComments: function (options) {
@@ -165,6 +168,18 @@ module.exports = MemoryStorage = inherit({
         basicStorage[id] = basicStorage[id] || {};
 
         return (basicStorage[id][page] = basicStorage[id][page] || { data: [], etag: '' });
+    },
+
+    /**
+     * Get all repo issues by lang
+     * @param options {Object}
+     * Required:
+     * - lang {String} - language
+     * @returns {Object} - all repo issues storage
+     * @private
+     */
+    _getAllIssues: function (options) {
+        return this._storage[options.lang].allIssues;
     },
 
     /**
@@ -181,7 +196,8 @@ module.exports = MemoryStorage = inherit({
             users: '_getUser',
             issues: '_getIssues',
             issue: '_getIssue',
-            comments: '_getComments'
+            comments: '_getComments',
+            allIssues: '_getAllIssues'
         }[options.type],
         result = this[method](options);
 
@@ -190,7 +206,7 @@ module.exports = MemoryStorage = inherit({
 
     /**
      * Getter data from storage
-     * @param field {String} - type of field to interact with (etag|data)
+     * @param field {String} - type of field to interact with (time|etag|data)
      * @param options {Object} - options for storage
      * @returns {*}
      */
@@ -200,7 +216,7 @@ module.exports = MemoryStorage = inherit({
 
     /**
      * Setter data to storage
-     * @param field {String} - type of field to interact with (etag|data)
+     * @param field {String} - type of field to interact with (time|etag|data)
      * @param options {Object} - options for storage
      * @param [data] {Array|Object} - optional
      * @returns {Array|Object}

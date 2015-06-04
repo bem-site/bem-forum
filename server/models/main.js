@@ -449,6 +449,74 @@ module.exports = MainModel = inherit({
             });
 
         return !!issues && !!issues.length;
+    },
+
+    /**
+     * Get all issues from repo by lang
+     * @param lang {String}
+     * @returns {Promise} - promise with array issues
+     */
+    getAllIssues: function (lang) {
+        var _this = this,
+            def = vow.defer(),
+            issues = [],
+            perPage = 100,
+            page = 1,
+            options = {
+                type: 'allIssues',
+                setRepoStorage: true,
+                lang: lang,
+                state: 'all',
+                page: 1,
+                per_page: perPage
+            },
+            issuesData = this._storage.getData('data', options),
+            issuesTime = this._storage.getData('time', options);
+
+        /*
+            if we have a data issues in memory and it took less than 360 minutes
+            on last storage wrote – we will resolve promise
+          */
+        if (issuesData.length && ((+new Date() - issuesTime) / 1000 / 60) < 360) {
+            this._logger.debug('Get all repo %s %s issues from Storage', lang, issuesData.length);
+            def.resolve(issuesData);
+        } else {
+            this._logger.debug('Get all repo %s issues from Github', lang);
+            (function getIssues() {
+                return _this._github.getIssues(null, options)
+                    .then(function (data) {
+                        // 1. Collect data
+                        issues = issues.concat(data);
+
+                        // 2. Set next page
+                        ++options.page;
+
+                        // 4. Filter removed issues
+                        issues = issues.filter(function (issue) {
+                            var labels = issue.labels;
+
+                            return labels.length ? labels.every(function (label) {
+                                return label.name !== 'removed';
+                            }) : true;
+                        });
+
+                        // 3. if it last page - save data and time in memory for hour and resolve promise
+                        if (data.length !== perPage) {
+                            _this._storage.setData('data', options, issues);
+                            _this._storage.setData('time', options, +new Date());
+                            return def.resolve(issues);
+                        }
+
+                        getIssues();
+
+                    }, this)
+                    .fail(function (err) {
+                        def.reject(err);
+                    });
+            })();
+        }
+
+        return def.promise();
     }
 }, {
     getInstance: function (config) {
