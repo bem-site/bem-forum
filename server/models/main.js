@@ -474,7 +474,7 @@ module.exports = MainModel = inherit({
             issuesTime = this._storage.getData('time', options);
 
         /*
-            if we have a data issues in memory and it took less than 360 minutes
+            if we have data issues in memory and it took less than 360 minutes
             on last storage wrote – we will resolve promise
           */
         if (issuesData.length && ((+new Date() - issuesTime) / 1000 / 60) < 360) {
@@ -500,7 +500,7 @@ module.exports = MainModel = inherit({
                             }) : true;
                         });
 
-                        // 3. if it last page - save data and time in memory for hour and resolve promise
+                        // 3. if it is last page - save data and time in memory for an hour and resolve promise
                         if (data.length !== perPage) {
                             _this._storage.setData('data', options, issues);
                             _this._storage.setData('time', options, +new Date());

@@ -1,7 +1,7 @@
 /**
  *  Router to the services pages of the forum
  *
- *  Currently 1 route are available:
+ *  Currently 1 route is available:
  *  Sitemap:
  *      Path example: /sitemap.xml
  *      Description: Get a sitemap contains forum posts

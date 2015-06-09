@@ -58,7 +58,7 @@ module.exports = MemoryStorage = inherit({
         }
 
         this._storage = {
-            // set data that not require lang
+            // set data that does not require lang
             users: {}
         };
 

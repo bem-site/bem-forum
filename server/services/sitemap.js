@@ -6,19 +6,22 @@
  */
 
 exports.get = function (allIssues, config) {
-    var sm = '<?xml version="1.0" encoding="UTF-8"?>' + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+    var urls = [];
 
     allIssues.forEach(function (issuesByLang, idx) {
         issuesByLang.forEach(function (issue) {
-            sm += '<url>';
-            sm += '<loc>' + config[idx].url + issue.number + '</loc>';
-            sm += '<changefreq>monthly</changefreq>';
-            sm += '<priority>0.5</priority>';
-            sm += '</url>';
+            urls.push(
+                '<url>',
+                    '<loc>' + config[idx].url + issue.number + '</loc>',
+                    '<changefreq>monthly</changefreq>',
+                    '<priority>0.5</priority>',
+                '</url>'
+            );
         });
     });
 
-    sm += '</urlset>';
-
-    return sm;
+    return '<?xml version="1.0" encoding="UTF-8"?>' +
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
+               urls.join('') +
+           '</urlset>';
 };
