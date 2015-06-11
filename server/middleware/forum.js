@@ -18,10 +18,12 @@
 module.exports = function (baseUrl, app, config) {
 
     var pageRouter = require('../routes/page.js')(config),
+        serviceRouter = require('../routes/service.js')(config),
         authRouter = require('../routes/auth.js')(config),
         apiRouter = require('../routes/api.js')(config);
 
     app.use(baseUrl, pageRouter);
+    app.use(baseUrl, serviceRouter);
     app.use(baseUrl + 'api', apiRouter);
 
     if (config.auth && config.auth.login === true) {
