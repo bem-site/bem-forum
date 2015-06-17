@@ -19,19 +19,36 @@ module.exports = inherit(BaseController, {
      * @param res {Object}
      * @param next {Function}
      */
-    sitemap: function (req, res, next) {
-        var sitemapConfig = this._config.sitemap;
+    sitemapXml: function (req, res, next) {
+        var smConfig = this._config.sitemap.baseUrls;
 
-        return vow.all(sitemapConfig.map(function (config) {
+        return this._getAllIssues.call(this, smConfig)
+            .then(function (allIssues) {
+                res.header('Content-Type', 'application/xml');
+                res.send(sm.getXml(allIssues, smConfig));
+            })
+            .fail(this._onError.bind(this, next, 'sitemap.xml')).done();
+    },
+
+    sitemapJson: function (req, res, next) {
+        var smConfig = this._config.sitemap.baseUrls;
+
+        return this._getAllIssues.call(this, smConfig)
+            .then(function (allIssues) {
+                res.header('Content-Type', 'application/json');
+                res.send(sm.getJson(allIssues, smConfig));
+            })
+            .fail(this._onError.bind(this, next, 'sitemap.json')).done();
+    },
+
+    _getAllIssues: function (smConfig) {
+        return vow.all(smConfig.map(function (config) {
             return this._model.getAllIssues(config.lang);
-        }, this))
-        .then(function (allIssues) {
-            res.header('Content-Type', 'application/xml');
-            res.send(sm.get(allIssues, sitemapConfig));
-        })
-        .fail(function (err) {
-            this._logger.error(err);
-            next(err);
-        }, this).done();
+        }, this));
+    },
+
+    _onError: function (next, errTarget, err) {
+        this._logger.error('can`t get %s', errTarget, err);
+        next(err);
     }
 });
