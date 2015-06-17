@@ -11,6 +11,7 @@ block('comments').elem('add-form')(
             content:  [
                 {
                     block: 'forum-column',
+                    mix: { block: 'comments', elem: 'left-gap' },
                     mods: { side: 'left' }
                 },
                 {
