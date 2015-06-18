@@ -33,8 +33,11 @@
           "level": "desktop",
           "bundle": "index"
         },
-        "sitemap": [
-          { "lang": "ru", "url": "http://localhost:3000/" }
-        ]
+        "sitemap": {
+          "jsonUrl": "http://localhost:3000/sitemap.json",
+          "baseUrls": [
+            { "lang": "ru", "url": "http://localhost:3000/" }
+          ]
+        }
     }
 }
