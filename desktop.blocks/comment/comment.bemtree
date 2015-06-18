@@ -72,6 +72,7 @@ block('comment')(
             },
             {
                 block: 'forum-column',
+                mix: { block: 'comment', elem: 'content' },
                 mods: { side: 'right', gap: true, flex: true },
                 content: [
                     {

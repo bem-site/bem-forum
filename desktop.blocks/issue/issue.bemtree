@@ -134,6 +134,7 @@ block('issue')(
                     mix: { block: 'forum-flex' },
                     content: {
                         block: 'forum-line',
+                        mix: { block: 'issue', elem: 'header' },
                         mods: { valign: 'baseline' },
                         content: [
                             {
@@ -214,6 +215,7 @@ block('issue')(
             return [
                 {
                     block: 'forum-column',
+                    mix: { block: 'issue', elem: 'left-gap' },
                     mods: { side: 'left' }
                 },
                 {
