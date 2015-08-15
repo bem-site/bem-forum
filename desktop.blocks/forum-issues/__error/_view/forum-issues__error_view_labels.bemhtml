@@ -8,7 +8,7 @@ block('forum-issues').elem('error').elemMod('view', 'labels')(
                 },
                 {
                     elem: 'error-text',
-                    content: 'Нет постов с выбранными метками'
+                    content: BEM.I18N('forum-issues', 'error-text')
                 }
             ];
         })
