@@ -7,7 +7,7 @@ bem-forum
 [![David](https://img.shields.io/david/dev/bem/bem-forum.svg)](https://david-dm.org/bem/bem-forum#info=devDependencies)
 
 Форум построен на БЭМ-методологии и использует github issues в качестве основного хранилища.
- 
+
 Форум можно использовать в 2-х режимах:
 
 * как отдельное приложение;
@@ -17,7 +17,7 @@ bem-forum
 
 * Клонировать репозиторий: `git clone git@github.com:bem/bem-forum.git`
 * Перейти в папку со скаченным проектом: `cd bem-forum`
-* Установить зависимости `npm run deps`
+* Установить зависимости `npm run build`
 * Сгенерировать [токен](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) (выбрать scope – public_repo) и вставить его в конфиг `configs/common/node.json`
 * Запустить проект `npm start`
 
