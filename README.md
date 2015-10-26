@@ -7,7 +7,7 @@ bem-forum
 [![David](https://img.shields.io/david/dev/bem/bem-forum.svg)](https://david-dm.org/bem/bem-forum#info=devDependencies)
 
 BEM forum project is built according to BEM methodology and uses github issues as it's main data storage.
- 
+
 Forum could be used in two capacities:
 
 * as a separate application;
@@ -17,7 +17,7 @@ Forum could be used in two capacities:
 
 * Clone a repository `git clone git@github.com:bem/bem-forum.git`
 * Go to downloaded project `cd bem-forum`
-* Install dependencies `npm run deps`
+* Install dependencies `npm run build`
 * Generate [access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) (choose scope – public_repo) and add it to config `configs/common/node.json`
 * Launch the project `npm start`
 
@@ -40,7 +40,7 @@ The description of how to configure the project could be found within the follow
             "tokens": [
                 /* To get data from github for unauthorized users
                  * use generated tokens that enlarge limits of calls to API
-                 * from 60 per hour to 5000. In case of high activity on the forum 
+                 * from 60 per hour to 5000. In case of high activity on the forum
                  * you will need to add additional tokens.
                  */
                 "7fdffdd7a38fd8a205fdf5fc910f35d3bfd05341" // This is a demonstration only token
@@ -65,7 +65,7 @@ The description of how to configure the project could be found within the follow
             "bundle": "index"
         },
         // Enables a regime to fix bugs in server-side and client-side code
-        // To see bugs within a broswer console you will need to add to the url 
+        // To see bugs within a broswer console you will need to add to the url
         // a parameter ?debug=true
         "forumDebug": true
     }
@@ -108,7 +108,7 @@ Here we foresee an option of several subdomains support for sites with, for inst
 
 ### Important about labels
 
-Standard behaviour so to say "battaries included" is the following: it is *not allowed* to set a label while opening or editing the post. 
+Standard behaviour so to say "battaries included" is the following: it is *not allowed* to set a label while opening or editing the post.
 
 **To add an option of labeling the posts you need:**
 
