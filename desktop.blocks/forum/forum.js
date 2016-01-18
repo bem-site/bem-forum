@@ -86,7 +86,17 @@ modules.define('forum', ['i-bem__dom', 'jquery'], function (provide, BEMDOM, $) 
         },
 
         _render: function (html, addMethod) {
-            var container = this.findBlockInside('forum-issues').domElem;
+            var forumIssues = this.findBlockInside('forum-issues'),
+                container = forumIssues && forumIssues.domElem;
+
+            if (!container) {
+              var location = window.location,
+                  forumRootHrefArr = location.href.substr(0, location.href.length -1).split('/'),
+                  forumRootHref = forumRootHrefArr.slice(0, forumRootHrefArr.length - 1).join('/') + '/';
+
+              location.href = forumRootHref;
+              return;
+            }
 
             BEMDOM[addMethod](container, html);
         }
